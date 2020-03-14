@@ -3,9 +3,10 @@ package com.eirsteir.coffeewithme.models;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
-
+import javax.persistence.MappedSuperclass;
 import java.util.Date;
 
+@MappedSuperclass
 abstract class CreatedUpdatedDateBaseModel {
 
     @CreationTimestamp

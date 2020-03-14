@@ -10,7 +10,7 @@ import java.util.List;
 
 @Data
 @Entity
-public class User extends CreatedUpdatedDateBaseModel {
+    public class User extends CreatedUpdatedDateBaseModel {
 
     @Id
     @GeneratedValue

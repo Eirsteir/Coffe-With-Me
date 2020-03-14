@@ -11,7 +11,7 @@ import javax.validation.constraints.NotNull;
 
 @Data
 @Entity
-public class CoffeeRequest extends CreatedUpdatedDateBaseModel {
+public class CoffeeRequest extends UserRequestRelation {
 
     @Id
     @GeneratedValue
