@@ -1,13 +1,13 @@
-package com.eirsteir.coffewithme;
+package com.eirsteir.coffeewithme;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class CoffeWithMeApplication {
+public class CoffeeWithMeApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(CoffeWithMeApplication.class, args);
+        SpringApplication.run(CoffeeWithMeApplication.class, args);
     }
 
 }

@@ -1,10 +1,10 @@
-package com.eirsteir.coffewithme;
+package com.eirsteir.coffeewithme;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class CoffeWithMeApplicationTests {
+class CoffeeWithMeApplicationTests {
 
     @Test
     void contextLoads() {
