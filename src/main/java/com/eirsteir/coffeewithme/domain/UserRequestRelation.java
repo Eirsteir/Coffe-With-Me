@@ -1,4 +1,4 @@
-package com.eirsteir.coffeewithme.models;
+package com.eirsteir.coffeewithme.domain;
 
 import javax.persistence.MappedSuperclass;
 import javax.persistence.OneToOne;

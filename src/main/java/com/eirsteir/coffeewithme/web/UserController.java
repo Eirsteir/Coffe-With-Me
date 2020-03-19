@@ -1,7 +1,7 @@
 package com.eirsteir.coffeewithme.web;
 
 
-import com.eirsteir.coffeewithme.models.User;
+import com.eirsteir.coffeewithme.domain.User;
 import com.eirsteir.coffeewithme.repository.UserRepository;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
@@ -27,7 +27,6 @@ public class UserController {
         this.assembler = assembler;
     }
 
-    @GetMapping
     CollectionModel<EntityModel<User>> all() {
         List<EntityModel<User>> users = repository.findAll().stream()
                 .map(assembler::toModel)

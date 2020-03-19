@@ -1,4 +1,4 @@
-package com.eirsteir.coffeewithme.models;
+package com.eirsteir.coffeewithme.domain;
 
 public interface RequestStatus {
 

@@ -1,7 +1,7 @@
 package com.eirsteir.coffeewithme.enums;
 
 
-import com.eirsteir.coffeewithme.models.RequestStatus;
+import com.eirsteir.coffeewithme.domain.RequestStatus;
 
 public enum FriendRequestStatus implements RequestStatus {
 

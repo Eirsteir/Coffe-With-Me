@@ -1,6 +1,6 @@
 package com.eirsteir.coffeewithme.web;
 
-import com.eirsteir.coffeewithme.models.User;
+import com.eirsteir.coffeewithme.domain.User;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.server.RepresentationModelAssembler;
 import org.springframework.stereotype.Component;

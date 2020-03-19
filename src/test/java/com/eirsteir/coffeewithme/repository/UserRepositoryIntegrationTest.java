@@ -1,6 +1,6 @@
 package com.eirsteir.coffeewithme.repository;
 
-import com.eirsteir.coffeewithme.models.User;
+import com.eirsteir.coffeewithme.domain.User;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -11,7 +11,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
 
 @RunWith(SpringRunner.class)
@@ -40,19 +40,19 @@ public class UserRepositoryIntegrationTest {
     }
 
     @Test
-    public void givenUserInDBWhenFindOneByUsernameThenReturnOptionalWithUser() {
+    public void givenUserInDBWhenFindByUsernameThenReturnOptionalWithUser() {
         entityManager.persistAndFlush(user);
-        Optional<User> foundUser = userRepository.findOneByUsername(USER_NAME_ALEX);
+        Optional<User> foundUser = userRepository.findByUsername(USER_NAME_ALEX);
 
-        assertTrue(foundUser.isPresent());
-        assertEquals(user.getUsername(), foundUser.get().getUsername());
+        assertThat(foundUser).isPresent();
+        assertThat(foundUser.get().getUsername()).isEqualTo(user.getUsername());
     }
 
     @Test
-    public void givenEmptyDBWhenFindOneByUsernameThenReturnEmptyOptional() {
-        Optional<User> foundUser = userRepository.findOneByUsername(USER_NAME_ALEX);
+    public void givenEmptyDBWhenFindByUsernameThenReturnEmptyOptional() {
+        Optional<User> foundUser = userRepository.findByUsername(USER_NAME_ALEX);
 
-        assertFalse(foundUser.isPresent());
+        assertThat(foundUser).isEmpty();
     }
 
 }

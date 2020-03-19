@@ -1,4 +1,4 @@
-package com.eirsteir.coffeewithme.models;
+package com.eirsteir.coffeewithme.domain;
 
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;

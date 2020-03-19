@@ -1,4 +1,4 @@
-package com.eirsteir.coffeewithme.models;
+package com.eirsteir.coffeewithme.domain;
 
 
 import com.eirsteir.coffeewithme.testUtils.BlankStringsArgumentsProvider;
@@ -20,8 +20,7 @@ import javax.validation.ConstraintViolationException;
 import java.util.ArrayList;
 import java.util.stream.Stream;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 
 @RunWith(SpringRunner.class)
@@ -58,8 +57,8 @@ public class UserTest {
         user.addRole(adminRole);
         User savedUser = entityManager.persistFlushFind(user);
 
-        assertEquals(1, savedUser.getRoles().size());
-        assertEquals(adminRole, savedUser.getRoles().get(0));
+        assertThat(savedUser.getRoles()).hasSize(1);
+        assertThat(savedUser.getRoles()).contains(adminRole);
     }
 
     @Test
@@ -70,7 +69,7 @@ public class UserTest {
 
         User updatedUser = entityManager.persistFlushFind(foundUser);
 
-        assertTrue(updatedUser.getRoles().isEmpty());
+        assertThat(updatedUser.getRoles()).isEmpty();
     }
 
 

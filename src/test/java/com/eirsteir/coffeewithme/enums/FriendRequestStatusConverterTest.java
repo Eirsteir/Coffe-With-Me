@@ -6,7 +6,7 @@ import org.junit.jupiter.params.provider.MethodSource;
 
 import java.util.stream.Stream;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 
 class FriendRequestStatusConverterTest {
 
@@ -27,7 +27,7 @@ class FriendRequestStatusConverterTest {
     public void convertToDatabaseColumn(FriendRequestStatus requestStatus, Integer value) {
         Integer convertedRequestStatus = FRIEND_REQUEST_STATUS_CONVERTER.convertToDatabaseColumn(requestStatus);
 
-        assertEquals(value, convertedRequestStatus);
+        assertThat(convertedRequestStatus).isEqualTo(value);
     }
 
     public static Stream<Arguments> coffeeRequestValueProvider() {
@@ -43,6 +43,6 @@ class FriendRequestStatusConverterTest {
     public void convertToEntityAttribute(Integer value, FriendRequestStatus requestStatus) {
         FriendRequestStatus convertedRequestStatusValue = FRIEND_REQUEST_STATUS_CONVERTER.convertToEntityAttribute(value);
 
-        assertEquals(requestStatus, convertedRequestStatusValue);
+        assertThat(convertedRequestStatusValue).isEqualTo(requestStatus);
     }
 }

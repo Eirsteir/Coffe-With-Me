@@ -7,7 +7,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.stream.Stream;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest
 class FriendRequestStatusTest {
@@ -23,7 +23,7 @@ class FriendRequestStatusTest {
     @ParameterizedTest
     @MethodSource("requestStatusValueProvider")
     void getValue(FriendRequestStatus requestStatus, Integer requestStatusValue) {
-        assertEquals(requestStatusValue, requestStatus.getValue());
+        assertThat(requestStatus.getValue()).isEqualTo(requestStatusValue);
     }
 
 
@@ -37,7 +37,7 @@ class FriendRequestStatusTest {
     @ParameterizedTest
     @MethodSource("requestStatusNameProvider")
     void getStatus(FriendRequestStatus requestStatus, String requestStatusName) {
-        assertEquals(requestStatusName, requestStatus.getStatus());
+        assertThat(requestStatus.getStatus()).isEqualTo(requestStatusName);
     }
 }
 

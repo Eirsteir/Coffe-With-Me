@@ -1,6 +1,6 @@
 package com.eirsteir.coffeewithme.enums;
 
-import com.eirsteir.coffeewithme.models.RequestStatusConverter;
+import com.eirsteir.coffeewithme.domain.RequestStatusConverter;
 
 import javax.persistence.Converter;
 import java.util.stream.Stream;
