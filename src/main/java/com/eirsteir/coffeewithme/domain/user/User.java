@@ -28,6 +28,10 @@ public class User extends CreatedUpdatedDateBaseModel {
     @NotBlank(message = "Email address may not be blank")
     private String emailAddress;
 
+    @ToString.Exclude
+    @NotBlank
+    private String confirmEmailAddress;
+
     @NotBlank
     @Column(unique = true)
     private String username;
