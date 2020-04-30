@@ -25,7 +25,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @RunWith(SpringRunner.class)
 @WebMvcTest(UserController.class)
-class UserControllerIntegrationTest {
+class UserControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
@@ -57,15 +57,9 @@ class UserControllerIntegrationTest {
         mockMvc.perform(get("/users")
             .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$", hasSize(1)))
-                .andExpect(jsonPath("$[0].name", is(user.getUsername())));
+                .andExpect(jsonPath("$", hasSize(2)))
+                .andExpect(jsonPath("$[0].username", is(user.getUsername())));
     }
 
-    @Test
-    void one() {
-    }
 
-    @Test
-    void create() {
-    }
 }

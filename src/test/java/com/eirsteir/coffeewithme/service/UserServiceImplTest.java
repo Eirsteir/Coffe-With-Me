@@ -25,7 +25,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest
 @RunWith(SpringRunner.class)
-class UserServiceImplIntegrationTest {
+class UserServiceImplTest {
 
     @TestConfiguration
     static class UserServiceImplTestContextConfiguration {

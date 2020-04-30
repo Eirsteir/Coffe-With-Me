@@ -16,7 +16,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(SpringRunner.class)
 @DataJpaTest
-public class UserRepositoryIntegrationTest {
+public class UserRepositoryTest {
 
     private final String USER_NAME_ALEX = "Alex";
 
