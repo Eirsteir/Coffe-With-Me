@@ -18,22 +18,22 @@ public class UserController {
     private UserService userService;
 
     @GetMapping
-    List<User> getUsers() {
+    List<User> getAllUsers() {
 
-        return null;
+        return userService.getAllUsers();
     }
 
-    @GetMapping("/{id}")
-    ResponseEntity<User> getUserById(@PathVariable Long id) {
-        User user = userService.findById(id)
-                .orElseThrow(IllegalArgumentException::new); // () -> new UserNotFoundException(id)
+    @GetMapping(value = "/{id}")
+    @ResponseBody
+    User getUserById(@PathVariable Long id) {
 
-        return null;
+        return userService.findById(id)
+                .orElseThrow(IllegalArgumentException::new);
     }
 
     @PostMapping
-    @ResponseStatus(HttpStatus.CREATED)
     ResponseEntity<User> createUser(@RequestBody User user) {
-        return null;
+
+        return new ResponseEntity<User>(userService.saveUser(user), HttpStatus.CREATED);
     }
 }

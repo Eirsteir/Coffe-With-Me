@@ -68,6 +68,7 @@ class UserServiceImplTest {
                 .thenReturn(user);
 
         Mockito.when(userRepository.findAll()).thenReturn(allUsers);
+
     }
 
     @Test
@@ -96,5 +97,11 @@ class UserServiceImplTest {
     void testGetAllUsersReturnsAllUsers() {
         List<User> foundUsers = userService.getAllUsers();
         assertThat(foundUsers).isEqualTo(allUsers);
+    }
+
+    @Test
+    void testUpdateUserReturnsUpdatedUser() {
+        User savedUser = userService.saveUser(user);
+        assertThat(savedUser.getUsername()).isEqualTo(USER_NAME_ALEX);
     }
 }

@@ -2,7 +2,6 @@ package com.eirsteir.coffeewithme.integrations;
 
 import com.eirsteir.coffeewithme.CoffeeWithMeApplication;
 import com.eirsteir.coffeewithme.domain.user.User;
-import com.eirsteir.coffeewithme.repository.UserRepository;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,8 +31,6 @@ public class UserControllerIntegrationTest {
     @Autowired
     private MockMvc mvc;
 
-    @Autowired
-    private UserRepository repository;
     private User user;
     private List<User> allUsers = new ArrayList<>();
 
@@ -46,10 +43,10 @@ public class UserControllerIntegrationTest {
 
         allUsers.add(user);
 
-        mvc.perform(get("/api/employees")
+        mvc.perform(get("/users")
                             .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content()
                                    .contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$[0].name", is("alex")));
+                .andExpect(jsonPath("$[0].username", is("alex")));
     }}
