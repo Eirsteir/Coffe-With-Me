@@ -49,28 +49,18 @@ class UserServiceImplTest {
     private UserRepository userRepository;
 
     private User user;
-    private NewUserForm newUserForm;
     List<User> allUsers = new ArrayList<>();
 
     @BeforeEach
     public void setUp() {
         user = User.builder()
                 .username(USER_NAME_ALEX)
-                .password("12345678")
                 .roles(new ArrayList<>())
                 .build();
 
         allUsers.add(user);
 
-        newUserForm = NewUserForm.builder()
-                .username(USERNAME_ALEX)
-                .email(EMAIL_ALEX)
-                .verifyEmail(EMAIL_ALEX)
-                .password(PASSWORD_ALEX)
-                .verifyPassword(PASSWORD_ALEX)
-                .build();
-
-        Mockito.when(userRepository.findByUsername(user.getUsername()))
+        Mockito.when(userRepository.findByEmail(user.getEmail()))
                 .thenReturn(Optional.of(user));
 
         Mockito.when(userRepository.save(Mockito.any(User.class)))

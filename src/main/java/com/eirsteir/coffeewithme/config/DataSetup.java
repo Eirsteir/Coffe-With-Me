@@ -18,13 +18,11 @@ class DataSetup implements ApplicationRunner {
         userRepository.save(User.builder()
                                     .username("alex")
                                     .email("alex.testesen@email.com")
-                                    .password("12345678")
                                     .build());
 
         userRepository.save(User.builder()
                                     .username("adam")
                                     .email("adam.testesen@email.com")
-                                    .password("12345678")
                                     .build());
     }
 }

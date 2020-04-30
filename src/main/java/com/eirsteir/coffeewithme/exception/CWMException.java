@@ -17,21 +17,8 @@ public class CWMException {
         CWMException.propertiesConfig = propertiesConfig;
     }
 
-    public static RuntimeException throwException(String messageTemplate, String... args) {
-        return new RuntimeException(format(messageTemplate, args));
-    }
-
     public static RuntimeException throwException(EntityType entityType, ExceptionType exceptionType, String... args) {
         String messageTemplate = getMessageTemplate(entityType, exceptionType);
-        return throwException(exceptionType, messageTemplate, args);
-    }
-
-    public static RuntimeException throwExceptionWithId(EntityType entityType, ExceptionType exceptionType, String id, String... args) {
-        String messageTemplate = getMessageTemplate(entityType, exceptionType).concat(".").concat(id);
-        return throwException(exceptionType, messageTemplate, args);
-    }
-
-    public static RuntimeException throwExceptionWithTemplate(EntityType entityType, ExceptionType exceptionType, String messageTemplate, String... args) {
         return throwException(exceptionType, messageTemplate, args);
     }
 
