@@ -1,7 +1,6 @@
 package com.eirsteir.coffeewithme.repository;
 
 import com.eirsteir.coffeewithme.domain.user.User;
-import org.hibernate.exception.ConstraintViolationException;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -13,7 +12,6 @@ import org.springframework.test.context.junit4.SpringRunner;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 
 @RunWith(SpringRunner.class)
@@ -21,7 +19,7 @@ import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 public class UserRepositoryTest {
 
     private final String USER_NAME_ALEX = "Alex";
-    private static final String EMAIL_ADDRESS_ALEX = "alex@email.com";
+    private static final String EMAIL_ADDRESS_ALEX = "alex@mail.com";
 
     @Autowired
     private TestEntityManager entityManager;
@@ -60,20 +58,4 @@ public class UserRepositoryTest {
         assertThat(foundUser).isEmpty();
     }
 
-    @Test
-    public void testCreateUserWithNonUniqueUsername() {
-        entityManager.persistAndFlush(user);
-
-        assertThatExceptionOfType(ConstraintViolationException.class).isThrownBy(() -> {
-            entityManager.persistAndFlush(
-                    User.builder()
-                            .username(USER_NAME_ALEX)
-                            .emailAddress("unique@email.com")
-                            .firstName("Test")
-                            .lastName("Testesen")
-                            .password("12345678")
-                            .confirmPassword("12345678")
-                            .build());
-        }).withMessage();
-    }
 }

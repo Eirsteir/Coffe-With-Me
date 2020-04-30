@@ -68,7 +68,6 @@ class UserServiceImplTest {
                 .thenReturn(user);
 
         Mockito.when(userRepository.findAll()).thenReturn(allUsers);
-
     }
 
     @Test
@@ -101,7 +100,7 @@ class UserServiceImplTest {
 
     @Test
     void testUpdateUserReturnsUpdatedUser() {
-        User savedUser = userService.saveUser(user);
+        User savedUser = userService.update(user);
         assertThat(savedUser.getUsername()).isEqualTo(USER_NAME_ALEX);
     }
 }

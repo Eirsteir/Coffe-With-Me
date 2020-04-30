@@ -5,9 +5,9 @@ import com.eirsteir.coffeewithme.domain.user.User;
 import com.eirsteir.coffeewithme.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @RestController
@@ -32,8 +32,16 @@ public class UserController {
     }
 
     @PostMapping
-    ResponseEntity<User> createUser(@RequestBody User user) {
+    @ResponseStatus(HttpStatus.CREATED)
+    @ResponseBody
+    User createUser(@RequestBody @Valid User user) {
 
-        return new ResponseEntity<User>(userService.saveUser(user), HttpStatus.CREATED);
+        return userService.saveUser(user);
+    }
+
+    @PutMapping
+    User updateUser(@RequestBody @Valid User user) {
+
+        return userService.update(user);
     }
 }

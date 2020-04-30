@@ -22,6 +22,7 @@ class DataSetup implements ApplicationRunner {
                                     .emailAddress("alex.testesen@email.com")
                                     .password("12345678")
                                     .confirmPassword("12345678")
+                                    .phoneNumber("12345678")
                                     .build());
 
         userRepository.save(User.builder()
@@ -31,6 +32,7 @@ class DataSetup implements ApplicationRunner {
                                     .emailAddress("adam.testesen@email.com")
                                     .password("12345678")
                                     .confirmPassword("12345678")
+                                    .phoneNumber("12345678")
                                     .build());
     }
 }

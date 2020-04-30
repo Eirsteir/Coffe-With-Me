@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -20,8 +21,8 @@ import java.util.Optional;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
 import static org.mockito.BDDMockito.given;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @RunWith(SpringRunner.class)
@@ -42,20 +43,41 @@ class UserControllerTest {
         user = User.builder()
                 .id(1L)
                 .username("alex")
+                .emailAddress("alex@email.com")
+                .firstName("Alex")
+                .lastName("Doe")
+                .phoneNumber("12345678")
+                .password("12345678")
+                .confirmPassword("12345678")
                 .build();
 
         User otherUser = User.builder()
                 .id(2L)
                 .username("adam")
+                .emailAddress("adam@email.com")
+                .firstName("Adam")
+                .lastName("Doe")
+                .phoneNumber("12345678")
+                .password("12345678")
+                .confirmPassword("12345678")
                 .build();
 
         allUsers.add(user);
         allUsers.add(otherUser);
+
+        given(userService.getAllUsers()).willReturn(allUsers);
+
+        given(userService.findById(1L)).willReturn(Optional.ofNullable(user));
+
+        Mockito.when(userService.saveUser(Mockito.any(User.class)))
+                .thenReturn(user);
+
+        Mockito.when(userService.update(Mockito.any(User.class)))
+                .thenReturn(user);
     }
 
     @Test
     void testGetAllUsersReturnsJsonArrayWhenEmployeesGiven() throws Exception {
-        given(userService.getAllUsers()).willReturn(allUsers);
 
         mockMvc.perform(get("/users")
             .contentType(MediaType.APPLICATION_JSON))
@@ -68,7 +90,6 @@ class UserControllerTest {
 
     @Test
     void testGetUserByIdReturnsUser() throws Exception {
-        given(userService.findById(1L)).willReturn(Optional.ofNullable(user));
 
         mockMvc.perform(get("/users/{id}", 1)
             .contentType(MediaType.APPLICATION_JSON))
@@ -81,41 +102,39 @@ class UserControllerTest {
 
     @Test
     void testCreateUserReturnsCreatedUser() throws Exception {
-        User newUser = User.builder()
-                .id(3L)
-                .username("john")
-                .build();
 
-        given(userService.saveUser(newUser)).willReturn(newUser);
+        User userToCreate = User.builder()
+                .username("alex")
+                .emailAddress("alex@email.com")
+                .firstName("Alex")
+                .lastName("Doe")
+                .phoneNumber("12345678")
+                .password("12345678")
+                .confirmPassword("12345678")
+                .build();
 
         mockMvc.perform(post("/users")
                                 .contentType(MediaType.APPLICATION_JSON)
-                                .content(asJsonString(newUser)))
+                                .content(asJsonString(userToCreate)))
+                .andDo(print())
                 .andExpect(status().isCreated())
-                .andExpect(content()
-                                   .contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.id", is(newUser.getId().intValue())))
-                .andExpect(jsonPath("$.username", is(newUser.getUsername())));
+                .andExpect(jsonPath("$.id", is(user.getId().intValue())))
+                .andExpect(jsonPath("$.username", is(user.getUsername())));
     }
 
-//    @Test
-//    void testUpdateUserReturnsUpdatedUser() throws Exception {
-//        User newUser = User.builder()
-//                .id(3L)
-//                .username("john")
-//                .build();
-//
-//        given(userService.update(newUser)).willReturn(newUser);
-//
-//        mockMvc.perform(post("/users")
-//                                .contentType(MediaType.APPLICATION_JSON)
-//                                .content(asJsonString(newUser)))
-//                .andExpect(status().isCreated())
-//                .andExpect(content()
-//                                   .contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-//                .andExpect(jsonPath("$.id", is(newUser.getId().intValue())))
-//                .andExpect(jsonPath("$.username", is(newUser.getUsername())));
-//    }
+    @Test
+    void testUpdateUserReturnsUpdatedUser() throws Exception {
+       user.setUsername("updatedUsername");
+
+        mockMvc.perform(put("/users")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(asJsonString(user)))
+                .andExpect(status().isOk())
+                .andExpect(content()
+                                   .contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.id", is(user.getId().intValue())))
+                .andExpect(jsonPath("$.username", is("updatedUsername")));
+    }
 
     private static String asJsonString(Object obj) {
         try {
