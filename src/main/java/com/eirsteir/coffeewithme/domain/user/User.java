@@ -2,6 +2,7 @@ package com.eirsteir.coffeewithme.domain.user;
 
 
 import com.eirsteir.coffeewithme.domain.CreatedUpdatedDateBaseModel;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 
 import javax.persistence.*;
@@ -34,6 +35,7 @@ public class User extends CreatedUpdatedDateBaseModel {
     @ToString.Exclude
     @NotBlank
     @Size(min = 8, message = "Password must be at least 8 characters.")
+    @JsonIgnore
     private String password;
 
     @ManyToMany
