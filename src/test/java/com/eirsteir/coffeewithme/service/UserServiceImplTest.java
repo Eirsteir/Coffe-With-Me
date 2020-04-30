@@ -1,5 +1,6 @@
 package com.eirsteir.coffeewithme.service;
 
+import com.eirsteir.coffeewithme.domain.user.NewUserForm;
 import com.eirsteir.coffeewithme.domain.user.User;
 import com.eirsteir.coffeewithme.repository.UserRepository;
 import com.eirsteir.coffeewithme.testUtils.BlankStringsArgumentsProvider;
@@ -27,6 +28,10 @@ import static org.assertj.core.api.Assertions.assertThat;
 @RunWith(SpringRunner.class)
 class UserServiceImplTest {
 
+    public static final String USERNAME_ALEX = "alex";
+    public static final String EMAIL_ALEX = "alex@email.com";
+    public static final String PASSWORD_ALEX = "12345678";
+
     @TestConfiguration
     static class UserServiceImplTestContextConfiguration {
 
@@ -45,7 +50,7 @@ class UserServiceImplTest {
     private UserRepository userRepository;
 
     private User user;
-
+    private NewUserForm newUserForm;
     List<User> allUsers = new ArrayList<>();
 
     @BeforeEach
@@ -57,6 +62,14 @@ class UserServiceImplTest {
                 .build();
 
         allUsers.add(user);
+
+        newUserForm = NewUserForm.builder()
+                .username(USERNAME_ALEX)
+                .email(EMAIL_ALEX)
+                .verifyEmail(EMAIL_ALEX)
+                .password(PASSWORD_ALEX)
+                .verifyPassword(PASSWORD_ALEX)
+                .build();
 
         Mockito.when(userRepository.findByUsername(user.getUsername()))
                 .thenReturn(Optional.of(user));
@@ -85,7 +98,7 @@ class UserServiceImplTest {
 
     @Test
     void testSaveUserReturnsSavedUser() {
-        User savedUser = userService.saveUser(user);
+        User savedUser = userService.saveUser(newUserForm);
         assertThat(savedUser.getUsername()).isEqualTo(USER_NAME_ALEX);
     }
 

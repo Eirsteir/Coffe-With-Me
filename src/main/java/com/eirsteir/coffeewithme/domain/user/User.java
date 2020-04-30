@@ -25,7 +25,7 @@ public class User extends CreatedUpdatedDateBaseModel {
     @Email
     @Column(unique = true)
     @NotBlank(message = "Email address may not be blank")
-    private String emailAddress;
+    private String email;
 
     @NotBlank
     @Column(unique = true)

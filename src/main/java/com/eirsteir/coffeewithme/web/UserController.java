@@ -1,6 +1,7 @@
 package com.eirsteir.coffeewithme.web;
 
 
+import com.eirsteir.coffeewithme.domain.user.NewUserForm;
 import com.eirsteir.coffeewithme.domain.user.User;
 import com.eirsteir.coffeewithme.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,9 +35,9 @@ public class UserController {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     @ResponseBody
-    User createUser(@RequestBody @Valid User user) {
+    User createUser(@RequestBody @Valid NewUserForm newUserForm) {
 
-        return userService.saveUser(user);
+        return userService.saveUser(newUserForm);
     }
 
     @PutMapping

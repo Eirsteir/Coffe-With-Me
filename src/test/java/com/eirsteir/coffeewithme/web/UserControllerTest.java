@@ -1,5 +1,6 @@
 package com.eirsteir.coffeewithme.web;
 
+import com.eirsteir.coffeewithme.domain.user.NewUserForm;
 import com.eirsteir.coffeewithme.domain.user.User;
 import com.eirsteir.coffeewithme.service.UserService;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -28,6 +29,10 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @WebMvcTest(UserController.class)
 class UserControllerTest {
 
+    public static final String USERNAME_ALEX = "alex";
+    public static final String EMAIL_ALEX = "alex@email.com";
+    public static final String PASSWORD_ALEX = "12345678";
+
     @Autowired
     private MockMvc mockMvc;
 
@@ -42,14 +47,14 @@ class UserControllerTest {
         user = User.builder()
                 .id(1L)
                 .username("alex")
-                .emailAddress("alex@email.com")
+                .email("alex@email.com")
                 .password("12345678")
                 .build();
 
         User otherUser = User.builder()
                 .id(2L)
                 .username("adam")
-                .emailAddress("adam@email.com")
+                .email("adam@email.com")
                 .password("12345678")
                 .build();
 
@@ -60,7 +65,7 @@ class UserControllerTest {
 
         given(userService.findById(1L)).willReturn(Optional.ofNullable(user));
 
-        Mockito.when(userService.saveUser(Mockito.any(User.class)))
+        Mockito.when(userService.saveUser(Mockito.any(NewUserForm.class)))
                 .thenReturn(user);
 
         Mockito.when(userService.update(Mockito.any(User.class)))
@@ -93,16 +98,17 @@ class UserControllerTest {
 
     @Test
     void testCreateUserReturnsCreatedUser() throws Exception {
-
-        User userToCreate = User.builder()
-                .username("alex")
-                .emailAddress("alex@email.com")
-                .password("12345678")
+        NewUserForm newUserForm = NewUserForm.builder()
+                .username(USERNAME_ALEX)
+                .email(EMAIL_ALEX)
+                .verifyEmail(EMAIL_ALEX)
+                .password(PASSWORD_ALEX)
+                .verifyPassword(PASSWORD_ALEX)
                 .build();
 
         mockMvc.perform(post("/users")
                                 .contentType(MediaType.APPLICATION_JSON)
-                                .content(asJsonString(userToCreate)))
+                                .content(asJsonString(newUserForm)))
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.id", is(user.getId().intValue())))
                 .andExpect(jsonPath("$.username", is(user.getUsername())));

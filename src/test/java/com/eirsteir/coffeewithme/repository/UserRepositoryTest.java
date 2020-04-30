@@ -33,7 +33,7 @@ public class UserRepositoryTest {
     public void setUp() {
         user = User.builder()
             .username(USER_NAME_ALEX)
-            .emailAddress(EMAIL_ADDRESS_ALEX)
+            .email(EMAIL_ADDRESS_ALEX)
             .password("12345678")
             .build();
     }

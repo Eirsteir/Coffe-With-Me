@@ -35,7 +35,7 @@ public class UserTest {
     public void setUp() {
         user = User.builder()
                 .username("Alex")
-                .emailAddress("alex@email.com")
+                .email("alex@email.com")
                 .password("12345678")
                 .roles(new ArrayList<>())
                 .build();

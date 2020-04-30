@@ -1,7 +1,10 @@
 package com.eirsteir.coffeewithme.domain.user;
 
 import com.eirsteir.coffeewithme.validation.constraints.FieldsValueMatch;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
@@ -25,13 +28,16 @@ import javax.validation.constraints.Size;
 })
 public class NewUserForm {
 
+    @NotBlank(message = "Username may not be blank")
+    private String username;
+
     @Email
     @NotBlank(message = "Email address may not be blank")
     private String email;
 
     @Email
     @NotBlank(message = "Confirm email address may not be blank")
-    private String confirmEmailAddress;
+    private String verifyEmail;
 
     @NotBlank
     @Size(min = 8, message = "Password must be at least 8 characters.")
