@@ -1,6 +1,5 @@
 package com.eirsteir.coffeewithme.web;
 
-import com.eirsteir.coffeewithme.domain.user.NewUserForm;
 import com.eirsteir.coffeewithme.domain.user.User;
 import com.eirsteir.coffeewithme.service.UserService;
 import com.eirsteir.coffeewithme.web.v1.UserController;

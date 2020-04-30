@@ -1,6 +1,5 @@
 package com.eirsteir.coffeewithme.service;
 
-import com.eirsteir.coffeewithme.domain.user.NewUserForm;
 import com.eirsteir.coffeewithme.domain.user.User;
 import com.eirsteir.coffeewithme.repository.UserRepository;
 import com.eirsteir.coffeewithme.testUtils.BlankStringsArgumentsProvider;
