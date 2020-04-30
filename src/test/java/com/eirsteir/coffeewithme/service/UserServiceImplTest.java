@@ -82,7 +82,7 @@ class UserServiceImplTest {
 
     @Test
     void testGetUserByUsernameWithValidUsernameShouldFindUser() {
-        Optional<User> foundUser = userService.getUserByUsername(USER_NAME_ALEX);
+        Optional<User> foundUser = userService.findUserByUsername(USER_NAME_ALEX);
 
         assertThat(foundUser).isPresent();
         assertThat(USER_NAME_ALEX).isEqualTo(foundUser.get().getUsername());
@@ -92,7 +92,7 @@ class UserServiceImplTest {
     @ParameterizedTest
     @ArgumentsSource(BlankStringsArgumentsProvider.class)
     void testGetUserByUsernameWithInvalidUsernameDoesNotFindUser() {
-        Optional<User> foundUser = userService.getUserByUsername(null);
+        Optional<User> foundUser = userService.findUserByUsername(null);
         assertThat(foundUser).isEmpty();
     }
 
@@ -110,7 +110,7 @@ class UserServiceImplTest {
 
     @Test
     void testUpdateUserReturnsUpdatedUser() {
-        User savedUser = userService.update(user);
+        User savedUser = userService.updateProfile(user);
         assertThat(savedUser.getUsername()).isEqualTo(USER_NAME_ALEX);
     }
 }

@@ -1,4 +1,4 @@
-package com.eirsteir.coffeewithme;
+package com.eirsteir.coffeewithme.config;
 
 import com.eirsteir.coffeewithme.domain.user.User;
 import com.eirsteir.coffeewithme.repository.UserRepository;

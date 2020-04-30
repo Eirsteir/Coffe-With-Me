@@ -3,6 +3,7 @@ package com.eirsteir.coffeewithme.web;
 import com.eirsteir.coffeewithme.domain.user.NewUserForm;
 import com.eirsteir.coffeewithme.domain.user.User;
 import com.eirsteir.coffeewithme.service.UserService;
+import com.eirsteir.coffeewithme.web.v1.UserController;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -68,7 +69,7 @@ class UserControllerTest {
         Mockito.when(userService.saveUser(Mockito.any(NewUserForm.class)))
                 .thenReturn(user);
 
-        Mockito.when(userService.update(Mockito.any(User.class)))
+        Mockito.when(userService.updateProfile(Mockito.any(User.class)))
                 .thenReturn(user);
     }
 

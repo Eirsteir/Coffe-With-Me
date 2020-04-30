@@ -1,4 +1,4 @@
-package com.eirsteir.coffeewithme.web;
+package com.eirsteir.coffeewithme.web.v1;
 
 import org.springframework.boot.web.servlet.error.ErrorController;
 import org.springframework.stereotype.Controller;

@@ -2,18 +2,21 @@ package com.eirsteir.coffeewithme.domain.user;
 
 
 import com.eirsteir.coffeewithme.domain.CreatedUpdatedDateBaseModel;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.experimental.Accessors;
 
 import javax.persistence.*;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.Size;
 import java.util.List;
 
 
 @Data
 @Builder
+@Accessors(chain = true)
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
@@ -32,11 +35,11 @@ public class User extends CreatedUpdatedDateBaseModel {
     @Column(unique = true)
     private String username;
 
-    @ToString.Exclude
     @NotBlank
-    @Size(min = 8, message = "Password must be at least 8 characters.")
-    @JsonIgnore
-    private String password;
+    private String name;
+
+    @NotBlank
+    private String mobileNumber;
 
     @ManyToMany
     private List<Role> roles;

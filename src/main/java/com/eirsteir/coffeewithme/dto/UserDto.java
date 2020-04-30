@@ -1,0 +1,25 @@
+package com.eirsteir.coffeewithme.dto;
+
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
+import lombok.experimental.Accessors;
+
+import java.util.Set;
+
+@Getter
+@Setter
+@Accessors(chain = true)
+@NoArgsConstructor
+@ToString
+public class UserDto {
+
+    private Long id;
+    private String email;
+    private String username;
+    private String name;
+    private String mobileNumber;
+    private Set<RoleDto> roles;
+
+}

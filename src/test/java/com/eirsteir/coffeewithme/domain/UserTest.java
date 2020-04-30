@@ -41,7 +41,7 @@ public class UserTest {
                 .build();
 
         adminRole = Role.builder()
-                .name("ADMIN")
+                .role("ADMIN")
                 .build();
     }
 

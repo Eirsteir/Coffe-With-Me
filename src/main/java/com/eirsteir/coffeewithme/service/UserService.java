@@ -1,21 +1,14 @@
 package com.eirsteir.coffeewithme.service;
 
-import com.eirsteir.coffeewithme.domain.user.NewUserForm;
-import com.eirsteir.coffeewithme.domain.user.User;
-
-import java.util.List;
-import java.util.Optional;
+import com.eirsteir.coffeewithme.dto.UserDto;
 
 public interface UserService {
 
-    Optional<User> getUserByUsername(String username);
+    UserDto signUp(UserDto userDto);
 
-    User saveUser(NewUserForm newUserForm);
+    UserDto findUserByEmail(String email);
 
-    Optional<User> findById(Long id);
+    UserDto updateProfile(UserDto userDto);
 
-    List<User> getAllUsers();
-
-    User update(User user);
-
+    UserDto changePassword(UserDto userDto, String newPassword);
 }

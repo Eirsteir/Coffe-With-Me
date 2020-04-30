@@ -2,6 +2,7 @@ package com.eirsteir.coffeewithme.service;
 
 import com.eirsteir.coffeewithme.domain.user.NewUserForm;
 import com.eirsteir.coffeewithme.domain.user.User;
+import com.eirsteir.coffeewithme.dto.UserDto;
 import com.eirsteir.coffeewithme.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -15,33 +16,33 @@ public class UserServiceImpl implements UserService {
     @Autowired
     private UserRepository userRepository;
 
+
     @Override
-    public Optional<User> getUserByUsername(String username) {
-        return userRepository.findByUsername(username);
+    public UserDto signUp(UserDto userDto) {
+        return null;
     }
 
     @Override
-    public Optional<User> findById(Long id) {
-        return userRepository.findById(id);
+    public UserDto findUserByEmail(String email) {
+        return null;
     }
 
     @Override
-    public List<User> getAllUsers() {
-        return userRepository.findAll();
+    public UserDto updateProfile(UserDto userDto) {
+        Optional<User> user = userRepository.findByEmail(userDto.getEmail());
+        if (user.isPresent()) {
+            User userModel = user.get();
+            userModel.setUsername(userDto.getUsername())
+                    .setName(userDto.getName())
+                    .setMobileNumber(userDto.getMobileNumber());
+            return UserMapper.toUserDto(userRepository.save(userModel));
+        }
+        throw exception(USER, ENTITY_NOT_FOUND, userDto.getEmail());
     }
 
     @Override
-    public User update(User user) {
-        return userRepository.save(user);
-    }
-
-    @Override
-    public User saveUser(NewUserForm newUserForm) {
-        return userRepository.save(User.builder()
-                .username(newUserForm.getUsername())
-                .email(newUserForm.getEmail())
-                .password(newUserForm.getPassword())
-                .build());
+    public UserDto changePassword(UserDto userDto, String newPassword) {
+        return null;
     }
 
 }

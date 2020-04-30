@@ -22,6 +22,6 @@ public class Role {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    @NotBlank(message = "Name may not be blank")
-    private String name;
+    @NotBlank(message = "Role may not be blank")
+    private String role;
 }
