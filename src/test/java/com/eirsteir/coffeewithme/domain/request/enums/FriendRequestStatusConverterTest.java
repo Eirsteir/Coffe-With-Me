@@ -1,4 +1,4 @@
-package com.eirsteir.coffeewithme.enums;
+package com.eirsteir.coffeewithme.domain.request.enums;
 
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;

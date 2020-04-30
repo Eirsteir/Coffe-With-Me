@@ -1,11 +1,13 @@
-package com.eirsteir.coffeewithme.domain;
+package com.eirsteir.coffeewithme.domain.user;
+
+import com.eirsteir.coffeewithme.domain.CreatedUpdatedDateBaseModel;
 
 import javax.persistence.MappedSuperclass;
 import javax.persistence.OneToOne;
 import javax.validation.constraints.NotNull;
 
 @MappedSuperclass
-abstract class UserRequestRelation extends CreatedUpdatedDateBaseModel {
+public abstract class UserRequestRelation extends CreatedUpdatedDateBaseModel {
 
     @OneToOne
     @NotNull(message = "From (user) may not be null")

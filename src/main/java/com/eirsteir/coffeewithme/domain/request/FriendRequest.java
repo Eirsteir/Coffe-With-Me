@@ -1,7 +1,8 @@
-package com.eirsteir.coffeewithme.domain;
+package com.eirsteir.coffeewithme.domain.request;
 
 
-import com.eirsteir.coffeewithme.enums.FriendRequestStatus;
+import com.eirsteir.coffeewithme.domain.user.UserRequestRelation;
+import com.eirsteir.coffeewithme.domain.request.enums.FriendRequestStatus;
 import lombok.Data;
 
 import javax.persistence.Entity;

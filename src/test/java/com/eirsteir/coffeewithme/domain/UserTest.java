@@ -1,6 +1,8 @@
 package com.eirsteir.coffeewithme.domain;
 
 
+import com.eirsteir.coffeewithme.domain.user.Role;
+import com.eirsteir.coffeewithme.domain.user.User;
 import com.eirsteir.coffeewithme.testUtils.BlankStringsArgumentsProvider;
 import org.junit.Rule;
 import org.junit.Test;
@@ -41,13 +43,13 @@ public class UserTest {
 
     @BeforeEach
     public void setUp() {
-        user = new User("test@test.com",
-                USER_NAME_ALEX,
-                "Test",
-                "Testesen",
-                "12345678",
-                "12345678",
-                new ArrayList<>());
+        user = new User();
+        user.setUsername(USER_NAME_ALEX);
+        user.setFirstName("Test");
+        user.setLastName("Testesen");
+        user.setPassword("12345678");
+        user.setConfirmPassword("12345678");
+        user.setRoles(new ArrayList<>());
 
         adminRole = entityManager.persist(ADMIN_ROLE);
     }

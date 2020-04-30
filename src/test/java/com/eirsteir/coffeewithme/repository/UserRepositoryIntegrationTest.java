@@ -1,6 +1,6 @@
 package com.eirsteir.coffeewithme.repository;
 
-import com.eirsteir.coffeewithme.domain.User;
+import com.eirsteir.coffeewithme.domain.user.User;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -30,17 +30,16 @@ public class UserRepositoryIntegrationTest {
 
     @Before
     public void setUp() {
-        user = new User("test@test.com",
-                USER_NAME_ALEX,
-                "Test",
-                "Testesen",
-                "12345678",
-                "12345678",
-                null);
+        user = new User();
+        user.setUsername(USER_NAME_ALEX);
+        user.setFirstName("Test");
+        user.setLastName("Testesen");
+        user.setPassword("12345678");
+        user.setConfirmPassword("12345678");
     }
 
     @Test
-    public void givenUserInDBWhenFindByUsernameThenReturnOptionalWithUser() {
+    public void testFindByUsernameReturnsOptionalUser() {
         entityManager.persistAndFlush(user);
         Optional<User> foundUser = userRepository.findByUsername(USER_NAME_ALEX);
 

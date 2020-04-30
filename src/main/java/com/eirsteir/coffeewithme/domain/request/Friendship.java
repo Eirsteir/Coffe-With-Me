@@ -1,5 +1,6 @@
-package com.eirsteir.coffeewithme.domain;
+package com.eirsteir.coffeewithme.domain.request;
 
+import com.eirsteir.coffeewithme.domain.user.UserRequestRelation;
 import lombok.Data;
 
 import javax.persistence.*;

@@ -1,6 +1,7 @@
-package com.eirsteir.coffeewithme.domain;
+package com.eirsteir.coffeewithme.domain.user;
 
 
+import com.eirsteir.coffeewithme.domain.CreatedUpdatedDateBaseModel;
 import lombok.Data;
 import lombok.ToString;
 
@@ -45,25 +46,6 @@ public class User extends CreatedUpdatedDateBaseModel {
 
     @ManyToMany
     private List<Role> roles;
-
-    public User() {
-    }
-
-    public User(@Email @NotBlank(message = "Email address may not be blank") String emailAddress,
-                @NotBlank String username,
-                @NotBlank(message = "First name may not be blank") String firstName,
-                @NotBlank(message = "First name may not be blank") String lastName,
-                @NotBlank @Size(min = 8, message = "Password must be at least 8 characters.") String password,
-                @NotBlank String confirmPassword,
-                List<Role> roles) {
-        this.emailAddress = emailAddress;
-        this.username = username;
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.password = password;
-        this.confirmPassword = confirmPassword;
-        this.roles = roles;
-    }
 
     public void addRole(Role role) {
         roles.add(role);

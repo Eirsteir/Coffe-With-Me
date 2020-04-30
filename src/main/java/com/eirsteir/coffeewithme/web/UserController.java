@@ -1,51 +1,36 @@
 package com.eirsteir.coffeewithme.web;
 
 
-import com.eirsteir.coffeewithme.domain.User;
-import com.eirsteir.coffeewithme.repository.UserRepository;
-import org.springframework.hateoas.CollectionModel;
-import org.springframework.hateoas.EntityModel;
+import com.eirsteir.coffeewithme.domain.user.User;
+import com.eirsteir.coffeewithme.service.UserService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.stream.Collectors;
-
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 @RestController
 @RequestMapping("/users")
 public class UserController {
 
-    private final UserRepository repository;
+    @Autowired
+    private UserService userService;
 
-    private final UserModelAssembler assembler;
+    List<User> all() {
 
-    public UserController(UserRepository repository, UserModelAssembler assembler) {
-        this.repository = repository;
-        this.assembler = assembler;
-    }
-
-    CollectionModel<EntityModel<User>> all() {
-        List<EntityModel<User>> users = repository.findAll().stream()
-                .map(assembler::toModel)
-                .collect(Collectors.toList());
-
-        return new CollectionModel<>(users,
-                linkTo(methodOn(UserController.class).all()).withSelfRel());
+        return null;
     }
 
     @GetMapping("/{id}")
-    EntityModel<User> one(@PathVariable Long id) {
-        User user = repository.findById(id)
+    ResponseEntity<User> one(@PathVariable Long id) {
+        User user = userService.findById(id)
                 .orElseThrow(IllegalArgumentException::new); // () -> new UserNotFoundException(id)
 
-        return assembler.toModel(user);
+        return null;
     }
 
     @PostMapping
-    ResponseEntity<EntityModel<User>> create(@RequestBody User user) {
+    ResponseEntity<User> create(@RequestBody User user) {
         return null;
     }
 }

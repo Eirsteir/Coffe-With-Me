@@ -1,9 +1,12 @@
 package com.eirsteir.coffeewithme.service;
 
-import com.eirsteir.coffeewithme.domain.User;
+import com.eirsteir.coffeewithme.domain.user.User;
 import com.eirsteir.coffeewithme.repository.UserRepository;
+import com.eirsteir.coffeewithme.testUtils.BlankStringsArgumentsProvider;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ArgumentsSource;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,19 +43,23 @@ class UserServiceImplIntegrationTest {
     @MockBean
     private UserRepository userRepository;
 
+    private User user;
 
     @BeforeEach
     public void setUp() {
-        User user = new User("test@test.com",
-                USER_NAME_ALEX,
-                "Test",
-                "Testesen",
-                "12345678",
-                "12345678",
-                new ArrayList<>());
+        user = new User();
+        user.setUsername(USER_NAME_ALEX);
+        user.setFirstName("Test");
+        user.setLastName("Testesen");
+        user.setPassword("12345678");
+        user.setConfirmPassword("12345678");
+        user.setRoles(new ArrayList<>());
 
         Mockito.when(userRepository.findByUsername(user.getUsername()))
                 .thenReturn(Optional.of(user));
+
+        Mockito.when(userRepository.save(Mockito.any(User.class)))
+                .thenReturn(user);
     }
 
     @Test
@@ -61,5 +68,21 @@ class UserServiceImplIntegrationTest {
 
         assertThat(foundUser).isPresent();
         assertThat(USER_NAME_ALEX).isEqualTo(foundUser.get().getUsername());
+    }
+
+
+    @ParameterizedTest
+    @ArgumentsSource(BlankStringsArgumentsProvider.class)
+    void testGetUserByUsernameWithInvalidUsernameDoesNotFindUser() {
+        Optional<User> foundUser = userService.getUserByUsername(null);
+
+        assertThat(foundUser).isEmpty();
+    }
+
+    @Test
+    void testSaveUserReturnsSavedUser() {
+        User savedUser = userService.saveUser(user);
+
+        assertThat(savedUser.getUsername()).isEqualTo(USER_NAME_ALEX);
     }
 }

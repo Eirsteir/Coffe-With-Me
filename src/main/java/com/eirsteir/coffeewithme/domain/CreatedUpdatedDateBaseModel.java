@@ -7,7 +7,7 @@ import javax.persistence.MappedSuperclass;
 import java.util.Date;
 
 @MappedSuperclass
-abstract class CreatedUpdatedDateBaseModel {
+public abstract class CreatedUpdatedDateBaseModel {
 
     @CreationTimestamp
     private Date createdAt;
