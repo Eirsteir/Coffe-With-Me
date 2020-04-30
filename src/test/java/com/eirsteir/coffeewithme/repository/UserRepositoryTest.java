@@ -32,10 +32,10 @@ public class UserRepositoryTest {
     @Before
     public void setUp() {
         user = User.builder()
-        .username(USER_NAME_ALEX)
-        .emailAddress(EMAIL_ADDRESS_ALEX)
-        .password("12345678")
-        .build();
+            .username(USER_NAME_ALEX)
+            .emailAddress(EMAIL_ADDRESS_ALEX)
+            .password("12345678")
+            .build();
     }
 
     @Test
