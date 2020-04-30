@@ -34,13 +34,8 @@ public class UserRepositoryTest {
         user = User.builder()
         .username(USER_NAME_ALEX)
         .emailAddress(EMAIL_ADDRESS_ALEX)
-        .firstName("Test")
-        .lastName("Testesen")
         .password("12345678")
-        .confirmPassword("12345678")
-        .phoneNumber("12345678")
         .build();
-
     }
 
     @Test

@@ -22,7 +22,6 @@ import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @RunWith(SpringRunner.class)
@@ -44,22 +43,14 @@ class UserControllerTest {
                 .id(1L)
                 .username("alex")
                 .emailAddress("alex@email.com")
-                .firstName("Alex")
-                .lastName("Doe")
-                .phoneNumber("12345678")
                 .password("12345678")
-                .confirmPassword("12345678")
                 .build();
 
         User otherUser = User.builder()
                 .id(2L)
                 .username("adam")
                 .emailAddress("adam@email.com")
-                .firstName("Adam")
-                .lastName("Doe")
-                .phoneNumber("12345678")
                 .password("12345678")
-                .confirmPassword("12345678")
                 .build();
 
         allUsers.add(user);
@@ -106,11 +97,7 @@ class UserControllerTest {
         User userToCreate = User.builder()
                 .username("alex")
                 .emailAddress("alex@email.com")
-                .firstName("Alex")
-                .lastName("Doe")
-                .phoneNumber("12345678")
                 .password("12345678")
-                .confirmPassword("12345678")
                 .build();
 
         mockMvc.perform(post("/users")

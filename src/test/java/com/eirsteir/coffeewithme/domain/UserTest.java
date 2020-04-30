@@ -43,11 +43,7 @@ public class UserTest {
         user = User.builder()
                 .username("Alex")
                 .emailAddress("alex@email.com")
-                .firstName("alex")
-                .lastName("Testesen")
                 .password("12345678")
-                .confirmPassword("12345678")
-                .phoneNumber("12345678")
                 .roles(new ArrayList<>())
                 .build();
 
@@ -86,7 +82,7 @@ public class UserTest {
     @ParameterizedTest
     @ArgumentsSource(BlankStringsArgumentsProvider.class)
     @MethodSource("invalidEmailAddressProvider")
-    public void testCreateUserWithInvalidEmail(String invalidInput) throws Exception {
+    public void testCreateUserWithInvalidEmail(String invalidInput) throws ConstraintViolationException {
         thrown.expect(ConstraintViolationException.class);
 
         user.setEmailAddress(invalidInput);

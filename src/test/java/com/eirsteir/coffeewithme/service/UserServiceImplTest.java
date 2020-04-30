@@ -52,10 +52,7 @@ class UserServiceImplTest {
     public void setUp() {
         user = User.builder()
                 .username(USER_NAME_ALEX)
-                .firstName("Test")
-                .lastName("Testesen")
                 .password("12345678")
-                .confirmPassword("12345678")
                 .roles(new ArrayList<>())
                 .build();
 
