@@ -1,7 +1,7 @@
 package com.eirsteir.coffeewithme.web.v1;
 
 
-import com.eirsteir.coffeewithme.domain.user.User;
+import com.eirsteir.coffeewithme.dto.UserDto;
 import com.eirsteir.coffeewithme.service.UserService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.SwaggerDefinition;
@@ -33,7 +33,7 @@ public class UserController {
     }
 
     @PutMapping
-    User updateUser(@RequestBody @Valid User user) {
-        return userService.updateProfile(user);
+    UserDto updateUser(@RequestBody @Valid UserDto userDto) {
+        return userService.updateProfile(userDto);
     }
 }

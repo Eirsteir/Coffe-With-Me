@@ -46,7 +46,7 @@ public class CWMException {
             super(message);
         }
     }
-    
+
     public static class EntityException extends RuntimeException {
         public EntityException(String message) {
             super(message);
