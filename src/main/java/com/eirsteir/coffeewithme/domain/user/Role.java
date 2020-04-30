@@ -1,5 +1,7 @@
 package com.eirsteir.coffeewithme.domain.user;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -10,6 +12,8 @@ import javax.persistence.Id;
 import javax.validation.constraints.NotBlank;
 
 @Data
+@Builder
+@AllArgsConstructor
 @NoArgsConstructor
 @Entity
 public class Role {
@@ -20,9 +24,4 @@ public class Role {
 
     @NotBlank(message = "Name may not be blank")
     private String name;
-
-    // TODO: 30.04.2020 remove
-    public Role(String name) {
-        this.name = name;
-    }
 }

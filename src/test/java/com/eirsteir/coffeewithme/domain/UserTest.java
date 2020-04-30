@@ -4,9 +4,9 @@ package com.eirsteir.coffeewithme.domain;
 import com.eirsteir.coffeewithme.domain.user.Role;
 import com.eirsteir.coffeewithme.domain.user.User;
 import com.eirsteir.coffeewithme.testUtils.BlankStringsArgumentsProvider;
+import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.ArgumentsSource;
@@ -29,9 +29,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 @DataJpaTest
 public class UserTest {
 
-    private final String USER_NAME_ALEX = "Alex";
-    private final Role ADMIN_ROLE = new Role("ADMIN");
-
     @Autowired
     private TestEntityManager entityManager;
 
@@ -41,39 +38,44 @@ public class UserTest {
     private User user;
     private Role adminRole;
 
-    @BeforeEach
+    @Before
     public void setUp() {
-        user = new User();
-        user.setUsername(USER_NAME_ALEX);
-        user.setFirstName("Test");
-        user.setLastName("Testesen");
-        user.setPassword("12345678");
-        user.setConfirmPassword("12345678");
-        user.setRoles(new ArrayList<>());
+        user = User.builder()
+                .username("Alex")
+                .emailAddress("alex@email.com")
+                .firstName("alex")
+                .lastName("Testesen")
+                .password("12345678")
+                .confirmPassword("12345678")
+                .phoneNumber("12345678")
+                .roles(new ArrayList<>())
+                .build();
 
-        adminRole = entityManager.persist(ADMIN_ROLE);
+        adminRole = Role.builder()
+                .name("ADMIN")
+                .build();
     }
 
     @Test
-    public void addRole() {
-        user.addRole(adminRole);
-        User savedUser = entityManager.persistFlushFind(user);
+    public void testAddRole() {
+        Role savedAdminRole = entityManager.persistAndFlush(adminRole);
+        user.addRole(savedAdminRole);
+        User updatedUser = entityManager.persistAndFlush(user);
 
-        assertThat(savedUser.getRoles()).hasSize(1);
-        assertThat(savedUser.getRoles()).contains(adminRole);
+        assertThat(updatedUser.getRoles()).hasSize(1);
     }
 
     @Test
-    public void removeRole() {
-        user.addRole(adminRole);
-        User foundUser = entityManager.persistFlushFind(user);
-        foundUser.removeRole(adminRole);
+    public void testRemoveRole() {
+        Role savedAdminRole = entityManager.persistAndFlush(adminRole);
+        user.addRole(savedAdminRole);
+        User updatedUser = entityManager.persistAndFlush(user);
 
-        User updatedUser = entityManager.persistFlushFind(foundUser);
+        updatedUser.removeRole(savedAdminRole);
+        User userWithoutRoles = entityManager.persistFlushFind(user);
 
-        assertThat(updatedUser.getRoles()).isEmpty();
+        assertThat(userWithoutRoles.getRoles()).isEmpty();
     }
-
 
     private static Stream<Arguments> invalidEmailAddressProvider() {
         return Stream.of(
@@ -84,7 +86,7 @@ public class UserTest {
     @ParameterizedTest
     @ArgumentsSource(BlankStringsArgumentsProvider.class)
     @MethodSource("invalidEmailAddressProvider")
-    public void createUserWithInvalidEmail(String invalidInput) throws Exception {
+    public void testCreateUserWithInvalidEmail(String invalidInput) throws Exception {
         thrown.expect(ConstraintViolationException.class);
 
         user.setEmailAddress(invalidInput);
@@ -93,7 +95,7 @@ public class UserTest {
 
     @ParameterizedTest
     @ArgumentsSource(BlankStringsArgumentsProvider.class)
-    public void createUserWithInvalidUsername(String invalidInput) throws ConstraintViolationException {
+    public void testCreateUserWithInvalidUsername(String invalidInput) throws ConstraintViolationException {
         thrown.expect(ConstraintViolationException.class);
 
         user.setUsername(invalidInput);

@@ -14,11 +14,6 @@ import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
-import javax.validation.ConstraintViolation;
-import javax.validation.Validator;
-import java.util.Set;
-
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -32,14 +27,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
         locations = "classpath:application-integrationtest.properties")
 public class UserControllerIntegrationTest {
 
-    private final String USER_NAME_ALEX = "Alex";
-    private static final String EMAIL_ADDRESS_ALEX = "alex@email.com";
-
     @Autowired
     private MockMvc mockMvc;
-
-    @Autowired
-    private Validator validator;
 
     @Autowired
     private UserRepository userRepository;
@@ -67,20 +56,4 @@ public class UserControllerIntegrationTest {
                 .andExpect(jsonPath("$[0].username", is("alex")));
     }
 
-    @Test
-    public void testCreateUserWithNonUniqueUsername() throws Exception {
-
-        User newUser = User.builder()
-                .username(USER_NAME_ALEX)
-                .emailAddress("unique@email.com")
-                .firstName("Test")
-                .lastName("Testesen")
-                .password("12345678")
-                .confirmPassword("12345678")
-                .build();
-
-        Set<ConstraintViolation<User>> violations = validator.validate(newUser);
-        // then
-        assertThat(violations).hasSize(1);
-    }
 }

@@ -38,6 +38,7 @@ public class UserRepositoryTest {
         .lastName("Testesen")
         .password("12345678")
         .confirmPassword("12345678")
+        .phoneNumber("12345678")
         .build();
 
     }
