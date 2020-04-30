@@ -30,12 +30,14 @@ public class UserRepositoryIntegrationTest {
 
     @Before
     public void setUp() {
-        user = new User();
-        user.setUsername(USER_NAME_ALEX);
-        user.setFirstName("Test");
-        user.setLastName("Testesen");
-        user.setPassword("12345678");
-        user.setConfirmPassword("12345678");
+        user = User.builder()
+        .username(USER_NAME_ALEX)
+        .firstName("Test")
+        .lastName("Testesen")
+        .password("12345678")
+        .confirmPassword("12345678")
+        .build();
+
     }
 
     @Test

@@ -21,6 +21,7 @@ public class Role {
     @NotBlank(message = "Name may not be blank")
     private String name;
 
+    // TODO: 30.04.2020 remove
     public Role(String name) {
         this.name = name;
     }

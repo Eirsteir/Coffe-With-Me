@@ -17,6 +17,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -45,21 +46,28 @@ class UserServiceImplIntegrationTest {
 
     private User user;
 
+    List<User> allUsers = new ArrayList<>();
+
     @BeforeEach
     public void setUp() {
-        user = new User();
-        user.setUsername(USER_NAME_ALEX);
-        user.setFirstName("Test");
-        user.setLastName("Testesen");
-        user.setPassword("12345678");
-        user.setConfirmPassword("12345678");
-        user.setRoles(new ArrayList<>());
+        user = User.builder()
+                .username(USER_NAME_ALEX)
+                .firstName("Test")
+                .lastName("Testesen")
+                .password("12345678")
+                .confirmPassword("12345678")
+                .roles(new ArrayList<>())
+                .build();
+
+        allUsers.add(user);
 
         Mockito.when(userRepository.findByUsername(user.getUsername()))
                 .thenReturn(Optional.of(user));
 
         Mockito.when(userRepository.save(Mockito.any(User.class)))
                 .thenReturn(user);
+
+        Mockito.when(userRepository.findAll()).thenReturn(allUsers);
     }
 
     @Test
@@ -75,14 +83,18 @@ class UserServiceImplIntegrationTest {
     @ArgumentsSource(BlankStringsArgumentsProvider.class)
     void testGetUserByUsernameWithInvalidUsernameDoesNotFindUser() {
         Optional<User> foundUser = userService.getUserByUsername(null);
-
         assertThat(foundUser).isEmpty();
     }
 
     @Test
     void testSaveUserReturnsSavedUser() {
         User savedUser = userService.saveUser(user);
-
         assertThat(savedUser.getUsername()).isEqualTo(USER_NAME_ALEX);
+    }
+
+    @Test
+    void testGetAllUsersReturnsAllUsers() {
+        List<User> foundUsers = userService.getAllUsers();
+        assertThat(foundUsers).isEqualTo(allUsers);
     }
 }

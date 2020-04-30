@@ -2,8 +2,7 @@ package com.eirsteir.coffeewithme.domain.user;
 
 
 import com.eirsteir.coffeewithme.domain.CreatedUpdatedDateBaseModel;
-import lombok.Data;
-import lombok.ToString;
+import lombok.*;
 
 import javax.persistence.*;
 import javax.validation.constraints.Email;
@@ -13,6 +12,9 @@ import java.util.List;
 
 
 @Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 @Entity
 public class User extends CreatedUpdatedDateBaseModel {
 

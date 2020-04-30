@@ -4,6 +4,7 @@ package com.eirsteir.coffeewithme.domain.request;
 import com.eirsteir.coffeewithme.domain.user.UserRequestRelation;
 import com.eirsteir.coffeewithme.domain.request.enums.CoffeeRequestStatus;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -11,6 +12,7 @@ import javax.persistence.Id;
 import javax.validation.constraints.NotNull;
 
 @Data
+@NoArgsConstructor
 @Entity
 public class CoffeeRequest extends UserRequestRelation {
 
