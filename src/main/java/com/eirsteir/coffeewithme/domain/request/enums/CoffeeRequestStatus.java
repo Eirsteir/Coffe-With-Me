@@ -1,6 +1,6 @@
-package com.eirsteir.coffeewithme.domain.enums;
+package com.eirsteir.coffeewithme.domain.request.enums;
 
-import com.eirsteir.coffeewithme.domain.RequestStatus;
+import com.eirsteir.coffeewithme.domain.request.RequestStatus;
 
 public enum CoffeeRequestStatus implements RequestStatus {
 
