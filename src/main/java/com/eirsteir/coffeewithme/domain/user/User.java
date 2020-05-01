@@ -11,7 +11,6 @@ import lombok.experimental.Accessors;
 import javax.persistence.*;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
-import java.util.List;
 
 
 @Data
@@ -31,8 +30,6 @@ public class User extends CreatedUpdatedDateBaseModel {
     @NotBlank(message = "Email address may not be blank")
     private String email;
 
-    @NotBlank
-    @Column(unique = true)
     private String username;
 
     @NotBlank
@@ -41,14 +38,4 @@ public class User extends CreatedUpdatedDateBaseModel {
     @NotBlank
     private String mobileNumber;
 
-    @ManyToMany
-    private List<Role> roles;
-
-    public void addRole(Role role) {
-        roles.add(role);
-    }
-
-    public void removeRole(Role role) {
-        roles.remove(role);
-    }
 }

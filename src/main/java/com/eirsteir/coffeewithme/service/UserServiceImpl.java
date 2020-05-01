@@ -37,12 +37,11 @@ public class UserServiceImpl implements UserService {
         Optional<User> user = userRepository.findByEmail(userDto.getEmail());
         if (user.isPresent()) {
             User userModel = user.get();
-            userModel.setUsername(userDto.getUsername())
-                    .setName(userDto.getName())
-                    .setMobileNumber(userDto.getMobileNumber());
+            userModel.setUsername(userDto.getUsername());
 
             return modelMapper.map(userRepository.save(userModel), UserDto.class);
         }
+
         throw CWMException.throwException(USER, ENTITY_NOT_FOUND, userDto.getEmail());
     }
 

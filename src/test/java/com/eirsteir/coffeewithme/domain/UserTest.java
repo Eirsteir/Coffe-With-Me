@@ -1,7 +1,6 @@
 package com.eirsteir.coffeewithme.domain;
 
 
-import com.eirsteir.coffeewithme.domain.user.Role;
 import com.eirsteir.coffeewithme.domain.user.User;
 import org.junit.Before;
 import org.junit.Rule;
