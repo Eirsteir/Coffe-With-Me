@@ -8,6 +8,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.TestConfiguration;
@@ -40,16 +41,20 @@ class UserServiceImplTest {
     }
 
     @Autowired
+    private ModelMapper modelMapper;
+
+    @Autowired
     private UserService userService;
 
     @MockBean
     private UserRepository userRepository;
 
+    private User user;
     private UserDto userDto;
 
     @BeforeEach
     public void setUp() {
-        User user = User.builder()
+        user = User.builder()
                 .email(EMAIL_ALEX)
                 .name(NAME_ALEX)
                 .mobileNumber(MOBILE_NUMBER_ALEX)
@@ -60,7 +65,6 @@ class UserServiceImplTest {
                 .name(NAME_ALEX)
                 .mobileNumber(MOBILE_NUMBER_ALEX)
                 .build();
-
 
         Mockito.when(userRepository.findByEmail(EMAIL_ALEX))
                 .thenReturn(Optional.of(user));
@@ -85,10 +89,29 @@ class UserServiceImplTest {
     }
 
     @Test
-    void testSignUpReturnsSavedUserDto() {
-        UserDto signedUpUserDto = userService.signUp(userDto);
+    void testLoginOrSignUpWhenSignUpReturnsSavedUserDto() {
+        String newUserEmail = "not.saved@email.com";
+        User newUser = User.builder()
+                .email(newUserEmail)
+                .name("irrelevant")
+                .mobileNumber("12345678")
+                .build();
 
-        assertThat(signedUpUserDto.getEmail()).isEqualTo(EMAIL_ALEX);
+        Mockito.when(userRepository.findByEmail(newUserEmail))
+                .thenReturn(Optional.empty());
+        Mockito.when(userRepository.save(Mockito.any(User.class)))
+                .thenReturn(newUser);
+
+        UserDto signedUpUserDto = userService.loginOrSignUp(modelMapper.map(newUser, UserDto.class));
+
+        assertThat(signedUpUserDto.getEmail()).isEqualTo(newUserEmail);
+    }
+
+    @Test
+    void testLoginOrSignUpWhenLoginReturnsSavedUserDto() {
+        UserDto loggedInUserDto = userService.loginOrSignUp(userDto);
+
+        assertThat(loggedInUserDto.getEmail()).isEqualTo(EMAIL_ALEX);
     }
 
     @Test

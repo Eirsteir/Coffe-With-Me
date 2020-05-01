@@ -23,9 +23,14 @@ public class UserServiceImpl implements UserService {
     private ModelMapper modelMapper;
 
     @Override
-    public UserDto signUp(UserDto userDto) {
-        User user = userRepository.save(modelMapper.map(userDto, User.class));
-        return modelMapper.map(user, UserDto.class);
+    public UserDto loginOrSignUp(UserDto userDto) {
+        Optional<User> user = userRepository.findByEmail(userDto.getEmail());
+
+        if (user.isPresent())
+            return modelMapper.map(user.get(), UserDto.class);
+
+        User savedUser = userRepository.save(modelMapper.map(userDto, User.class));
+        return modelMapper.map(savedUser, UserDto.class);
     }
 
     @Override

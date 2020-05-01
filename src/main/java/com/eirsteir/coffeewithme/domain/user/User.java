@@ -9,8 +9,6 @@ import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
 
 import javax.persistence.*;
-import javax.validation.constraints.Email;
-import javax.validation.constraints.NotBlank;
 
 
 @Data
@@ -25,17 +23,13 @@ public class User extends CreatedUpdatedDateBaseModel {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    @Email
     @Column(unique = true)
-    @NotBlank(message = "Email address may not be blank")
     private String email;
 
     private String username;
 
-    @NotBlank
     private String name;
 
-    @NotBlank
     private String mobileNumber;
 
 }
