@@ -1,12 +1,11 @@
 package com.eirsteir.coffeewithme.service;
 
 import com.eirsteir.coffeewithme.domain.user.User;
+import com.eirsteir.coffeewithme.dto.UserDto;
+import com.eirsteir.coffeewithme.exception.CWMException;
 import com.eirsteir.coffeewithme.repository.UserRepository;
-import com.eirsteir.coffeewithme.testUtils.BlankStringsArgumentsProvider;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.ArgumentsSource;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,20 +15,20 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 
 @SpringBootTest
 @RunWith(SpringRunner.class)
 class UserServiceImplTest {
 
-    public static final String USERNAME_ALEX = "alex";
     public static final String EMAIL_ALEX = "alex@email.com";
-    public static final String PASSWORD_ALEX = "12345678";
+    public static final String USERNAME_ALEX = "alex";
+    public static final String NAME_ALEX = "Alex";
+    public static final String MOBILE_NUMBER_ALEX = "12345678";
 
     @TestConfiguration
     static class UserServiceImplTestContextConfiguration {
@@ -40,66 +39,77 @@ class UserServiceImplTest {
         }
     }
 
-    private static final String USER_NAME_ALEX = "Alex";
-
     @Autowired
     private UserService userService;
 
     @MockBean
     private UserRepository userRepository;
 
-    private User user;
-    List<User> allUsers = new ArrayList<>();
+    private UserDto userDto;
 
     @BeforeEach
     public void setUp() {
-        user = User.builder()
-                .username(USER_NAME_ALEX)
-                .roles(new ArrayList<>())
+        User user = User.builder()
+                .email(EMAIL_ALEX)
+                .name(NAME_ALEX)
+                .mobileNumber(MOBILE_NUMBER_ALEX)
                 .build();
 
-        allUsers.add(user);
+        userDto = UserDto.builder()
+                .email(EMAIL_ALEX)
+                .name(NAME_ALEX)
+                .mobileNumber(MOBILE_NUMBER_ALEX)
+                .build();
 
-        Mockito.when(userRepository.findByEmail(user.getEmail()))
+
+        Mockito.when(userRepository.findByEmail(EMAIL_ALEX))
                 .thenReturn(Optional.of(user));
 
         Mockito.when(userRepository.save(Mockito.any(User.class)))
                 .thenReturn(user);
-
-        Mockito.when(userRepository.findAll()).thenReturn(allUsers);
     }
 
     @Test
-    void testGetUserByUsernameWithValidUsernameShouldFindUser() {
-        Optional<User> foundUser = userService.findUserByUsername(USER_NAME_ALEX);
+    void testFindUserByEmailWhenFoundReturnsUserDto() {
+        UserDto foundUserDto = userService.findUserByEmail(EMAIL_ALEX);
 
-        assertThat(foundUser).isPresent();
-        assertThat(USER_NAME_ALEX).isEqualTo(foundUser.get().getUsername());
+        assertThat(foundUserDto.getEmail()).isEqualTo(EMAIL_ALEX);
     }
 
 
-    @ParameterizedTest
-    @ArgumentsSource(BlankStringsArgumentsProvider.class)
-    void testGetUserByUsernameWithInvalidUsernameDoesNotFindUser() {
-        Optional<User> foundUser = userService.findUserByUsername(null);
-        assertThat(foundUser).isEmpty();
+    @Test
+    void testFindUserByEmailNotFound() {
+        assertThatExceptionOfType(CWMException.EntityNotFoundException.class)
+                .isThrownBy(() -> userService.findUserByEmail("not.found@email.com"))
+                .withMessage("Requested user with email - not.found@email.com does not exist.");
     }
 
     @Test
-    void testSaveUserReturnsSavedUser() {
-        User savedUser = userService.saveUser(newUserForm);
-        assertThat(savedUser.getUsername()).isEqualTo(USER_NAME_ALEX);
+    void testSignUpReturnsSavedUserDto() {
+        UserDto signedUpUserDto = userService.signUp(userDto);
+
+        assertThat(signedUpUserDto.getEmail()).isEqualTo(EMAIL_ALEX);
     }
 
     @Test
-    void testGetAllUsersReturnsAllUsers() {
-        List<User> foundUsers = userService.getAllUsers();
-        assertThat(foundUsers).isEqualTo(allUsers);
+    void testUpdateProfileUserReturnsUpdatedUserDyo() {
+        UserDto updateProfileRequestDto = UserDto.builder()
+                .username(USERNAME_ALEX)
+                .build();
+
+        UserDto updatedUserDto = userService.updateProfile(updateProfileRequestDto);
+
+        assertThat(updatedUserDto.getUsername()).isEqualTo(USERNAME_ALEX);
     }
 
     @Test
-    void testUpdateUserReturnsUpdatedUser() {
-        User savedUser = userService.updateProfile(user);
-        assertThat(savedUser.getUsername()).isEqualTo(USER_NAME_ALEX);
+    void testUpdateProfileWhenUserNotFound() {
+        UserDto updateProfileRequestDto = UserDto.builder()
+                .email("not.found@email.com")
+                .username(USERNAME_ALEX)
+                .build();
+        assertThatExceptionOfType(CWMException.EntityNotFoundException.class)
+                .isThrownBy(() -> userService.updateProfile(updateProfileRequestDto))
+                .withMessage("Requested user with email - not.found@email.com does not exist.");
     }
 }
