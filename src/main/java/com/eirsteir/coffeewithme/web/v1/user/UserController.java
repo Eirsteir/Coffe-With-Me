@@ -1,4 +1,4 @@
-package com.eirsteir.coffeewithme.web.v1;
+package com.eirsteir.coffeewithme.web.v1.user;
 
 
 import com.eirsteir.coffeewithme.dto.UserDto;
@@ -8,11 +8,10 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.SwaggerDefinition;
 import io.swagger.annotations.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.List;
 
 @RestController
 @RequestMapping("api/v1/users")
@@ -26,14 +25,8 @@ public class UserController {
     private UserService userService;
 
     @GetMapping
-    UserDto login(@AuthenticationPrincipal OAuth2User principal) {
-        System.out.println(principal);
-        UserDto userDto = UserDto.builder()
-                .email(principal.getAttribute("email"))
-                .name(principal.getAttribute("name"))
-                .build();
-
-        return userService.loginOrSignUp(userDto);
+    List<UserDto> allUsers() {
+        return userService.findAll();
     }
 
     @PutMapping

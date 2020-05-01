@@ -2,11 +2,15 @@ package com.eirsteir.coffeewithme.service;
 
 import com.eirsteir.coffeewithme.dto.UserDto;
 
+import java.util.List;
+
 public interface UserService {
 
-    UserDto loginOrSignUp(UserDto userDto);
+    String signUp(UserDto user);
 
     UserDto findUserByEmail(String email);
 
     UserDto updateProfile(UserDto userDto);
+
+    List<UserDto> findAll();
 }

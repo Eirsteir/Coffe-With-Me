@@ -3,24 +3,65 @@
 <head>
     <meta charset="utf-8"/>
     <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
-    <title>Dashboard</title>
+    <title>Demo</title>
     <meta name="description" content=""/>
     <meta name="viewport" content="width=device-width"/>
-    <base href="/"/>
+    <base href="/api/v1/auth/login"/>
     <link rel="stylesheet" type="text/css" href="/webjars/bootstrap/css/bootstrap.min.css"/>
     <script type="text/javascript" src="/webjars/jquery/jquery.min.js"></script>
     <script type="text/javascript" src="/webjars/bootstrap/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="/webjars/js-cookie/js.cookie.js"></script>
 </head>
 <body>
 <div class="container">
-    <h1>Welcome !</h1>
-            <div>
-                <p><a href="/oauth2/authorization/google"><img src="http://pngimg.com/uploads/google/google_PNG19635.png" style="height:60px"></a></p>
+    <h1>SignUp !</h1>
+    <div class="col-md-6">
+        <div class="row">
+            <p><a href="https://localhost:8080/oauth2/authorization/google"><img src="http://pngimg.com/uploads/google/google_PNG19635.png" style="height:60px"></a></p>
+        </div>
+        <div class="row">
+            <h4>OR</h4>
+            <div class="row">
+                <form action="https://localhost:8080/api/v1/auth/signup/" method="POST" id="signup">
+                    <div class="form-group">
+                        <label for="name">Name</label>
+                        <input type="name" class="form-control" id="name" name="name">
+                    </div>
+                    <div class="form-group">
+                        <label for="email">Email address:</label>
+                        <input type="email" class="form-control" id="email" name="email">
+                    </div>
+                    <div class="form-group">
+                        <label for="pwd">Password:</label>
+                        <input type="password" class="form-control" id="pwd" name="password">
+                    </div>
+                   <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
+                    <button type="submit" class="btn btn-primary">Sign Up</button>
+                </form>
             </div>
+                <div class="container authenticated" style="display:none">
+                    Logged in as: <span id="user"></span>
+                    <div>
+                        <button onClick="logout()" class="btn btn-primary">Logout</button>
+                    </div>
+                </div>
+                <div class="container text-danger error"></div>
+                <div id="results" class="container"></div>
+        </div>
+    </div>
 </div>
+    <script>
+        var logout = function() {
+            $.post("/logout", function() {
+                $("#user").html('');
+                $(".unauthenticated").show();
+                $(".authenticated").hide();
+            })
+            return true;
+        }
+    </script>
 </body>
 </html>
-
 
 <!--<!doctype html>-->
 <!--<html lang="en">-->

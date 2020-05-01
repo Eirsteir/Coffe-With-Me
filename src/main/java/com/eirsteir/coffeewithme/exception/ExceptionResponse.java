@@ -1,4 +1,4 @@
-package com.eirsteir.coffeewithme.web.v1;
+package com.eirsteir.coffeewithme.exception;
 
 import java.util.Date;
 

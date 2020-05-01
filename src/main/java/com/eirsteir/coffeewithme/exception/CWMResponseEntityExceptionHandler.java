@@ -1,6 +1,5 @@
 package com.eirsteir.coffeewithme.exception;
 
-import com.eirsteir.coffeewithme.web.v1.ExceptionResponse;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,7 +14,7 @@ import java.util.Date;
 
 @ControllerAdvice
 @RestController
-public class CWMCustomResponseEntityExceptionHandler extends ResponseEntityExceptionHandler {
+public class CWMResponseEntityExceptionHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(Exception.class)
     public final ResponseEntity<Object> handleAllException(Exception ex, WebRequest request) {

@@ -26,16 +26,14 @@ public class User extends CreatedUpdatedDateBaseModel {
     @Column(unique = true)
     private String email;
 
-    @Column
     private String username;
 
-    @Column
+    private String password;
+
     private String name;
 
-    @Column
     private String mobileNumber;
 
-    @Column
     private UserType userType;
 
 }

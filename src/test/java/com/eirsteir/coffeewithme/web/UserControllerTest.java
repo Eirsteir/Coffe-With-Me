@@ -2,11 +2,10 @@ package com.eirsteir.coffeewithme.web;
 
 import com.eirsteir.coffeewithme.dto.UserDto;
 import com.eirsteir.coffeewithme.service.UserService;
-import com.eirsteir.coffeewithme.web.v1.UserController;
+import com.eirsteir.coffeewithme.web.v1.user.UserController;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
-import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -55,11 +54,11 @@ class UserControllerTest {
                 .name(NAME_ALEX)
                 .build();
 
-        Mockito.when(userService.loginOrSignUp(Mockito.any(UserDto.class)))
-                .thenReturn(userDto);
-
-        Mockito.when(userService.updateProfile(Mockito.any(UserDto.class)))
-                .thenReturn(userDto);
+//        Mockito.when(userService.loginOrSignUp(Mockito.any(UserDto.class)))
+//                .thenReturn(userDto);
+//
+//        Mockito.when(userService.updateProfile(Mockito.any(UserDto.class)))
+//                .thenReturn(userDto);
     }
 
     @Test
