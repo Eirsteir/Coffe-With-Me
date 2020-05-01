@@ -95,6 +95,7 @@ class UserServiceImplTest {
     void testUpdateProfileUserReturnsUpdatedUserDyo() {
         UserDto updateProfileRequestDto = UserDto.builder()
                 .username(USERNAME_ALEX)
+                .email(EMAIL_ALEX)
                 .build();
 
         UserDto updatedUserDto = userService.updateProfile(updateProfileRequestDto);

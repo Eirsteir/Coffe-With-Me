@@ -24,12 +24,17 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDto signUp(UserDto userDto) {
-        return null;
+        User user = userRepository.save(modelMapper.map(userDto, User.class));
+        return modelMapper.map(user, UserDto.class);
     }
 
     @Override
     public UserDto findUserByEmail(String email) {
-        return null;
+        Optional<User> user = userRepository.findByEmail(email);
+        if (user.isPresent())
+            return modelMapper.map(user.get(), UserDto.class);
+
+        throw CWMException.throwException(USER, ENTITY_NOT_FOUND, email);
     }
 
     @Override
