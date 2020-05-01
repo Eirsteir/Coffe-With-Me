@@ -1,15 +1,14 @@
 package com.eirsteir.coffeewithme.dto;
 
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
 import lombok.experimental.Accessors;
 
 @Getter
 @Setter
+@Builder
 @Accessors(chain = true)
 @NoArgsConstructor
+@AllArgsConstructor
 @ToString
 public class UserDto {
 

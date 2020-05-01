@@ -10,5 +10,4 @@ public interface UserService {
 
     UserDto updateProfile(UserDto userDto);
 
-    UserDto changePassword(UserDto userDto, String newPassword);
 }

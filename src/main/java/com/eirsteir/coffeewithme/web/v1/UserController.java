@@ -22,7 +22,7 @@ import java.util.Map;
 @SwaggerDefinition(tags = {
         @Tag(name = "Swagger Resource", description = "User management operations for this application")
 })
-class UserController {
+public class UserController {
 
     @Autowired
     private UserService userService;

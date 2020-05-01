@@ -45,9 +45,4 @@ public class UserServiceImpl implements UserService {
         throw CWMException.throwException(USER, ENTITY_NOT_FOUND, userDto.getEmail());
     }
 
-    @Override
-    public UserDto changePassword(UserDto userDto, String newPassword) {
-        return null;
-    }
-
 }
