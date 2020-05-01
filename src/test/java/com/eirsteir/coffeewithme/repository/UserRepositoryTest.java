@@ -19,7 +19,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class UserRepositoryTest {
 
     private final String USER_NAME_ALEX = "Alex";
-    private static final String EMAIL_ADDRESS_ALEX = "alex@mail.com";
+    private static final String EMAIL_ALEX = "alex@mail.com";
 
     @Autowired
     private TestEntityManager entityManager;
@@ -32,24 +32,25 @@ public class UserRepositoryTest {
     @Before
     public void setUp() {
         user = User.builder()
-            .username(USER_NAME_ALEX)
-            .email(EMAIL_ADDRESS_ALEX)
-            .password("12345678")
-            .build();
+                .username(USER_NAME_ALEX)
+                .email(EMAIL_ALEX)
+                .name("Alex")
+                .mobileNumber("12345678")
+                .build();
     }
 
     @Test
-    public void testFindByUsernameReturnsOptionalUser() {
+    public void testFindByEmailReturnsOptionalUser() {
         entityManager.persistAndFlush(user);
-        Optional<User> foundUser = userRepository.findByUsername(USER_NAME_ALEX);
+        Optional<User> foundUser = userRepository.findByEmail(EMAIL_ALEX);
 
         assertThat(foundUser).isPresent();
-        assertThat(foundUser.get().getUsername()).isEqualTo(user.getUsername());
+        assertThat(foundUser.get().getEmail()).isEqualTo(EMAIL_ALEX);
     }
 
     @Test
-    public void givenEmptyDBWhenFindByUsernameThenReturnEmptyOptional() {
-        Optional<User> foundUser = userRepository.findByUsername(USER_NAME_ALEX);
+    public void testFindByEmailNotFoundReturnEmptyOptional() {
+        Optional<User> foundUser = userRepository.findByEmail(EMAIL_ALEX);
 
         assertThat(foundUser).isEmpty();
     }
