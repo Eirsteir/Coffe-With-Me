@@ -39,7 +39,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         // @formatter:on
     }
 
-    // TODO: 30.04.2020 check this
     @Override
     public void configure(WebSecurity web) throws Exception {
         web.ignoring().antMatchers(

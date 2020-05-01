@@ -1,6 +1,5 @@
 package com.eirsteir.coffeewithme.util;
 
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
@@ -28,13 +27,8 @@ public class OAuthUtils {
 
         return new DefaultOAuth2User(authorities, attributes, "sub");
     }
-    private OAuth2AuthenticationToken createToken() {
-        Set<GrantedAuthority> authorities = new HashSet<>(AuthorityUtils.createAuthorityList("USER"));
-        OAuth2User oAuth2User = new DefaultOAuth2User(authorities, Collections.singletonMap("name", "rob"), "name");
-        return new OAuth2AuthenticationToken(oAuth2User, authorities, "login-client");
-    }
 
-    public static Authentication getOauthAuthenticationFor(OAuth2User principal) {
+    public static OAuth2AuthenticationToken getAuthenticationTokenFor(OAuth2User principal) {
 
         Collection<? extends GrantedAuthority> authorities = principal.getAuthorities();
 

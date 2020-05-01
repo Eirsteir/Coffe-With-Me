@@ -11,15 +11,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository;
+import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
 import static com.eirsteir.coffeewithme.util.JSONUtils.asJsonString;
 import static com.eirsteir.coffeewithme.util.OAuthUtils.createOAuth2User;
-import static com.eirsteir.coffeewithme.util.OAuthUtils.getOauthAuthenticationFor;
+import static com.eirsteir.coffeewithme.util.OAuthUtils.getAuthenticationTokenFor;
 import static org.hamcrest.Matchers.is;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.authentication;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -39,19 +38,16 @@ class UserControllerTest {
     private MockMvc mockMvc;
 
     @MockBean
-    private ClientRegistrationRepository clientRegistrationRepository;
-
-    @MockBean
     private UserService userService;
 
     private UserDto userDto;
     private OAuth2User principal;
-    private Authentication authenticationToken;
+    private OAuth2AuthenticationToken authenticationToken;
 
     @BeforeEach
     public void setup() {
         principal = createOAuth2User(NAME_ALEX, EMAIL_ALEX);
-        authenticationToken = getOauthAuthenticationFor(principal);
+        authenticationToken = getAuthenticationTokenFor(principal);
 
         userDto = UserDto.builder()
                 .username("alex")
@@ -65,7 +61,6 @@ class UserControllerTest {
         Mockito.when(userService.updateProfile(Mockito.any(UserDto.class)))
                 .thenReturn(userDto);
     }
-
 
     @Test
     void testLoginAuthenticated() throws Exception {
@@ -90,12 +85,11 @@ class UserControllerTest {
     void testUpdateProfileReturnsUpdatedUserDto() throws Exception {
        userDto.setUsername(USERNAME_ALEX);
 
-        mockMvc.perform(put("/users")
+        mockMvc.perform(put("/api/v1/users")
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content(asJsonString(userDto))
                                 .with(authentication(authenticationToken)))
                 .andExpect(status().isOk());
-
     }
 
 }
