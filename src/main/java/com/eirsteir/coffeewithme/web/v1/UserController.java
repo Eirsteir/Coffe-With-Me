@@ -13,8 +13,6 @@ import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.util.Collections;
-import java.util.Map;
 
 @RestController
 @RequestMapping("api/v1/users")
@@ -28,9 +26,14 @@ public class UserController {
     private UserService userService;
 
     @GetMapping
-    Map<String, Object> signUp(@AuthenticationPrincipal OAuth2User principal) {
+    UserDto login(@AuthenticationPrincipal OAuth2User principal) {
+        System.out.println(principal);
+        UserDto userDto = UserDto.builder()
+                .email(principal.getAttribute("email"))
+                .name(principal.getAttribute("name"))
+                .build();
 
-        return Collections.singletonMap("name", principal.getAttribute("name")); // email, sub - id
+        return userService.loginOrSignUp(userDto);
     }
 
     @PutMapping

@@ -1,4 +1,4 @@
-package com.eirsteir.coffeewithme.testUtils;
+package com.eirsteir.coffeewithme.util;
 
 import org.junit.jupiter.api.extension.ExtensionContext;
 import org.junit.jupiter.params.provider.Arguments;
