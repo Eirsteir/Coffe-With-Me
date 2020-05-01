@@ -30,7 +30,7 @@
 
 </div>
 <script type="text/javascript">
-    $.get("/users", function(data) {
+    $.get("api/v1/users", function(data) {
         $("#user").html(data.name);
         $(".unauthenticated").hide()
         $(".authenticated").show()
