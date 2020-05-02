@@ -23,3 +23,9 @@ zuul:
     coffee:
       url: http://localhost:9100
       sensitive-headers:
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: httptrace

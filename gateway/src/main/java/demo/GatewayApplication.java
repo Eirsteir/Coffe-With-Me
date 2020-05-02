@@ -26,17 +26,17 @@ import org.springframework.web.bind.annotation.ResponseBody;
 @EnableZuulProxy
 public class GatewayApplication {
 
+  public static void main(String[] args) {
+    SpringApplication.run(GatewayApplication.class, args);
+  }
+
   @RequestMapping("/user")
   @ResponseBody
   public Map<String, Object> user(Principal user) {
-    Map<String, Object> map = new LinkedHashMap<String, Object>();
+    Map<String, Object> map = new LinkedHashMap<>();
     map.put("name", user.getName());
     map.put("roles", AuthorityUtils.authorityListToSet(((Authentication) user).getAuthorities()));
     return map;
-  }
-
-  public static void main(String[] args) {
-    SpringApplication.run(GatewayApplication.class, args);
   }
 
   @Configuration
@@ -46,6 +46,7 @@ public class GatewayApplication {
     @Autowired
     public void globalUserDetails(AuthenticationManagerBuilder auth) throws Exception {
       // @formatter:off
+      // TODO: 02.05.2020 change from in memory authentication?
 			auth.inMemoryAuthentication()
 				.withUser("user").password("password").roles("USER")
 			.and()

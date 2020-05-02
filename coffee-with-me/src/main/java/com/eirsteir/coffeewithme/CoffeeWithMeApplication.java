@@ -1,18 +1,27 @@
 package com.eirsteir.coffeewithme;
 
 import org.springframework.boot.SpringApplication;
-import org.springframework.boot.actuate.trace.TraceProperties;
-import org.springframework.boot.actuate.trace.TraceRepository;
-import org.springframework.boot.actuate.trace.WebRequestTraceFilter;
+
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.security.SecurityProperties;
-import org.springframework.boot.autoconfigure.web.ErrorAttributes;
+import org.springframework.boot.web.servlet.error.ErrorAttributes;
 import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.security.Principal;
+import java.util.LinkedHashMap;
+import java.util.Map;
+
+import static org.springframework.security.config.http.SessionCreationPolicy.NEVER;
 
 @SpringBootApplication
 @RestController
@@ -29,18 +38,7 @@ public class CoffeeWithMeApplication extends WebSecurityConfigurerAdapter {
                 .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse());
         http.authorizeRequests().antMatchers(HttpMethod.POST, "/**").hasRole("WRITER")
                 .anyRequest().authenticated();
-    }
-
-    @Bean
-    public WebRequestTraceFilter webRequestLoggingFilter(ErrorAttributes errorAttributes,
-                                                         TraceRepository traceRepository, TraceProperties traceProperties) {
-        WebRequestTraceFilter filter = new WebRequestTraceFilter(traceRepository,
-                                                                 traceProperties);
-        if (errorAttributes != null) {
-            filter.setErrorAttributes(errorAttributes);
-        }
-        filter.setOrder(SecurityProperties.DEFAULT_FILTER_ORDER - 1);
-        return filter;
+        http.sessionManagement().sessionCreationPolicy(NEVER);
     }
 
 }
