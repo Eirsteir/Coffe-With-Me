@@ -1,4 +1,11 @@
-redis:
-  image: redis
-  ports:
-    - "6379:6379"
+version: '3'
+services:
+  h2:
+    image: 1000kit/h2
+    ports:
+      - "8181:8181"
+      - "1521:1521"
+  redis:
+    image: redis
+    ports:
+      - "6379:6379"
