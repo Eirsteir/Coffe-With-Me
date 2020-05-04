@@ -9,13 +9,12 @@ import lombok.experimental.Accessors;
 
 import javax.persistence.*;
 import java.util.Date;
-import java.util.Set;
 
 @Data
 @Builder
 @Accessors(chain = true)
-@AllArgsConstructor
 @NoArgsConstructor
+@AllArgsConstructor
 @Entity
 public class User {
 

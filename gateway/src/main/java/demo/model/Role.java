@@ -4,11 +4,13 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.experimental.Accessors;
 
 import javax.persistence.*;
 
 @Data
 @Builder
+@Accessors(chain = true)
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
@@ -20,4 +22,5 @@ public class Role {
 
   @Column(unique = true)
   private String role;
+
 }

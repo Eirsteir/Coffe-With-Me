@@ -2,6 +2,7 @@ package demo.security;
 
 import demo.model.User;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.ToString;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -11,6 +12,7 @@ import java.util.*;
 
 @Getter
 @ToString
+@NoArgsConstructor
 public class CMEUserPrincipal implements UserDetails {
 
   private User user;
