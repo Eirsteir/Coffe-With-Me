@@ -13,7 +13,7 @@
 		<module>ui</module>
 		<module>resource</module>
 		<module>admin</module>
-		<module>service</module>
+		<module>api</module>
 	</modules>
 
 </project>

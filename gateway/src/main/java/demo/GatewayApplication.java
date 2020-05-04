@@ -46,6 +46,7 @@ public class GatewayApplication {
     @Autowired
     public void globalUserDetails(AuthenticationManagerBuilder auth) throws Exception {
       // @formatter:off
+//      auth.userDetailsService()
       // TODO: 02.05.2020 change from in memory authentication?
 			auth.inMemoryAuthentication()
 				.withUser("user").password("password").roles("USER")
