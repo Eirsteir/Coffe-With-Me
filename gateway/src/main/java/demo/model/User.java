@@ -1,8 +1,21 @@
 package demo.model;
 
 
-import javax.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.experimental.Accessors;
 
+import javax.persistence.*;
+import java.util.Date;
+import java.util.Set;
+
+@Data
+@Builder
+@Accessors(chain = true)
+@AllArgsConstructor
+@NoArgsConstructor
 @Entity
 public class User {
 
@@ -17,5 +30,15 @@ public class User {
   private String email;
 
   private String password;
+
+  private Date lastLogin;
+
+  private Boolean enabled = true;
+
+  private Boolean accountExpired = false;
+
+  private Boolean accountLocked = false;
+
+  private Boolean credentialsExpired = false;
 
 }
