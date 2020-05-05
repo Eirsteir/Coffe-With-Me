@@ -1,13 +1,11 @@
-# TODO: Consider integrating this in a better way with the existing Dockerfile
-tests:
-  image: maven:3
-  stop_signal: SIGKILL
-  stdin_open: true
-  tty: true
-  working_dir: /workspace/app
-  volumes:
-    - ./:/workspace/app
-    - /var/run/docker.sock:/var/run/docker.sock
-    # Maven cache (optional)
-    - ~/.m2:/root/.m2
-  command: mvn test
+version: '3'
+services:
+  h2:
+    image: 1000kit/h2
+    ports:
+      - "8181:8181"
+      - "1521:1521"
+  redis:
+    image: redis
+    ports:
+      - "6379:6379"

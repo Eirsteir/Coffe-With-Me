@@ -1,4 +1,4 @@
-package com.eirsteir.coffeewithme.web.v1.request;
+package com.eirsteir.coffeewithme.web.request;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Getter;
@@ -16,13 +16,15 @@ import javax.validation.constraints.NotBlank;
 @Accessors(chain = true)
 @NoArgsConstructor
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class UpdateProfileRequest {
+public class SignUpRequest {
 
-    @Email
-    @NotBlank
+    @Email(message = "Must be a well formed email.")
+    @NotBlank(message = "Email cannot be blank.")
     private String email;
 
-    @NotBlank
-    private String username;
+    @NotBlank(message = "Password cannot be blank.")
+    private String password;
 
+    @NotBlank(message = "Name cannot be blank.")
+    private String name;
 }

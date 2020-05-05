@@ -1,8 +1,8 @@
-package com.eirsteir.coffeewithme.web.v1.auth;
+package com.eirsteir.coffeewithme.web.auth;
 
 import com.eirsteir.coffeewithme.dto.UserDto;
 import com.eirsteir.coffeewithme.service.UserService;
-import com.eirsteir.coffeewithme.web.v1.request.SignUpRequest;
+import com.eirsteir.coffeewithme.web.request.SignUpRequest;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.validation.Valid;
 
 @RestController
-@RequestMapping("api/v1/auth")
+@RequestMapping("/api")
 public class AuthController {
 
     @Autowired
@@ -22,13 +22,9 @@ public class AuthController {
     @Autowired
     private ModelMapper modelMapper;
 
-//    @GetMapping("/login")
-//    public String loadLoginPage(){
-//        return "login";
-//    }
 
     @PostMapping("/signup")
-    public String signUp(@RequestBody @Valid SignUpRequest signUpRequest){
+    public UserDto signUp(@RequestBody @Valid SignUpRequest signUpRequest){
         return userService.signUp(modelMapper.map(signUpRequest, UserDto.class));
     }
 

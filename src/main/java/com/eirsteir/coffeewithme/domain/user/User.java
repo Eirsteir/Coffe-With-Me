@@ -9,6 +9,9 @@ import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
 
 import javax.persistence.*;
+import java.io.Serializable;
+import java.util.Collection;
+import java.util.Date;
 
 
 @Data
@@ -17,7 +20,7 @@ import javax.persistence.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-public class User extends CreatedUpdatedDateBaseModel {
+public class User extends CreatedUpdatedDateBaseModel  implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -35,5 +38,23 @@ public class User extends CreatedUpdatedDateBaseModel {
     private String mobileNumber;
 
     private UserType userType;
+
+    private Date lastLogin;
+
+    @Builder.Default
+    private Boolean enabled = true;
+
+    @Builder.Default
+    private Boolean accountExpired = false;
+
+    @Builder.Default
+    private Boolean accountLocked = false;
+
+    @Builder.Default
+    private Boolean credentialsExpired = false;
+
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(name = "users_roles", joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"), inverseJoinColumns = @JoinColumn(name = "role_id", referencedColumnName = "id"))
+    private Collection<Role> roles;
 
 }

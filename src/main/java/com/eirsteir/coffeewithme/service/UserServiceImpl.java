@@ -5,15 +5,12 @@ import com.eirsteir.coffeewithme.dto.UserDto;
 import com.eirsteir.coffeewithme.exception.CWMException;
 import com.eirsteir.coffeewithme.exception.ExceptionType;
 import com.eirsteir.coffeewithme.repository.UserRepository;
-import com.eirsteir.coffeewithme.security.JwtTokenUtil;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import static com.eirsteir.coffeewithme.exception.EntityType.USER;
 import static com.eirsteir.coffeewithme.exception.ExceptionType.ENTITY_NOT_FOUND;
@@ -28,10 +25,11 @@ public class UserServiceImpl implements UserService {
     private ModelMapper modelMapper;
 
     @Autowired
-    private BCryptPasswordEncoder bcryptEncoder;
+    private BCryptPasswordEncoder bCryptPasswordEncoder;
+
 
     @Override
-    public String signUp(UserDto userDto) {
+    public UserDto signUp(UserDto userDto) {
         System.out.println(userDto);
         Optional<User> user = userRepository.findByEmail(userDto.getEmail());
 
@@ -40,10 +38,10 @@ public class UserServiceImpl implements UserService {
                     USER, ExceptionType.DUPLICATE_ENTITY, userDto.getEmail());
 
         User userModel = modelMapper.map(userDto, User.class);
-        userModel.setPassword(bcryptEncoder.encode(userModel.getPassword()));
-        userRepository.save(userModel);
+        userModel.setPassword(bCryptPasswordEncoder.encode(userModel.getPassword()));
+        User signedUpUser = userRepository.save(userModel);
 
-        return JwtTokenUtil.generateToken(userModel);
+        return modelMapper.map(signedUpUser, UserDto.class);
     }
 
     @Override
@@ -64,11 +62,4 @@ public class UserServiceImpl implements UserService {
         return modelMapper.map(userRepository.save(userModel), UserDto.class);
     }
 
-    @Override
-    public List<UserDto> findAll() {
-        return userRepository.findAll()
-                .stream()
-                .map(user -> modelMapper.map(user, UserDto.class))
-                .collect(Collectors.toList());
-    }
 }
