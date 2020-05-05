@@ -12,7 +12,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
   User findByEmail(String email);
 
-  @Query("UPDATE AppUser u SET u.lastLogin=:lastLogin WHERE u.email = ?#{ principal?.email }")
+  @Query("UPDATE User u SET u.lastLogin=:lastLogin WHERE u.email = ?#{ principal?.username }")
   @Modifying
   @Transactional
   void updateLastLogin(@Param("lastLogin") Date lastLogin);

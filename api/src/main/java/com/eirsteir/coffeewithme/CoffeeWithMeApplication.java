@@ -31,6 +31,7 @@ public class CoffeeWithMeApplication extends WebSecurityConfigurerAdapter {
         SpringApplication.run(CoffeeWithMeApplication.class, args);
     }
 
+    // TODO: 05.05.2020 should not only be writers?
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         // We need this to prevent the browser from popping up a dialog on a 401

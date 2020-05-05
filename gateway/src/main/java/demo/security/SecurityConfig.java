@@ -19,7 +19,7 @@ import javax.sql.DataSource;
 import static org.springframework.security.config.http.SessionCreationPolicy.ALWAYS;
 
 @Configuration
-public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
+public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
   @Autowired
   private WebApplicationContext applicationContext;
@@ -45,12 +45,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
             .and()
             .authenticationProvider(authenticationProvider())
             .jdbcAuthentication()
-            .dataSource(dataSource)
-            .withUser("user").password("password").roles("USER")
-            .and()
-                .withUser("admin").password("admin").roles("USER", "ADMIN", "READER", "WRITER")
-            .and()
-                .withUser("audit").password("audit").roles("USER", "ADMIN", "READER");
+            .dataSource(dataSource);
   }
 
   @Override
@@ -76,7 +71,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
       "/images/**", "/scss/**", "/vendor/**", "/favicon.ico", "/auth/**", "/favicon.png",
       "/v2/api-docs", "/configuration/ui", "/configuration/security", "/swagger-ui.html",
       "/webjars/**", "/swagger-resources/**", "/swagge‌​r-ui.html", "/actuator",
-      "/actuator/**", "*.bundle.*");
+      "/actuator/**", "/*.bundle.*");
   }
 
 

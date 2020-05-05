@@ -18,4 +18,10 @@ class LoadDatabase {
 //      log.info("Preloading " + repository.save(new Employee("Frodo Baggins", "thief")));
 //    };
 //  }
+
+//  .withUser("user").password("password").roles("USER")
+//            .and()
+//                .withUser("admin").password("admin").roles("USER", "ADMIN", "READER", "WRITER")
+//            .and()
+//                .withUser("audit").password("audit").roles("USER", "ADMIN", "READER");
 }
