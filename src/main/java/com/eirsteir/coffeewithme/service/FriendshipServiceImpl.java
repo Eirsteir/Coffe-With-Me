@@ -72,19 +72,20 @@ public class FriendshipServiceImpl implements FriendshipService {
         return updateFriendRequest(friendRequestDto, CANCELLED);
     }
 
-    private FriendRequestDto updateFriendRequest(FriendRequestDto friendRequestDto, FriendRequestStatus newStatus) {
+    private FriendRequestDto updateFriendRequest(FriendRequestDto friendRequestDto, FriendRequestStatus status) {
         FriendRequest friendRequest = findFriendRequest(friendRequestDto);
 
         if (friendRequest.getStatus() == PENDING) {
-            friendRequest.setStatus(newStatus);
-            log.info("[x] Friend request {} was updated with new status {}", friendRequestDto, newStatus);
+            friendRequest.setStatus(status);
+            log.info("[x] Friend request {} was updated with new status {}", friendRequestDto, status);
             return modelMapper.map(friendRequestRepository.save(friendRequest));
         }
 
         throw CWMException.getException(FRIEND_REQUEST,
                                         INVALID_STATE_CHANGE,
                                         friendRequestDto.getFrom().toString(),
-                                        friendRequestDto.getTo().toString());
+                                        friendRequestDto.getTo().toString(),
+                                        status.getStatus());
     }
 
     private FriendRequest findFriendRequest(FriendRequestDto friendRequestDto) {
