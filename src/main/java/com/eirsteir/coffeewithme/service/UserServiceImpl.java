@@ -73,8 +73,8 @@ public class UserServiceImpl implements UserService {
                 .orElseThrow(() -> CWMException.throwException(USER, ENTITY_NOT_FOUND, userDto.getEmail()));
 
         userModel.setUsername(userDto.getUsername());
-
         log.info("[x] Updated user profile: {}", userModel);
+
         return modelMapper.map(userRepository.save(userModel), UserDto.class);
     }
 

@@ -40,10 +40,12 @@ public class UserController {
     }
 
     @PutMapping("/update")
-    UserDto updateUser(@RequestBody @Valid UpdateProfileRequest updateProfileRequest) {
+    UserDto updateUser(@RequestBody @Valid UpdateProfileRequest updateProfileRequest, Authentication authentication) {
+        CMEUserPrincipal principal = (CMEUserPrincipal) authentication.getPrincipal();
+
         UserDto userDto = new UserDto()
                 .setUsername(updateProfileRequest.getUsername())
-                .setEmail(updateProfileRequest.getEmail());
+                .setEmail(principal.getEmail());
 
         return userService.updateProfile(userDto);
     }

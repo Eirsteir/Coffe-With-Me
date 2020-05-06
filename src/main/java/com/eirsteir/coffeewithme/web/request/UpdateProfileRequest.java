@@ -7,7 +7,6 @@ import lombok.Setter;
 import lombok.ToString;
 import lombok.experimental.Accessors;
 
-import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 
 @Getter
@@ -18,11 +17,7 @@ import javax.validation.constraints.NotBlank;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class UpdateProfileRequest {
 
-    @Email
-    @NotBlank
-    private String email;
-
-    @NotBlank
+    @NotBlank(message = "Username cannot be blank.")
     private String username;
 
 }
