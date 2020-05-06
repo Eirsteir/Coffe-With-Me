@@ -2,7 +2,7 @@ package com.eirsteir.coffeewithme.web.api.user;
 
 
 import com.eirsteir.coffeewithme.web.dto.UserDto;
-import com.eirsteir.coffeewithme.service.CMEUserPrincipal;
+import com.eirsteir.coffeewithme.service.CWMUserPrincipal;
 import com.eirsteir.coffeewithme.service.UserService;
 import com.eirsteir.coffeewithme.web.request.UpdateProfileRequest;
 import io.swagger.annotations.Api;
@@ -34,14 +34,14 @@ public class UserController {
     @GetMapping
     @ResponseBody
     UserDto user(Authentication authentication) {
-        CMEUserPrincipal principal = (CMEUserPrincipal) authentication.getPrincipal();
+        CWMUserPrincipal principal = (CWMUserPrincipal) authentication.getPrincipal();
         log.info("[x] Principal: {}", principal);
         return modelMapper.map(principal.getUser(), UserDto.class);
     }
 
     @PutMapping("/update")
     UserDto updateUser(@RequestBody @Valid UpdateProfileRequest updateProfileRequest, Authentication authentication) {
-        CMEUserPrincipal principal = (CMEUserPrincipal) authentication.getPrincipal();
+        CWMUserPrincipal principal = (CWMUserPrincipal) authentication.getPrincipal();
 
         UserDto userDto = new UserDto()
                 .setUsername(updateProfileRequest.getUsername())

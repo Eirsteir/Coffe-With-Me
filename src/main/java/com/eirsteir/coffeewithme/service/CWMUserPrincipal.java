@@ -19,13 +19,13 @@ import java.util.List;
 @ToString
 @Getter
 @NoArgsConstructor
-public class CMEUserPrincipal implements UserDetails {
+public class CWMUserPrincipal implements UserDetails {
 
   private static final long serialVersionUID = 7959303258679776171L;
 
   private User user;
 
-  public CMEUserPrincipal(User user) {
+  public CWMUserPrincipal(User user) {
     this.user = user;
   }
 

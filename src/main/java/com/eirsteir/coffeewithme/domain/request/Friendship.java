@@ -1,12 +1,15 @@
 package com.eirsteir.coffeewithme.domain.request;
 
 import com.eirsteir.coffeewithme.domain.user.UserRequestRelation;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
+import lombok.experimental.SuperBuilder;
 
 import javax.persistence.*;
 
-@Data
+@Getter
+@Setter
+@ToString
+@SuperBuilder
 @NoArgsConstructor
 @Entity
 public class Friendship extends UserRequestRelation {
