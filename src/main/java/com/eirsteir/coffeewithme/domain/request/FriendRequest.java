@@ -4,6 +4,7 @@ package com.eirsteir.coffeewithme.domain.request;
 import com.eirsteir.coffeewithme.domain.request.enums.FriendRequestStatus;
 import com.eirsteir.coffeewithme.domain.user.UserRequestRelation;
 import lombok.Getter;
+import lombok.Setter;
 import lombok.ToString;
 import lombok.experimental.SuperBuilder;
 
@@ -13,6 +14,7 @@ import javax.persistence.Id;
 import javax.validation.constraints.NotNull;
 
 @Getter
+@Setter
 @ToString
 @SuperBuilder
 @Entity

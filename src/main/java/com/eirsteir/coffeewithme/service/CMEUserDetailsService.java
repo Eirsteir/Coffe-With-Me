@@ -22,7 +22,7 @@ public class CMEUserDetailsService implements UserDetailsService {
   @Override
   public UserDetails loadUserByUsername(String email) {
     User user = userRepository.findByEmail(email)
-            .orElseThrow(() -> CWMException.throwException(
+            .orElseThrow(() -> CWMException.getException(
                     EntityType.USER, ExceptionType.ENTITY_NOT_FOUND, email));
 
     log.info("[x] Loaded user {}", user);

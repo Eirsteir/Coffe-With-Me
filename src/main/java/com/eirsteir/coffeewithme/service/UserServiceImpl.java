@@ -44,7 +44,7 @@ public class UserServiceImpl implements UserService {
         Optional<User> user = userRepository.findByEmail(userRegistrationRequest.getEmail());
 
         if (user.isPresent())
-            throw CWMException.throwException(
+            throw CWMException.getException(
                     USER, ExceptionType.DUPLICATE_ENTITY, userRegistrationRequest.getEmail());
 
         User userModel = modelMapper.map(userRegistrationRequest, User.class);
@@ -62,15 +62,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserDto findUserByEmail(String email) {
         User userModel = userRepository.findByEmail(email)
-                        .orElseThrow(() -> CWMException.throwException(USER, ENTITY_NOT_FOUND, email));
-
-        return modelMapper.map(userModel, UserDto.class);
-    }
-
-    @Override
-    public UserDto findUserById(Long id) {
-        User userModel = userRepository.findById(id)
-                        .orElseThrow(() -> CWMException.throwException(USER, ENTITY_NOT_FOUND, id.toString()));
+                        .orElseThrow(() -> CWMException.getException(USER, ENTITY_NOT_FOUND, email));
 
         return modelMapper.map(userModel, UserDto.class);
     }
@@ -78,7 +70,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserDto updateProfile(UserDto userDto) {
         User userModel = userRepository.findByEmail(userDto.getEmail())
-                .orElseThrow(() -> CWMException.throwException(USER, ENTITY_NOT_FOUND, userDto.getEmail()));
+                .orElseThrow(() -> CWMException.getException(USER, ENTITY_NOT_FOUND, userDto.getEmail()));
 
         userModel.setUsername(userDto.getUsername());
         log.info("[x] Updated user profile: {}", userModel);

@@ -7,7 +7,8 @@ public enum FriendRequestStatus implements RequestStatus {
 
     PENDING(1),
     ACCEPTED(2),
-    REJECTED(3);
+    REJECTED(3),
+    CANCELLED(4);
 
     private Integer value;
 
@@ -22,5 +23,7 @@ public enum FriendRequestStatus implements RequestStatus {
     public Integer getValue() {
         return value;
     }
+
+
 
 }

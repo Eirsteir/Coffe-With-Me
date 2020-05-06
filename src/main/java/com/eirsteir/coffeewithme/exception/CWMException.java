@@ -17,9 +17,9 @@ public class CWMException {
         CWMException.propertiesConfig = propertiesConfig;
     }
 
-    public static RuntimeException throwException(EntityType entityType, ExceptionType exceptionType, String... args) {
+    public static RuntimeException getException(EntityType entityType, ExceptionType exceptionType, String... args) {
         String messageTemplate = getMessageTemplate(entityType, exceptionType);
-        return throwException(exceptionType, messageTemplate, args);
+        return getException(exceptionType, messageTemplate, args);
     }
 
     public static class EntityNotFoundException extends RuntimeException {
@@ -40,7 +40,7 @@ public class CWMException {
         }
     }
 
-    private static RuntimeException throwException(ExceptionType exceptionType, String messageTemplate, String... args) {
+    private static RuntimeException getException(ExceptionType exceptionType, String messageTemplate, String... args) {
         if (ExceptionType.ENTITY_NOT_FOUND.equals(exceptionType))
             return new EntityNotFoundException(format(messageTemplate, args));
         else if (ExceptionType.DUPLICATE_ENTITY.equals(exceptionType))

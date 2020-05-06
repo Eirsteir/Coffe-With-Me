@@ -9,8 +9,6 @@ public interface UserService {
 
     UserDto findUserByEmail(String email);
 
-    UserDto findUserById(Long id);
-
     UserDto updateProfile(UserDto userDto);
 
 }
