@@ -1,18 +1,20 @@
 package com.eirsteir.coffeewithme.domain.request;
 
 
-import com.eirsteir.coffeewithme.domain.user.UserRequestRelation;
 import com.eirsteir.coffeewithme.domain.request.enums.FriendRequestStatus;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import com.eirsteir.coffeewithme.domain.user.UserRequestRelation;
+import lombok.Getter;
+import lombok.ToString;
+import lombok.experimental.SuperBuilder;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.validation.constraints.NotNull;
 
-@Data
-@NoArgsConstructor
+@Getter
+@ToString
+@SuperBuilder
 @Entity
 public class FriendRequest extends UserRequestRelation {
 
@@ -23,4 +25,6 @@ public class FriendRequest extends UserRequestRelation {
     @NotNull
     private FriendRequestStatus status;
 
+    public FriendRequest() {
+    }
 }

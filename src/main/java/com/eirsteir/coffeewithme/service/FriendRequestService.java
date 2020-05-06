@@ -1,4 +1,8 @@
 package com.eirsteir.coffeewithme.service;
 
-public class FriendRequestService {
+public interface FriendRequestService {
+
+
+    void createFriendRequestFrom(String from, Long to);
+
 }
