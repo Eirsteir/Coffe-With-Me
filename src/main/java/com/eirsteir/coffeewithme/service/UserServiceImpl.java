@@ -68,6 +68,14 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public UserDto findUserById(Long id) {
+        User userModel = userRepository.findById(id)
+                        .orElseThrow(() -> CWMException.getException(USER, ENTITY_NOT_FOUND, id.toString()));
+
+        return modelMapper.map(userModel, UserDto.class);
+    }
+
+    @Override
     public UserDto updateProfile(UserDto userDto) {
         User userModel = userRepository.findByEmail(userDto.getEmail())
                 .orElseThrow(() -> CWMException.getException(USER, ENTITY_NOT_FOUND, userDto.getEmail()));

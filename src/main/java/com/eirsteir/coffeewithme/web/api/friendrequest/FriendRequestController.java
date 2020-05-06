@@ -26,10 +26,11 @@ public class FriendRequestController {
 
     // TODO: 06.05.2020 does this belong in user?
     @PostMapping("/add_friend")
-    FriendRequestDto addFriend(@RequestParam("to_user") String recipient, Authentication authentication) {
+    FriendRequestDto addFriend(@RequestParam("to_friend") Long recipient, Authentication authentication) {
         CMEUserPrincipal principal = (CMEUserPrincipal) authentication.getPrincipal();
+
         FriendRequestDto friendRequestDto = FriendRequestDto.builder()
-                .from(principal.getEmail())
+                .from(principal.getUser().getId())
                 .to(recipient)
                 .build();
 
