@@ -1,4 +1,4 @@
-package com.eirsteir.coffeewithme.web.controller.user;
+package com.eirsteir.coffeewithme.web.api.user;
 
 
 import com.eirsteir.coffeewithme.web.dto.UserDto;

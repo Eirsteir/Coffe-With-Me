@@ -22,31 +22,31 @@ import javax.validation.constraints.Size;
         @FieldsValueMatch(
                 field = "password",
                 otherField = "verifyPassword",
-                message = "Passwords do not match."
+                message = "Passwords do not match"
         ),
         @FieldsValueMatch(
                 field = "email",
                 otherField = "verifyEmail",
-                message = "Email addresses do not match."
+                message = "Email addresses do not match"
         )
 })
 public class UserRegistrationRequest {
 
-    @Email(message = "Must be a well formed email.")
-    @NotBlank(message = "Email cannot be blank.")
+    @Email(message = "Must be a well formed email")
+    @NotBlank(message = "Email is required")
     private String email;
 
-    @Email(message = "Must be a well formed email.")
-    @NotBlank(message = "Email cannot be blank.")
+    @Email(message = "Must be a well formed email")
+    @NotBlank(message = "Email is required")
     private String verifyEmail;
 
-    @NotBlank(message = "Password cannot be blank.")
+    @NotBlank(message = "Password is required")
     @Size(min = 8, message = "Password must be more than 8 characters")
     private String password;
 
-    @NotBlank(message = "Password cannot be blank.")
+    @NotBlank(message = "Password is required")
     private String verifyPassword;
 
-    @NotBlank(message = "Name cannot be blank.")
+    @NotBlank(message = "Name is required")
     private String name;
 }
