@@ -11,14 +11,13 @@ import io.swagger.annotations.SwaggerDefinition;
 import io.swagger.annotations.Tag;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 @RestController
-@RequestMapping("/api/friends")
+@RequestMapping("/api/friends/requests")
 @Api(tags = {"Swagger Resource"})
 @SwaggerDefinition(tags = {
         @Tag(name = "Swagger Resource", description = "User registration management operations for this application")
@@ -35,7 +34,8 @@ public class FriendRequestController {
     private ModelMapper modelMapper;
 
     // TODO: 06.05.2020 does this belong in user?
-    @PostMapping("/add_friend")
+    @PostMapping("/add")
+    @ResponseStatus(HttpStatus.CREATED)
     FriendRequestDto addFriend(@RequestParam("to_friend") Long recipient, Authentication authentication) {
         CWMUserPrincipal principal = (CWMUserPrincipal) authentication.getPrincipal();
 
@@ -47,8 +47,9 @@ public class FriendRequestController {
         return friendRequestService.addFriendRequest(friendRequestDto);
     }
 
-    @PostMapping("/accept_friend_request")
-    FriendshipDto acceptFriendRequest(FriendRequestInquiry inquiry, Authentication authentication) {
+    // TODO: 06.05.2020 consider using only id
+    @PostMapping("/accept")
+    FriendshipDto acceptFriendRequest(@RequestBody FriendRequestInquiry inquiry, Authentication authentication) {
         CWMUserPrincipal principal = (CWMUserPrincipal) authentication.getPrincipal();
         FriendRequestDto acceptedFriendRequestDto = friendRequestService
                 .acceptFriendRequest(modelMapper.map(inquiry, FriendRequestDto.class));
@@ -56,16 +57,23 @@ public class FriendRequestController {
         return friendshipService.addFriendship(acceptedFriendRequestDto);
     }
 
-    @PostMapping("/reject_friend_request")
-    FriendRequestDto rejectFriendRequest(FriendRequestInquiry inquiry, Authentication authentication) {
+    @PostMapping("/reject")
+    FriendRequestDto rejectFriendRequest(@RequestBody FriendRequestInquiry inquiry, Authentication authentication) {
         CWMUserPrincipal principal = (CWMUserPrincipal) authentication.getPrincipal();
         return friendRequestService.rejectFriendRequest(modelMapper.map(inquiry, FriendRequestDto.class));
     }
 
-    @PostMapping("/cancel_friend_request")
-    FriendRequestDto cancelFriendRequest(FriendRequestInquiry inquiry, Authentication authentication) {
+    @PostMapping("/cancel")
+    FriendRequestDto cancelFriendRequest(@RequestBody FriendRequestInquiry inquiry, Authentication authentication) {
         CWMUserPrincipal principal = (CWMUserPrincipal) authentication.getPrincipal();
-        return friendRequestService.cancelFriendRequest(modelMapper.map(inquiry, FriendRequestDto.class));
+
+        System.out.println(principal.getUser());
+        System.out.println(inquiry);
+        if (principal.getUser().getId().equals(inquiry.getFrom()))
+            return friendRequestService.cancelFriendRequest(modelMapper.map(inquiry, FriendRequestDto.class));
+
+        throw new ResponseStatusException(
+                HttpStatus.BAD_REQUEST, "Friend request does not belong to this user");
     }
 
 }

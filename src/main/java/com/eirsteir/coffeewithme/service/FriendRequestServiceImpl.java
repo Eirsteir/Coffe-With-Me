@@ -15,7 +15,8 @@ import javax.transaction.Transactional;
 
 import static com.eirsteir.coffeewithme.domain.request.enums.FriendRequestStatus.*;
 import static com.eirsteir.coffeewithme.exception.EntityType.FRIEND_REQUEST;
-import static com.eirsteir.coffeewithme.exception.ExceptionType.*;
+import static com.eirsteir.coffeewithme.exception.ExceptionType.ENTITY_NOT_FOUND;
+import static com.eirsteir.coffeewithme.exception.ExceptionType.INVALID_STATE_CHANGE;
 
 @Slf4j
 @Service
@@ -33,24 +34,36 @@ public class FriendRequestServiceImpl implements FriendRequestService {
 
     @Override
     public FriendRequestDto addFriendRequest(FriendRequestDto friendRequestDto) {
-        User from = modelMapper.map(userService.findUserById(friendRequestDto.getFrom()), User.class);
-        User to = modelMapper.map(userService.findUserById(friendRequestDto.getTo()), User.class);
+        User fromUser = modelMapper.map(userService.findUserById(friendRequestDto.getFrom()), User.class);
+        User toUser = modelMapper.map(userService.findUserById(friendRequestDto.getTo()), User.class);
 
+        if (friendRequestExists(fromUser, toUser))
+            return updateExistingFriendRequest(friendRequestDto, fromUser, toUser);
 
-        if (friendRequestExists(from, to))
-            throw CWMException.getException(FRIEND_REQUEST,
-                                            DUPLICATE_ENTITY,
-                                            friendRequestDto.getFrom().toString(),
-                                            friendRequestDto.getTo().toString());
 
         FriendRequest friendRequest = FriendRequest.builder()
-                .from(from)
-                .to(to)
+                .from(fromUser)
+                .to(toUser)
                 .status(PENDING)
                 .build();
 
         log.info("[x] Added friend request: {}", friendRequest);
         return modelMapper.map(friendRequestRepository.save(friendRequest));
+    }
+
+    private FriendRequestDto updateExistingFriendRequest(FriendRequestDto friendRequestDto,
+                                                         User fromUser,
+                                                         User toUser) {
+
+        FriendRequest friendRequest = friendRequestRepository.findByFromAndTo(fromUser, toUser)
+                .orElseThrow(() -> CWMException.getException(FRIEND_REQUEST,
+                                                             ENTITY_NOT_FOUND,
+                                                             friendRequestDto.getFrom()
+                                                                     .toString(),
+                                                             friendRequestDto.getTo()
+                                                                     .toString()));
+
+        return updateFriendRequest(modelMapper.map(friendRequest), PENDING);
     }
 
     private boolean friendRequestExists(User from, User to) {
@@ -75,7 +88,7 @@ public class FriendRequestServiceImpl implements FriendRequestService {
     private FriendRequestDto updateFriendRequest(FriendRequestDto friendRequestDto, FriendRequestStatus status) {
         FriendRequest friendRequest = findFriendRequest(friendRequestDto);
 
-        if (friendRequest.getStatus() == PENDING) {
+        if (friendRequest.getStatus() == PENDING || status == PENDING) {
             friendRequest.setStatus(status);
             log.info("[x] Friend request {} was updated with new status {}", friendRequestDto, status);
             return modelMapper.map(friendRequestRepository.save(friendRequest));

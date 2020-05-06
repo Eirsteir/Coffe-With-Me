@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.context.request.WebRequest;
+import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 import java.util.Date;
@@ -21,25 +22,19 @@ public class CWMResponseEntityExceptionHandler extends ResponseEntityExceptionHa
     @ExceptionHandler(Exception.class)
     public final ResponseEntity<Object> handleAllException(Exception ex, WebRequest request) {
         ExceptionResponse exceptionResponse = new ExceptionResponse(new Date(), ex.getMessage(),
-                                                                    request.getDescription(false));
+                                                                    request.getDescription(false),
+                                                                    HttpStatus.INTERNAL_SERVER_ERROR);
         log.info("[x] Exception thrown:", ex);
         return new ResponseEntity<>(exceptionResponse, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
-    @ExceptionHandler(CWMException.EntityNotFoundException.class)
-    public final ResponseEntity<Object> handleNotFountExceptions(Exception ex, WebRequest request) {
-
+    @ExceptionHandler(ResponseStatusException.class)
+    public final ResponseEntity<Object> handleResponseStatusException(Exception ex, WebRequest request) {
         ExceptionResponse exceptionResponse = new ExceptionResponse(new Date(), ex.getMessage(),
-                                                                    request.getDescription(false));
+                                                                    request.getDescription(false),
+                                                                    HttpStatus.BAD_REQUEST);
 
-        return new ResponseEntity<>(exceptionResponse, HttpStatus.NOT_FOUND);    }
-
-    @ExceptionHandler(CWMException.DuplicateEntityException.class)
-    public final ResponseEntity<Object> handleNotFountExceptions1(Exception ex, WebRequest request) {
-        ExceptionResponse exceptionResponse = new ExceptionResponse(new Date(), ex.getMessage(),
-                                                                    request.getDescription(false));
-
-        return new ResponseEntity<>(exceptionResponse, HttpStatus.NOT_FOUND);
+        return new ResponseEntity<>(exceptionResponse, HttpStatus.BAD_REQUEST);
     }
 
     @Override
@@ -48,8 +43,9 @@ public class CWMResponseEntityExceptionHandler extends ResponseEntityExceptionHa
                                                                   HttpStatus status,
                                                                   WebRequest request) {
         ExceptionResponse exceptionResponse = new ExceptionResponse(new Date(),
-                                                                    "Validation Failed",
-                                                                    ex.getBindingResult().toString());
+                                                                    "Invalid method argument",
+                                                                    ex.getBindingResult().toString(),
+                                                                    status);
 
         return new ResponseEntity<>(exceptionResponse, HttpStatus.BAD_REQUEST);
     }
