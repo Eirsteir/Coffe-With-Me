@@ -16,7 +16,7 @@ import javax.validation.constraints.NotBlank;
 @Accessors(chain = true)
 @NoArgsConstructor
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class SignUpRequest {
+public class UserRegistrationRequest {
 
     @Email(message = "Must be a well formed email.")
     @NotBlank(message = "Email cannot be blank.")

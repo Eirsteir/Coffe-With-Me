@@ -1,10 +1,12 @@
 package com.eirsteir.coffeewithme.service;
 
 
-import com.eirsteir.coffeewithme.domain.user.Role;
+import com.eirsteir.coffeewithme.domain.role.Role;
 import com.eirsteir.coffeewithme.domain.user.User;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -13,9 +15,13 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+@Slf4j
+@ToString
 @Getter
 @NoArgsConstructor
 public class CMEUserPrincipal implements UserDetails {
+
+  private static final long serialVersionUID = 7959303258679776171L;
 
   private User user;
 
@@ -27,7 +33,7 @@ public class CMEUserPrincipal implements UserDetails {
   public Collection<? extends GrantedAuthority> getAuthorities() {
     List<GrantedAuthority> authorities = new ArrayList<>();
     for (Role role : user.getRoles())
-      authorities.add(new SimpleGrantedAuthority(role.getName()));
+      authorities.add(new SimpleGrantedAuthority(role.getType().name()));
 
     return authorities;
   }

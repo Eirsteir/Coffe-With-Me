@@ -2,7 +2,7 @@ package com.eirsteir.coffeewithme.service;
 
 import com.eirsteir.coffeewithme.domain.user.User;
 import com.eirsteir.coffeewithme.domain.user.UserType;
-import com.eirsteir.coffeewithme.dto.UserDto;
+import com.eirsteir.coffeewithme.web.dto.UserDto;
 import com.eirsteir.coffeewithme.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.oauth2.client.oidc.userinfo.OidcUserRequest;

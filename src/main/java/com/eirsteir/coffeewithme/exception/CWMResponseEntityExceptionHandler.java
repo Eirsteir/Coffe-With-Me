@@ -1,5 +1,6 @@
 package com.eirsteir.coffeewithme.exception;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -12,6 +13,7 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 
 import java.util.Date;
 
+@Slf4j
 @ControllerAdvice
 @RestController
 public class CWMResponseEntityExceptionHandler extends ResponseEntityExceptionHandler {
@@ -20,7 +22,7 @@ public class CWMResponseEntityExceptionHandler extends ResponseEntityExceptionHa
     public final ResponseEntity<Object> handleAllException(Exception ex, WebRequest request) {
         ExceptionResponse exceptionResponse = new ExceptionResponse(new Date(), ex.getMessage(),
                                                                     request.getDescription(false));
-
+        log.info("[x] Exception thrown:", ex);
         return new ResponseEntity<>(exceptionResponse, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 

@@ -1,47 +1,62 @@
 package com.eirsteir.coffeewithme.service;
 
+import com.eirsteir.coffeewithme.domain.role.RoleType;
 import com.eirsteir.coffeewithme.domain.user.User;
-import com.eirsteir.coffeewithme.dto.UserDto;
+import com.eirsteir.coffeewithme.domain.user.UserType;
 import com.eirsteir.coffeewithme.exception.CWMException;
 import com.eirsteir.coffeewithme.exception.ExceptionType;
+import com.eirsteir.coffeewithme.repository.RoleRepository;
 import com.eirsteir.coffeewithme.repository.UserRepository;
+import com.eirsteir.coffeewithme.web.dto.UserDto;
+import com.eirsteir.coffeewithme.web.request.UserRegistrationRequest;
+import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
+import java.util.Collections;
 import java.util.Optional;
 
 import static com.eirsteir.coffeewithme.exception.EntityType.USER;
 import static com.eirsteir.coffeewithme.exception.ExceptionType.ENTITY_NOT_FOUND;
 
+@Slf4j
 @Service
+@Transactional
 public class UserServiceImpl implements UserService {
 
     @Autowired
     private UserRepository userRepository;
 
     @Autowired
+    private RoleRepository roleRepository;
+
+    @Autowired
     private ModelMapper modelMapper;
 
     @Autowired
-    private BCryptPasswordEncoder bCryptPasswordEncoder;
-
+    private PasswordEncoder passwordEncoder;
 
     @Override
-    public UserDto signUp(UserDto userDto) {
-        System.out.println(userDto);
-        Optional<User> user = userRepository.findByEmail(userDto.getEmail());
+    public UserDto registerUser(UserRegistrationRequest userRegistrationRequest) {
+        Optional<User> user = userRepository.findByEmail(userRegistrationRequest.getEmail());
 
         if (user.isPresent())
             throw CWMException.throwException(
-                    USER, ExceptionType.DUPLICATE_ENTITY, userDto.getEmail());
+                    USER, ExceptionType.DUPLICATE_ENTITY, userRegistrationRequest.getEmail());
 
-        User userModel = modelMapper.map(userDto, User.class);
-        userModel.setPassword(bCryptPasswordEncoder.encode(userModel.getPassword()));
-        User signedUpUser = userRepository.save(userModel);
+        User userModel = modelMapper.map(userRegistrationRequest, User.class);
+        userModel.setPassword(passwordEncoder.encode(userRegistrationRequest.getPassword()))
+            .setUserType(UserType.LOCAL)
+            .setRoles(Collections.singletonList(
+                    roleRepository.findByType(RoleType.ROLE_USER)));
 
-        return modelMapper.map(signedUpUser, UserDto.class);
+        User signedUpUserModel = userRepository.save(userModel);
+        log.info("[x] Registered user: {}", signedUpUserModel);
+
+        return modelMapper.map(signedUpUserModel, UserDto.class);
     }
 
     @Override
@@ -59,6 +74,7 @@ public class UserServiceImpl implements UserService {
 
         userModel.setUsername(userDto.getUsername());
 
+        log.info("[x] Updated user profile: {}", userModel);
         return modelMapper.map(userRepository.save(userModel), UserDto.class);
     }
 

@@ -1,9 +1,7 @@
-package com.eirsteir.coffeewithme.domain.user;
+package com.eirsteir.coffeewithme.domain.role;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import com.eirsteir.coffeewithme.domain.user.User;
+import lombok.*;
 import lombok.experimental.Accessors;
 
 import javax.persistence.*;
@@ -18,13 +16,16 @@ import java.util.Collection;
 @Entity
 public class Role implements Serializable {
 
+  private static final long serialVersionUID = -3444524593791786238L;
+
   @Id
   @GeneratedValue(strategy = GenerationType.AUTO)
   private Long id;
 
   @Column(unique = true)
-  private String name;
+  private RoleType type;
 
+  @ToString.Exclude
   @ManyToMany(mappedBy = "roles")
   private Collection<User> users;
 

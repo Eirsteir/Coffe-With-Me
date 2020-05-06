@@ -1,4 +1,4 @@
-package com.eirsteir.coffeewithme.dto;
+package com.eirsteir.coffeewithme.web.dto;
 
 import lombok.*;
 import lombok.experimental.Accessors;
@@ -15,7 +15,6 @@ public class UserDto {
     private String id;
     private String email;
     private String username;
-    private String password;
     private String name;
     private String mobileNumber;
 

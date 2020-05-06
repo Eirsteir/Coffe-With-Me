@@ -13,7 +13,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Service;
 
 @Slf4j
-@Service
+@Service("userDetailsService")
 public class CMEUserDetailsService implements UserDetailsService {
 
   @Autowired
@@ -23,9 +23,9 @@ public class CMEUserDetailsService implements UserDetailsService {
   public UserDetails loadUserByUsername(String email) {
     User user = userRepository.findByEmail(email)
             .orElseThrow(() -> CWMException.throwException(
-                    EntityType.USER, ExceptionType.ENTITY_NOT_FOUND, "Invalid username or password."));
+                    EntityType.USER, ExceptionType.ENTITY_NOT_FOUND, email));
 
-    log.info("Loaded user {}", user);
+    log.info("[x] Loaded user {}", user);
     return new CMEUserPrincipal(user);
   }
 

@@ -1,43 +1,35 @@
 package com.eirsteir.coffeewithme.security;
 
-import com.eirsteir.coffeewithme.service.CMEUserDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.web.context.WebApplicationContext;
-
-import javax.annotation.PostConstruct;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.authentication.HttpStatusEntryPoint;
 
 import static org.springframework.security.config.http.SessionCreationPolicy.ALWAYS;
 
 @Configuration
+@EnableWebSecurity
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
   @Autowired
-  private WebApplicationContext applicationContext;
-
-  @Autowired
-  private CMEUserDetailsService userDetailsService;
+  private UserDetailsService userDetailsService;
 
   @Autowired
   private AuthenticationSuccessHandlerImpl successHandler;
 
-
-  @PostConstruct
-  public void completeSetup() {
-    userDetailsService = applicationContext.getBean(CMEUserDetailsService.class);
-  }
-
   @Override
   public void configure(AuthenticationManagerBuilder auth) {
-          auth
-            .authenticationProvider(authenticationProvider());
+          auth.authenticationProvider(authenticationProvider());
   }
 
   @Override
@@ -46,11 +38,14 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
               .httpBasic().and()
               .logout().and()
               .authorizeRequests()
-                  .antMatchers( "/api", "/error", "/signup").permitAll()
+                  .antMatchers( "/api", "/error", "/api/user/registration").permitAll()
                   .anyRequest().authenticated()
               .and()
                   .sessionManagement()
                   .sessionCreationPolicy(ALWAYS)
+              .and()
+                  .exceptionHandling()
+                  .authenticationEntryPoint(new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED))
               .and()
               .csrf().disable();
 //                  .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
@@ -67,9 +62,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
       "/actuator/**", "/*.bundle.*");
   }
 
-
   @Bean
-  public BCryptPasswordEncoder encoder() {
+  public PasswordEncoder passwordEncoder(){
     return new BCryptPasswordEncoder();
   }
 
@@ -77,9 +71,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
   public DaoAuthenticationProvider authenticationProvider() {
     final DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
     authProvider.setUserDetailsService(userDetailsService);
-    authProvider.setPasswordEncoder(encoder());
+    authProvider.setPasswordEncoder(passwordEncoder());
     return authProvider;
   }
-
 
 }
