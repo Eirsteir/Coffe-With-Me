@@ -1,6 +1,7 @@
 package com.eirsteir.coffeewithme.web.request;
 
 import com.eirsteir.coffeewithme.validation.FieldsValueMatch;
+import com.eirsteir.coffeewithme.validation.ValidPassword;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -10,7 +11,6 @@ import lombok.experimental.Accessors;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.Size;
 
 @Getter
 @Setter
@@ -40,11 +40,10 @@ public class UserRegistrationRequest {
     @NotBlank(message = "Email is required")
     private String verifyEmail;
 
-    @NotBlank(message = "Password is required")
-    @Size(min = 8, message = "Password must be more than 8 characters")
+    @ValidPassword
     private String password;
 
-    @NotBlank(message = "Password is required")
+    @ValidPassword
     private String verifyPassword;
 
     @NotBlank(message = "Name is required")
