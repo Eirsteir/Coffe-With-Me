@@ -10,6 +10,7 @@ import lombok.experimental.Accessors;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Size;
 
 @Getter
 @Setter
@@ -40,6 +41,7 @@ public class UserRegistrationRequest {
     private String verifyEmail;
 
     @NotBlank(message = "Password cannot be blank.")
+    @Size(min = 8, message = "Password must be more than 8 characters")
     private String password;
 
     @NotBlank(message = "Password cannot be blank.")
