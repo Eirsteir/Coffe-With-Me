@@ -21,6 +21,8 @@ import static org.springframework.security.config.http.SessionCreationPolicy.ALW
 @EnableWebSecurity
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
+  private final String BASE_URL = "/api";
+
   @Autowired
   private UserDetailsService userDetailsService;
 
@@ -38,8 +40,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
               .httpBasic().and()
               .logout().and()
               .authorizeRequests()
-                  .antMatchers( "/api", "/error", "/api/user/registration").permitAll()
+                  .antMatchers( BASE_URL, "/error", BASE_URL + "/user/registration").permitAll()
                   .anyRequest().authenticated()
+              .and()
+                  .logout()
+                  .logoutUrl(BASE_URL + "/logout")
               .and()
                   .sessionManagement()
                   .sessionCreationPolicy(ALWAYS)

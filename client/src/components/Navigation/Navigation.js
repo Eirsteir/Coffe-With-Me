@@ -73,19 +73,19 @@ class Navigation extends React.Component {
     };
 
     handleLogout = () => {
-        const token = window.localStorage.getItem("token");
-        this.props.toggleLoginState();
+        const token = window.localStorage.getItem("auth");
+        this.props.toggleAuthenticatedState();
 
-        fetch(`/logout`, {
-            method: "post",
+        fetch(`api/logout`, {
+            method: "POST",
             headers: {
                 "Content-Type": "application/json",
                 Authorization: token
             }
         })
             .then(resp => {
-                if (resp.status === 200 || resp.status === 304) {
-                    window.localStorage.removeItem("token");
+                if (resp.status === 204 || resp.status === 304) {
+                    window.localStorage.removeItem("auth");
                     return this.props.history.push("/");
                 }
             })
@@ -146,13 +146,13 @@ class Navigation extends React.Component {
                     >
                         <Toolbar>
                             <Typography
-                                variant="title"
+                                variant="subtitle1"
                                 color="inherit"
                                 className={classes.grow}
                                 style={{ cursor: "pointer", color: "#cc285d" }}
                                 onClick={() => this.handleClick("/home")}
                             >
-                                MyExp
+                                Coffee With Me
                             </Typography>
                             <IconButton
                                 className={classes.menuButton}
@@ -188,7 +188,7 @@ class Navigation extends React.Component {
                     <AppBar position="static" className={classes.appBar}>
                         <Toolbar>
                             <Typography
-                                variant="title"
+                                variant="h1"
                                 color="inherit"
                                 className={classes.grow}
                                 style={{
@@ -199,7 +199,7 @@ class Navigation extends React.Component {
                                 }}
                                 onClick={() => this.handleClick("/")}
                             >
-                                MyExp
+                                CoffeeWithMe
                             </Typography>
                             <Button
                                 color="inherit"

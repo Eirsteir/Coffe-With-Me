@@ -80,7 +80,7 @@ class Login extends React.Component {
 
     handleLogin = () => {
         this.toggleLoading();
-        fetch(`api//user`, {
+        fetch(`api/user`, {
             method: "GET",
             headers: { "Content-Type": "application/json" ,
                         Authorization: createBasicAuthToken(
@@ -90,35 +90,19 @@ class Login extends React.Component {
             }
         })
             .then(response => response.json())
-            .then(data => {
-                if (data.id && data.success === "true") {
-                    saveAuthTokenInLocal(data.token);
-                    fetch(`api/user/profile`, {
-                        method: "GET",
-                        headers: {
-                            "Content-Type": "application/json",
-                            Authorization: createBasicAuthToken(
-                                this.state.loginEmail,
-                                this.state.loginPassword
-                            )
-                        }
-                    })
-                        .then(response => response.json())
-                        .then(user => {
-                            if (user && user.email) {
-                                this.toggleLoading();
-                                this.props.toggleLoginState();
-                                this.props.loadUser(user);
-                                this.props.history.push("/home");
-                            }
-                        })
-                        .catch(err => {
-                            this.toggleLoading();
-                            console.warn("unable to log in");
-                        });
+            .then(user => {
+                if (user.id && user.email) {
+                    saveAuthTokenInLocal(createBasicAuthToken(
+                        this.state.loginEmail,
+                        this.state.loginPassword
+                    ));
+                    this.toggleLoading();
+                    this.props.toggleAuthenticatedState();
+                    this.props.loadUser(user);
+                    this.props.history.push("/home");
                 } else {
                     this.toggleLoading();
-                    this.setState({ errorMessage: data });
+                    this.setState({ errorMessage: user });
                 }
             })
             .catch(err => {

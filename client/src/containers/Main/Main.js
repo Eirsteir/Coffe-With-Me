@@ -53,7 +53,7 @@ const Account = Loadable({
 
 class Main extends React.Component {
     render() {
-        const { user, loadUser, toggleLoginState, isAuthenticated } = this.props;
+        const { user, loadUser, toggleAuthenticatedState, isAuthenticated } = this.props;
         return (
             <Switch>
                 <Route
@@ -63,7 +63,7 @@ class Main extends React.Component {
                         <LandingPage
                             {...props}
                             loadUser={loadUser}
-                            toggleLoginState={toggleLoginState}
+                            toggleAuthenticatedState={toggleAuthenticatedState}
                         />
                     )}
                 />
@@ -74,7 +74,7 @@ class Main extends React.Component {
                         <Login
                             {...props}
                             loadUser={loadUser}
-                            toggleLoginState={toggleLoginState}
+                            toggleAuthenticatedState={toggleAuthenticatedState}
                         />
                     )}
                 />
@@ -85,7 +85,7 @@ class Main extends React.Component {
                         <Register
                             {...props}
                             loadUser={loadUser}
-                            toggleLoginState={toggleLoginState}
+                            toggleAuthenticatedState={toggleAuthenticatedState}
                         />
                     )}
                 />

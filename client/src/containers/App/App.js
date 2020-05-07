@@ -6,6 +6,7 @@ import { MuiThemeProvider, createMuiTheme } from "@material-ui/core/styles";
 import Navigation from "../../components/Navigation/Navigation";
 import ErrorBoundary from "../../components/ErrorBoundary/ErrorBoundary";
 import Main from "../Main/Main";
+import {createBasicAuthToken} from "../../helpers/auth-headers";
 
 
 const theme = createMuiTheme({
@@ -22,10 +23,10 @@ const theme = createMuiTheme({
 const initialState = {
   isAuthenticated: false,
   user: {
-    _id: "",
+    id: "",
     name: "",
     email: "",
-    // createdAt: "",
+    username: "",
   },
   isLoading: false
 };
@@ -36,7 +37,7 @@ class App extends Component {
     this.state = initialState;
   }
 
-  toggleLoginState = () => {
+  toggleAuthenticatedState = () => {
     this.setState(prevState => ({
       ...prevState,
       isAuthenticated: !prevState.isAuthenticated
@@ -44,14 +45,14 @@ class App extends Component {
   };
 
   componentDidMount() {
-    const token = window.localStorage.getItem("token");
+    const token = window.localStorage.getItem("auth");
     if (token) {
       this.toggleLoading();
-      fetch(`/signin`, {
-        method: "post",
+      fetch(`/api/user`, {
+        method: "GET",
         headers: {
           "Content-Type": "application/json",
-          Authorization: token // 'Bearer '
+          Authorization: token
         }
       })
           .then(response => {
@@ -60,32 +61,17 @@ class App extends Component {
             }
             return response.json();
           })
-          .then(data => {
-            if (data && data.id) {
-              fetch(`/profile/${data.id}`, {
-                method: "get",
-                headers: {
-                  "Content-Type": "application/json",
-                  Authorization: token
-                }
-              })
-                  .then(response => response.json())
-                  .then(user => {
-                    this.toggleLoading();
-                    if (user && user.email) {
-                      this.loadUser(user);
-                      this.setState({ isAuthenticated: true });
-                      return this.props.history.push("/home");
-                    }
-                  })
-                  .catch(err => {
-                    this.toggleLoading();
-                  });
-            }
-          })
-          .catch(err => {
-            this.toggleLoading();
-          });
+            .then(user => {
+              this.toggleLoading();
+              if (user && user.email) {
+                this.loadUser(user);
+                this.setState({ isAuthenticated: true });
+                return this.props.history.push("/home");
+              }
+            })
+            .catch(err => {
+              this.toggleLoading();
+            });
     }
   }
 
@@ -96,7 +82,7 @@ class App extends Component {
   };
 
   loadUser = user => {
-    if (user._id) {
+    if (user.id) {
       this.setState({ user });
     }
   };
@@ -108,7 +94,7 @@ class App extends Component {
         <div>
           <Navigation
               isAuthenticated={isAuthenticated}
-              toggleLoginState={this.toggleLoginState}
+              toggleAuthenticatedState={this.toggleAuthenticatedState}
           />
           <MuiThemeProvider theme={theme}>
             <ErrorBoundary>
@@ -116,7 +102,7 @@ class App extends Component {
                   isAuthenticated={isAuthenticated}
                   user={this.state.user}
                   loadUser={this.loadUser}
-                  toggleLoginState={this.toggleLoginState}
+                  toggleAuthenticatedState={this.toggleAuthenticatedState}
               />
             </ErrorBoundary>
           </MuiThemeProvider>

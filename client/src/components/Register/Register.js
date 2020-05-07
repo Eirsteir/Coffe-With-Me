@@ -130,9 +130,9 @@ class Register extends React.Component {
             .then(user => {
                 this.toggleLoading();
 
-                if (user._id) {
+                if (user.id) {
                     this.props.loadUser(user);
-                    this.props.toggleLoginState();
+                    this.props.toggleAuthenticatedState();
                     this.props.history.push("/home");
                 } else {
                     this.setState({ errorMessage: user });
@@ -204,45 +204,6 @@ class Register extends React.Component {
                                 helperText="Password must be at least 8 characters long"
                             />
                         </FormControl>
-                        <TextField
-                            id="standard-select-currency"
-                            select
-                            label="Select"
-                            className={classes.textField}
-                            value={this.state.currency}
-                            onChange={this.handleChange("currency")}
-                            SelectProps={{
-                                MenuProps: {
-                                    className: classes.menu
-                                }
-                            }}
-                            helperText="Please select your currency"
-                            margin="normal"
-                        >
-                            {currencies.map(option => (
-                                <MenuItem key={option.value} value={option.label}>
-                                    {option.label}
-                                </MenuItem>
-                            ))}
-                        </TextField>
-
-                        <FormControlLabel
-                            control={
-                                <Checkbox
-                                    checked={this.state.checked}
-                                    onChange={this.handleCheckBoxChange}
-                                    value="checked"
-                                />
-                            }
-                            label={
-                                <p className={classes.checkbox}>
-                                    I agree to the{" "}
-                                    <a href="https://termsfeed.com/terms-conditions/e61d015615afd404c2261de7774fce77">
-                                        Terms & Conditions
-                                    </a>
-                                </p>
-                            }
-                        />
 
                         {this.state.errorMessage && (
                             <Typography

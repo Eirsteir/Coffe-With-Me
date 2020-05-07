@@ -17,7 +17,7 @@ const LandingPage = ({ onRouteChange }) => {
         >
             <Grid item>
                 <Typography
-                    variant="display3"
+                    variant="h2"
                     style={{ color: "#fff", fontWeight: "bold" }}
                     id="header"
                 >
@@ -27,7 +27,7 @@ const LandingPage = ({ onRouteChange }) => {
 
             <Grid item>
                 <Typography
-                    variant="display1"
+                    variant="subtitle1"
                     style={{ color: "#fff", fontWeight: 300 }}
                     id="sub-header"
                 >
@@ -37,7 +37,7 @@ const LandingPage = ({ onRouteChange }) => {
 
             <Grid item>
                 <Button
-                    variant="raised"
+                    variant="outlined"
                     style={{ backgroundColor: "#dd1173", padding: "20px 40px" }}
                     id="register-now-btn"
                 >
