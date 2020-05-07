@@ -9,10 +9,8 @@ import Paper from "@material-ui/core/Paper";
 import Typography from "@material-ui/core/Typography";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import FormControl from "@material-ui/core/FormControl";
-import FormControlLabel from "@material-ui/core/FormControlLabel";
-import MenuItem from "@material-ui/core/MenuItem";
-import Checkbox from "@material-ui/core/Checkbox";
 
+import { handleResponse } from "../../services/user.service";
 
 const styles = theme => ({
     register: {
@@ -24,8 +22,8 @@ const styles = theme => ({
         }
     },
     textField: {
-        marginLeft: theme.spacing.unit,
-        marginRight: theme.spacing.unit,
+        marginLeft: theme.spacing(1),
+        marginRight: theme.spacing(1),
         width: 200,
         margin: "1em"
     },
@@ -53,42 +51,16 @@ const styles = theme => ({
     }
 });
 
-const currencies = [
-    {
-        value: "USD",
-        label: "$"
-    },
-    {
-        value: "EUR",
-        label: "€"
-    },
-    {
-        value: "BTC",
-        label: "฿"
-    },
-    {
-        value: "JPY",
-        label: "¥"
-    },
-    {
-        value: "GBP",
-        label: "£"
-    },
-    {
-        value: "NOK",
-        label: "kr"
-    }
-];
 
 class Register extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
             email: "",
+            verifyEmail: "",
             password: "",
+            verifyPassword: "",
             name: "",
-            currency: "EUR",
-            checked: false,
             isLoading: false,
             errorMessage: ""
         };
@@ -104,42 +76,35 @@ class Register extends React.Component {
         this.setState({ [name]: event.target.value });
     };
 
-    handleCheckBoxChange = event => {
-        this.setState({ checked: event.target.checked });
-    };
-
     handleRegister = () => {
-        if (!this.state.checked) {
-            return this.setState({
-                errorMessage:
-                    "You must agree to the Terms & Conditions to create an account"
-            });
-        }
         this.toggleLoading();
-        fetch(`/register`, {
-            method: "post",
+        fetch(`api/user/registration`, {
+            method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
                 email: this.state.email,
+                verifyEmail: this.state.verifyEmail,
                 password: this.state.password,
+                verifyPassword: this.state.verifyPassword,
                 name: this.state.name,
                 currency: this.state.currency
             })
         })
-            .then(response => response.json())
+            .then(handleResponse)
             .then(user => {
                 this.toggleLoading();
-
-                if (user.id) {
+                if (user) {
                     this.props.loadUser(user);
                     this.props.toggleAuthenticatedState();
                     this.props.history.push("/home");
                 } else {
                     this.setState({ errorMessage: user });
                 }
-            });
-    };
+            })
+            .catch(console.log);
 
+    };
+    
     onKeyDown = event => {
         if (event.key === "Enter") {
             event.preventDefault();
@@ -159,7 +124,7 @@ class Register extends React.Component {
             <div className={classes.register}>
                 <Paper className={classes.paper} elevation={16}>
                     <Typography
-                        variant="headline"
+                        variant="h4"
                         component="h3"
                         className={classes.control}
                         style={{
@@ -193,6 +158,14 @@ class Register extends React.Component {
                             margin="normal"
                             onChange={this.handleChange("email")}
                         />
+                        <TextField
+                            id="input-verify-email"
+                            label="Verify email address"
+                            autoComplete="email"
+                            className={classes.textField}
+                            margin="normal"
+                            onChange={this.handleChange("verifyEmail")}
+                        />
                         <FormControl className={classes.textField}>
                             <TextField
                                 id="adornment-password"
@@ -202,6 +175,14 @@ class Register extends React.Component {
                                 onChange={this.handleChange("password")}
                                 autoComplete="current-password"
                                 helperText="Password must be at least 8 characters long"
+                            />
+                            <TextField
+                                id="adornment-verify-password"
+                                label="Verify password"
+                                type={this.state.showPassword ? "text" : "password"}
+                                value={this.state.verifyPassword}
+                                onChange={this.handleChange("verifyPassword")}
+                                autoComplete="current-password"
                             />
                         </FormControl>
 
@@ -219,9 +200,9 @@ class Register extends React.Component {
                         )}
 
                         <Button
-                            onClick={this.onSubmitRegister}
+                            onClick={this.onSubmit}
                             className={classes.button}
-                            variant="raised"
+                            variant="outlined"
                             label="Submit"
                             type="submit"
                             color="secondary"

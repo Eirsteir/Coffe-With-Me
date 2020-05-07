@@ -1,6 +1,7 @@
 package com.eirsteir.coffeewithme.exception;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -13,6 +14,8 @@ import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 import java.util.Date;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 @Slf4j
 @ControllerAdvice
@@ -42,11 +45,23 @@ public class CWMResponseEntityExceptionHandler extends ResponseEntityExceptionHa
                                                                   HttpHeaders headers,
                                                                   HttpStatus status,
                                                                   WebRequest request) {
+        String errors = getErrorsFrom(ex);
+
         ExceptionResponse exceptionResponse = new ExceptionResponse(new Date(),
-                                                                    "Invalid method argument",
-                                                                    ex.getBindingResult().toString(),
+                                                                    "Validation failed",
+                                                                    errors,
                                                                     status);
 
         return new ResponseEntity<>(exceptionResponse, HttpStatus.BAD_REQUEST);
+    }
+
+    private String getErrorsFrom(MethodArgumentNotValidException ex) {
+        return ex.getBindingResult()
+                .getFieldErrors()
+                .stream()
+                .map(DefaultMessageSourceResolvable::getDefaultMessage)
+                .filter(Objects::nonNull)
+                .map(m -> m.replace(".", ","))
+                .collect(Collectors.joining(", "));
     }
 }

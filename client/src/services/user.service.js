@@ -44,7 +44,7 @@ function getAll() {
     return fetch(`api/users`, requestOptions).then(handleResponse);
 }
 
-function handleResponse(response) {
+export function handleResponse(response) {
     return response.text().then(text => {
         const data = text && JSON.parse(text);
         if (!response.ok) {
@@ -54,7 +54,8 @@ function handleResponse(response) {
                 this.props.history.push("/");
             }
 
-            const error = (data && data.message) || response.statusText;
+            console.log(data);
+            const error = (data && data.details) || response.statusText;
             return Promise.reject(error);
         }
 
