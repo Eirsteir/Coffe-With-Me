@@ -58,7 +58,7 @@ class Navigation extends React.Component {
         super(props);
         this.state = {
             open: false,
-            isSignedIn: this.props.isSignedIn
+            isAuthenticated: this.props.isAuthenticated
         };
     }
 
@@ -74,9 +74,9 @@ class Navigation extends React.Component {
 
     handleLogout = () => {
         const token = window.localStorage.getItem("token");
-        this.props.toggleSigninState();
+        this.props.toggleLoginState();
 
-        fetch(`/signout`, {
+        fetch(`/logout`, {
             method: "post",
             headers: {
                 "Content-Type": "application/json",
@@ -93,7 +93,7 @@ class Navigation extends React.Component {
     };
 
     render() {
-        const { classes, isSignedIn } = this.props;
+        const { classes, isAuthenticated } = this.props;
         const iOS = process.browser && /iPad|iPhone|iPod/.test(navigator.userAgent);
         const sideList = (
             <div className={classes.list}>
@@ -134,7 +134,7 @@ class Navigation extends React.Component {
             </div>
         );
 
-        if (isSignedIn) {
+        if (isAuthenticated) {
             return (
                 <div className={classes.root}>
                     <AppBar

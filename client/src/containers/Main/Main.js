@@ -53,7 +53,7 @@ const Account = Loadable({
 
 class Main extends React.Component {
     render() {
-        const { user, loadUser, toggleSigninState, isSignedIn } = this.props;
+        const { user, loadUser, toggleLoginState, isAuthenticated } = this.props;
         return (
             <Switch>
                 <Route
@@ -63,7 +63,7 @@ class Main extends React.Component {
                         <LandingPage
                             {...props}
                             loadUser={loadUser}
-                            toggleSigninState={toggleSigninState}
+                            toggleLoginState={toggleLoginState}
                         />
                     )}
                 />
@@ -74,7 +74,7 @@ class Main extends React.Component {
                         <Login
                             {...props}
                             loadUser={loadUser}
-                            toggleSigninState={toggleSigninState}
+                            toggleLoginState={toggleLoginState}
                         />
                     )}
                 />
@@ -85,7 +85,7 @@ class Main extends React.Component {
                         <Register
                             {...props}
                             loadUser={loadUser}
-                            toggleSigninState={toggleSigninState}
+                            toggleLoginState={toggleLoginState}
                         />
                     )}
                 />
@@ -95,7 +95,7 @@ class Main extends React.Component {
                     render={props => (
                         <Home
                             {...props}
-                            isSignedIn={isSignedIn}
+                            isAuthenticated={isAuthenticated}
                             user={user}
                             loadUser={loadUser}
                         />
@@ -107,7 +107,7 @@ class Main extends React.Component {
                     render={props => (
                         <Account
                             {...props}
-                            isSignedIn={isSignedIn}
+                            isAuthenticated={isAuthenticated}
                             name={user.name}
                             email={user.email}
                             joined={user.joined}

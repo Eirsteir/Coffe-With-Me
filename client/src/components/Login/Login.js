@@ -14,6 +14,7 @@ import InputAdornment from "@material-ui/core/InputAdornment";
 import Visibility from "@material-ui/icons/Visibility";
 import VisibilityOff from "@material-ui/icons/VisibilityOff";
 import IconButton from "@material-ui/core/IconButton";
+import {createBasicAuthToken, saveAuthTokenInLocal} from "../../helpers/auth-headers";
 
 
 const styles = theme => ({
@@ -51,8 +52,8 @@ class Login extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            signInEmail: "",
-            signInPassword: "",
+            loginEmail: "",
+            loginPassword: "",
             isLoading: false,
             showPassword: false,
             errorMessage: ""
@@ -70,43 +71,43 @@ class Login extends React.Component {
     };
 
     onEmailChange = event => {
-        this.setState({ signInEmail: event.target.value });
+        this.setState({ loginEmail: event.target.value });
     };
 
     onPasswordChange = event => {
-        this.setState({ signInPassword: event.target.value });
+        this.setState({ loginPassword: event.target.value });
     };
 
-    saveAuthTokenInSession = token => {
-        window.localStorage.setItem("token", token);
-    };
-
-    handleSignin = () => {
+    handleLogin = () => {
         this.toggleLoading();
-        fetch(`/signin`, {
-            method: "post",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-                email: this.state.signInEmail,
-                password: this.state.signInPassword
-            })
+        fetch(`api//user`, {
+            method: "GET",
+            headers: { "Content-Type": "application/json" ,
+                        Authorization: createBasicAuthToken(
+                            this.state.loginEmail,
+                            this.state.loginPassword
+                        )
+            }
         })
             .then(response => response.json())
             .then(data => {
-                if (data.userId && data.success === "true") {
-                    this.saveAuthTokenInSession(data.token);
-                    fetch(`/profile/${data.userId}`, {
-                        method: "get",
+                if (data.id && data.success === "true") {
+                    saveAuthTokenInLocal(data.token);
+                    fetch(`api/user/profile`, {
+                        method: "GET",
                         headers: {
                             "Content-Type": "application/json",
-                            Authorization: data.token
+                            Authorization: createBasicAuthToken(
+                                this.state.loginEmail,
+                                this.state.loginPassword
+                            )
                         }
                     })
                         .then(response => response.json())
                         .then(user => {
                             if (user && user.email) {
                                 this.toggleLoading();
-                                this.props.toggleSigninState();
+                                this.props.toggleLoginState();
                                 this.props.loadUser(user);
                                 this.props.history.push("/home");
                             }
@@ -129,14 +130,14 @@ class Login extends React.Component {
     onKeyDown = event => {
         if (event.key === "Enter") {
             event.preventDefault();
-            this.handleSignin();
+            this.handleLogin();
         }
     };
 
     onSubmit = event => {
         event.preventDefault();
         event.stopPropagation();
-        this.handleSignin();
+        this.handleLogin();
     };
 
     render() {
@@ -159,7 +160,7 @@ class Login extends React.Component {
                         Log in
                     </Typography>
                     <form
-                        onKeyDown={this.onkeyDown}
+                        onKeyDown={this.onKeyDown}
                         onSubmit={this.onSubmit}
                         className={classes.form}
                     >
@@ -176,7 +177,7 @@ class Login extends React.Component {
                             <Input
                                 id="adornment-password"
                                 type={this.state.showPassword ? "text" : "password"}
-                                value={this.state.signInPassword}
+                                value={this.state.loginPassword}
                                 onChange={this.onPasswordChange}
                                 autoComplete="current-password"
                                 endAdornment={
@@ -209,7 +210,7 @@ class Login extends React.Component {
                         ) : true}
                         <Button
                             className={classes.button}
-                            onClick={this.onSubmitSignIn}
+                            onClick={this.onSubmit}
                             variant="raised"
                             label="Submit"
                             type="submit"

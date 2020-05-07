@@ -1,4 +1,4 @@
-import { authHeader } from '../helpers/auth-headers';
+import {createBasicAuthToken, getAuthTokenHeader, saveAuthTokenInLocal} from '../helpers/auth-headers';
 
 export const userService = {
     login,
@@ -6,13 +6,12 @@ export const userService = {
     getAll
 };
 
-function login(username, password) {
+function login(email, password) {
     const requestOptions = {
-        method: 'POST',
+        method: 'GET',
         headers: { 'Content-Type': 'application/json',
-                    'Authorization': username + ':' + password
-        },
-        body: JSON.stringify({ username, password })
+                    'Authorization': createBasicAuthToken(email, password)
+        }
     };
 
     return fetch(`api/user`, requestOptions)
@@ -22,8 +21,8 @@ function login(username, password) {
             if (user) {
                 // store user details and basic auth credentials in local storage
                 // to keep user logged in between page refreshes
-                user.authdata = window.btoa(username + ':' + password);
-                localStorage.setItem('auth', JSON.stringify(user));
+                user.authdata = window.btoa(user.email + ':' + user.password);
+                saveAuthTokenInLocal(JSON.stringify(user));
             }
 
             return user;
@@ -38,7 +37,7 @@ function logout() {
 function getAll() {
     const requestOptions = {
         method: 'GET',
-        headers: authHeader()
+        headers: getAuthTokenHeader()
     };
 
     // todo

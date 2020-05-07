@@ -11,25 +11,21 @@ import Main from "../Main/Main";
 const theme = createMuiTheme({
   palette: {
     primary: {
-      main: "#cc285d" // "#3CF2FD" very nice turqouise
+      main: "#3CF2FD" // #cc285d
     },
     secondary: {
-      main: "#cc285d"
+      main: "#3CF2FD"
     }
   }
 });
 
 const initialState = {
-  isSignedIn: false,
+  isAuthenticated: false,
   user: {
     _id: "",
     name: "",
     email: "",
-    age: "",
-    joined: "",
-    expences: [],
-    tags: [],
-    currency: ""
+    // createdAt: "",
   },
   isLoading: false
 };
@@ -40,10 +36,10 @@ class App extends Component {
     this.state = initialState;
   }
 
-  toggleSigninState = () => {
+  toggleLoginState = () => {
     this.setState(prevState => ({
       ...prevState,
-      isSignedIn: !prevState.isSignedIn
+      isAuthenticated: !prevState.isAuthenticated
     }));
   };
 
@@ -78,7 +74,7 @@ class App extends Component {
                     this.toggleLoading();
                     if (user && user.email) {
                       this.loadUser(user);
-                      this.setState({ isSignedIn: true });
+                      this.setState({ isAuthenticated: true });
                       return this.props.history.push("/home");
                     }
                   })
@@ -106,21 +102,21 @@ class App extends Component {
   };
 
   render() {
-    const { isSignedIn } = this.state;
+    const { isAuthenticated } = this.state;
 
     return (
         <div>
           <Navigation
-              isSignedIn={isSignedIn}
-              toggleSigninState={this.toggleSigninState}
+              isAuthenticated={isAuthenticated}
+              toggleLoginState={this.toggleLoginState}
           />
           <MuiThemeProvider theme={theme}>
             <ErrorBoundary>
               <Main
-                  isSignedIn={isSignedIn}
+                  isAuthenticated={isAuthenticated}
                   user={this.state.user}
                   loadUser={this.loadUser}
-                  toggleSigninState={this.toggleSigninState}
+                  toggleLoginState={this.toggleLoginState}
               />
             </ErrorBoundary>
           </MuiThemeProvider>

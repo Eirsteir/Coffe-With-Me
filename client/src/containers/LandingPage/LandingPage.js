@@ -21,7 +21,7 @@ const LandingPage = ({ onRouteChange }) => {
                     style={{ color: "#fff", fontWeight: "bold" }}
                     id="header"
                 >
-                    MyExpences
+                    Coffee With Me
                 </Typography>
             </Grid>
 
@@ -31,7 +31,7 @@ const LandingPage = ({ onRouteChange }) => {
                     style={{ color: "#fff", fontWeight: 300 }}
                     id="sub-header"
                 >
-                    Start tracking your expences &mdash; <br /> with myExpences
+                    Grab a warm cup of coffee with your friends
                 </Typography>
             </Grid>
 
