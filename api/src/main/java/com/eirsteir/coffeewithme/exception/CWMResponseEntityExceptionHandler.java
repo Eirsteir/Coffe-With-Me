@@ -61,7 +61,7 @@ public class CWMResponseEntityExceptionHandler extends ResponseEntityExceptionHa
                 .stream()
                 .map(DefaultMessageSourceResolvable::getDefaultMessage)
                 .filter(Objects::nonNull)
-                .map(m -> m.replace(".", ","))
+                .map(m -> m.replace(".", ""))
                 .collect(Collectors.joining(", "));
     }
 }

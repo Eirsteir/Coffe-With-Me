@@ -87,7 +87,6 @@ class Register extends React.Component {
                 password: this.state.password,
                 verifyPassword: this.state.verifyPassword,
                 name: this.state.name,
-                currency: this.state.currency
             })
         })
             .then(handleResponse)
@@ -97,14 +96,15 @@ class Register extends React.Component {
                     this.props.loadUser(user);
                     this.props.toggleAuthenticatedState();
                     this.props.history.push("/home");
-                } else {
-                    this.setState({ errorMessage: user });
                 }
             })
-            .catch(console.log);
-
+            .catch(this.handleValidationError);
     };
-    
+
+    handleValidationError = err => {
+        this.setState({ errorMessage: err.replace(/,/g, "\n") })
+    };
+
     onKeyDown = event => {
         if (event.key === "Enter") {
             event.preventDefault();

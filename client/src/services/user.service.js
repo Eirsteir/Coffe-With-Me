@@ -54,7 +54,6 @@ export function handleResponse(response) {
                 this.props.history.push("/");
             }
 
-            console.log(data);
             const error = (data && data.details) || response.statusText;
             return Promise.reject(error);
         }
