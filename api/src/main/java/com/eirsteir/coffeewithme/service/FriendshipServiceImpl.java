@@ -4,9 +4,11 @@ import com.eirsteir.coffeewithme.domain.FriendshipId;
 import com.eirsteir.coffeewithme.domain.friendship.Friendship;
 import com.eirsteir.coffeewithme.domain.friendship.FriendshipStatus;
 import com.eirsteir.coffeewithme.domain.user.User;
-import com.eirsteir.coffeewithme.dto.FriendRequestDto;
 import com.eirsteir.coffeewithme.dto.FriendshipDto;
 import com.eirsteir.coffeewithme.dto.UserDto;
+import com.eirsteir.coffeewithme.exception.CWMException;
+import com.eirsteir.coffeewithme.exception.EntityType;
+import com.eirsteir.coffeewithme.exception.ExceptionType;
 import com.eirsteir.coffeewithme.repository.FriendshipRepository;
 import com.eirsteir.coffeewithme.web.request.FriendshipRequest;
 import lombok.extern.slf4j.Slf4j;
@@ -64,8 +66,8 @@ public class FriendshipServiceImpl implements FriendshipService {
 //        return modelMapper.map(friendshipModel);
 //    }
 
-    private boolean friendshipExists(FriendshipDto friendshipDto) {
-        return true;
+    private boolean friendshipExists(FriendshipId friendshipId) {
+        return friendshipRepository.existsById(friendshipId);
     }
 
     @Override
@@ -77,6 +79,11 @@ public class FriendshipServiceImpl implements FriendshipService {
                 .addressee(addressee)
                 .build();
 
+        if (friendshipExists(friendshipId))
+            throw CWMException.getException(EntityType.FRIENDSHIP,
+                                            ExceptionType.DUPLICATE_ENTITY,
+                                            friendshipId.toString());
+
         Friendship registeredFriendship = friendshipRepository.save(Friendship.builder()
                 .id(friendshipId)
                 .status(FriendshipStatus.REQUESTED)
@@ -87,7 +94,7 @@ public class FriendshipServiceImpl implements FriendshipService {
     }
 
     @Override
-    public void removeFriendship(FriendRequestDto friendRequestDto) {
+    public void removeFriendship(FriendshipDto friendshipDto) {
 
     }
 

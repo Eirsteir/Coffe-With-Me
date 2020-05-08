@@ -17,6 +17,7 @@ public class CWMException {
         CWMException.propertiesConfig = propertiesConfig;
     }
 
+
     public static RuntimeException getException(EntityType entityType, ExceptionType exceptionType, String... args) {
         String messageTemplate = getMessageTemplate(entityType, exceptionType);
         return getException(exceptionType, messageTemplate, args);

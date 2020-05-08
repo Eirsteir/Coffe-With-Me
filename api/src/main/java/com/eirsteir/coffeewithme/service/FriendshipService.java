@@ -1,6 +1,5 @@
 package com.eirsteir.coffeewithme.service;
 
-import com.eirsteir.coffeewithme.dto.FriendRequestDto;
 import com.eirsteir.coffeewithme.dto.FriendshipDto;
 import com.eirsteir.coffeewithme.dto.UserDto;
 import com.eirsteir.coffeewithme.web.request.FriendshipRequest;
@@ -11,7 +10,7 @@ public interface FriendshipService {
 
     FriendshipDto registerFriendship(FriendshipRequest friendshipRequest);
 
-    void removeFriendship(FriendRequestDto friendRequestDto);
+    void removeFriendship(FriendshipDto friendshipDto);
 
     FriendshipDto acceptFriendship(FriendshipDto friendshipDto);
 
