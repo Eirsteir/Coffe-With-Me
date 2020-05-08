@@ -16,7 +16,4 @@ public interface UserService {
 
     UserDto findUserById(Long id);
 
-    void addFriend(UserDto userDto);
-
-    Collection<UserDto> findAllFriends(UserDto userDto);
 }

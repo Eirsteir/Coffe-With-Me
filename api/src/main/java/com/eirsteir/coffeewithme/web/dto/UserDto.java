@@ -12,7 +12,7 @@ import lombok.experimental.Accessors;
 @ToString
 public class UserDto {
 
-    private String id;
+    private Long id;
     private String email;
     private String username;
     private String name;

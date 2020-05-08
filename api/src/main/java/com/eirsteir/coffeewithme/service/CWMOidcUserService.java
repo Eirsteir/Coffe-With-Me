@@ -29,7 +29,7 @@ public class CWMOidcUserService extends OidcUserService {
 
         UserDto userDto = UserDto.builder()
                 .email((String) attributes.get("email"))
-                .id((String) attributes.get("sub"))
+                .id(Long.parseLong((String) attributes.get("sub")))
                 .name((String) attributes.get("name"))
                 .build();
 

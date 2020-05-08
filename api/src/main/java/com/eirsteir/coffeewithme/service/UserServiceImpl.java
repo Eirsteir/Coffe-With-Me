@@ -77,11 +77,6 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Collection<UserDto> findAllFriends(UserDto userDto) {
-        return userRepository.findAllFriends(modelMapper.map(userDto, User.class));
-    }
-
-    @Override
     public UserDto updateProfile(UserDto userDto) {
         User userModel = userRepository.findByEmail(userDto.getEmail())
                 .orElseThrow(() -> CWMException.getException(USER, ENTITY_NOT_FOUND, userDto.getEmail()));

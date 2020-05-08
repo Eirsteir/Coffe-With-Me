@@ -35,7 +35,6 @@ public class UserController {
     @ResponseBody
     UserDto user(Authentication authentication) {
         CWMUserPrincipal principal = (CWMUserPrincipal) authentication.getPrincipal();
-        log.info("[x] Principal: {}", principal);
         return modelMapper.map(principal.getUser(), UserDto.class);
     }
 

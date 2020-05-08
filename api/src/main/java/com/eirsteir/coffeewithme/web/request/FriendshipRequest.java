@@ -1,6 +1,5 @@
 package com.eirsteir.coffeewithme.web.request;
 
-import com.eirsteir.coffeewithme.domain.friendship.FriendshipStatus;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -15,18 +14,12 @@ import javax.validation.constraints.NotNull;
 @ToString
 @Accessors(chain = true)
 @NoArgsConstructor
-public class FriendRequestInquiry {
+public class FriendshipRequest implements Request {
 
     @NotNull(message = "Must be a valid id")
-    private Long id;
+    private Long requesterId;
 
     @NotNull(message = "Must be a valid id")
-    private Long from;
-
-    @NotNull(message = "Must be a valid id")
-    private Long to;
-
-    @NotNull(message = "Must be a valid status")
-    private FriendshipStatus status;
+    private Long addresseeId;
 
 }
