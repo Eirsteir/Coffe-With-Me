@@ -107,8 +107,8 @@ class FriendshipServiceImplTest {
     void testRegisterFriendship() {
         FriendshipDto savedFriendshipDto = friendshipService.registerFriendship(friendshipRequest);
 
-        assertThat(savedFriendshipDto.getRequester().getId()).isEqualTo(requester.getId());
-        assertThat(savedFriendshipDto.getAddressee().getId()).isEqualTo(addressee.getId());
+        assertThat(savedFriendshipDto.getId().getRequester().getId()).isEqualTo(requester.getId());
+        assertThat(savedFriendshipDto.getId().getAddressee().getId()).isEqualTo(addressee.getId());
         assertThat(savedFriendshipDto.getStatus()).isEqualTo(REQUESTED);
     }
 
@@ -122,5 +122,8 @@ class FriendshipServiceImplTest {
                 .withMessage("Requested friendship with id=" + friendshipId +" already exists");
     }
 
+    @Test
+    void testRemoveFriendship() {
+    }
 
 }

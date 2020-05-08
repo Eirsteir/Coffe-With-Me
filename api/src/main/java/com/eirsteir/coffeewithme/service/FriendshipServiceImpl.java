@@ -33,10 +33,6 @@ public class FriendshipServiceImpl implements FriendshipService {
     @Autowired
     private ModelMapper modelMapper;
 
-    private boolean friendshipExists(FriendshipId friendshipId) {
-        return friendshipRepository.existsById(friendshipId);
-    }
-
     @Override
     public FriendshipDto registerFriendship(FriendshipRequest friendshipRequest) {
         User requester = modelMapper.map(userService.findUserById(friendshipRequest.getRequesterId()), User.class);
@@ -60,9 +56,14 @@ public class FriendshipServiceImpl implements FriendshipService {
         return modelMapper.map(registeredFriendship, FriendshipDto.class);
     }
 
+    private boolean friendshipExists(FriendshipId friendshipId) {
+        return friendshipRepository.existsById(friendshipId);
+    }
+
     @Override
     public void removeFriendship(FriendshipDto friendshipDto) {
-
+        if (friendshipExists(friendshipDto.getId()))
+            friendshipRepository.deleteById(friendshipDto.getId());
     }
 
     @Override

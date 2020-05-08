@@ -1,7 +1,7 @@
 package com.eirsteir.coffeewithme.dto;
 
+import com.eirsteir.coffeewithme.domain.FriendshipId;
 import com.eirsteir.coffeewithme.domain.friendship.FriendshipStatus;
-import com.eirsteir.coffeewithme.web.request.Request;
 import lombok.*;
 
 @Getter
@@ -10,14 +10,9 @@ import lombok.*;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class FriendshipDto implements Request {
+public class FriendshipDto {
 
-    private UserDto requester;
-    private UserDto addressee;
+    private FriendshipId id;
     private FriendshipStatus status;
 
-    @Override
-    public Long getRequesterId() {
-        return requester.getId();
-    }
 }
