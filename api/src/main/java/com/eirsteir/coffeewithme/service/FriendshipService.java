@@ -1,8 +1,8 @@
 package com.eirsteir.coffeewithme.service;
 
-import com.eirsteir.coffeewithme.web.dto.FriendRequestDto;
-import com.eirsteir.coffeewithme.web.dto.FriendshipDto;
-import com.eirsteir.coffeewithme.web.dto.UserDto;
+import com.eirsteir.coffeewithme.dto.FriendRequestDto;
+import com.eirsteir.coffeewithme.dto.FriendshipDto;
+import com.eirsteir.coffeewithme.dto.UserDto;
 import com.eirsteir.coffeewithme.web.request.FriendshipRequest;
 
 import java.util.Collection;

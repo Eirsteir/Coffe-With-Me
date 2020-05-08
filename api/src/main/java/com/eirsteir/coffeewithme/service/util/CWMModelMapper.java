@@ -1,8 +1,8 @@
 package com.eirsteir.coffeewithme.service.util;
 
 import com.eirsteir.coffeewithme.domain.friendship.Friendship;
-import com.eirsteir.coffeewithme.web.dto.FriendshipDto;
-import com.eirsteir.coffeewithme.web.dto.UserDto;
+import com.eirsteir.coffeewithme.dto.FriendshipDto;
+import com.eirsteir.coffeewithme.dto.UserDto;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Component;
 

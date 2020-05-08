@@ -2,8 +2,8 @@ package com.eirsteir.coffeewithme.web.api.friendship;
 
 import com.eirsteir.coffeewithme.service.CWMUserPrincipal;
 import com.eirsteir.coffeewithme.service.FriendshipService;
-import com.eirsteir.coffeewithme.web.dto.FriendshipDto;
-import com.eirsteir.coffeewithme.web.dto.UserDto;
+import com.eirsteir.coffeewithme.dto.FriendshipDto;
+import com.eirsteir.coffeewithme.dto.UserDto;
 import com.eirsteir.coffeewithme.web.request.FriendshipRequest;
 import com.eirsteir.coffeewithme.web.request.Request;
 import io.swagger.annotations.Api;

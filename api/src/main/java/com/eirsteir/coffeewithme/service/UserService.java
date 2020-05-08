@@ -1,6 +1,6 @@
 package com.eirsteir.coffeewithme.service;
 
-import com.eirsteir.coffeewithme.web.dto.UserDto;
+import com.eirsteir.coffeewithme.dto.UserDto;
 import com.eirsteir.coffeewithme.web.request.UserRegistrationRequest;
 
 public interface UserService {

@@ -1,5 +1,6 @@
-package com.eirsteir.coffeewithme.web.dto;
+package com.eirsteir.coffeewithme.dto;
 
+import com.eirsteir.coffeewithme.domain.friendship.FriendshipStatus;
 import com.eirsteir.coffeewithme.web.request.Request;
 import lombok.*;
 
@@ -13,7 +14,7 @@ public class FriendshipDto implements Request {
 
     private UserDto requester;
     private UserDto addressee;
-    private String status;
+    private FriendshipStatus status;
 
     @Override
     public Long getRequesterId() {

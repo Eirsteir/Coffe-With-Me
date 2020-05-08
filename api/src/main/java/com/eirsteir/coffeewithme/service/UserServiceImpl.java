@@ -7,7 +7,7 @@ import com.eirsteir.coffeewithme.exception.CWMException;
 import com.eirsteir.coffeewithme.exception.ExceptionType;
 import com.eirsteir.coffeewithme.repository.RoleRepository;
 import com.eirsteir.coffeewithme.repository.UserRepository;
-import com.eirsteir.coffeewithme.web.dto.UserDto;
+import com.eirsteir.coffeewithme.dto.UserDto;
 import com.eirsteir.coffeewithme.web.request.UserRegistrationRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
@@ -16,7 +16,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Optional;
 

@@ -1,4 +1,4 @@
-package com.eirsteir.coffeewithme.web.dto;
+package com.eirsteir.coffeewithme.dto;
 
 import lombok.*;
 import lombok.experimental.Accessors;
