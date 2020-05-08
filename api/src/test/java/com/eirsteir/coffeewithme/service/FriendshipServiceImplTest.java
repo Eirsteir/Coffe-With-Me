@@ -19,6 +19,7 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Bean;
+import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import static com.eirsteir.coffeewithme.domain.friendship.FriendshipStatus.REQUESTED;
@@ -27,6 +28,7 @@ import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.mockito.Mockito.when;
 
 @DataJpaTest
+@TestPropertySource("classpath:exception.properties")
 @RunWith(SpringRunner.class)
 class FriendshipServiceImplTest {
 
@@ -121,7 +123,6 @@ class FriendshipServiceImplTest {
     void testRegisterFriendshipWhenDuplicate() {
         when(friendshipRepository.existsById(Mockito.any(FriendshipId.class)))
                 .thenReturn(true);
-        friendshipService.registerFriendship(friendshipRequest);
 
         assertThatExceptionOfType(CWMException.DuplicateEntityException.class)
                 .isThrownBy(() -> friendshipService.registerFriendship(friendshipRequest))
