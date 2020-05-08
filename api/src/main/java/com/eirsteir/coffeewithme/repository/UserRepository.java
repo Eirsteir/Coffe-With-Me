@@ -23,6 +23,4 @@ public interface UserRepository extends JpaRepository<User, Long> {
     @Transactional
     void updateLastLogin(@Param("lastLogin") Date lastLogin);
 
-    Collection<UserDto> findAllFriends(User map);
-
 }
