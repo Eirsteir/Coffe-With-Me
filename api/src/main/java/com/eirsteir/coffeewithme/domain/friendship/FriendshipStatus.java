@@ -5,7 +5,7 @@ import com.eirsteir.coffeewithme.domain.RequestStatus;
 
 public enum FriendshipStatus implements RequestStatus {
 
-    PENDING(1),
+    REQUESTED(1),
     ACCEPTED(2),
     REJECTED(3),
     CANCELLED(4);

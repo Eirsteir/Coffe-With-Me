@@ -1,9 +1,6 @@
 package com.eirsteir.coffeewithme.web.request;
 
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
 import lombok.experimental.Accessors;
 
 import javax.validation.constraints.NotNull;
@@ -12,8 +9,10 @@ import javax.validation.constraints.NotNull;
 @Getter
 @Setter
 @ToString
+@Builder
 @Accessors(chain = true)
 @NoArgsConstructor
+@AllArgsConstructor
 public class FriendshipRequest implements Request {
 
     @NotNull(message = "Must be a valid id")

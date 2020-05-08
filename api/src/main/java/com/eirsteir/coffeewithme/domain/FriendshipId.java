@@ -15,7 +15,7 @@ import java.io.Serializable;
 @AllArgsConstructor
 @NoArgsConstructor
 @Embeddable
-public class UserRelationId implements Serializable {
+public class FriendshipId implements Serializable {
 
     private static final long serialVersionUID = 3966996285633364115L;
 

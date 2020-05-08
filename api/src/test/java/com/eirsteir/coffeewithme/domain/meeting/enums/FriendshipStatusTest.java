@@ -15,7 +15,7 @@ class FriendshipStatusTest {
 
     static Stream<Arguments> requestStatusValueProvider() {
         return Stream.of(
-                Arguments.of(FriendshipStatus.PENDING, 1),
+                Arguments.of(FriendshipStatus.REQUESTED, 1),
                 Arguments.of(FriendshipStatus.ACCEPTED, 2),
                 Arguments.of(FriendshipStatus.REJECTED, 3)
         );
@@ -30,7 +30,7 @@ class FriendshipStatusTest {
 
     static Stream<Arguments> requestStatusNameProvider() {
         return Stream.of(
-                Arguments.of(FriendshipStatus.PENDING, "PENDING"),
+                Arguments.of(FriendshipStatus.REQUESTED, "PENDING"),
                 Arguments.of(FriendshipStatus.ACCEPTED, "ACCEPTED"),
                 Arguments.of(FriendshipStatus.REJECTED, "REJECTED")
         );

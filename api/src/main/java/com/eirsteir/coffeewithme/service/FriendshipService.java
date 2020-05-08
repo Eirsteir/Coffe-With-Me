@@ -15,7 +15,7 @@ public interface FriendshipService {
 
     FriendshipDto acceptFriendship(FriendshipDto friendshipDto);
 
-    FriendRequestDto blockFriendShip(FriendshipDto friendshipDto);
+    FriendshipDto blockFriendShip(FriendshipDto friendshipDto);
 
     Collection<UserDto> findFriendsOf(UserDto userDto);
 

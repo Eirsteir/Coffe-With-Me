@@ -1,7 +1,7 @@
 package com.eirsteir.coffeewithme.domain.friendship;
 
 import com.eirsteir.coffeewithme.domain.CreatedUpdatedDateTimeBaseModel;
-import com.eirsteir.coffeewithme.domain.UserRelationId;
+import com.eirsteir.coffeewithme.domain.FriendshipId;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -20,7 +20,7 @@ import javax.persistence.Entity;
 public class Friendship extends CreatedUpdatedDateTimeBaseModel {
 
     @EmbeddedId
-    private UserRelationId id;
+    private FriendshipId id;
 
     private FriendshipStatus status;
 
