@@ -6,6 +6,6 @@ public enum EntityType {
     ROLE,
     COFFEE_REQUEST,
     FRIEND_REQUEST,
-    FRIENDSHIP;
+    FRIENDSHIP
 
 }
