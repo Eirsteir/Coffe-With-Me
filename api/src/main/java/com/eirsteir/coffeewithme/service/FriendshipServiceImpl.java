@@ -4,13 +4,13 @@ import com.eirsteir.coffeewithme.domain.FriendshipId;
 import com.eirsteir.coffeewithme.domain.friendship.Friendship;
 import com.eirsteir.coffeewithme.domain.friendship.FriendshipStatus;
 import com.eirsteir.coffeewithme.domain.user.User;
-import com.eirsteir.coffeewithme.repository.FriendshipRepository;
-import com.eirsteir.coffeewithme.service.util.CWMModelMapper;
 import com.eirsteir.coffeewithme.dto.FriendRequestDto;
 import com.eirsteir.coffeewithme.dto.FriendshipDto;
 import com.eirsteir.coffeewithme.dto.UserDto;
+import com.eirsteir.coffeewithme.repository.FriendshipRepository;
 import com.eirsteir.coffeewithme.web.request.FriendshipRequest;
 import lombok.extern.slf4j.Slf4j;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -29,7 +29,7 @@ public class FriendshipServiceImpl implements FriendshipService {
     private FriendshipRepository friendshipRepository;
 
     @Autowired
-    private CWMModelMapper modelMapper;
+    private ModelMapper modelMapper;
 
 //    public FriendshipDto addFriendship(FriendRequestDto friendRequestDto) {
 //
@@ -82,8 +82,8 @@ public class FriendshipServiceImpl implements FriendshipService {
                 .status(FriendshipStatus.REQUESTED)
                 .build());
 
-        log.info("[x] Registered friendship: {}", friendshipRequest);
-        return modelMapper.map(registeredFriendship);
+        log.info("[x] Registered friendship: {}", registeredFriendship);
+        return modelMapper.map(registeredFriendship, FriendshipDto.class);
     }
 
     @Override
