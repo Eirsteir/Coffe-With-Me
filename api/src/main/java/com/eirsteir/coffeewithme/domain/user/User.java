@@ -3,10 +3,7 @@ package com.eirsteir.coffeewithme.domain.user;
 
 import com.eirsteir.coffeewithme.domain.CreatedUpdatedDateTimeBaseModel;
 import com.eirsteir.coffeewithme.domain.role.Role;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import lombok.experimental.Accessors;
 
 import javax.persistence.*;
@@ -34,6 +31,7 @@ public class User extends CreatedUpdatedDateTimeBaseModel implements Serializabl
 
     private String username;
 
+    @ToString.Exclude
     private String password;
 
     private String name;
@@ -44,15 +42,19 @@ public class User extends CreatedUpdatedDateTimeBaseModel implements Serializabl
 
     private Date lastLogin;
 
+    @ToString.Exclude
     @Builder.Default
     private Boolean enabled = true;
 
+    @ToString.Exclude
     @Builder.Default
     private Boolean accountExpired = false;
 
+    @ToString.Exclude
     @Builder.Default
     private Boolean accountLocked = false;
 
+    @ToString.Exclude
     @Builder.Default
     private Boolean credentialsExpired = false;
 
