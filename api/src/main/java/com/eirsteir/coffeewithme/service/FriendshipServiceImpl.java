@@ -33,39 +33,6 @@ public class FriendshipServiceImpl implements FriendshipService {
     @Autowired
     private ModelMapper modelMapper;
 
-//    public FriendshipDto addFriendship(FriendRequestDto friendRequestDto) {
-//
-//        if (friendRequestDto.getStatus() == FriendshipStatus.ACCEPTED)
-//            return registerFriendship(friendRequestDto.getFrom(), friendRequestDto.getTo());
-//
-//        throw CWMException.getException(EntityType.FRIENDSHIP,
-//                                        ExceptionType.INVALID_STATE,
-//                                        friendRequestDto.getFrom().toString(),
-//                                        friendRequestDto.getTo().toString(),
-//                                        friendRequestDto.getStatus().getStatus());
-//    }
-
-//    private FriendshipDto registerFriendship(Long fromId, Long toId) {
-//        User fromUser = modelMapper.map(userService.findUserById(fromId), User.class);
-//        User toUser = modelMapper.map(userService.findUserById(toId), User.class);
-//
-//        if (friendshipExists(fromUser, toUser))
-//            throw CWMException.getException(FRIEND_REQUEST,
-//                                            DUPLICATE_ENTITY,
-//                                            fromId.toString(),
-//                                            toId.toString());
-//
-//        UserRelationId userRelationId = UserRelationId.builder()
-//                .requester(fromUser)
-//                .addressee(toUser)
-//                .build();
-//        Friendship friendshipModel = friendshipRepository.save(Friendship.builder()
-//                                                            .id(userRelationId)
-//                                                            .build());
-//
-//        return modelMapper.map(friendshipModel);
-//    }
-
     private boolean friendshipExists(FriendshipId friendshipId) {
         return friendshipRepository.existsById(friendshipId);
     }

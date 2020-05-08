@@ -1,6 +1,5 @@
 package com.eirsteir.coffeewithme.service;
 
-import com.eirsteir.coffeewithme.config.PropertiesConfig;
 import com.eirsteir.coffeewithme.domain.FriendshipId;
 import com.eirsteir.coffeewithme.domain.friendship.Friendship;
 import com.eirsteir.coffeewithme.domain.user.User;
@@ -9,6 +8,7 @@ import com.eirsteir.coffeewithme.dto.UserDto;
 import com.eirsteir.coffeewithme.exception.CWMException;
 import com.eirsteir.coffeewithme.repository.FriendshipRepository;
 import com.eirsteir.coffeewithme.web.request.FriendshipRequest;
+import config.CWMExceptionTestConfig;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
@@ -19,6 +19,7 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Import;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 
@@ -28,6 +29,7 @@ import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.mockito.Mockito.when;
 
 @DataJpaTest
+@Import(CWMExceptionTestConfig.class)
 @TestPropertySource("classpath:exception.properties")
 @RunWith(SpringRunner.class)
 class FriendshipServiceImplTest {
@@ -64,15 +66,6 @@ class FriendshipServiceImplTest {
         @Bean
         public ModelMapper modelMapper() {
             return new ModelMapper();
-        }
-
-        @Bean CWMException cwmException(){
-            return new CWMException(propertiesConfig());
-        }
-
-        @Bean
-        public PropertiesConfig propertiesConfig() {
-            return new PropertiesConfig();
         }
     }
 
@@ -128,5 +121,6 @@ class FriendshipServiceImplTest {
                 .isThrownBy(() -> friendshipService.registerFriendship(friendshipRequest))
                 .withMessage("Requested friendship with id=" + friendshipId +" already exists");
     }
+
 
 }
