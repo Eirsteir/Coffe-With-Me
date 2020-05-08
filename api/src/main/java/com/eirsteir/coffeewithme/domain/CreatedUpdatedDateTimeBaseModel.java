@@ -13,14 +13,14 @@ import java.util.Date;
 @ToString
 @SuperBuilder
 @MappedSuperclass
-public abstract class CreatedUpdatedDateBaseModel {
+public abstract class CreatedUpdatedDateTimeBaseModel {
 
     @CreationTimestamp
-    private Date createdAt;
+    private Date createdDateTime;
 
     @UpdateTimestamp
-    private Date updatedAt;
+    private Date updatedDateTime;
 
-    public CreatedUpdatedDateBaseModel() {
+    public CreatedUpdatedDateTimeBaseModel() {
     }
 }

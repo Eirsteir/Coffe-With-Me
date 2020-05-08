@@ -1,9 +1,9 @@
-package com.eirsteir.coffeewithme.domain.request.enums;
+package com.eirsteir.coffeewithme.domain.friendship;
 
 
-import com.eirsteir.coffeewithme.domain.request.RequestStatus;
+import com.eirsteir.coffeewithme.domain.RequestStatus;
 
-public enum FriendRequestStatus implements RequestStatus {
+public enum FriendshipStatus implements RequestStatus {
 
     PENDING(1),
     ACCEPTED(2),
@@ -12,7 +12,7 @@ public enum FriendRequestStatus implements RequestStatus {
 
     private Integer value;
 
-    FriendRequestStatus(Integer value) {
+    FriendshipStatus(Integer value) {
         this.value = value;
     }
 
@@ -23,7 +23,5 @@ public enum FriendRequestStatus implements RequestStatus {
     public Integer getValue() {
         return value;
     }
-
-
 
 }

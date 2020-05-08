@@ -1,5 +1,6 @@
-package com.eirsteir.coffeewithme.domain.request.enums;
+package com.eirsteir.coffeewithme.domain.meeting.enums;
 
+import com.eirsteir.coffeewithme.domain.friendship.FriendshipStatus;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -10,33 +11,33 @@ import java.util.stream.Stream;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest
-class FriendRequestStatusTest {
+class FriendshipStatusTest {
 
     static Stream<Arguments> requestStatusValueProvider() {
         return Stream.of(
-                Arguments.of(FriendRequestStatus.PENDING, 1),
-                Arguments.of(FriendRequestStatus.ACCEPTED, 2),
-                Arguments.of(FriendRequestStatus.REJECTED, 3)
+                Arguments.of(FriendshipStatus.PENDING, 1),
+                Arguments.of(FriendshipStatus.ACCEPTED, 2),
+                Arguments.of(FriendshipStatus.REJECTED, 3)
         );
     }
 
     @ParameterizedTest
     @MethodSource("requestStatusValueProvider")
-    void getValue(FriendRequestStatus requestStatus, Integer requestStatusValue) {
+    void getValue(FriendshipStatus requestStatus, Integer requestStatusValue) {
         assertThat(requestStatus.getValue()).isEqualTo(requestStatusValue);
     }
 
 
     static Stream<Arguments> requestStatusNameProvider() {
         return Stream.of(
-                Arguments.of(FriendRequestStatus.PENDING, "PENDING"),
-                Arguments.of(FriendRequestStatus.ACCEPTED, "ACCEPTED"),
-                Arguments.of(FriendRequestStatus.REJECTED, "REJECTED")
+                Arguments.of(FriendshipStatus.PENDING, "PENDING"),
+                Arguments.of(FriendshipStatus.ACCEPTED, "ACCEPTED"),
+                Arguments.of(FriendshipStatus.REJECTED, "REJECTED")
         );
     }
     @ParameterizedTest
     @MethodSource("requestStatusNameProvider")
-    void getStatus(FriendRequestStatus requestStatus, String requestStatusName) {
+    void getStatus(FriendshipStatus requestStatus, String requestStatusName) {
         assertThat(requestStatus.getStatus()).isEqualTo(requestStatusName);
     }
 }

@@ -16,6 +16,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Optional;
 
@@ -73,6 +74,11 @@ public class UserServiceImpl implements UserService {
                         .orElseThrow(() -> CWMException.getException(USER, ENTITY_NOT_FOUND, id.toString()));
 
         return modelMapper.map(userModel, UserDto.class);
+    }
+
+    @Override
+    public Collection<UserDto> findAllFriends(UserDto userDto) {
+        return userRepository.findAllFriends(modelMapper.map(userDto, User.class));
     }
 
     @Override

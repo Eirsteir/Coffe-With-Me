@@ -1,6 +1,6 @@
 package com.eirsteir.coffeewithme.web.request;
 
-import com.eirsteir.coffeewithme.domain.request.enums.FriendRequestStatus;
+import com.eirsteir.coffeewithme.domain.friendship.FriendshipStatus;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -27,6 +27,6 @@ public class FriendRequestInquiry {
     private Long to;
 
     @NotNull(message = "Must be a valid status")
-    private FriendRequestStatus status;
+    private FriendshipStatus status;
 
 }

@@ -1,4 +1,4 @@
-package com.eirsteir.coffeewithme.domain.request;
+package com.eirsteir.coffeewithme.domain;
 
 import javax.persistence.AttributeConverter;
 

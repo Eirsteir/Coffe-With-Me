@@ -1,7 +1,7 @@
 package com.eirsteir.coffeewithme.domain.user;
 
 
-import com.eirsteir.coffeewithme.domain.CreatedUpdatedDateBaseModel;
+import com.eirsteir.coffeewithme.domain.CreatedUpdatedDateTimeBaseModel;
 import com.eirsteir.coffeewithme.domain.role.Role;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -21,7 +21,7 @@ import java.util.Date;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-public class User extends CreatedUpdatedDateBaseModel implements Serializable {
+public class User extends CreatedUpdatedDateTimeBaseModel implements Serializable {
 
     private static final long serialVersionUID = 3966996285633364335L;
 

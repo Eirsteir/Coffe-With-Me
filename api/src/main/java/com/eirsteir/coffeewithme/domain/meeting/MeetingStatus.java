@@ -1,8 +1,8 @@
-package com.eirsteir.coffeewithme.domain.request.enums;
+package com.eirsteir.coffeewithme.domain.meeting;
 
-import com.eirsteir.coffeewithme.domain.request.RequestStatus;
+import com.eirsteir.coffeewithme.domain.RequestStatus;
 
-public enum CoffeeRequestStatus implements RequestStatus {
+public enum MeetingStatus implements RequestStatus {
 
     PENDING(1),
     ACCEPTED(2),
@@ -11,7 +11,7 @@ public enum CoffeeRequestStatus implements RequestStatus {
 
     private Integer value;
 
-    CoffeeRequestStatus(Integer value) {
+    MeetingStatus(Integer value) {
         this.value = value;
     }
 

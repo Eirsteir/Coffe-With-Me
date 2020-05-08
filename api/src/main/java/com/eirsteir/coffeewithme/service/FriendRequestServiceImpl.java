@@ -1,7 +1,6 @@
 package com.eirsteir.coffeewithme.service;
 
-import com.eirsteir.coffeewithme.domain.request.FriendRequest;
-import com.eirsteir.coffeewithme.domain.request.enums.FriendRequestStatus;
+import com.eirsteir.coffeewithme.domain.friendship.FriendshipStatus;
 import com.eirsteir.coffeewithme.domain.user.User;
 import com.eirsteir.coffeewithme.exception.CWMException;
 import com.eirsteir.coffeewithme.repository.FriendRequestRepository;
@@ -13,7 +12,7 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 
-import static com.eirsteir.coffeewithme.domain.request.enums.FriendRequestStatus.*;
+import static com.eirsteir.coffeewithme.domain.friendship.FriendshipStatus.*;
 import static com.eirsteir.coffeewithme.exception.EntityType.FRIEND_REQUEST;
 import static com.eirsteir.coffeewithme.exception.ExceptionType.ENTITY_NOT_FOUND;
 import static com.eirsteir.coffeewithme.exception.ExceptionType.INVALID_STATE_CHANGE;
@@ -85,7 +84,7 @@ public class FriendRequestServiceImpl implements FriendRequestService {
         return updateFriendRequest(friendRequestDto, CANCELLED);
     }
 
-    private FriendRequestDto updateFriendRequest(FriendRequestDto friendRequestDto, FriendRequestStatus status) {
+    private FriendRequestDto updateFriendRequest(FriendRequestDto friendRequestDto, FriendshipStatus status) {
         FriendRequest friendRequest = findFriendRequest(friendRequestDto);
 
         if (friendRequest.getStatus() == PENDING || status == PENDING) {

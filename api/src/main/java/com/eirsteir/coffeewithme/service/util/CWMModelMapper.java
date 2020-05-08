@@ -1,7 +1,6 @@
 package com.eirsteir.coffeewithme.service.util;
 
-import com.eirsteir.coffeewithme.domain.request.FriendRequest;
-import com.eirsteir.coffeewithme.domain.request.Friendship;
+import com.eirsteir.coffeewithme.domain.friendship.Friendship;
 import com.eirsteir.coffeewithme.web.dto.FriendRequestDto;
 import com.eirsteir.coffeewithme.web.dto.FriendshipDto;
 import org.modelmapper.ModelMapper;

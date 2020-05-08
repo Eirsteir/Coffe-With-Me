@@ -1,7 +1,7 @@
 package com.eirsteir.coffeewithme.web.dto;
 
 
-import com.eirsteir.coffeewithme.domain.request.enums.FriendRequestStatus;
+import com.eirsteir.coffeewithme.domain.friendship.FriendshipStatus;
 import lombok.*;
 
 @Getter
@@ -15,6 +15,6 @@ public class FriendRequestDto {
     private Long id;
     private Long from;
     private Long to;
-    private FriendRequestStatus status;
+    private FriendshipStatus status;
 
 }

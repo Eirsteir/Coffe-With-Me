@@ -1,7 +1,7 @@
 package com.eirsteir.coffeewithme.service;
 
-import com.eirsteir.coffeewithme.domain.request.Friendship;
-import com.eirsteir.coffeewithme.domain.request.enums.FriendRequestStatus;
+import com.eirsteir.coffeewithme.domain.friendship.Friendship;
+import com.eirsteir.coffeewithme.domain.friendship.FriendshipStatus;
 import com.eirsteir.coffeewithme.domain.user.User;
 import com.eirsteir.coffeewithme.exception.CWMException;
 import com.eirsteir.coffeewithme.exception.EntityType;
@@ -36,7 +36,7 @@ public class FriendshipServiceImpl implements FriendshipService {
     @Override
     public FriendshipDto addFriendship(FriendRequestDto friendRequestDto) {
 
-        if (friendRequestDto.getStatus() == FriendRequestStatus.ACCEPTED)
+        if (friendRequestDto.getStatus() == FriendshipStatus.ACCEPTED)
             return registerFriendship(friendRequestDto.getFrom(), friendRequestDto.getTo());
 
         throw CWMException.getException(EntityType.FRIENDSHIP,
@@ -67,4 +67,5 @@ public class FriendshipServiceImpl implements FriendshipService {
     private boolean friendshipExists(User from, User to) {
         return friendshipRepository.existsByFromAndTo(from, to);
     }
+
 }

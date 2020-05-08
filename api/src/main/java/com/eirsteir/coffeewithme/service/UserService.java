@@ -1,7 +1,10 @@
 package com.eirsteir.coffeewithme.service;
 
+import com.eirsteir.coffeewithme.domain.user.User;
 import com.eirsteir.coffeewithme.web.dto.UserDto;
 import com.eirsteir.coffeewithme.web.request.UserRegistrationRequest;
+
+import java.util.Collection;
 
 public interface UserService {
 
@@ -12,4 +15,8 @@ public interface UserService {
     UserDto updateProfile(UserDto userDto);
 
     UserDto findUserById(Long id);
+
+    void addFriend(UserDto userDto);
+
+    Collection<UserDto> findAllFriends(UserDto userDto);
 }
