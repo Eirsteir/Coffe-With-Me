@@ -4,7 +4,7 @@ import com.eirsteir.coffeewithme.dto.FriendshipDto;
 import com.eirsteir.coffeewithme.dto.UserDto;
 import com.eirsteir.coffeewithme.web.request.FriendshipRequest;
 
-import java.util.Collection;
+import java.util.List;
 
 public interface FriendshipService {
 
@@ -16,6 +16,6 @@ public interface FriendshipService {
 
     FriendshipDto blockFriendShip(FriendshipDto friendshipDto);
 
-    Collection<UserDto> findFriendsOf(UserDto userDto);
+    List<UserDto> findFriendsOf(UserDto userDto);
 
 }

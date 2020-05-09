@@ -17,7 +17,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
-import java.util.Collection;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -95,7 +96,11 @@ public class FriendshipServiceImpl implements FriendshipService {
     }
 
     @Override
-    public Collection<UserDto> findFriendsOf(UserDto userDto) {
-        return null;
+    public List<UserDto> findFriendsOf(UserDto userDto) {
+        User user = modelMapper.map(userService.findUserById(userDto.getId()), User.class);
+        return friendshipRepository.findByIdRequesterOrIdAddresseeAndStatus(user, user, FriendshipStatus.ACCEPTED)
+                .stream()
+                .map(friend -> modelMapper.map(friend, UserDto.class))
+                .collect(Collectors.toUnmodifiableList());
     }
 }

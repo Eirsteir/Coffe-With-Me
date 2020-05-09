@@ -17,6 +17,7 @@ import javax.validation.constraints.NotBlank;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class UpdateProfileRequest {
 
+    // TODO: 09.05.2020 Verify no spaces in username
     @NotBlank(message = "Username is required")
     private String username;
 
