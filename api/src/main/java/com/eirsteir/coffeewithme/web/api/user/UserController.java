@@ -2,7 +2,7 @@ package com.eirsteir.coffeewithme.web.api.user;
 
 
 import com.eirsteir.coffeewithme.dto.UserDto;
-import com.eirsteir.coffeewithme.service.user.UserPrincipalImpl;
+import com.eirsteir.coffeewithme.service.UserPrincipalImpl;
 import com.eirsteir.coffeewithme.service.user.UserService;
 import com.eirsteir.coffeewithme.web.request.UpdateProfileRequest;
 import io.swagger.annotations.Api;

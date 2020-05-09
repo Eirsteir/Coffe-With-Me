@@ -1,5 +1,6 @@
 package com.eirsteir.coffeewithme.service.user;
 
+import com.eirsteir.coffeewithme.domain.user.User;
 import com.eirsteir.coffeewithme.dto.UserDto;
 import com.eirsteir.coffeewithme.web.request.UserRegistrationRequest;
 
@@ -11,6 +12,6 @@ public interface UserService {
 
     UserDto updateProfile(UserDto userDto);
 
-    UserDto findUserById(Long id);
+    User findUserById(Long id);
 
 }

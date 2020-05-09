@@ -1,6 +1,6 @@
 package com.eirsteir.coffeewithme.service;
 
-import com.eirsteir.coffeewithme.domain.FriendshipId;
+import com.eirsteir.coffeewithme.domain.friendship.FriendshipId;
 import com.eirsteir.coffeewithme.domain.friendship.Friendship;
 import com.eirsteir.coffeewithme.domain.friendship.FriendshipStatus;
 import com.eirsteir.coffeewithme.domain.user.User;
@@ -107,9 +107,9 @@ class FriendshipServiceImplTest {
         when(friendshipRepository.save(Mockito.any(Friendship.class)))
                 .thenReturn(friendship);
         when(userService.findUserById(requester.getId()))
-                .thenReturn(modelMapper.map(requester, UserDto.class));
+                .thenReturn(requester);
         when(userService.findUserById(addressee.getId()))
-                .thenReturn(modelMapper.map(addressee, UserDto.class));
+                .thenReturn(addressee);
     }
 
     @Test

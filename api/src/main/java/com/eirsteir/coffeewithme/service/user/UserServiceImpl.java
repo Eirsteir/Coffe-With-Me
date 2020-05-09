@@ -68,11 +68,9 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserDto findUserById(Long id) {
-        User userModel = userRepository.findById(id)
+    public User findUserById(Long id) {
+        return userRepository.findById(id)
                         .orElseThrow(() -> CWMException.getException(USER, ENTITY_NOT_FOUND, id.toString()));
-
-        return modelMapper.map(userModel, UserDto.class);
     }
 
     @Override

@@ -1,6 +1,6 @@
 package com.eirsteir.coffeewithme.service.friendship;
 
-import com.eirsteir.coffeewithme.domain.FriendshipId;
+import com.eirsteir.coffeewithme.domain.friendship.FriendshipId;
 import com.eirsteir.coffeewithme.domain.friendship.Friendship;
 import com.eirsteir.coffeewithme.domain.friendship.FriendshipStatus;
 import com.eirsteir.coffeewithme.domain.user.User;
@@ -44,7 +44,7 @@ public class FriendshipServiceImpl implements FriendshipService {
                 .addressee(addressee)
                 .build();
 
-        if (friendshipExists(friendshipId))
+        if (friendshipExistsById(friendshipId))
             throw CWMException.getException(EntityType.FRIENDSHIP,
                                             ExceptionType.DUPLICATE_ENTITY,
                                             friendshipId.toString());
@@ -58,15 +58,11 @@ public class FriendshipServiceImpl implements FriendshipService {
         return modelMapper.map(registeredFriendship, FriendshipDto.class);
     }
 
-    private boolean friendshipExists(FriendshipId friendshipId) {
-        return friendshipRepository.existsById(friendshipId);
-    }
-
     @Override
     public void removeFriendship(FriendshipDto friendshipDto) {
         FriendshipId id = modelMapper.map(friendshipDto.getId(), FriendshipId.class);
 
-        if (friendshipExists(id)) {
+        if (friendshipExistsById(id)) {
             friendshipRepository.deleteById(id);
             log.info("[x] Removed friendship: {}", friendshipDto);
         }
@@ -78,7 +74,14 @@ public class FriendshipServiceImpl implements FriendshipService {
 
     @Override
     public FriendshipDto acceptFriendship(FriendshipDto friendshipDto) {
-        FriendshipId id = modelMapper.map(friendshipDto.getId(), FriendshipId.class);
+        System.out.println(friendshipDto);
+        User requester = userService.findUserById(friendshipDto.getId().getRequester().getId());
+        User addressee = userService.findUserById(friendshipDto.getId().getAddressee().getId());
+
+        FriendshipId id = FriendshipId.builder()
+                .requester(requester)
+                .addressee(addressee)
+                .build();
 
         if (friendshipDto.getStatus() == FriendshipStatus.REQUESTED) {
             Friendship friendship = friendshipRepository.findById(id)
@@ -106,7 +109,17 @@ public class FriendshipServiceImpl implements FriendshipService {
         User user = modelMapper.map(userService.findUserById(userDto.getId()), User.class);
         return friendshipRepository.findByIdRequesterOrIdAddresseeAndStatus(user, user, FriendshipStatus.ACCEPTED)
                 .stream()
-                .map(friendship -> modelMapper.map(friendship, FriendshipDto.class))
+                .map(friendship -> {
+                    User friend = friendship.getId().getRequester().equals(user)
+                            ? friendship.getId().getRequester()
+                            : friendship.getId().getAddressee();
+
+                    return modelMapper.map(friend, UserDto.class);
+                })
                 .collect(Collectors.toUnmodifiableList());
+    }
+
+    private boolean friendshipExistsById(FriendshipId friendshipId) {
+        return friendshipRepository.existsById(friendshipId);
     }
 }

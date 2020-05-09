@@ -1,7 +1,7 @@
 package com.eirsteir.coffeewithme.config;
 
 
-import com.eirsteir.coffeewithme.domain.FriendshipId;
+import com.eirsteir.coffeewithme.domain.friendship.FriendshipId;
 import com.eirsteir.coffeewithme.domain.friendship.Friendship;
 import com.eirsteir.coffeewithme.domain.friendship.FriendshipStatus;
 import com.eirsteir.coffeewithme.domain.role.Role;
@@ -98,7 +98,6 @@ public class SetupDataLoader implements ApplicationListener<ContextRefreshedEven
             .status(FriendshipStatus.ACCEPTED)
             .build();
     log.info("[x] Preloading " + friendshipRepository.save(friendship));
-
 
     alreadySetup = true;
   }

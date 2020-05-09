@@ -2,10 +2,9 @@ package com.eirsteir.coffeewithme.web.api.friendship;
 
 import com.eirsteir.coffeewithme.dto.FriendshipDto;
 import com.eirsteir.coffeewithme.dto.UserDto;
+import com.eirsteir.coffeewithme.service.UserPrincipalImpl;
 import com.eirsteir.coffeewithme.service.friendship.FriendshipService;
-import com.eirsteir.coffeewithme.service.user.UserPrincipalImpl;
 import com.eirsteir.coffeewithme.web.request.FriendRequest;
-import com.eirsteir.coffeewithme.web.request.IdentifiableFriendship;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.SwaggerDefinition;
 import io.swagger.annotations.Tag;
@@ -35,7 +34,7 @@ public class FriendshipController {
 
     @GetMapping
     @ResponseBody
-    Collection<FriendshipDto> allFriendships(Authentication authentication) {
+    Collection<UserDto> allFriendships(Authentication authentication) {
         UserPrincipalImpl principal = (UserPrincipalImpl) authentication.getPrincipal();
 
         UserDto userDto = modelMapper.map(principal.getUser(), UserDto.class);
@@ -64,13 +63,17 @@ public class FriendshipController {
         return friendshipService.acceptFriendship(friendshipDto);
     }
 
-    private void validateFriendshipRequest(IdentifiableFriendship friendship, Authentication authentication) {
+    private void validateFriendshipRequest(FriendshipDto friendshipDto, Authentication authentication) {
         UserPrincipalImpl principal = (UserPrincipalImpl) authentication.getPrincipal();
 
-        if (friendship.getRequester().equals(principal.getUser().getId()))
+        Long requesterId = friendshipDto.getId().getRequester().getId();
+        Long addresseeId = friendshipDto.getId().getAddressee().getId();
+        Long principalId = principal.getUser().getId();
+
+        if (requesterId.equals(principalId) || addresseeId.equals(principalId))
             return;
 
         throw new ResponseStatusException(
-                HttpStatus.BAD_REQUEST, "Cannot operate on friend requests from a different user");
+                HttpStatus.BAD_REQUEST, "Friendship does not belong to current user");
     }
 }

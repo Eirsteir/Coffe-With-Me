@@ -1,6 +1,6 @@
 package com.eirsteir.coffeewithme.repository;
 
-import com.eirsteir.coffeewithme.domain.FriendshipId;
+import com.eirsteir.coffeewithme.domain.friendship.FriendshipId;
 import com.eirsteir.coffeewithme.domain.friendship.Friendship;
 import com.eirsteir.coffeewithme.domain.friendship.FriendshipStatus;
 import com.eirsteir.coffeewithme.domain.user.User;

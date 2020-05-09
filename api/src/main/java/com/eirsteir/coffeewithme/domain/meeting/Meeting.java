@@ -2,7 +2,7 @@ package com.eirsteir.coffeewithme.domain.meeting;
 
 
 import com.eirsteir.coffeewithme.domain.CreatedUpdatedDateTimeBaseModel;
-import com.eirsteir.coffeewithme.domain.FriendshipId;
+import com.eirsteir.coffeewithme.domain.friendship.FriendshipId;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;

@@ -2,6 +2,7 @@ package com.eirsteir.coffeewithme.security;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -18,6 +19,7 @@ import org.springframework.security.web.authentication.HttpStatusEntryPoint;
 import static org.springframework.security.config.http.SessionCreationPolicy.ALWAYS;
 
 @Configuration
+@ComponentScan(basePackages = {"com.eirsteir.coffeewithme.service.user"} )
 @EnableWebSecurity
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
