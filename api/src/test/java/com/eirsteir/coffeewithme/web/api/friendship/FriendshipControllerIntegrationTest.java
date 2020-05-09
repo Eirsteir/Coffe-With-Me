@@ -79,17 +79,18 @@ class FriendshipControllerIntegrationTest {
     @PostConstruct
     void setupTestData() {
         userRepository.saveAndFlush(User.builder()
-                                                        .email(REQUESTER_EMAIL)
-                                                        .username(REQUESTER_USERNAME)
-                                                        .build());
+                .email(REQUESTER_EMAIL)
+                .username(REQUESTER_USERNAME)
+                .build());
+
         userRepository.saveAndFlush(User.builder()
-                                                        .email(ADDRESSEE_EMAIL)
-                                                        .username(ADDRESSEE_USERNAME)
-                                                        .build());
+                .email(ADDRESSEE_EMAIL)
+                .username(ADDRESSEE_USERNAME)
+                .build());
         userRepository.saveAndFlush(User.builder()
-                                                             .email(OTHER_USER_EMAIL)
-                                                             .username(OTHER_USER_USERNAME)
-                                                             .build());
+                 .email(OTHER_USER_EMAIL)
+                 .username(OTHER_USER_USERNAME)
+                 .build());
         requester = userRepository.findByEmail(REQUESTER_EMAIL).get();
         addressee = userRepository.findByEmail(ADDRESSEE_EMAIL).get();
         otherUser = userRepository.findByEmail(OTHER_USER_EMAIL).get();
@@ -152,6 +153,17 @@ class FriendshipControllerIntegrationTest {
     }
 
     @Test
+    @WithUserDetails(value = REQUESTER_EMAIL, userDetailsServiceBeanName = "userDetailsService")
+    void testAddFriendshipToSelf() throws Exception {
+
+        mvc.perform(post("/api/user/friends")
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .param("to_friend", requester.getId().toString()))
+                .andDo(print())
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
     @WithUserDetails(value = OTHER_USER_EMAIL, userDetailsServiceBeanName = "userDetailsService")
     void acceptFriendship() throws Exception {
         FriendshipDto friendshipDto = modelMapper.map(requestedFriendship, FriendshipDto.class);
@@ -163,5 +175,16 @@ class FriendshipControllerIntegrationTest {
                 .andExpect(jsonPath("$.id.requester.email", equalTo(REQUESTER_EMAIL)))
                 .andExpect(jsonPath("$.id.addressee.email", equalTo(OTHER_USER_EMAIL)))
                 .andExpect(jsonPath("$.status", equalTo(FriendshipStatus.ACCEPTED.getStatus())));
+    }
+
+    @Test
+    @WithUserDetails(value = ADDRESSEE_EMAIL, userDetailsServiceBeanName = "userDetailsService")
+    void acceptFriendshipNotBelongingToUser() throws Exception {
+        FriendshipDto friendshipDto = modelMapper.map(requestedFriendship, FriendshipDto.class);
+
+        mvc.perform(put("/api/user/friends")
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(JSONUtils.asJsonString(friendshipDto)))
+                .andExpect(status().isBadRequest());
     }
 }

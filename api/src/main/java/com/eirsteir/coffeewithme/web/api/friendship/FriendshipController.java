@@ -23,7 +23,7 @@ import java.util.Collection;
 @RequestMapping("/api/user/friends")
 @Api(tags = {"Swagger Resource"})
 @SwaggerDefinition(tags = {
-        @Tag(name = "Swagger Resource", description = "User registration management operations for this application")
+        @Tag(name = "Swagger Resource", description = "Friendship management operations for this application")
 })
 public class FriendshipController {
 
@@ -47,6 +47,10 @@ public class FriendshipController {
     FriendshipDto addFriendship(@RequestParam("to_friend") Long toFriend, Authentication authentication) {
         UserPrincipalImpl principal = (UserPrincipalImpl) authentication.getPrincipal();
 
+        if (principal.getUser().getId().equals(toFriend))
+            throw new ResponseStatusException(
+                    HttpStatus.BAD_REQUEST, "Cannot send friend requests to yourself");
+
         return friendshipService.registerFriendship(FriendRequest.builder()
                                                             .requesterId(principal.getUser().getId())
                                                             .addresseeId(toFriend)
@@ -60,11 +64,13 @@ public class FriendshipController {
         return friendshipService.acceptFriendship(friendshipDto);
     }
 
-    private void validateFriendshipRequest(@Valid IdentifiableFriendship friendship, Authentication authentication) {
+    private void validateFriendshipRequest(IdentifiableFriendship friendship, Authentication authentication) {
         UserPrincipalImpl principal = (UserPrincipalImpl) authentication.getPrincipal();
-        System.out.println(friendship);
+
         if (friendship.getRequester().equals(principal.getUser().getId()))
-            throw new ResponseStatusException(
-                    HttpStatus.BAD_REQUEST, "Cannot send friend requests from a different user");
+            return;
+
+        throw new ResponseStatusException(
+                HttpStatus.BAD_REQUEST, "Cannot operate on friend requests from a different user");
     }
 }
