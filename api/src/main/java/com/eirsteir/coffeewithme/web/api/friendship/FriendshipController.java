@@ -54,7 +54,7 @@ public class FriendshipController {
     }
 
     @PutMapping
-    FriendshipDto acceptFriendship(@Valid FriendshipDto friendshipDto, Authentication authentication) {
+    FriendshipDto acceptFriendship(@RequestBody @Valid FriendshipDto friendshipDto, Authentication authentication) {
         validateFriendshipRequest(friendshipDto, authentication);
 
         return friendshipService.acceptFriendship(friendshipDto);
@@ -62,7 +62,7 @@ public class FriendshipController {
 
     private void validateFriendshipRequest(@Valid IdentifiableFriendship friendship, Authentication authentication) {
         UserPrincipalImpl principal = (UserPrincipalImpl) authentication.getPrincipal();
-
+        System.out.println(friendship);
         if (friendship.getRequester().equals(principal.getUser().getId()))
             throw new ResponseStatusException(
                     HttpStatus.BAD_REQUEST, "Cannot send friend requests from a different user");
