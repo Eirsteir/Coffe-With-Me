@@ -1,10 +1,10 @@
 package com.eirsteir.coffeewithme.web.api.friendship;
 
-import com.eirsteir.coffeewithme.service.CWMUserPrincipal;
-import com.eirsteir.coffeewithme.service.FriendshipService;
 import com.eirsteir.coffeewithme.dto.FriendshipDto;
 import com.eirsteir.coffeewithme.dto.UserDto;
-import com.eirsteir.coffeewithme.web.request.FriendshipRequest;
+import com.eirsteir.coffeewithme.service.FriendshipService;
+import com.eirsteir.coffeewithme.service.UserPrincipalImpl;
+import com.eirsteir.coffeewithme.web.request.FriendRequest;
 import com.eirsteir.coffeewithme.web.request.IdentifiableFriendship;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.SwaggerDefinition;
@@ -35,8 +35,8 @@ public class FriendshipController {
 
     @GetMapping
     @ResponseBody
-    Collection<UserDto> allFriendships(Authentication authentication) {
-        CWMUserPrincipal principal = (CWMUserPrincipal) authentication.getPrincipal();
+    Collection<FriendshipDto> allFriendships(Authentication authentication) {
+        UserPrincipalImpl principal = (UserPrincipalImpl) authentication.getPrincipal();
 
         UserDto userDto = modelMapper.map(principal.getUser(), UserDto.class);
         return friendshipService.findFriendsOf(userDto);
@@ -44,10 +44,13 @@ public class FriendshipController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    FriendshipDto addFriendship(@Valid FriendshipRequest friendshipRequest, Authentication authentication) {
-        validateFriendshipRequest(friendshipRequest, authentication);
+    FriendshipDto addFriendship(@RequestParam("to_friend") Long toFriend, Authentication authentication) {
+        UserPrincipalImpl principal = (UserPrincipalImpl) authentication.getPrincipal();
 
-        return friendshipService.registerFriendship(friendshipRequest);
+        return friendshipService.registerFriendship(FriendRequest.builder()
+                                                            .requesterId(principal.getUser().getId())
+                                                            .addresseeId(toFriend)
+                                                            .build());
     }
 
     @PutMapping
@@ -57,10 +60,10 @@ public class FriendshipController {
         return friendshipService.acceptFriendship(friendshipDto);
     }
 
-    private void validateFriendshipRequest(@Valid IdentifiableFriendship identifiableFriendship, Authentication authentication) {
-        CWMUserPrincipal principal = (CWMUserPrincipal) authentication.getPrincipal();
+    private void validateFriendshipRequest(@Valid IdentifiableFriendship friendship, Authentication authentication) {
+        UserPrincipalImpl principal = (UserPrincipalImpl) authentication.getPrincipal();
 
-        if (identifiableFriendship.getRequesterId().equals(principal.getUser().getId()))
+        if (friendship.getRequester().equals(principal.getUser().getId()))
             throw new ResponseStatusException(
                     HttpStatus.BAD_REQUEST, "Cannot send friend requests from a different user");
     }

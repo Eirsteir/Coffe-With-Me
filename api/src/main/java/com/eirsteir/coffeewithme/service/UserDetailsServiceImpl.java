@@ -14,7 +14,7 @@ import org.springframework.stereotype.Service;
 
 @Slf4j
 @Service("userDetailsService")
-public class CWMUserDetailsService implements UserDetailsService {
+public class UserDetailsServiceImpl implements UserDetailsService {
 
   @Autowired
   private UserRepository userRepository;
@@ -26,7 +26,7 @@ public class CWMUserDetailsService implements UserDetailsService {
                     EntityType.USER, ExceptionType.ENTITY_NOT_FOUND, email));
 
     log.info("[x] Loaded user {}", user);
-    return new CWMUserPrincipal(user);
+    return new UserPrincipalImpl(user);
   }
 
 }

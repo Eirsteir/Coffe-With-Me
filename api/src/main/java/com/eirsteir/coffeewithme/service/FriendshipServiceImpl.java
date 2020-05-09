@@ -10,7 +10,7 @@ import com.eirsteir.coffeewithme.exception.CWMException;
 import com.eirsteir.coffeewithme.exception.EntityType;
 import com.eirsteir.coffeewithme.exception.ExceptionType;
 import com.eirsteir.coffeewithme.repository.FriendshipRepository;
-import com.eirsteir.coffeewithme.web.request.FriendshipRequest;
+import com.eirsteir.coffeewithme.web.request.FriendRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,9 +35,9 @@ public class FriendshipServiceImpl implements FriendshipService {
     private ModelMapper modelMapper;
 
     @Override
-    public FriendshipDto registerFriendship(FriendshipRequest friendshipRequest) {
-        User requester = modelMapper.map(userService.findUserById(friendshipRequest.getRequesterId()), User.class);
-        User addressee = modelMapper.map(userService.findUserById(friendshipRequest.getAddresseeId()), User.class);
+    public FriendshipDto registerFriendship(FriendRequest friendRequest) {
+        User requester = modelMapper.map(userService.findUserById(friendRequest.getRequesterId()), User.class);
+        User addressee = modelMapper.map(userService.findUserById(friendRequest.getAddresseeId()), User.class);
         FriendshipId friendshipId = FriendshipId.builder()
                 .requester(requester)
                 .addressee(addressee)
@@ -63,8 +63,12 @@ public class FriendshipServiceImpl implements FriendshipService {
 
     @Override
     public void removeFriendship(FriendshipDto friendshipDto) {
-        if (friendshipExists(friendshipDto.getId()))
-            friendshipRepository.deleteById(friendshipDto.getId());
+        FriendshipId id = modelMapper.map(friendshipDto.getId(), FriendshipId.class);
+
+        if (friendshipExists(id)) {
+            friendshipRepository.deleteById(id);
+            log.info("[x] Removed friendship: {}", friendshipDto);
+        }
 
         throw CWMException.getException(EntityType.FRIENDSHIP,
                                         ExceptionType.ENTITY_NOT_FOUND,
@@ -73,9 +77,10 @@ public class FriendshipServiceImpl implements FriendshipService {
 
     @Override
     public FriendshipDto acceptFriendship(FriendshipDto friendshipDto) {
+        FriendshipId id = modelMapper.map(friendshipDto.getId(), FriendshipId.class);
 
         if (friendshipDto.getStatus() == FriendshipStatus.REQUESTED) {
-            Friendship friendship = friendshipRepository.findById(friendshipDto.getId())
+            Friendship friendship = friendshipRepository.findById(id)
                     .orElseThrow(() -> CWMException.getException(EntityType.FRIENDSHIP,
                                                                  ExceptionType.ENTITY_NOT_FOUND,
                                                                  friendshipDto.getId().toString()));
@@ -96,11 +101,11 @@ public class FriendshipServiceImpl implements FriendshipService {
     }
 
     @Override
-    public List<UserDto> findFriendsOf(UserDto userDto) {
+    public List<FriendshipDto> findFriendsOf(UserDto userDto) {
         User user = modelMapper.map(userService.findUserById(userDto.getId()), User.class);
         return friendshipRepository.findByIdRequesterOrIdAddresseeAndStatus(user, user, FriendshipStatus.ACCEPTED)
                 .stream()
-                .map(friend -> modelMapper.map(friend, UserDto.class))
+                .map(friendship -> modelMapper.map(friendship, FriendshipDto.class))
                 .collect(Collectors.toUnmodifiableList());
     }
 }

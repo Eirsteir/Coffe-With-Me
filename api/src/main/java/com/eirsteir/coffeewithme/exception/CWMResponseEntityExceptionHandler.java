@@ -6,9 +6,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
-import org.springframework.web.bind.annotation.ControllerAdvice;
-import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
@@ -27,7 +25,7 @@ public class CWMResponseEntityExceptionHandler extends ResponseEntityExceptionHa
         ExceptionResponse exceptionResponse = new ExceptionResponse(new Date(), ex.getMessage(),
                                                                     request.getDescription(false),
                                                                     HttpStatus.INTERNAL_SERVER_ERROR);
-        log.info("[x] Exception thrown:", ex);
+        log.error("[x] An error occurred: ", ex);
         return new ResponseEntity<>(exceptionResponse, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
@@ -37,6 +35,7 @@ public class CWMResponseEntityExceptionHandler extends ResponseEntityExceptionHa
                                                                     request.getDescription(false),
                                                                     HttpStatus.BAD_REQUEST);
 
+        log.error("[x] An error with status code {} occurred in the API: ", HttpStatus.BAD_REQUEST, ex);
         return new ResponseEntity<>(exceptionResponse, HttpStatus.BAD_REQUEST);
     }
 
@@ -51,7 +50,7 @@ public class CWMResponseEntityExceptionHandler extends ResponseEntityExceptionHa
                                                                     "Validation failed",
                                                                     errors,
                                                                     status);
-
+        log.error("[x] Validation failed: {}", errors, ex);
         return new ResponseEntity<>(exceptionResponse, HttpStatus.BAD_REQUEST);
     }
 

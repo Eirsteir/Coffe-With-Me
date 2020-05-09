@@ -1,8 +1,8 @@
 package com.eirsteir.coffeewithme.dto;
 
-import com.eirsteir.coffeewithme.domain.FriendshipId;
 import com.eirsteir.coffeewithme.domain.friendship.FriendshipStatus;
 import com.eirsteir.coffeewithme.web.request.IdentifiableFriendship;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 import lombok.experimental.Accessors;
 
@@ -15,11 +15,12 @@ import lombok.experimental.Accessors;
 @AllArgsConstructor
 public class FriendshipDto implements IdentifiableFriendship {
 
-    private FriendshipId id;
+    private FriendshipIdDto id;
     private FriendshipStatus status;
 
+    @JsonIgnore
     @Override
-    public Long getRequesterId() {
+    public Long getRequester() {
         return id.getRequester().getId();
     }
 }
