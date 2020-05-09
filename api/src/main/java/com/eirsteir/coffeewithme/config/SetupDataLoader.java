@@ -1,10 +1,14 @@
 package com.eirsteir.coffeewithme.config;
 
 
+import com.eirsteir.coffeewithme.domain.FriendshipId;
+import com.eirsteir.coffeewithme.domain.friendship.Friendship;
+import com.eirsteir.coffeewithme.domain.friendship.FriendshipStatus;
 import com.eirsteir.coffeewithme.domain.role.Role;
 import com.eirsteir.coffeewithme.domain.role.RoleType;
 import com.eirsteir.coffeewithme.domain.user.User;
 import com.eirsteir.coffeewithme.domain.user.UserType;
+import com.eirsteir.coffeewithme.repository.FriendshipRepository;
 import com.eirsteir.coffeewithme.repository.RoleRepository;
 import com.eirsteir.coffeewithme.repository.UserRepository;
 import lombok.extern.slf4j.Slf4j;
@@ -31,7 +35,11 @@ public class SetupDataLoader implements ApplicationListener<ContextRefreshedEven
   private RoleRepository roleRepository;
 
   @Autowired
+  private FriendshipRepository friendshipRepository;
+
+  @Autowired
   private PasswordEncoder passwordEncoder;
+
 
   @Override
   @Transactional
@@ -50,33 +58,47 @@ public class SetupDataLoader implements ApplicationListener<ContextRefreshedEven
     Role readerRole = roleRepository.findByType(RoleType.ROLE_READER);
     Role writerRole = roleRepository.findByType(RoleType.ROLE_WRITER);
 
-    User user = User.builder()
-      .name("Admin")
-      .email("admin@test.com")
-      .password(passwordEncoder.encode("admin"))
-      .userType(UserType.LOCAL)
-      .roles(Arrays.asList(adminRole, basicRole, readerRole, writerRole))
-      .build();
+    User adminUser = User.builder()
+            .name("Admin")
+            .username("admin123")
+            .email("admin@test.com")
+            .password(passwordEncoder.encode("admin"))
+            .userType(UserType.LOCAL)
+            .roles(Arrays.asList(adminRole, basicRole, readerRole, writerRole))
+            .build();
 
-    log.info("[x] Preloading " + userRepository.save(user));
+    log.info("[x] Preloading " + userRepository.save(adminUser));
 
     User auditUser = User.builder()
-      .name("Audit")
-      .email("audit@test.com")
-      .password(passwordEncoder.encode("audit"))
-      .userType(UserType.LOCAL)
-      .roles(Arrays.asList(adminRole, basicRole, readerRole))
-      .build();
+            .name("Audit")
+            .username("audit21")
+            .email("audit@test.com")
+            .password(passwordEncoder.encode("audit"))
+            .userType(UserType.LOCAL)
+            .roles(Arrays.asList(adminRole, basicRole, readerRole))
+            .build();
     log.info("[x] Preloading " + userRepository.save(auditUser));
 
     User basicUser = User.builder()
-      .name("User")
-      .email("user@test.com")
-      .password(passwordEncoder.encode("password"))
-      .userType(UserType.LOCAL)
-      .roles(Collections.singletonList(basicRole))
-      .build();
+            .name("User")
+            .username("user01")
+            .email("user@test.com")
+            .password(passwordEncoder.encode("password"))
+            .userType(UserType.LOCAL)
+            .roles(Collections.singletonList(basicRole))
+            .build();
     log.info("[x] Preloading " + userRepository.save(basicUser));
+
+    FriendshipId friendshipId = FriendshipId.builder()
+            .requester(basicUser)
+            .addressee(adminUser)
+            .build();
+    Friendship friendship = Friendship.builder()
+            .id(friendshipId)
+            .status(FriendshipStatus.ACCEPTED)
+            .build();
+    log.info("[x] Preloading " + friendshipRepository.save(friendship));
+
 
     alreadySetup = true;
   }

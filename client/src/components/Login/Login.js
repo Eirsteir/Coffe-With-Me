@@ -25,8 +25,8 @@ const styles = theme => ({
         alignItems: "center"
     },
     textField: {
-        marginLeft: theme.spacing.unit,
-        marginRight: theme.spacing.unit,
+        marginLeft: theme.spacing(1),
+        marginRight: theme.spacing(1),
         width: 200,
         margin: "1em"
     },
@@ -130,7 +130,7 @@ class Login extends React.Component {
             <div className={classes.login}>
                 <Paper className={classes.paper} elevation={16}>
                     <Typography
-                        variant="headline"
+                        variant="h4"
                         component="h3"
                         className={classes.control}
                         style={{
@@ -195,7 +195,7 @@ class Login extends React.Component {
                         <Button
                             className={classes.button}
                             onClick={this.onSubmit}
-                            variant="raised"
+                            variant="text"
                             label="Submit"
                             type="submit"
                             color="secondary"

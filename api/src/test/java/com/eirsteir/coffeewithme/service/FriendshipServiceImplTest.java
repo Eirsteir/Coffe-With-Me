@@ -8,6 +8,9 @@ import com.eirsteir.coffeewithme.dto.FriendshipDto;
 import com.eirsteir.coffeewithme.dto.UserDto;
 import com.eirsteir.coffeewithme.exception.CWMException;
 import com.eirsteir.coffeewithme.repository.FriendshipRepository;
+import com.eirsteir.coffeewithme.service.friendship.FriendshipService;
+import com.eirsteir.coffeewithme.service.friendship.FriendshipServiceImpl;
+import com.eirsteir.coffeewithme.service.user.UserService;
 import com.eirsteir.coffeewithme.web.request.FriendRequest;
 import config.CWMExceptionTestConfig;
 import org.junit.jupiter.api.BeforeEach;
@@ -199,7 +202,7 @@ class FriendshipServiceImplTest {
                                                                           Mockito.any(FriendshipStatus.class)))
                 .thenReturn(Arrays.asList(Friendship.builder().build(),
                                           Friendship.builder().build()));
-        List<FriendshipDto> friendsOf = friendshipService.findFriendsOf(modelMapper.map(requester, UserDto.class));
+        List<UserDto> friendsOf = friendshipService.findFriendsOf(modelMapper.map(requester, UserDto.class));
 
         assertThat(friendsOf).hasSize(2);
     }

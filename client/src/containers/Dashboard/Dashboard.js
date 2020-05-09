@@ -1,11 +1,24 @@
 import React from "react";
 import { Redirect } from "react-router-dom";
 
+import FriendsList from "../../components/Friends/FriendsList"
 import "./Dashboard.css";
 
+const initialState = {
+    isAuthenticated: false,
+    user: {
+        id: "",
+        name: "",
+        email: "",
+        username: "",
+    },
+    friends: [],
+    isLoading: false
+};
 class Dashboard extends React.Component {
     constructor(props) {
         super(props);
+        this.state = initialState;
     }
 
     componentDidMount() {
@@ -37,7 +50,13 @@ class Dashboard extends React.Component {
                 this.toggleLoading();
             });
     };
-    
+
+    toggleLoading = () => {
+        this.setState((prevState, props) => ({
+            isLoading: !prevState.isLoading
+        }));
+    };
+
     render() {
         const { loadUser, user } = this.props;
 
@@ -48,17 +67,7 @@ class Dashboard extends React.Component {
         return (
             <div className="dashboard-container">
                 <h2>Welcome {user.name}</h2>
-                { this.state.friends && (
-                    <ul>
-                        {this.state.friends.map(friend => (
-                            <li key={friend.id}>
-                                <div>{friend.id}</div>
-                                <div>{friend.name}</div>
-                                { friend.username ? <div>{friend.username}</div> :  null}
-                            </li>
-                        ))}
-                    </ul>
-                )}
+                <FriendsList friends={this.state.friends} />
             </div>
         );
     }

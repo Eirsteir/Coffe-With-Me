@@ -1,4 +1,4 @@
-package com.eirsteir.coffeewithme.service;
+package com.eirsteir.coffeewithme.service.friendship;
 
 import com.eirsteir.coffeewithme.dto.FriendshipDto;
 import com.eirsteir.coffeewithme.dto.UserDto;
@@ -17,6 +17,6 @@ public interface FriendshipService {
 
     FriendshipDto blockFriendShip(FriendshipDto friendshipDto);
 
-    List<FriendshipDto> findFriendsOf(UserDto userDto);
+    List<UserDto> findFriendsOf(UserDto userDto);
 
 }

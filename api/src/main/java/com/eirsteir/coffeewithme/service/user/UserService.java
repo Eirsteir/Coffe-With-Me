@@ -1,4 +1,4 @@
-package com.eirsteir.coffeewithme.service;
+package com.eirsteir.coffeewithme.service.user;
 
 import com.eirsteir.coffeewithme.dto.UserDto;
 import com.eirsteir.coffeewithme.web.request.UserRegistrationRequest;

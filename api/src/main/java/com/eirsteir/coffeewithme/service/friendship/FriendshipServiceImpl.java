@@ -1,4 +1,4 @@
-package com.eirsteir.coffeewithme.service;
+package com.eirsteir.coffeewithme.service.friendship;
 
 import com.eirsteir.coffeewithme.domain.FriendshipId;
 import com.eirsteir.coffeewithme.domain.friendship.Friendship;
@@ -10,6 +10,7 @@ import com.eirsteir.coffeewithme.exception.CWMException;
 import com.eirsteir.coffeewithme.exception.EntityType;
 import com.eirsteir.coffeewithme.exception.ExceptionType;
 import com.eirsteir.coffeewithme.repository.FriendshipRepository;
+import com.eirsteir.coffeewithme.service.user.UserService;
 import com.eirsteir.coffeewithme.web.request.FriendRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
@@ -101,7 +102,7 @@ public class FriendshipServiceImpl implements FriendshipService {
     }
 
     @Override
-    public List<FriendshipDto> findFriendsOf(UserDto userDto) {
+    public List<UserDto> findFriendsOf(UserDto userDto) {
         User user = modelMapper.map(userService.findUserById(userDto.getId()), User.class);
         return friendshipRepository.findByIdRequesterOrIdAddresseeAndStatus(user, user, FriendshipStatus.ACCEPTED)
                 .stream()

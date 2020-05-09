@@ -2,8 +2,8 @@ package com.eirsteir.coffeewithme.web.api.user;
 
 
 import com.eirsteir.coffeewithme.dto.UserDto;
-import com.eirsteir.coffeewithme.service.UserPrincipalImpl;
-import com.eirsteir.coffeewithme.service.UserService;
+import com.eirsteir.coffeewithme.service.user.UserPrincipalImpl;
+import com.eirsteir.coffeewithme.service.user.UserService;
 import com.eirsteir.coffeewithme.web.request.UpdateProfileRequest;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.SwaggerDefinition;
@@ -18,7 +18,7 @@ import javax.validation.Valid;
 
 @Slf4j
 @RestController
-@RequestMapping("/api/user")
+@RequestMapping("/user")
 @Api(tags = {"Swagger Resource"})
 @SwaggerDefinition(tags = {
         @Tag(name = "Swagger Resource", description = "User management operations for this application")

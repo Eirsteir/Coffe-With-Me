@@ -6,7 +6,6 @@ import { MuiThemeProvider, createMuiTheme } from "@material-ui/core/styles";
 import Navigation from "../../components/Navigation/Navigation";
 import ErrorBoundary from "../../components/ErrorBoundary/ErrorBoundary";
 import Main from "../Main/Main";
-import {createBasicAuthToken} from "../../helpers/auth-headers";
 
 
 const theme = createMuiTheme({

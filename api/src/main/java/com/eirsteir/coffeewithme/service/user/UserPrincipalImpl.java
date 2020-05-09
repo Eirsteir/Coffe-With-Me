@@ -1,4 +1,4 @@
-package com.eirsteir.coffeewithme.service;
+package com.eirsteir.coffeewithme.service.user;
 
 
 import com.eirsteir.coffeewithme.domain.role.Role;

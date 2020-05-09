@@ -1,6 +1,6 @@
 package com.eirsteir.coffeewithme.web.api.user;
 
-import com.eirsteir.coffeewithme.service.UserService;
+import com.eirsteir.coffeewithme.service.user.UserService;
 import com.eirsteir.coffeewithme.dto.UserDto;
 import com.eirsteir.coffeewithme.web.request.UserRegistrationRequest;
 import io.swagger.annotations.Api;

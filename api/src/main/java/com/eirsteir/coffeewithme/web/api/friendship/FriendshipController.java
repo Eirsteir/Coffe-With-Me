@@ -2,8 +2,8 @@ package com.eirsteir.coffeewithme.web.api.friendship;
 
 import com.eirsteir.coffeewithme.dto.FriendshipDto;
 import com.eirsteir.coffeewithme.dto.UserDto;
-import com.eirsteir.coffeewithme.service.FriendshipService;
-import com.eirsteir.coffeewithme.service.UserPrincipalImpl;
+import com.eirsteir.coffeewithme.service.friendship.FriendshipService;
+import com.eirsteir.coffeewithme.service.user.UserPrincipalImpl;
 import com.eirsteir.coffeewithme.web.request.FriendRequest;
 import com.eirsteir.coffeewithme.web.request.IdentifiableFriendship;
 import io.swagger.annotations.Api;
@@ -20,7 +20,7 @@ import javax.validation.Valid;
 import java.util.Collection;
 
 @RestController
-@RequestMapping("/api/user/friends")
+@RequestMapping("/user/friends")
 @Api(tags = {"Swagger Resource"})
 @SwaggerDefinition(tags = {
         @Tag(name = "Swagger Resource", description = "Friendship management operations for this application")

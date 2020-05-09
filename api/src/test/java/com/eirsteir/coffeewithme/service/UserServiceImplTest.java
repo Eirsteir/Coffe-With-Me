@@ -4,6 +4,8 @@ import com.eirsteir.coffeewithme.domain.user.User;
 import com.eirsteir.coffeewithme.exception.CWMException;
 import com.eirsteir.coffeewithme.repository.UserRepository;
 import com.eirsteir.coffeewithme.dto.UserDto;
+import com.eirsteir.coffeewithme.service.user.UserService;
+import com.eirsteir.coffeewithme.service.user.UserServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
