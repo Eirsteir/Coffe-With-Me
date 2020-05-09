@@ -21,7 +21,6 @@ import java.util.Optional;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
-
 @SpringBootTest
 @RunWith(SpringRunner.class)
 class UserServiceImplTest {
@@ -88,31 +87,6 @@ class UserServiceImplTest {
                 .withMessage("Requested user with email - not.found@email.com does not exist.");
     }
 
-    @Test
-    void testLoginOrSignUpWhenSignUpReturnsSavedUserDto() {
-        String newUserEmail = "not.saved@email.com";
-        User newUser = User.builder()
-                .email(newUserEmail)
-                .name("irrelevant")
-                .mobileNumber("12345678")
-                .build();
-
-        Mockito.when(userRepository.findByEmail(newUserEmail))
-                .thenReturn(Optional.empty());
-        Mockito.when(userRepository.save(Mockito.any(User.class)))
-                .thenReturn(newUser);
-
-//        UserDto signedUpUserDto = userService.signUp(modelMapper.map(newUser, UserDto.class));
-//
-//        assertThat(signedUpUserDto.getEmail()).isEqualTo(newUserEmail);
-    }
-
-    @Test
-    void testLoginOrSignUpWhenLoginReturnsSavedUserDto() {
-//        UserDto loggedInUserDto = userService.loginOrSignUp(userDto);
-//
-//        assertThat(loggedInUserDto.getEmail()).isEqualTo(EMAIL_ALEX);
-    }
 
     @Test
     void testUpdateProfileUserReturnsUpdatedUserDyo() {
