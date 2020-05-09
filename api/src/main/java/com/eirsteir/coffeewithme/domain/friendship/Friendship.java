@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
+import lombok.experimental.Accessors;
 import lombok.experimental.SuperBuilder;
 
 import javax.persistence.EmbeddedId;
@@ -16,6 +17,7 @@ import javax.persistence.Entity;
 @ToString
 @SuperBuilder
 @NoArgsConstructor
+@Accessors(chain = true)
 @Entity
 public class Friendship extends CreatedUpdatedDateTimeBaseModel {
 

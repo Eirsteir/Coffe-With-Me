@@ -64,11 +64,29 @@ public class FriendshipServiceImpl implements FriendshipService {
     public void removeFriendship(FriendshipDto friendshipDto) {
         if (friendshipExists(friendshipDto.getId()))
             friendshipRepository.deleteById(friendshipDto.getId());
+
+        throw CWMException.getException(EntityType.FRIENDSHIP,
+                                        ExceptionType.ENTITY_NOT_FOUND,
+                                        friendshipDto.getId().toString());
     }
 
     @Override
     public FriendshipDto acceptFriendship(FriendshipDto friendshipDto) {
-        return null;
+
+        if (friendshipDto.getStatus() == FriendshipStatus.REQUESTED) {
+            Friendship friendship = friendshipRepository.findById(friendshipDto.getId())
+                    .orElseThrow(() -> CWMException.getException(EntityType.FRIENDSHIP,
+                                                                 ExceptionType.ENTITY_NOT_FOUND,
+                                                                 friendshipDto.getId().toString()));
+
+            Friendship acceptedFriendship = friendshipRepository.save(friendship.setStatus(FriendshipStatus.ACCEPTED));
+            log.info("[x] Friendship was accepted: {}", friendship);
+            return modelMapper.map(acceptedFriendship, FriendshipDto.class);
+        }
+
+        throw CWMException.getException(EntityType.FRIENDSHIP,
+                                        ExceptionType.INVALID_STATUS_CHANGE,
+                                        friendshipDto.getId().toString());
     }
 
     @Override

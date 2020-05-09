@@ -35,8 +35,8 @@ public class CWMException {
         }
     }
 
-    public static class EntityException extends RuntimeException {
-        public EntityException(String message) {
+    public static class InvalidStatusChangeException extends RuntimeException {
+        public InvalidStatusChangeException(String message) {
             super(message);
         }
     }
@@ -46,6 +46,8 @@ public class CWMException {
             return new EntityNotFoundException(format(messageTemplate, args));
         else if (ExceptionType.DUPLICATE_ENTITY.equals(exceptionType))
             return new DuplicateEntityException(format(messageTemplate, args));
+        else if (ExceptionType.INVALID_STATUS_CHANGE.equals(exceptionType))
+            return new InvalidStatusChangeException(format(messageTemplate, args));
 
         return new RuntimeException(format(messageTemplate, args));
     }

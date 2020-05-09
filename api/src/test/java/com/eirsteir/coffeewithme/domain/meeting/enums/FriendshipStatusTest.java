@@ -17,7 +17,7 @@ class FriendshipStatusTest {
         return Stream.of(
                 Arguments.of(FriendshipStatus.REQUESTED, 1),
                 Arguments.of(FriendshipStatus.ACCEPTED, 2),
-                Arguments.of(FriendshipStatus.REJECTED, 3)
+                Arguments.of(FriendshipStatus.BLOCKED, 3)
         );
     }
 
@@ -32,7 +32,7 @@ class FriendshipStatusTest {
         return Stream.of(
                 Arguments.of(FriendshipStatus.REQUESTED, "PENDING"),
                 Arguments.of(FriendshipStatus.ACCEPTED, "ACCEPTED"),
-                Arguments.of(FriendshipStatus.REJECTED, "REJECTED")
+                Arguments.of(FriendshipStatus.BLOCKED, "BLOCKED")
         );
     }
     @ParameterizedTest

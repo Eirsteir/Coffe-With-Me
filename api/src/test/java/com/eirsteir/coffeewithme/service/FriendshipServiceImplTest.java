@@ -23,7 +23,9 @@ import org.springframework.context.annotation.Import;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import static com.eirsteir.coffeewithme.domain.friendship.FriendshipStatus.REQUESTED;
+import java.util.Optional;
+
+import static com.eirsteir.coffeewithme.domain.friendship.FriendshipStatus.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.mockito.Mockito.when;
@@ -75,6 +77,7 @@ class FriendshipServiceImplTest {
                 .id(1L)
                .username(REQUESTER_USERNAME)
                .build();
+
         addressee = User.builder()
                 .id(2L)
                .username(ADDRESSEE_USERNAME)
@@ -123,7 +126,52 @@ class FriendshipServiceImplTest {
     }
 
     @Test
-    void testRemoveFriendship() {
+    void testRemoveFriendshipWhenNotFound() {
+        when(friendshipRepository.existsById(Mockito.any(FriendshipId.class)))
+                .thenReturn(true);
+
+        FriendshipDto friendshipDto = modelMapper.map(friendship, FriendshipDto.class);
+
+        assertThatExceptionOfType(CWMException.EntityNotFoundException.class)
+                .isThrownBy(() -> friendshipService.removeFriendship(friendshipDto))
+                .withMessage("Requested friendship with id=" + friendshipId + " does not exist");
+    }
+
+    @Test
+    void testAcceptFriendship() {
+        when(friendshipRepository.findById(Mockito.any(FriendshipId.class)))
+                .thenReturn(Optional.ofNullable(friendship));
+
+        FriendshipDto friendshipDto = modelMapper.map(friendship, FriendshipDto.class);
+        FriendshipDto acceptedFriendship = friendshipService.acceptFriendship(friendshipDto);
+
+        assertThat(acceptedFriendship.getStatus()).isEqualTo(ACCEPTED);
+    }
+
+    @Test
+    void testAcceptFriendshipWhenStatusIsNotRequested() {
+        when(friendshipRepository.existsById(Mockito.any(FriendshipId.class)))
+                .thenReturn(true);
+
+        friendship.setStatus(BLOCKED);
+        FriendshipDto friendshipDto = modelMapper.map(friendship, FriendshipDto.class);
+
+        assertThatExceptionOfType(CWMException.InvalidStatusChangeException.class)
+                .isThrownBy(() -> friendshipService.acceptFriendship(friendshipDto))
+                .withMessage("Invalid status change attempted for friendship with id=" + friendshipId);
+    }
+
+    @Test
+    void testAcceptFriendshipWhenNotFound() {
+        when(friendshipRepository.existsById(Mockito.any(FriendshipId.class)))
+                .thenReturn(true);
+
+        friendship.setStatus(REQUESTED);
+        FriendshipDto friendshipDto = modelMapper.map(friendship, FriendshipDto.class);
+
+        assertThatExceptionOfType(CWMException.EntityNotFoundException.class)
+                .isThrownBy(() -> friendshipService.acceptFriendship(friendshipDto))
+                .withMessage("Requested friendship with id=" + friendshipId + " does not exist");
     }
 
 }

@@ -7,8 +7,7 @@ public enum FriendshipStatus implements RequestStatus {
 
     REQUESTED(1),
     ACCEPTED(2),
-    REJECTED(3),
-    CANCELLED(4);
+    BLOCKED(3);
 
     private Integer value;
 

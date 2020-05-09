@@ -5,7 +5,7 @@ import com.eirsteir.coffeewithme.service.FriendshipService;
 import com.eirsteir.coffeewithme.dto.FriendshipDto;
 import com.eirsteir.coffeewithme.dto.UserDto;
 import com.eirsteir.coffeewithme.web.request.FriendshipRequest;
-import com.eirsteir.coffeewithme.web.request.Request;
+import com.eirsteir.coffeewithme.web.request.IdentifiableFriendship;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.SwaggerDefinition;
 import io.swagger.annotations.Tag;
@@ -57,10 +57,10 @@ public class FriendshipController {
         return friendshipService.acceptFriendship(friendshipDto);
     }
 
-    private void validateFriendshipRequest(@Valid Request request, Authentication authentication) {
+    private void validateFriendshipRequest(@Valid IdentifiableFriendship identifiableFriendship, Authentication authentication) {
         CWMUserPrincipal principal = (CWMUserPrincipal) authentication.getPrincipal();
 
-        if (request.getRequesterId().equals(principal.getUser().getId()))
+        if (identifiableFriendship.getRequesterId().equals(principal.getUser().getId()))
             throw new ResponseStatusException(
                     HttpStatus.BAD_REQUEST, "Cannot send friend requests from a different user");
     }

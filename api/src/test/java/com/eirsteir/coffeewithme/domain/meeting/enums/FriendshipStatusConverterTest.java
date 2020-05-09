@@ -20,7 +20,7 @@ class FriendshipStatusConverterTest {
         return Stream.of(
                 Arguments.of(FriendshipStatus.REQUESTED, 1),
                 Arguments.of(FriendshipStatus.ACCEPTED, 2),
-                Arguments.of(FriendshipStatus.REJECTED, 3)
+                Arguments.of(FriendshipStatus.BLOCKED, 3)
         );
     }
 
@@ -36,7 +36,7 @@ class FriendshipStatusConverterTest {
         return Stream.of(
                 Arguments.of(1, FriendshipStatus.REQUESTED),
                 Arguments.of(2, FriendshipStatus.ACCEPTED),
-                Arguments.of(3, FriendshipStatus.REJECTED)
+                Arguments.of(3, FriendshipStatus.BLOCKED)
         );
     }
 

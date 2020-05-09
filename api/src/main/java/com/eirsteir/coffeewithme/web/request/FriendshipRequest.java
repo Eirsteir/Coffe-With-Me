@@ -13,7 +13,7 @@ import javax.validation.constraints.NotNull;
 @Accessors(chain = true)
 @NoArgsConstructor
 @AllArgsConstructor
-public class FriendshipRequest implements Request {
+public class FriendshipRequest implements IdentifiableFriendship {
 
     @NotNull(message = "Must be a valid id")
     private Long requesterId;

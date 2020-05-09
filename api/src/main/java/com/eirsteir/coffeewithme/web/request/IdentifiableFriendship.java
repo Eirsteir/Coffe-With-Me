@@ -1,6 +1,6 @@
 package com.eirsteir.coffeewithme.web.request;
 
-public interface Request {
+public interface IdentifiableFriendship {
 
     Long getRequesterId();
 
