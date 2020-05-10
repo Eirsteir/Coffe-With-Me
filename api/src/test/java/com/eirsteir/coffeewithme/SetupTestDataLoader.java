@@ -74,24 +74,28 @@ public class SetupTestDataLoader implements ApplicationListener<ContextRefreshed
                 .get();
 
         FriendshipId friendshipId = FriendshipId.builder()
-                .requester(requester)
-                .addressee(addressee)
+                .requesterId(requester.getId())
+                .addresseeId(addressee.getId())
                 .build();
 
         friendshipRepository.save(Friendship.builder()
-                                                               .id(friendshipId)
-                                                               .status(FriendshipStatus.ACCEPTED)
-                                                               .build());
+                                          .id(friendshipId)
+                                          .requester(requester)
+                                          .addressee(addressee)
+                                          .status(FriendshipStatus.ACCEPTED)
+                                          .build());
 
         FriendshipId requestedFriendshipId = FriendshipId.builder()
-                .requester(requester)
-                .addressee(otherUser)
+                .requesterId(requester.getId())
+                .addresseeId(otherUser.getId())
                 .build();
 
         friendshipRepository.save(Friendship.builder()
-                                                  .id(requestedFriendshipId)
-                                                  .status(FriendshipStatus.REQUESTED)
-                                                  .build());
+                                          .id(requestedFriendshipId)
+                                          .requester(requester)
+                                          .addressee(otherUser)
+                                          .status(FriendshipStatus.REQUESTED)
+                                          .build());
         alreadySetup = true;
     }
 

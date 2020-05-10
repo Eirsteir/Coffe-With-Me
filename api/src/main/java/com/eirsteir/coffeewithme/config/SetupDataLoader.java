@@ -90,8 +90,8 @@ public class SetupDataLoader implements ApplicationListener<ContextRefreshedEven
     log.info("[x] Preloading " + userRepository.save(basicUser));
 
     FriendshipId friendshipId = FriendshipId.builder()
-            .requester(basicUser)
-            .addressee(adminUser)
+            .requesterId(basicUser.getId())
+            .addresseeId(adminUser.getId())
             .build();
     Friendship friendship = Friendship.builder()
             .id(friendshipId)

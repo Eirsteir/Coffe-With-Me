@@ -1,7 +1,7 @@
 package com.eirsteir.coffeewithme.service.friendship;
 
-import com.eirsteir.coffeewithme.domain.friendship.FriendshipId;
 import com.eirsteir.coffeewithme.domain.friendship.Friendship;
+import com.eirsteir.coffeewithme.domain.friendship.FriendshipId;
 import com.eirsteir.coffeewithme.domain.friendship.FriendshipStatus;
 import com.eirsteir.coffeewithme.domain.user.User;
 import com.eirsteir.coffeewithme.dto.FriendshipDto;
@@ -19,7 +19,6 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -40,8 +39,8 @@ public class FriendshipServiceImpl implements FriendshipService {
         User requester = modelMapper.map(userService.findUserById(friendRequest.getRequesterId()), User.class);
         User addressee = modelMapper.map(userService.findUserById(friendRequest.getAddresseeId()), User.class);
         FriendshipId friendshipId = FriendshipId.builder()
-                .requester(requester)
-                .addressee(addressee)
+                .requesterId(requester.getId())
+                .addresseeId(addressee.getId())
                 .build();
 
         if (friendshipExistsById(friendshipId))
@@ -79,8 +78,8 @@ public class FriendshipServiceImpl implements FriendshipService {
         User addressee = userService.findUserById(friendshipDto.getId().getAddressee().getId());
 
         FriendshipId id = FriendshipId.builder()
-                .requester(requester)
-                .addressee(addressee)
+                .requesterId(requester.getId())
+                .addresseeId(addressee.getId())
                 .build();
 
         if (friendshipDto.getStatus() == FriendshipStatus.REQUESTED) {
@@ -107,16 +106,17 @@ public class FriendshipServiceImpl implements FriendshipService {
     @Override
     public List<UserDto> findFriendsOf(UserDto userDto) {
         User user = modelMapper.map(userService.findUserById(userDto.getId()), User.class);
-        return friendshipRepository.findByUserAndStatus(user.getId(), FriendshipStatus.ACCEPTED)
-                .stream()
-                .map(friendship -> {
-                    User friend = friendship.getId().getRequester().equals(user)
-                            ? friendship.getId().getAddressee()
-                            : friendship.getId().getRequester();
-
-                    return modelMapper.map(friend, UserDto.class);
-                })
-                .collect(Collectors.toUnmodifiableList());
+//        return friendshipRepository.findByUserAndStatus(user.getId(), FriendshipStatus.ACCEPTED)
+//                .stream()
+//                .map(friendship -> {
+//                    User friend = friendship.getRequester().equals(user)
+//                            ? friendship.getAddressee()
+//                            : friendship.getRequester();
+//
+//                    return modelMapper.map(friend, UserDto.class);
+//                })
+//                .collect(Collectors.toUnmodifiableList());
+        return null;
     }
 
     private boolean friendshipExistsById(FriendshipId friendshipId) {

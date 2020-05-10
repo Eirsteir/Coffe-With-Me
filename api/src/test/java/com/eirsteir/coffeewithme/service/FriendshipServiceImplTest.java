@@ -1,8 +1,7 @@
 package com.eirsteir.coffeewithme.service;
 
-import com.eirsteir.coffeewithme.domain.friendship.FriendshipId;
 import com.eirsteir.coffeewithme.domain.friendship.Friendship;
-import com.eirsteir.coffeewithme.domain.friendship.FriendshipStatus;
+import com.eirsteir.coffeewithme.domain.friendship.FriendshipId;
 import com.eirsteir.coffeewithme.domain.user.User;
 import com.eirsteir.coffeewithme.dto.FriendshipDto;
 import com.eirsteir.coffeewithme.dto.FriendshipIdDto;
@@ -28,8 +27,6 @@ import org.springframework.context.annotation.Import;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import java.util.Arrays;
-import java.util.List;
 import java.util.Optional;
 
 import static com.eirsteir.coffeewithme.domain.friendship.FriendshipStatus.*;
@@ -91,14 +88,16 @@ class FriendshipServiceImplTest {
                .build();
 
         friendshipId = FriendshipId.builder()
-                .requester(requester)
-                .addressee(addressee)
+                .requesterId(requester.getId())
+                .addresseeId(addressee.getId())
                 .build();
 
         friendship = Friendship.builder()
-               .id(friendshipId)
-               .status(REQUESTED)
-               .build();
+                .id(friendshipId)
+                .requester(requester)
+                .addressee(addressee)
+                .status(REQUESTED)
+                .build();
 
         friendRequest = FriendRequest.builder()
                 .requesterId(requester.getId())
@@ -140,8 +139,8 @@ class FriendshipServiceImplTest {
                 .thenReturn(true);
 
         friendshipId = FriendshipId.builder()
-                .requester(addressee)
-                .addressee(requester)
+                .requesterId(addressee.getId())
+                .addresseeId(requester.getId())
                 .build();
 
         assertThatExceptionOfType(CWMException.DuplicateEntityException.class)
@@ -203,16 +202,6 @@ class FriendshipServiceImplTest {
                 .withMessage("Requested friendship with id=" +
                                      modelMapper.map(friendshipId, FriendshipIdDto.class) +
                                      " does not exist");
-    }
-
-    @Test
-    void testFindAllFriendsOfWhenUserWithFriendsFound() {
-        when(friendshipRepository.findByUserAndStatus(Mockito.anyLong(), Mockito.any(FriendshipStatus.class)))
-                .thenReturn(Arrays.asList(Friendship.builder().build(),
-                                          Friendship.builder().build()));
-        List<UserDto> friendsOf = friendshipService.findFriendsOf(modelMapper.map(requester, UserDto.class));
-
-        assertThat(friendsOf).hasSize(2);
     }
 
     @Test

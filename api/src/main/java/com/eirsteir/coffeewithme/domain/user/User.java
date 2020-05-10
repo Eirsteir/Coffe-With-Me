@@ -2,6 +2,7 @@ package com.eirsteir.coffeewithme.domain.user;
 
 
 import com.eirsteir.coffeewithme.domain.CreatedUpdatedDateTimeBaseModel;
+import com.eirsteir.coffeewithme.domain.friendship.Friendship;
 import com.eirsteir.coffeewithme.domain.role.Role;
 import lombok.*;
 import lombok.experimental.Accessors;
@@ -10,6 +11,7 @@ import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.Date;
+import java.util.Set;
 
 
 @Data
@@ -61,5 +63,8 @@ public class User extends CreatedUpdatedDateTimeBaseModel implements Serializabl
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "users_roles", joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"), inverseJoinColumns = @JoinColumn(name = "role_id", referencedColumnName = "id"))
     private Collection<Role> roles;
+
+    @OneToMany(fetch = FetchType.LAZY)
+    Set<Friendship> friendships;
 
 }

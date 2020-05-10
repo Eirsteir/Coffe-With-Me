@@ -24,11 +24,4 @@ public interface UserRepository extends JpaRepository<User, Long>, JpaSpecificat
     @Transactional
     void updateLastLogin(@Param("lastLogin") Date lastLogin);
 
-    @Query("select u from User u " +
-            "join Friendship f " +
-            "where f.id.requester.id = :userId " +
-            "or f.id.addressee = :userId " +
-            "and f.status = :status")
-    List<User> findFriendsByIdAndStatus(Long userId, FriendshipStatus status);
-
 }

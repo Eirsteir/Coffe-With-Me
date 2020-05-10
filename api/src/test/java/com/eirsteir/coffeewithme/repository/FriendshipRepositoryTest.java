@@ -44,15 +44,15 @@ class FriendshipRepositoryTest {
                 .build());
 
         friendshipId = FriendshipId.builder()
-                .requester(requester)
-                .addressee(addressee)
+                .requesterId(requester.getId())
+                .addresseeId(addressee.getId())
                 .build();
     }
 
     @Test
     void testFindByIdRequesterOrIdAddresseeAndStatusWhenNoResults() {
         List<Friendship> friendsFound = friendshipRepository
-                .findByIdRequesterOrIdAddresseeAndStatus(requester, requester, FriendshipStatus.ACCEPTED);
+                .findByRequesterIdOrAddresseeIdAndStatus(requester.getId(), requester.getId(), FriendshipStatus.ACCEPTED);
         assertThat(friendsFound).isEmpty();
     }
 
@@ -60,66 +60,27 @@ class FriendshipRepositoryTest {
     void testFindAllByExampleOfRequesterWhenRequesterIsAddressee() {
         User otherUser = entityManager.persistFlushFind(User.builder().build());
         FriendshipId id = FriendshipId.builder()
-                .requester(otherUser)
-                .addressee(requester)
+                .requesterId(otherUser.getId())
+                .addresseeId(requester.getId())
                 .build();
 
         friendship = entityManager.persistAndFlush(Friendship.builder()
-                                                           .id(id)
+                                                            .id(id)
+                                                           .requester(requester)
+                                                           .addressee(addressee)
                                                            .status(FriendshipStatus.ACCEPTED)
                                                            .build());
         friendship = entityManager.persistAndFlush(Friendship.builder()
                                                            .id(friendshipId)
+                                                            .requester(requester)
+                                                            .addressee(addressee)
                                                            .status(FriendshipStatus.ACCEPTED)
                                                            .build());
 
         List<Friendship> friendsFound = friendshipRepository
-                .findByIdRequesterOrIdAddresseeAndStatus(requester, requester, FriendshipStatus.ACCEPTED);
+                .findByRequesterIdOrAddresseeIdAndStatus(requester.getId(), requester.getId(), FriendshipStatus.ACCEPTED);
 
         assertThat(friendsFound).hasSize(2);
     }
 
-    @Test
-    void testFindByUserAndStatusWhenExists() {
-        friendship = entityManager.persistAndFlush(Friendship.builder()
-                .id(friendshipId)
-                .status(FriendshipStatus.ACCEPTED)
-                .build());
-
-        List<Friendship> friendsFound = friendshipRepository.findByUserAndStatus(requester.getId(), FriendshipStatus.ACCEPTED);
-        assertThat(friendsFound).hasSize(1);
-    }
-
-    @Test
-    void testFindByUserAndStatusWhenExist() {
-        friendship = entityManager.persistAndFlush(Friendship.builder()
-                .id(friendshipId)
-                .status(FriendshipStatus.ACCEPTED)
-                .build());
-
-        List<Friendship> friendsFound = friendshipRepository.findByUserAndStatus(requester.getId(), FriendshipStatus.ACCEPTED);
-        assertThat(friendsFound).hasSize(1);
-    }
-
-    @Test
-    void testFindByUserAndStatusWhenMoreThanOneFriend() {
-        User otherUser = entityManager.persistFlushFind(User.builder().build());
-        FriendshipId id = FriendshipId.builder()
-                .requester(otherUser)
-                .addressee(requester)
-                .build();
-
-        friendship = entityManager.persistAndFlush(Friendship.builder()
-                                                           .id(id)
-                                                           .status(FriendshipStatus.ACCEPTED)
-                                                           .build());
-        friendship = entityManager.persistAndFlush(Friendship.builder()
-                                                           .id(friendshipId)
-                                                           .status(FriendshipStatus.ACCEPTED)
-                                                           .build());
-
-        List<Friendship> friendsFound = friendshipRepository.findByUserAndStatus(requester.getId(), FriendshipStatus.ACCEPTED);
-
-        assertThat(friendsFound).hasSize(2);
-    }
 }

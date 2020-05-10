@@ -66,22 +66,26 @@ public class UserRepositoryTest {
                                                                 .build());
 
         FriendshipId friendshipId = FriendshipId.builder()
-                .requester(requester)
-                .addressee(addressee)
+                .requesterId(requester.getId())
+                .addresseeId(addressee.getId())
                 .build();
         entityManager.persistAndFlush(Friendship.builder()
                                               .id(friendshipId)
+                                              .requester(requester)
+                                              .addressee(addressee)
                                               .status(FriendshipStatus.ACCEPTED)
                                               .build());
 
         FriendshipId requestedFriendshipId = FriendshipId.builder()
-                .requester(requester)
-                .addressee(otherUser)
-                .build();
+                                                .requesterId(requester.getId())
+                                                .addresseeId(otherUser.getId())
+                                                .build();
         entityManager.persistFlushFind(Friendship.builder()
-                                          .id(requestedFriendshipId)
-                                          .status(FriendshipStatus.REQUESTED)
-                                          .build());
+                                               .id(requestedFriendshipId)
+                                               .requester(requester)
+                                               .addressee(otherUser)
+                                               .status(FriendshipStatus.REQUESTED)
+                                               .build());
     }
 
     @Test

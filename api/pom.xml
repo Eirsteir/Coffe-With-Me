@@ -60,12 +60,12 @@
         <dependency>
             <groupId>io.springfox</groupId>
             <artifactId>springfox-swagger2</artifactId>
-            <version>${springfox-swagger2.version}</version>
+            <version>3.0.0-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>io.springfox</groupId>
-            <artifactId>springfox-swagger-ui</artifactId>
-            <version>${swagger-ui.version}</version>
+            <artifactId>springfox-data-rest</artifactId>
+            <version>3.0.0-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.modelmapper</groupId>
@@ -87,6 +87,7 @@
             <artifactId>spring-search</artifactId>
             <version>0.2.0</version>
         </dependency>
+
 
         <!--    Test dependencies    -->
         <dependency>
@@ -146,5 +147,13 @@
             </plugin>
         </plugins>
     </build>
+
+    <repositories>
+        <repository>
+            <id>jcenter-snapshots</id>
+            <name>jcenter</name>
+            <url>http://oss.jfrog.org/artifactory/oss-snapshot-local/</url>
+        </repository>
+    </repositories>
 
 </project>

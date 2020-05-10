@@ -66,8 +66,8 @@ class FriendshipControllerIntegrationTest {
         User otherUser = userRepository.findByEmail(OTHER_USER_EMAIL).get();
 
         FriendshipId requestedFriendshipId = FriendshipId.builder()
-                .requester(requester)
-                .addressee(otherUser)
+                .requesterId(requester.getId())
+                .addresseeId(otherUser.getId())
                 .build();
 
         requestedFriendship = friendshipRepository.findById(requestedFriendshipId).get();
