@@ -20,7 +20,7 @@ import java.util.Collection;
 
 @RestController
 @RequestMapping("/user/friends")
-@Api(tags = {"Swagger Resource"})
+@Api(tags = {"Friendships"})
 @SwaggerDefinition(tags = {
         @Tag(name = "Swagger Resource", description = "Friendship management operations for this application")
 })

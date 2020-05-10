@@ -22,7 +22,7 @@ import java.util.List;
 
 @Slf4j
 @RestController
-@Api(tags = {"Swagger Resource"})
+@Api(tags = {"Users"})
 @SwaggerDefinition(tags = {
         @Tag(name = "Swagger Resource", description = "User management operations for this application")
 })

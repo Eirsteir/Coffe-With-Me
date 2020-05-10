@@ -59,13 +59,18 @@
         </dependency>
         <dependency>
             <groupId>io.springfox</groupId>
+            <artifactId>springfox-swagger-ui</artifactId>
+            <version>${spring.fox.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>io.springfox</groupId>
             <artifactId>springfox-swagger2</artifactId>
-            <version>3.0.0-SNAPSHOT</version>
+            <version>${spring.fox.version}</version>
         </dependency>
         <dependency>
             <groupId>io.springfox</groupId>
             <artifactId>springfox-data-rest</artifactId>
-            <version>3.0.0-SNAPSHOT</version>
+            <version>${spring.fox.version}</version>
         </dependency>
         <dependency>
             <groupId>org.modelmapper</groupId>
@@ -120,8 +125,7 @@
         <maven.compiler.target>11</maven.compiler.target>
         <passay.version>1.0</passay.version>
         <modelmapper.version>2.3.0</modelmapper.version>
-        <swagger-ui.version>2.9.2</swagger-ui.version>
-        <springfox-swagger2.version>2.9.2</springfox-swagger2.version>
+        <spring.fox.version>3.0.0-SNAPSHOT</spring.fox.version>
     </properties>
 
     <build>
