@@ -64,7 +64,8 @@ public class User extends CreatedUpdatedDateTimeBaseModel implements Serializabl
     @JoinTable(name = "users_roles", joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"), inverseJoinColumns = @JoinColumn(name = "role_id", referencedColumnName = "id"))
     private Collection<Role> roles;
 
-    @OneToMany(fetch = FetchType.LAZY)
+    @ToString.Exclude
+    @OneToMany
     private Set<Friendship> friendships;
 
 }
