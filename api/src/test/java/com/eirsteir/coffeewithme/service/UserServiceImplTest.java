@@ -8,21 +8,15 @@ import com.eirsteir.coffeewithme.service.user.UserService;
 import com.eirsteir.coffeewithme.service.user.UserServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.runner.RunWith;
 import org.mockito.Mockito;
-import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.TestConfiguration;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Bean;
-import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
-@RunWith(SpringRunner.class)
 class UserServiceImplTest {
 
     public static final String EMAIL_ALEX = "alex@email.com";
@@ -37,16 +31,12 @@ class UserServiceImplTest {
         public UserService userService() {
             return new UserServiceImpl();
         }
+
     }
 
-    @Autowired
-    private ModelMapper modelMapper;
+    private UserService userService = new UserServiceImpl();
 
-    @Autowired
-    private UserService userService;
-
-    @MockBean
-    private UserRepository userRepository;
+    private UserRepository userRepository = Mockito.mock(UserRepository.class);
 
     private User user;
     private UserDto userDto;
@@ -65,7 +55,7 @@ class UserServiceImplTest {
                 .mobileNumber(MOBILE_NUMBER_ALEX)
                 .build();
 
-        Mockito.when(userRepository.findByEmail(EMAIL_ALEX))
+         Mockito.when(userRepository.findByEmail(EMAIL_ALEX))
                 .thenReturn(Optional.of(user));
 
         Mockito.when(userRepository.save(Mockito.any(User.class)))

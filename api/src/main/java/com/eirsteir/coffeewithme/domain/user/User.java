@@ -65,6 +65,6 @@ public class User extends CreatedUpdatedDateTimeBaseModel implements Serializabl
     private Collection<Role> roles;
 
     @OneToMany(fetch = FetchType.LAZY)
-    Set<Friendship> friendships;
+    private Set<Friendship> friendships;
 
 }

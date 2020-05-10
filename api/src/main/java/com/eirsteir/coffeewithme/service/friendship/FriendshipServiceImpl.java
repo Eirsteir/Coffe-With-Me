@@ -19,6 +19,7 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -105,18 +106,18 @@ public class FriendshipServiceImpl implements FriendshipService {
 
     @Override
     public List<UserDto> findFriendsOf(UserDto userDto) {
-        User user = modelMapper.map(userService.findUserById(userDto.getId()), User.class);
-//        return friendshipRepository.findByUserAndStatus(user.getId(), FriendshipStatus.ACCEPTED)
-//                .stream()
-//                .map(friendship -> {
-//                    User friend = friendship.getRequester().equals(user)
-//                            ? friendship.getAddressee()
-//                            : friendship.getRequester();
-//
-//                    return modelMapper.map(friend, UserDto.class);
-//                })
-//                .collect(Collectors.toUnmodifiableList());
-        return null;
+        User userModel = modelMapper.map(userService.findUserById(userDto.getId()), User.class);
+        return userModel.getFriendships()
+                .stream()
+                .map(friendship -> this.getFriendFrom(friendship, userModel))
+                .map(user -> modelMapper.map(user, UserDto.class))
+                .collect(Collectors.toList());
+    }
+
+    private User getFriendFrom(Friendship friendship, User userModel) {
+        return friendship.getRequester().equals(userModel)
+        ? friendship.getAddressee()
+        : friendship.getRequester();
     }
 
     private boolean friendshipExistsById(FriendshipId friendshipId) {
