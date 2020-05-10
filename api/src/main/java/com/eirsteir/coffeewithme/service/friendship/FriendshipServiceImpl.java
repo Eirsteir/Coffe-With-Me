@@ -107,7 +107,7 @@ public class FriendshipServiceImpl implements FriendshipService {
     @Override
     public List<UserDto> findFriendsOf(UserDto userDto) {
         User user = modelMapper.map(userService.findUserById(userDto.getId()), User.class);
-        return friendshipRepository.findByIdRequesterOrIdAddresseeAndStatus(user, user, FriendshipStatus.ACCEPTED)
+        return friendshipRepository.findByUserAndStatus(user.getId(), FriendshipStatus.ACCEPTED)
                 .stream()
                 .map(friendship -> {
                     User friend = friendship.getId().getRequester().equals(user)

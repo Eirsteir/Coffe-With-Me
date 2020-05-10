@@ -1,5 +1,8 @@
 package com.eirsteir.coffeewithme.repository;
 
+import com.eirsteir.coffeewithme.domain.friendship.Friendship;
+import com.eirsteir.coffeewithme.domain.friendship.FriendshipId;
+import com.eirsteir.coffeewithme.domain.friendship.FriendshipStatus;
 import com.eirsteir.coffeewithme.domain.user.User;
 import org.junit.Before;
 import org.junit.Test;
@@ -20,6 +23,12 @@ public class UserRepositoryTest {
 
     private final String USER_NAME_ALEX = "Alex";
     private static final String EMAIL_ALEX = "alex@mail.com";
+    private static final String REQUESTER_EMAIL = "requester@test.com";
+    private static final String ADDRESSEE_EMAIL = "addressee@test.com";
+    private static final String REQUESTER_USERNAME = "requester";
+    private static final String ADDRESSEE_USERNAME = "addressee";
+    public static final String OTHER_USER_EMAIL = "other-user@test.com";
+    public static final String OTHER_USER_USERNAME = "other-user";
 
     @Autowired
     private TestEntityManager entityManager;
@@ -28,6 +37,9 @@ public class UserRepositoryTest {
     private UserRepository userRepository;
 
     private User user;
+    private User requester;
+    private User addressee;
+    private User otherUser;
 
     @Before
     public void setUp() {
@@ -37,6 +49,39 @@ public class UserRepositoryTest {
                 .name("Alex")
                 .mobileNumber("12345678")
                 .build();
+
+        requester = entityManager.persistFlushFind(User.builder()
+                                                                .email(REQUESTER_EMAIL)
+                                                                .username(REQUESTER_USERNAME)
+                                                                .build());
+
+        addressee = entityManager.persistFlushFind(User.builder()
+                                                                .email(ADDRESSEE_EMAIL)
+                                                                .username(ADDRESSEE_USERNAME)
+                                                                .build());
+
+        otherUser = entityManager.persistFlushFind(User.builder()
+                                                                .email(OTHER_USER_EMAIL)
+                                                                .username(OTHER_USER_USERNAME)
+                                                                .build());
+
+        FriendshipId friendshipId = FriendshipId.builder()
+                .requester(requester)
+                .addressee(addressee)
+                .build();
+        entityManager.persistAndFlush(Friendship.builder()
+                                              .id(friendshipId)
+                                              .status(FriendshipStatus.ACCEPTED)
+                                              .build());
+
+        FriendshipId requestedFriendshipId = FriendshipId.builder()
+                .requester(requester)
+                .addressee(otherUser)
+                .build();
+        entityManager.persistFlushFind(Friendship.builder()
+                                          .id(requestedFriendshipId)
+                                          .status(FriendshipStatus.REQUESTED)
+                                          .build());
     }
 
     @Test

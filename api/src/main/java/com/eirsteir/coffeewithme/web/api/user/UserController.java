@@ -1,24 +1,27 @@
 package com.eirsteir.coffeewithme.web.api.user;
 
 
+import com.eirsteir.coffeewithme.domain.user.User;
 import com.eirsteir.coffeewithme.dto.UserDto;
 import com.eirsteir.coffeewithme.service.UserPrincipalImpl;
 import com.eirsteir.coffeewithme.service.user.UserService;
 import com.eirsteir.coffeewithme.web.request.UpdateProfileRequest;
+import com.sipios.springsearch.anotation.SearchSpec;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.SwaggerDefinition;
 import io.swagger.annotations.Tag;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.List;
 
 @Slf4j
 @RestController
-@RequestMapping("/user")
 @Api(tags = {"Swagger Resource"})
 @SwaggerDefinition(tags = {
         @Tag(name = "Swagger Resource", description = "User management operations for this application")
@@ -31,14 +34,14 @@ public class UserController {
     @Autowired
     private ModelMapper modelMapper;
 
-    @GetMapping
+    @GetMapping("/user")
     @ResponseBody
     UserDto user(Authentication authentication) {
         UserPrincipalImpl principal = (UserPrincipalImpl) authentication.getPrincipal();
         return modelMapper.map(principal.getUser(), UserDto.class);
     }
 
-    @PutMapping("/update")
+    @PutMapping("/user/update")
     UserDto updateUser(@RequestBody @Valid UpdateProfileRequest updateProfileRequest, Authentication authentication) {
         UserPrincipalImpl principal = (UserPrincipalImpl) authentication.getPrincipal();
 
@@ -47,5 +50,10 @@ public class UserController {
                 .setEmail(principal.getEmail());
 
         return userService.updateProfile(userDto);
+    }
+
+    @GetMapping("/users")
+    List<UserDto> searchForUsers(@SearchSpec Specification<User> specs) {
+        return userService.findAll(specs);
     }
 }
