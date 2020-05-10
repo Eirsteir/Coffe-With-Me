@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 import Typography from "@material-ui/core/Typography";
 import Grid from "@material-ui/core/Grid";
 import Button from "@material-ui/core/Button";
+import Toolbar from "@material-ui/core/Toolbar";
 
 const LandingPage = ({ onRouteChange }) => {
     return (
@@ -51,7 +52,19 @@ const LandingPage = ({ onRouteChange }) => {
                             letterSpacing: 1
                         }}
                     >
-                        Register now
+                        Register
+                    </Link>
+                    <Link
+                        to="/login"
+                        style={{
+                            textDecoration: "none",
+                            color: "#fff",
+                            textTransform: "capitalize",
+                            fontSize: "1rem",
+                            letterSpacing: 1
+                        }}
+                    >
+                        Login
                     </Link>
                 </Button>
             </Grid>

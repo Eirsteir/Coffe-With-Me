@@ -1,12 +1,10 @@
 import React from "react";
 import { withRouter } from "react-router-dom";
 import PropTypes from "prop-types";
-import { withStyles } from "@material-ui/core/styles";
-
+import { withStyles, fade, makeStyles } from "@material-ui/core/styles";
 import AppBar from "@material-ui/core/AppBar";
 import Toolbar from "@material-ui/core/Toolbar";
 import Typography from "@material-ui/core/Typography";
-import Button from "@material-ui/core/Button";
 import IconButton from "@material-ui/core/IconButton";
 import MenuIcon from "@material-ui/icons/Menu";
 import SwipeableDrawer from "@material-ui/core/SwipeableDrawer";
@@ -16,16 +14,25 @@ import ListItem from "@material-ui/core/ListItem";
 import ListItemText from "@material-ui/core/ListItemText";
 import ListItemIcon from "@material-ui/core/ListItemIcon";
 import HomeOutlinedIcon from "@material-ui/icons/Home";
-import PersonIcon from "@material-ui/icons/Person";
+import ExitToAppOutlinedIcon from '@material-ui/icons/ExitToAppOutlined';
+import Menu from "@material-ui/core/Menu";
+import MenuItem from "@material-ui/core/MenuItem";
+import Badge from "@material-ui/core/Badge";
+import NotificationsIcon from "@material-ui/icons/Notifications";
+import AccountCircle from "@material-ui/icons/AccountCircle";
+import InputBase from '@material-ui/core/InputBase';
+import SearchIcon from '@material-ui/icons/Search';
+import MoreIcon from '@material-ui/icons/MoreVert';
+import createMuiTheme from "@material-ui/core/styles/createMuiTheme";
 
 
-const styles = theme => ({
-    root: {
-        flexGrow: 1
-    },
+const theme = createMuiTheme({
+    spacing: 4
+});
+
+const styles = {
     grow: {
         flexGrow: 1,
-        fontWeight: 300
     },
     appBar: {
         boxShadow: "none",
@@ -37,28 +44,77 @@ const styles = theme => ({
         }
     },
     menuButton: {
-        marginRight: "-1rem"
+        marginRight: theme.spacing(2),
+    },
+    title: {
+        display: 'none',
+        [theme.breakpoints.up('sm')]: {
+            display: 'block',
+        },
+        cursor: "pointer"
+    },
+    search: {
+        position: 'relative',
+        borderRadius: theme.shape.borderRadius,
+        backgroundColor: fade(theme.palette.common.white, 0.15),
+        '&:hover': {
+            backgroundColor: fade(theme.palette.common.white, 0.25),
+        },
+        marginRight: theme.spacing(2),
+        marginLeft: 0,
+        width: '100%',
+        [theme.breakpoints.up('sm')]: {
+            marginLeft: theme.spacing(3),
+            width: 'auto',
+        },
+    },
+    searchIcon: {
+        padding: theme.spacing(0, 2),
+        height: '100%',
+        position: 'absolute',
+        pointerEvents: 'none',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+    inputRoot: {
+        color: 'inherit',
+    },
+    inputInput: {
+        padding: theme.spacing(1, 1, 1, 0),
+        // vertical padding + font size from searchIcon
+        paddingLeft: `calc(1em + ${theme.spacing(4)}px)`,
+        transition: theme.transitions.create('width'),
+        width: '100%',
+        [theme.breakpoints.up('md')]: {
+            width: '20ch',
+        },
+    },
+    sectionDesktop: {
+        display: 'none',
+        [theme.breakpoints.up('md')]: {
+            display: 'flex',
+        },
+    },
+    sectionMobile: {
+        display: 'flex',
+        [theme.breakpoints.up('md')]: {
+            display: 'none',
+        },
     },
     list: {
-        width: 250
-    },
-    label: {
-        textTransform: "capitalize",
-        backgroundColor: "transparent",
-        fontSize: "1.1rem",
-        marginRight: "1rem",
-        [theme.breakpoints.down("sm")]: {
-            marginRight: "0"
-        }
+        width: 200
     }
-});
+};
 
 class Navigation extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
             open: false,
-            isAuthenticated: this.props.isAuthenticated
+            isAuthenticated: this.props.isAuthenticated,
+            anchorEl: null,
+            mobileMoreAnchorEl: null,
         };
     }
 
@@ -94,6 +150,28 @@ class Navigation extends React.Component {
 
     render() {
         const { classes, isAuthenticated } = this.props;
+
+        const isMenuOpen = Boolean(this.state.anchorEl);
+        const isMobileMenuOpen = Boolean(this.state.mobileMoreAnchorEl);
+
+        const handleMenuOpen = (event) => {
+            this.setState({ anchorEl: event.currentTarget});
+        };
+
+        const handleMobileMenuClose = () => {
+            this.setState({ mobileMoreAnchorEl: null});
+        };
+
+        const handleMenuClose = () => {
+            this.setState({ anchorEl: null});
+            handleMobileMenuClose();
+        };
+
+        const handleMobileMenuOpen = (event) => {
+            this.setState({ mobileMoreAnchorEl: event.currentTarget});
+        };
+
+
         const iOS = process.browser && /iPad|iPhone|iPod/.test(navigator.userAgent);
         const sideList = (
             <div className={classes.list}>
@@ -109,60 +187,104 @@ class Navigation extends React.Component {
                 <Divider />
 
                 <List component="nav">
-                    <ListItem button onClick={() => this.handleClick("/account")}>
+                    <ListItem button>
                         <ListItemIcon>
-                            <PersonIcon />
+                            <ExitToAppOutlinedIcon />
                         </ListItemIcon>
-                        <ListItemText primary="My account" />
-                    </ListItem>
-                </List>
-
-                <Divider />
-
-                <Divider />
-                <List component="nav">
-                    <ListItem button>
-                        <ListItemText primary="Help" />
-                    </ListItem>
-                </List>
-
-                <List component="nav">
-                    <ListItem button>
                         <ListItemText primary="Log Out" onClick={this.handleLogout} />
                     </ListItem>
                 </List>
             </div>
         );
 
+
+        const profileMenuId = 'primary-search-account-menu';
+        const renderProfileMenu = (
+            <Menu
+                anchorEl={this.state.anchorEl}
+                anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
+                id={profileMenuId}
+                keepMounted
+                transformOrigin={{ vertical: 'top', horizontal: 'right' }}
+                open={isMenuOpen}
+                onClose={handleMenuClose}
+            >
+                <MenuItem onClick={() => this.handleClick("/profile")}>Profile</MenuItem>
+                <MenuItem onClick={() => this.handleClick("/account")}>My account</MenuItem>
+            </Menu>
+        );
+
+        const notificationsMenuId = 'primary-search-account-menu';
+        const renderNotificationsMenu = (
+            <Menu
+                anchorEl={this.state.anchorEl}
+                anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
+                id={notificationsMenuId}
+                keepMounted
+                transformOrigin={{ vertical: 'top', horizontal: 'right' }}
+                open={isMenuOpen}
+                onClose={handleMenuClose}
+            >
+                <p>So many friend requests...</p>
+                <MenuItem onClick={() => this.handleClick("/notifications")}>View more</MenuItem>
+            </Menu>
+        );
+
+        const mobileMenuId = 'primary-search-account-menu-mobile';
+        const renderMobileMenu = (
+            <Menu
+                anchorEl={this.state.mobileMoreAnchorEl}
+                anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
+                id={mobileMenuId}
+                keepMounted
+                transformOrigin={{ vertical: 'top', horizontal: 'right' }}
+                open={isMobileMenuOpen}
+                onClose={handleMobileMenuClose}
+            >
+                <MenuItem onClick={handleMenuOpen}>
+                    <IconButton aria-label="show 11 new notifications" color="inherit">
+                        <Badge badgeContent={11} color="secondary">
+                            <NotificationsIcon />
+                        </Badge>
+                    </IconButton>
+                    <p>Notifications</p>
+                </MenuItem>
+                <MenuItem onClick={handleMenuOpen}>
+                    <IconButton
+                        aria-label="account of current user"
+                        aria-controls="primary-search-account-menu"
+                        aria-haspopup="true"
+                        color="inherit"
+                    >
+                        <AccountCircle />
+                    </IconButton>
+                    <p>Profile</p>
+                </MenuItem>
+            </Menu>
+        );
+
         if (isAuthenticated) {
             return (
-                <div className={classes.root}>
+                <div className={classes.grow}>
                     <AppBar
-                        position="absolute"
+                        position="static"
                         style={{
-                            boxShadow: "none",
-                            backgroundColor: "transparent"
+                        boxShadow: "none",
+                        backgroundColor: "transparent"
                         }}
                     >
                         <Toolbar>
-                            <Typography
-                                variant="subtitle1"
-                                color="inherit"
-                                className={classes.grow}
-                                style={{ cursor: "pointer", color: "#cc285d" }}
-                                onClick={() => this.handleClick("/home")}
-                            >
-                                Coffee With Me
-                            </Typography>
                             <IconButton
+                                edge="start"
                                 className={classes.menuButton}
                                 color="inherit"
-                                aria-label="Menu"
+                                aria-label="open drawer"
+                                onClick={this.toggleDrawer}
                             >
-                                <MenuIcon onClick={this.toggleDrawer} />
+                                <MenuIcon />
                             </IconButton>
                             <SwipeableDrawer
-                                anchor="right"
+                                anchor="left"
                                 open={this.state.open}
                                 onClose={this.toggleDrawer}
                                 onOpen={this.toggleDrawer}
@@ -178,8 +300,67 @@ class Navigation extends React.Component {
                                     {sideList}
                                 </div>
                             </SwipeableDrawer>
+                            <Typography
+                                className={classes.title}
+                                variant="h6"
+                                noWrap
+                                onClick={() => this.handleClick("/home")}
+                            >
+                                Coffee With Me
+                            </Typography>
+                            <div className={classes.search}>
+                                <div className={classes.searchIcon}>
+                                    <SearchIcon />
+                                </div>
+                                <InputBase
+                                    placeholder="Search…"
+                                    classes={{
+                                        root: classes.inputRoot,
+                                        input: classes.inputInput,
+                                    }}
+                                    inputProps={{ 'aria-label': 'search' }}
+                                />
+                            </div>
+                            <div className={classes.grow} />
+                            <div className={classes.sectionDesktop}>
+                                <IconButton
+                                    aria-label="show 4 new notifications"
+                                    color="inherit"
+                                    aria-controls={notificationsMenuId}
+                                    aria-haspopup="true"
+                                    onClick={handleMenuOpen}
+                                >
+                                    <Badge badgeContent={4} color="secondary">
+                                        <NotificationsIcon />
+                                    </Badge>
+                                </IconButton>
+                                <IconButton
+                                    edge="end"
+                                    aria-label="account of current user"
+                                    aria-controls={profileMenuId}
+                                    aria-haspopup="true"
+                                    onClick={handleMenuOpen}
+                                    color="inherit"
+                                >
+                                    <AccountCircle />
+                                </IconButton>
+                            </div>
+                            <div className={classes.sectionMobile}>
+                                <IconButton
+                                    aria-label="show more"
+                                    aria-controls={mobileMenuId}
+                                    aria-haspopup="true"
+                                    onClick={handleMobileMenuOpen}
+                                    color="inherit"
+                                >
+                                    <MoreIcon />
+                                </IconButton>
+                            </div>
                         </Toolbar>
                     </AppBar>
+                    {renderMobileMenu}
+                    {renderProfileMenu}
+                    {renderNotificationsMenu}
                 </div>
             );
         } else {
@@ -187,34 +368,6 @@ class Navigation extends React.Component {
                 <div className={classes.root}>
                     <AppBar position="static" className={classes.appBar}>
                         <Toolbar>
-                            <Typography
-                                variant="h1"
-                                color="inherit"
-                                className={classes.grow}
-                                style={{
-                                    cursor: "pointer",
-                                    color: "#fff",
-                                    fontWeight: "bold",
-                                    fontSize: "2rem"
-                                }}
-                                onClick={() => this.handleClick("/")}
-                            >
-                                CoffeeWithMe
-                            </Typography>
-                            <Button
-                                color="inherit"
-                                onClick={() => this.handleClick("/login")}
-                                className={classes.label}
-                            >
-                                Log in
-                            </Button>
-                            <Button
-                                color="inherit"
-                                onClick={() => this.handleClick("/register")}
-                                className={classes.label}
-                            >
-                                Register
-                            </Button>
                         </Toolbar>
                     </AppBar>
                 </div>

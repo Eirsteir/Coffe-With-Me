@@ -95,7 +95,6 @@ class FriendshipControllerIntegrationTest {
 
         mvc.perform(get("/user/friends")
                             .contentType(MediaType.APPLICATION_JSON))
-                .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", hasSize(1)))
                 .andExpect(jsonPath("$[0].email", equalTo(ADDRESSEE_EMAIL)));

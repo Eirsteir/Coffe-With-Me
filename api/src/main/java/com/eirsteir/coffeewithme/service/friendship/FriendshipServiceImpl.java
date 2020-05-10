@@ -111,8 +111,8 @@ public class FriendshipServiceImpl implements FriendshipService {
                 .stream()
                 .map(friendship -> {
                     User friend = friendship.getId().getRequester().equals(user)
-                            ? friendship.getId().getRequester()
-                            : friendship.getId().getAddressee();
+                            ? friendship.getId().getAddressee()
+                            : friendship.getId().getRequester();
 
                     return modelMapper.map(friend, UserDto.class);
                 })

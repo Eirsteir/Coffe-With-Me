@@ -29,9 +29,24 @@ function login(email, password) {
         });
 }
 
-function logout() {
-    // remove user from local storage to log user out
-    localStorage.removeItem('auth');
+export function logout() {
+    const token = window.localStorage.getItem("auth");
+    this.props.toggleAuthenticatedState();
+
+    fetch(`api/logout`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            Authorization: token
+        }
+    })
+        .then(resp => {
+            if (resp.status === 204 || resp.status === 304) {
+                window.localStorage.removeItem("auth");
+                return this.props.history.push("/");
+            }
+        })
+        .catch(console.log);
 }
 
 function getAll() {
