@@ -1,5 +1,6 @@
-package com.eirsteir.coffeewithme.web.api.friendship;
+package web.api.friendship;
 
+import com.eirsteir.coffeewithme.CoffeeWithMeApplication;
 import com.eirsteir.coffeewithme.domain.friendship.Friendship;
 import com.eirsteir.coffeewithme.domain.friendship.FriendshipId;
 import com.eirsteir.coffeewithme.domain.friendship.FriendshipStatus;
@@ -33,9 +34,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @RunWith(SpringRunner.class)
 @Import(RedisTestConfig.class)
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@SpringBootTest(classes = CoffeeWithMeApplication.class, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 class FriendshipControllerIntegrationTest {
-
 
     private static final String REQUESTER_EMAIL = "requester@test.com";
     private static final String ADDRESSEE_EMAIL = "addressee@test.com";
