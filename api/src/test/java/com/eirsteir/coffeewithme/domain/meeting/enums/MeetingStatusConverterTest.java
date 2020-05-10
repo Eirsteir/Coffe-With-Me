@@ -18,9 +18,9 @@ class MeetingStatusConverterTest {
 
     public static Stream<Arguments> coffeeRequestAttributeProvider() {
         return Stream.of(
-                Arguments.of(MeetingStatus.PENDING, 1),
+                Arguments.of(MeetingStatus.REQUESTED, 1),
                 Arguments.of(MeetingStatus.ACCEPTED, 2),
-                Arguments.of(MeetingStatus.REJECTED, 3),
+                Arguments.of(MeetingStatus.DECLINED, 3),
                 Arguments.of(MeetingStatus.CHANGE_OF_TIME_REQUESTED, 4)
         );
     }
@@ -35,9 +35,9 @@ class MeetingStatusConverterTest {
 
     public static Stream<Arguments> coffeeRequestValueProvider() {
         return Stream.of(
-                Arguments.of(1, MeetingStatus.PENDING),
+                Arguments.of(1, MeetingStatus.REQUESTED),
                 Arguments.of(2, MeetingStatus.ACCEPTED),
-                Arguments.of(3, MeetingStatus.REJECTED),
+                Arguments.of(3, MeetingStatus.DECLINED),
                 Arguments.of(4, MeetingStatus.CHANGE_OF_TIME_REQUESTED)
         );
     }

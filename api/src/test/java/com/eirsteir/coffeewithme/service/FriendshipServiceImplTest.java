@@ -4,7 +4,6 @@ import com.eirsteir.coffeewithme.domain.friendship.Friendship;
 import com.eirsteir.coffeewithme.domain.friendship.FriendshipId;
 import com.eirsteir.coffeewithme.domain.user.User;
 import com.eirsteir.coffeewithme.dto.FriendshipDto;
-import com.eirsteir.coffeewithme.dto.FriendshipIdDto;
 import com.eirsteir.coffeewithme.dto.UserDto;
 import com.eirsteir.coffeewithme.exception.CWMException;
 import com.eirsteir.coffeewithme.repository.FriendshipRepository;
@@ -15,17 +14,16 @@ import com.eirsteir.coffeewithme.web.request.FriendRequest;
 import config.CWMExceptionTestConfig;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mockito;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.TestPropertySource;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.util.Optional;
 
@@ -34,10 +32,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.mockito.Mockito.when;
 
-@DataJpaTest
 @Import(CWMExceptionTestConfig.class)
 @TestPropertySource("classpath:exception.properties")
-@RunWith(SpringRunner.class)
+@ExtendWith(SpringExtension.class)
 class FriendshipServiceImplTest {
 
     private static final String REQUESTER_USERNAME = "requester";
@@ -116,8 +113,8 @@ class FriendshipServiceImplTest {
     void testRegisterFriendship() {
         FriendshipDto savedFriendshipDto = friendshipService.registerFriendship(friendRequest);
 
-        assertThat(savedFriendshipDto.getId().getRequester().getId()).isEqualTo(requester.getId());
-        assertThat(savedFriendshipDto.getId().getAddressee().getId()).isEqualTo(addressee.getId());
+        assertThat(savedFriendshipDto.getId().getRequesterId()).isEqualTo(requester.getId());
+        assertThat(savedFriendshipDto.getId().getAddresseeId()).isEqualTo(addressee.getId());
         assertThat(savedFriendshipDto.getStatus()).isEqualTo(REQUESTED);
     }
 
@@ -129,7 +126,7 @@ class FriendshipServiceImplTest {
         assertThatExceptionOfType(CWMException.DuplicateEntityException.class)
                 .isThrownBy(() -> friendshipService.registerFriendship(friendRequest))
                 .withMessage("Requested friendship with id=" +
-                                     modelMapper.map(friendshipId, FriendshipIdDto.class) +
+                                     friendshipId +
                                      " already exists");
     }
 
@@ -143,10 +140,15 @@ class FriendshipServiceImplTest {
                 .addresseeId(requester.getId())
                 .build();
 
+        FriendshipId expectedId = FriendshipId.builder()
+                .requesterId(requester.getId())
+                .addresseeId(addressee.getId())
+                .build();
+
         assertThatExceptionOfType(CWMException.DuplicateEntityException.class)
                 .isThrownBy(() -> friendshipService.registerFriendship(friendRequest))
                 .withMessage("Requested friendship with id=" +
-                                     modelMapper.map(friendshipId, FriendshipIdDto.class) +
+                                     expectedId +
                                      " already exists");
     }
 
@@ -160,7 +162,7 @@ class FriendshipServiceImplTest {
         assertThatExceptionOfType(CWMException.EntityNotFoundException.class)
                 .isThrownBy(() -> friendshipService.removeFriendship(friendshipDto))
                 .withMessage("Requested friendship with id=" +
-                                     modelMapper.map(friendshipId, FriendshipIdDto.class) +
+                                     friendshipId +
                                      " does not exist");
     }
 
@@ -185,8 +187,7 @@ class FriendshipServiceImplTest {
 
         assertThatExceptionOfType(CWMException.InvalidStatusChangeException.class)
                 .isThrownBy(() -> friendshipService.acceptFriendship(friendshipDto))
-                .withMessage("Invalid status change attempted for friendship with id=" +
-                                     modelMapper.map(friendshipId, FriendshipIdDto.class));
+                .withMessage("Invalid status change attempted for friendship with id=" + friendshipId);
     }
 
     @Test
@@ -200,7 +201,7 @@ class FriendshipServiceImplTest {
         assertThatExceptionOfType(CWMException.EntityNotFoundException.class)
                 .isThrownBy(() -> friendshipService.acceptFriendship(friendshipDto))
                 .withMessage("Requested friendship with id=" +
-                                     modelMapper.map(friendshipId, FriendshipIdDto.class) +
+                                     friendshipId +
                                      " does not exist");
     }
 

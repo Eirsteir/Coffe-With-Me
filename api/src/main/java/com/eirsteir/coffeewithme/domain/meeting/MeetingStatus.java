@@ -4,9 +4,9 @@ import com.eirsteir.coffeewithme.domain.RequestStatus;
 
 public enum MeetingStatus implements RequestStatus {
 
-    PENDING(1),
+    REQUESTED(1),
     ACCEPTED(2),
-    REJECTED(3),
+    DECLINED(3),
     CHANGE_OF_TIME_REQUESTED(4);
 
     private Integer value;

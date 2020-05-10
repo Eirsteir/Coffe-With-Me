@@ -3,24 +3,21 @@ package com.eirsteir.coffeewithme.service.user;
 import com.eirsteir.coffeewithme.domain.role.RoleType;
 import com.eirsteir.coffeewithme.domain.user.User;
 import com.eirsteir.coffeewithme.domain.user.UserType;
+import com.eirsteir.coffeewithme.dto.UserDto;
 import com.eirsteir.coffeewithme.exception.CWMException;
 import com.eirsteir.coffeewithme.exception.ExceptionType;
 import com.eirsteir.coffeewithme.repository.RoleRepository;
 import com.eirsteir.coffeewithme.repository.UserRepository;
-import com.eirsteir.coffeewithme.dto.UserDto;
 import com.eirsteir.coffeewithme.web.request.UserRegistrationRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.jpa.domain.Specification;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.util.Collections;
-import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import static com.eirsteir.coffeewithme.exception.EntityType.USER;
 import static com.eirsteir.coffeewithme.exception.ExceptionType.ENTITY_NOT_FOUND;
@@ -74,14 +71,6 @@ public class UserServiceImpl implements UserService {
     public User findUserById(Long id) {
         return userRepository.findById(id)
                         .orElseThrow(() -> CWMException.getException(USER, ENTITY_NOT_FOUND, id.toString()));
-    }
-
-    @Override
-    public List<UserDto> findAll(Specification<User> specs) {
-        return userRepository.findAll(Specification.where(specs))
-                .stream()
-                .map(user -> modelMapper.map(user, UserDto.class))
-                .collect(Collectors.toList());
     }
 
     @Override

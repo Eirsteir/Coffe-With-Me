@@ -75,8 +75,8 @@ public class FriendshipServiceImpl implements FriendshipService {
     @Override
     public FriendshipDto acceptFriendship(FriendshipDto friendshipDto) {
         System.out.println(friendshipDto);
-        User requester = userService.findUserById(friendshipDto.getId().getRequester().getId());
-        User addressee = userService.findUserById(friendshipDto.getId().getAddressee().getId());
+        User requester = userService.findUserById(friendshipDto.getId().getRequesterId());
+        User addressee = userService.findUserById(friendshipDto.getId().getAddresseeId());
 
         FriendshipId id = FriendshipId.builder()
                 .requesterId(requester.getId())

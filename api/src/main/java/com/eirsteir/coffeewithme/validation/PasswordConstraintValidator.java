@@ -11,7 +11,6 @@ public class PasswordConstraintValidator implements ConstraintValidator<ValidPas
 
    @Override
    public void initialize(final ValidPassword arg0) {
-
    }
 
    @Override
