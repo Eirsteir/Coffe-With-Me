@@ -11,7 +11,7 @@ import io.swagger.annotations.Tag;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -35,11 +35,10 @@ public class FriendshipController {
 
     @GetMapping
     @ResponseBody
-    Collection<UserDto> allFriendshipsOf(Authentication authentication) {
-        UserPrincipalImpl principal = (UserPrincipalImpl) authentication.getPrincipal();
-
+    Collection<UserDto> allFriendshipsOf(@AuthenticationPrincipal UserPrincipalImpl principal) {
         UserDto userDto = modelMapper.map(principal.getUser(), UserDto.class);
         List<UserDto> friends = friendshipService.findFriendsOf(userDto);
+
         if (friends.isEmpty())
             throw new ResponseStatusException(
                     HttpStatus.NO_CONTENT, "User has no friendships");
@@ -49,8 +48,8 @@ public class FriendshipController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    FriendshipDto addFriendship(@RequestParam("to_friend") Long toFriend, Authentication authentication) {
-        UserPrincipalImpl principal = (UserPrincipalImpl) authentication.getPrincipal();
+    FriendshipDto addFriendship(@RequestParam("to_friend") Long toFriend,
+                                @AuthenticationPrincipal UserPrincipalImpl principal) {
 
         if (principal.getUser().getId().equals(toFriend))
             throw new ResponseStatusException(
@@ -63,21 +62,23 @@ public class FriendshipController {
     }
 
     @PutMapping
-    FriendshipDto acceptFriendship(@RequestBody @Valid FriendshipDto friendshipDto, Authentication authentication) {
-        validateFriendshipRequest(friendshipDto, authentication);
+    FriendshipDto acceptFriendship(@RequestBody @Valid FriendshipDto friendshipDto,
+                                   @AuthenticationPrincipal UserPrincipalImpl principal) {
+        validateFriendshipRequest(friendshipDto, principal);
 
         return friendshipService.acceptFriendship(friendshipDto);
     }
 
-    private void validateFriendshipRequest(FriendshipDto friendshipDto, Authentication authentication) {
-        UserPrincipalImpl principal = (UserPrincipalImpl) authentication.getPrincipal();
-
+    private void validateFriendshipRequest(FriendshipDto friendshipDto, UserPrincipalImpl principal) {
         Long requesterId = friendshipDto.getId().getRequesterId();
         Long addresseeId = friendshipDto.getId().getAddresseeId();
         Long principalId = principal.getUser().getId();
 
-        if (requesterId.equals(principalId) || addresseeId.equals(principalId))
+        if (addresseeId.equals(principalId))
             return;
+        else if (requesterId.equals(principalId))
+            throw new ResponseStatusException(
+                    HttpStatus.BAD_REQUEST, "Cannot accept friend request sent by yourself");
 
         throw new ResponseStatusException(
                 HttpStatus.BAD_REQUEST, "Friendship does not belong to current user");

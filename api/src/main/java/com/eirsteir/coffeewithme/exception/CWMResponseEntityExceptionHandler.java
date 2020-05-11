@@ -50,7 +50,7 @@ public class CWMResponseEntityExceptionHandler extends ResponseEntityExceptionHa
 
     @ExceptionHandler(ResponseStatusException.class)
     public final ResponseEntity<Object> handleResponseStatusException(ResponseStatusException ex, WebRequest request) {
-        ExceptionResponse exceptionResponse = new ExceptionResponse(new Date(), ex.getMessage(),
+        ExceptionResponse exceptionResponse = new ExceptionResponse(new Date(), ex.getReason(),
                                                                     request.getDescription(false),
                                                                     ex.getStatus());
 
