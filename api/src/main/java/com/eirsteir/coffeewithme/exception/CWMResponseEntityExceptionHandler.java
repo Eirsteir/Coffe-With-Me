@@ -49,13 +49,13 @@ public class CWMResponseEntityExceptionHandler extends ResponseEntityExceptionHa
     }
 
     @ExceptionHandler(ResponseStatusException.class)
-    public final ResponseEntity<Object> handleResponseStatusException(Exception ex, WebRequest request) {
+    public final ResponseEntity<Object> handleResponseStatusException(ResponseStatusException ex, WebRequest request) {
         ExceptionResponse exceptionResponse = new ExceptionResponse(new Date(), ex.getMessage(),
                                                                     request.getDescription(false),
-                                                                    HttpStatus.BAD_REQUEST);
+                                                                    ex.getStatus());
 
-        log.error("[x] An error with status code {} occurred in the API: ", HttpStatus.BAD_REQUEST, ex);
-        return new ResponseEntity<>(exceptionResponse, HttpStatus.BAD_REQUEST);
+        log.error("[x] An error with status code {} occurred in the API: ", ex.getStatus(), ex);
+        return new ResponseEntity<>(exceptionResponse, ex.getStatus());
     }
 
     @Override

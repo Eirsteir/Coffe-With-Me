@@ -17,6 +17,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 import javax.validation.Valid;
 import java.util.Collection;
+import java.util.List;
 
 @RestController
 @RequestMapping("/user/friends")
@@ -34,11 +35,16 @@ public class FriendshipController {
 
     @GetMapping
     @ResponseBody
-    Collection<UserDto> allFriendships(Authentication authentication) {
+    Collection<UserDto> allFriendshipsOf(Authentication authentication) {
         UserPrincipalImpl principal = (UserPrincipalImpl) authentication.getPrincipal();
 
         UserDto userDto = modelMapper.map(principal.getUser(), UserDto.class);
-        return friendshipService.findFriendsOf(userDto);
+        List<UserDto> friends = friendshipService.findFriendsOf(userDto);
+        if (friends.isEmpty())
+            throw new ResponseStatusException(
+                    HttpStatus.NO_CONTENT, "User has no friendships");
+
+        return friends;
     }
 
     @PostMapping
