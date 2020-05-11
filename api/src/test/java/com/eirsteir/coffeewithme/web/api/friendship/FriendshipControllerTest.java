@@ -32,6 +32,8 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 
+import java.util.ArrayList;
+
 import static org.mockito.Mockito.when;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -90,8 +92,10 @@ class FriendshipControllerTest {
 
         // TODO: 10.05.2020 Fix authorities
         userPrincipal = new UserPrincipalImpl(User.builder()
+                                                      .id(1L)
                                                       .email("user@test.com")
                                                       .password("password")
+                                                      .roles(new ArrayList<>())
                                                       .build());
         Mockito.when(authentication.getPrincipal())
                 .thenReturn(userPrincipal);
