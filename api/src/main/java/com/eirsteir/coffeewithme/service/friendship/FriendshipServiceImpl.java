@@ -73,42 +73,50 @@ public class FriendshipServiceImpl implements FriendshipService {
     }
 
     @Override
-    public FriendshipDto acceptFriendship(FriendshipDto friendshipDto) {
-        System.out.println(friendshipDto);
-        User requester = userService.findUserById(friendshipDto.getId().getRequesterId());
-        User addressee = userService.findUserById(friendshipDto.getId().getAddresseeId());
+    public FriendshipDto updateFriendship(FriendshipDto friendshipDto) {
+        Friendship friendshipToUpdate = getFriendshipToUpdate(friendshipDto);
 
-        FriendshipId id = FriendshipId.builder()
-                .requesterId(requester.getId())
-                .addresseeId(addressee.getId())
-                .build();
-
-        if (friendshipDto.getStatus() == FriendshipStatus.REQUESTED) {
-            Friendship friendship = friendshipRepository.findById(id)
-                    .orElseThrow(() -> CWMException.getException(EntityType.FRIENDSHIP,
-                                                                 ExceptionType.ENTITY_NOT_FOUND,
-                                                                 friendshipDto.getId().toString()));
-
-            Friendship acceptedFriendship = friendshipRepository.save(friendship.setStatus(FriendshipStatus.ACCEPTED));
-            log.info("[x] Friendship was accepted: {}", friendship);
-            return modelMapper.map(acceptedFriendship, FriendshipDto.class);
-        }
+        if (isValidStatusChange(friendshipToUpdate.getStatus(), friendshipDto.getStatus()))
+            return updateFriendship(friendshipDto, friendshipToUpdate);
 
         throw CWMException.getException(EntityType.FRIENDSHIP,
                                         ExceptionType.INVALID_STATUS_CHANGE,
                                         friendshipDto.getId().toString());
     }
 
-    @Override
-    public FriendshipDto blockFriendShip(FriendshipDto friendshipDto) {
-        return null;
+    private Friendship getFriendshipToUpdate(FriendshipDto friendshipDto) {
+        Long requesterId = friendshipDto.getId().getRequesterId();
+        Long addresseeId = friendshipDto.getId().getAddresseeId();
+
+        return friendshipRepository.
+                findByRequesterIdAndAddresseeId(requesterId, addresseeId)
+                    .orElseThrow(() -> CWMException.getException(EntityType.FRIENDSHIP,
+                                                                 ExceptionType.ENTITY_NOT_FOUND,
+                                                                 friendshipDto.getId().toString()));
     }
 
+    private boolean isValidStatusChange(FriendshipStatus oldStatus, FriendshipStatus newStatus) {
+        if (oldStatus == FriendshipStatus.REQUESTED)
+            return true;
+
+        return oldStatus == FriendshipStatus.ACCEPTED && newStatus == FriendshipStatus.BLOCKED;
+    }
+
+    private FriendshipDto updateFriendship(FriendshipDto friendshipDto, Friendship friendshipToUpdate) {
+        friendshipToUpdate.setStatus(friendshipDto.getStatus());
+        Friendship acceptedFriendship = friendshipRepository.save(friendshipToUpdate);
+
+        log.info("[x] Friendship was updated to {}: {}", friendshipDto.getStatus(), friendshipToUpdate);
+        return modelMapper.map(acceptedFriendship, FriendshipDto.class);
+    }
+
+    // TODO: 11.05.2020 write a clever query for this
     @Override
     public List<UserDto> findFriendsOf(UserDto userDto) {
         User userModel = modelMapper.map(userService.findUserById(userDto.getId()), User.class);
         return userModel.getFriendships()
                 .stream()
+                .filter(friendship -> friendship.getStatus() == FriendshipStatus.ACCEPTED)
                 .map(friendship -> this.getFriendFrom(friendship, userModel))
                 .map(user -> modelMapper.map(user, UserDto.class))
                 .collect(Collectors.toList());

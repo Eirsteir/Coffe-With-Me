@@ -62,11 +62,11 @@ public class FriendshipController {
     }
 
     @PutMapping
-    FriendshipDto acceptFriendship(@RequestBody @Valid FriendshipDto friendshipDto,
+    FriendshipDto updateFriendship(@RequestBody @Valid FriendshipDto friendshipDto,
                                    @AuthenticationPrincipal UserPrincipalImpl principal) {
         validateFriendshipRequest(friendshipDto, principal);
 
-        return friendshipService.acceptFriendship(friendshipDto);
+        return friendshipService.updateFriendship(friendshipDto);
     }
 
     private void validateFriendshipRequest(FriendshipDto friendshipDto, UserPrincipalImpl principal) {

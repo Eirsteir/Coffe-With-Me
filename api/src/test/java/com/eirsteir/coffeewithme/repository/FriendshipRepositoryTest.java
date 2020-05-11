@@ -13,6 +13,7 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.List;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -47,6 +48,13 @@ class FriendshipRepositoryTest {
                 .requesterId(requester.getId())
                 .addresseeId(addressee.getId())
                 .build();
+
+        entityManager.persistAndFlush(Friendship.builder()
+                                              .id(friendshipId)
+                                              .requester(requester)
+                                              .addressee(addressee)
+                                              .status(FriendshipStatus.ACCEPTED)
+                                              .build());
     }
 
     @Test
@@ -64,16 +72,10 @@ class FriendshipRepositoryTest {
                 .addresseeId(requester.getId())
                 .build();
 
-        friendship = entityManager.persistAndFlush(Friendship.builder()
+        entityManager.persistAndFlush(Friendship.builder()
                                                             .id(id)
                                                            .requester(requester)
                                                            .addressee(addressee)
-                                                           .status(FriendshipStatus.ACCEPTED)
-                                                           .build());
-        friendship = entityManager.persistAndFlush(Friendship.builder()
-                                                           .id(friendshipId)
-                                                            .requester(requester)
-                                                            .addressee(addressee)
                                                            .status(FriendshipStatus.ACCEPTED)
                                                            .build());
 
@@ -81,6 +83,22 @@ class FriendshipRepositoryTest {
                 .findByRequesterIdOrAddresseeIdAndStatus(requester.getId(), requester.getId(), FriendshipStatus.ACCEPTED);
 
         assertThat(friendsFound).hasSize(2);
+    }
+
+    @Test
+    void testFindByIdRequesterIdAndIdAddresseeIdWhenExists() {
+        Optional<Friendship> friendshipFound = friendshipRepository.findByRequesterIdAndAddresseeId(
+                requester.getId(), addressee.getId());
+
+        assertThat(friendshipFound).isPresent();
+    }
+
+    @Test
+    void testFindByIdRequesterIdAndIdAddresseeIdWhenNotExists() {
+        Optional<Friendship> friendshipFound = friendshipRepository.findByRequesterIdAndAddresseeId(
+                requester.getId(), 100L);
+
+        assertThat(friendshipFound).isEmpty();
     }
 
 }

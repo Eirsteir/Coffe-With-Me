@@ -12,9 +12,7 @@ public interface FriendshipService {
 
     void removeFriendship(FriendshipDto friendshipDto);
 
-    FriendshipDto acceptFriendship(FriendshipDto friendshipDto);
-
-    FriendshipDto blockFriendShip(FriendshipDto friendshipDto);
+    FriendshipDto updateFriendship(FriendshipDto friendshipDto);
 
     List<UserDto> findFriendsOf(UserDto userDto);
 

@@ -3,13 +3,11 @@ package com.eirsteir.coffeewithme.dto;
 import lombok.*;
 import lombok.experimental.Accessors;
 
-@Getter
-@Setter
+@Data
 @Builder
 @Accessors(chain = true)
 @NoArgsConstructor
 @AllArgsConstructor
-@ToString
 public class UserDto {
 
     private Long id;

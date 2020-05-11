@@ -41,9 +41,10 @@ public class UserController {
     UserDto updateUser(@RequestBody @Valid UpdateProfileRequest updateProfileRequest, Authentication authentication) {
         UserPrincipalImpl principal = (UserPrincipalImpl) authentication.getPrincipal();
 
-        UserDto userDto = new UserDto()
-                .setUsername(updateProfileRequest.getUsername())
-                .setEmail(principal.getEmail());
+        UserDto userDto = UserDto.builder()
+                .email(principal.getEmail())
+                .username(updateProfileRequest.getUsername())
+                .build();
 
         return userService.updateProfile(userDto);
     }

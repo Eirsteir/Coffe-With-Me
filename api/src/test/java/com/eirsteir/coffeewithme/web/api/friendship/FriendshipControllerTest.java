@@ -228,7 +228,7 @@ class FriendshipControllerTest {
 
         Mockito.when(authentication.getPrincipal())
                 .thenReturn(userPrincipal);
-        when(friendshipService.acceptFriendship(Mockito.any(FriendshipDto.class)))
+        when(friendshipService.updateFriendship(Mockito.any(FriendshipDto.class)))
                 .thenReturn(friendshipDto.setStatus(ACCEPTED));
 
         mockMvc.perform(put("/user/friends")
@@ -276,7 +276,7 @@ class FriendshipControllerTest {
 
         Mockito.when(authentication.getPrincipal())
                 .thenReturn(userPrincipal);
-        when(friendshipService.acceptFriendship(Mockito.any(FriendshipDto.class)))
+        when(friendshipService.updateFriendship(Mockito.any(FriendshipDto.class)))
                 .thenThrow(CWMException.EntityNotFoundException.class);
 
         mockMvc.perform(put("/user/friends")
