@@ -29,6 +29,25 @@ public class CWMResponseEntityExceptionHandler extends ResponseEntityExceptionHa
         return new ResponseEntity<>(exceptionResponse, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
+    @ExceptionHandler(CWMException.EntityNotFoundException.class)
+    public final ResponseEntity<Object> handleEntityNotFoundException(Exception ex, WebRequest request) {
+        ExceptionResponse exceptionResponse = new ExceptionResponse(new Date(), ex.getMessage(),
+                                                                    request.getDescription(false),
+                                                                    HttpStatus.NOT_FOUND);
+        log.error("[x] Entity does not exist: ", ex);
+        return new ResponseEntity<>(exceptionResponse, HttpStatus.NOT_FOUND);
+    }
+
+
+    @ExceptionHandler(CWMException.DuplicateEntityException.class)
+    public final ResponseEntity<Object> handleDuplicateEntityException(Exception ex, WebRequest request) {
+        ExceptionResponse exceptionResponse = new ExceptionResponse(new Date(), ex.getMessage(),
+                                                                    request.getDescription(false),
+                                                                    HttpStatus.BAD_REQUEST);
+        log.error("[x] Entity already exist: ", ex);
+        return new ResponseEntity<>(exceptionResponse, HttpStatus.BAD_REQUEST);
+    }
+
     @ExceptionHandler(ResponseStatusException.class)
     public final ResponseEntity<Object> handleResponseStatusException(Exception ex, WebRequest request) {
         ExceptionResponse exceptionResponse = new ExceptionResponse(new Date(), ex.getMessage(),
