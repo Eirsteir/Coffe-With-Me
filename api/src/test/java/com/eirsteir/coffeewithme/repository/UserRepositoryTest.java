@@ -4,14 +4,18 @@ import com.eirsteir.coffeewithme.domain.friendship.Friendship;
 import com.eirsteir.coffeewithme.domain.friendship.FriendshipId;
 import com.eirsteir.coffeewithme.domain.friendship.FriendshipStatus;
 import com.eirsteir.coffeewithme.domain.user.User;
+import com.eirsteir.coffeewithme.web.util.SearchCriteria;
+import com.eirsteir.coffeewithme.web.util.SearchOperation;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -37,9 +41,18 @@ public class UserRepositoryTest {
     private UserRepository userRepository;
 
     private User user;
+
     private User requester;
+
     private User addressee;
+
     private User otherUser;
+
+    private User userJohn;
+
+    private User userTom;
+
+    private User userPercy;
 
     @Before
     public void setUp() {
@@ -86,6 +99,21 @@ public class UserRepositoryTest {
                                                .addressee(otherUser)
                                                .status(FriendshipStatus.REQUESTED)
                                                .build());
+
+        userJohn = entityManager.persistFlushFind(User.builder()
+                                                          .name("john doe")
+                                                          .email("john@doe.com")
+                                                          .build());
+
+        userTom = entityManager.persistFlushFind(User.builder()
+                                                         .name("tom doe")
+                                                         .email("tom@doe.com")
+                                                         .build());
+
+        userPercy = entityManager.persistFlushFind(User.builder()
+                                                         .name("percy blackney")
+                                                         .email("percy@blackney.com")
+                                                         .build());
     }
 
     @Test
@@ -104,4 +132,53 @@ public class UserRepositoryTest {
         assertThat(foundUser).isEmpty();
     }
 
+    @Test
+    public void givenFirstAndLastName_whenGettingListOfUsers_thenCorrect() {
+        UserSpecification spec = new UserSpecification(
+                new SearchCriteria("name", SearchOperation.EQUALITY, "john doe"));
+        List<User> results = userRepository.findAll(Specification.where(spec));
+
+        assertThat(userJohn).isIn(results);
+        assertThat(userTom).isNotIn(results);
+    }
+
+    @Test
+    public void givenFirstNameInverse_whenGettingListOfUsers_thenCorrect() {
+        UserSpecification spec = new UserSpecification(
+                new SearchCriteria("name", SearchOperation.NEGATION, "john doe"));
+        List<User> results = userRepository.findAll(Specification.where(spec));
+
+        assertThat(userTom).isIn(results);
+        assertThat(userJohn).isNotIn(results);
+    }
+
+    @Test
+    public void givenFirstNamePrefix_whenGettingListOfUsers_thenCorrect() {
+        UserSpecification spec = new UserSpecification(
+                new SearchCriteria("name", SearchOperation.STARTS_WITH, "jo"));
+        List<User> results = userRepository.findAll(spec);
+
+        assertThat(userJohn).isIn(results);
+        assertThat(userTom).isNotIn(results);
+    }
+
+    @Test
+    public void givenFirstNameSuffix_whenGettingListOfUsers_thenCorrect() {
+        UserSpecification spec = new UserSpecification(
+                new SearchCriteria("name", SearchOperation.ENDS_WITH, "ey"));
+        List<User> results = userRepository.findAll(spec);
+
+        assertThat(userPercy).isIn(results);
+        assertThat(userTom).isNotIn(results);
+    }
+
+    @Test
+    public void givenFirstNameSubstring_whenGettingListOfUsers_thenCorrect() {
+        UserSpecification spec = new UserSpecification(
+                new SearchCriteria("name", SearchOperation.CONTAINS, "oh"));
+        List<User> results = userRepository.findAll(spec);
+
+        assertThat(userJohn).isIn(results);
+        assertThat(userTom).isNotIn(results);
+    }
 }
