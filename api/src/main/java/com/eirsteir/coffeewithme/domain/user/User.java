@@ -112,6 +112,6 @@ public class User extends CreatedUpdatedDateTimeBaseModel implements Serializabl
     // TODO: 12.05.2020 how should this be used?
     public void removeFriendship(Friendship friendship) {
         friends.remove(friendship);
-        friendship.getAddressee().friends.remove(friendship);
+        friendship.getAddressee().friendsOf.remove(friendship);
     }
 }
