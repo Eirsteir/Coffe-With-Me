@@ -42,6 +42,7 @@ services:
       - h2-data:/opt/h2-data
     networks:
       - api
+
   # Redis Caching Service
   redis:
     image: redis

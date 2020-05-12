@@ -1,5 +1,5 @@
 #### Stage 1: Build the application
-FROM adoptopenjdk/openjdk11:alpine-jre as build
+FROM adoptopenjdk/openjdk11 as build
 
 # Set the current working directory inside the image
 WORKDIR /app
@@ -11,6 +11,9 @@ COPY .mvn .mvn
 # Copy the pom.xml file
 COPY pom.xml .
 
+RUN apt-get update && \
+    apt-get install dos2unix && \
+    apt-get clean
 RUN dos2unix mvnw
 
 # Build all the dependencies in preparation to go offline. 
