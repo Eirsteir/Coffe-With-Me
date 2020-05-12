@@ -4,8 +4,8 @@ import com.eirsteir.coffeewithme.domain.friendship.Friendship;
 import com.eirsteir.coffeewithme.domain.friendship.FriendshipId;
 import com.eirsteir.coffeewithme.domain.friendship.FriendshipStatus;
 import com.eirsteir.coffeewithme.domain.user.User;
-import com.eirsteir.coffeewithme.web.util.SearchCriteria;
 import com.eirsteir.coffeewithme.web.util.SearchOperation;
+import com.eirsteir.coffeewithme.web.util.SpecSearchCriteria;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -135,7 +135,7 @@ public class UserRepositoryTest {
     @Test
     public void givenFirstAndLastName_whenGettingListOfUsers_thenCorrect() {
         UserSpecification spec = new UserSpecification(
-                new SearchCriteria("name", SearchOperation.EQUALITY, "john doe"));
+                new SpecSearchCriteria("name", SearchOperation.EQUALITY, "john doe"));
         List<User> results = userRepository.findAll(Specification.where(spec));
 
         assertThat(userJohn).isIn(results);
@@ -145,7 +145,7 @@ public class UserRepositoryTest {
     @Test
     public void givenFirstNameInverse_whenGettingListOfUsers_thenCorrect() {
         UserSpecification spec = new UserSpecification(
-                new SearchCriteria("name", SearchOperation.NEGATION, "john doe"));
+                new SpecSearchCriteria("name", SearchOperation.NEGATION, "john doe"));
         List<User> results = userRepository.findAll(Specification.where(spec));
 
         assertThat(userTom).isIn(results);
@@ -155,7 +155,7 @@ public class UserRepositoryTest {
     @Test
     public void givenFirstNamePrefix_whenGettingListOfUsers_thenCorrect() {
         UserSpecification spec = new UserSpecification(
-                new SearchCriteria("name", SearchOperation.STARTS_WITH, "jo"));
+                new SpecSearchCriteria("name", SearchOperation.STARTS_WITH, "jo"));
         List<User> results = userRepository.findAll(spec);
 
         assertThat(userJohn).isIn(results);
@@ -165,7 +165,7 @@ public class UserRepositoryTest {
     @Test
     public void givenFirstNameSuffix_whenGettingListOfUsers_thenCorrect() {
         UserSpecification spec = new UserSpecification(
-                new SearchCriteria("name", SearchOperation.ENDS_WITH, "ey"));
+                new SpecSearchCriteria("name", SearchOperation.ENDS_WITH, "ey"));
         List<User> results = userRepository.findAll(spec);
 
         assertThat(userPercy).isIn(results);
@@ -175,7 +175,7 @@ public class UserRepositoryTest {
     @Test
     public void givenFirstNameSubstring_whenGettingListOfUsers_thenCorrect() {
         UserSpecification spec = new UserSpecification(
-                new SearchCriteria("name", SearchOperation.CONTAINS, "oh"));
+                new SpecSearchCriteria("name", SearchOperation.CONTAINS, "oh"));
         List<User> results = userRepository.findAll(spec);
 
         assertThat(userJohn).isIn(results);

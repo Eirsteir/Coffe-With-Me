@@ -13,19 +13,9 @@ import javax.persistence.criteria.Root;
 
 @Getter
 @AllArgsConstructor
-
 public class UserSpecification implements Specification<User> {
 
     private SpecSearchCriteria criteria;
-
-    public UserSpecification(final SpecSearchCriteria criteria) {
-        super();
-        this.criteria = criteria;
-    }
-
-    public SpecSearchCriteria getCriteria() {
-        return criteria;
-    }
 
     @Override
     public Predicate toPredicate(final Root<User> root, final CriteriaQuery<?> query, final CriteriaBuilder builder) {
