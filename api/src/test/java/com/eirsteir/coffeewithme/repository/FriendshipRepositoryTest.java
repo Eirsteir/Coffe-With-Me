@@ -1,6 +1,6 @@
 package com.eirsteir.coffeewithme.repository;
 
-import com.eirsteir.coffeewithme.domain.friendship.FriendshipId;
+import com.eirsteir.coffeewithme.domain.friendship.FriendshipPk;
 import com.eirsteir.coffeewithme.domain.friendship.Friendship;
 import com.eirsteir.coffeewithme.domain.friendship.FriendshipStatus;
 import com.eirsteir.coffeewithme.domain.user.User;
@@ -24,7 +24,7 @@ class FriendshipRepositoryTest {
     private static final String ADDRESSEE_USERNAME = "addressee";
 
     private Friendship friendship;
-    private FriendshipId friendshipId;
+    private FriendshipPk friendshipPk;
     private User requester;
     private User addressee;
 
@@ -44,13 +44,13 @@ class FriendshipRepositoryTest {
                 .username(ADDRESSEE_USERNAME)
                 .build());
 
-        friendshipId = FriendshipId.builder()
+        friendshipPk = FriendshipPk.builder()
                 .requester(requester)
                 .addressee(addressee)
                 .build();
 
         entityManager.persistAndFlush(Friendship.builder()
-                                              .id(friendshipId)
+                                              .pk(friendshipPk)
                                               .requester(requester)
                                               .addressee(addressee)
                                               .status(FriendshipStatus.ACCEPTED)
@@ -60,34 +60,34 @@ class FriendshipRepositoryTest {
     @Test
     void testFindByIdRequesterOrIdAddresseeAndStatusWhenNoResults() {
         List<Friendship> friendsFound = friendshipRepository
-                .findByIdRequesterIdOrIdAddresseeIdAndStatus(requester.getId(), requester.getId(), FriendshipStatus.ACCEPTED);
+                .findByPkRequesterIdOrPkAddresseeIdAndStatus(requester.getId(), requester.getId(), FriendshipStatus.ACCEPTED);
         assertThat(friendsFound).isEmpty();
     }
 
     @Test
     void testFindAllByExampleOfRequesterWhenRequesterIsAddressee() {
         User otherUser = entityManager.persistFlushFind(User.builder().build());
-        FriendshipId id = FriendshipId.builder()
+        FriendshipPk id = FriendshipPk.builder()
                 .requester(otherUser)
                 .addressee(requester)
                 .build();
 
         entityManager.persistAndFlush(Friendship.builder()
-                                                            .id(id)
+                                                            .pk(id)
                                                            .requester(requester)
                                                            .addressee(addressee)
                                                            .status(FriendshipStatus.ACCEPTED)
                                                            .build());
 
         List<Friendship> friendsFound = friendshipRepository
-                .findByIdRequesterIdOrIdAddresseeIdAndStatus(requester.getId(), requester.getId(), FriendshipStatus.ACCEPTED);
+                .findByPkRequesterIdOrPkAddresseeIdAndStatus(requester.getId(), requester.getId(), FriendshipStatus.ACCEPTED);
 
         assertThat(friendsFound).hasSize(2);
     }
 
     @Test
     void testFindByIdRequesterIdAndIdAddresseeIdWhenExists() {
-        Optional<Friendship> friendshipFound = friendshipRepository.findByIdRequesterIdAndIdAddresseeId(
+        Optional<Friendship> friendshipFound = friendshipRepository.findByPkRequesterIdAndPkAddresseeId(
                 requester.getId(), addressee.getId());
 
         assertThat(friendshipFound).isPresent();
@@ -95,7 +95,7 @@ class FriendshipRepositoryTest {
 
     @Test
     void testFindByIdRequesterIdAndIdAddresseeIdWhenNotExists() {
-        Optional<Friendship> friendshipFound = friendshipRepository.findByIdRequesterIdAndIdAddresseeId(
+        Optional<Friendship> friendshipFound = friendshipRepository.findByPkRequesterIdAndPkAddresseeId(
                 requester.getId(), 100L);
 
         assertThat(friendshipFound).isEmpty();

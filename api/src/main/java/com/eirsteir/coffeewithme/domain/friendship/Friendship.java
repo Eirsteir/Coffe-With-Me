@@ -16,13 +16,13 @@ import java.util.Date;
 @Accessors(chain = true)
 @Entity
 @AssociationOverrides({
-        @AssociationOverride(name ="id.requester", joinColumns = @JoinColumn(name ="requester_id")),
-        @AssociationOverride(name ="id.addressee", joinColumns = @JoinColumn(name ="addressee_id"))
+        @AssociationOverride(name = "pk.requester", joinColumns = @JoinColumn(name ="requester_id")),
+        @AssociationOverride(name = "pk.addressee", joinColumns = @JoinColumn(name ="addressee_id"))
 })
 public class Friendship {
 
     @EmbeddedId
-    private FriendshipId id = new FriendshipId();
+    private FriendshipPk pk = new FriendshipPk();
 
     @Transient
     private User requester;

@@ -3,7 +3,7 @@ package com.eirsteir.coffeewithme.domain.user;
 
 import com.eirsteir.coffeewithme.domain.CreatedUpdatedDateTimeBaseModel;
 import com.eirsteir.coffeewithme.domain.friendship.Friendship;
-import com.eirsteir.coffeewithme.domain.friendship.FriendshipId;
+import com.eirsteir.coffeewithme.domain.friendship.FriendshipPk;
 import com.eirsteir.coffeewithme.domain.friendship.FriendshipStatus;
 import com.eirsteir.coffeewithme.domain.role.Role;
 import lombok.*;
@@ -30,7 +30,6 @@ public class User extends CreatedUpdatedDateTimeBaseModel implements Serializabl
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name ="user_id", nullable =false)
     private Long id;
 
     @Column(unique = true)
@@ -66,12 +65,12 @@ public class User extends CreatedUpdatedDateTimeBaseModel implements Serializabl
     private Boolean credentialsExpired = false;
 
     @ManyToMany(fetch = FetchType.EAGER)
-    @JoinTable(name = "users_roles", joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "user_id"), inverseJoinColumns = @JoinColumn(name = "role_id", referencedColumnName = "id"))
+    @JoinTable(name = "users_roles", joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"), inverseJoinColumns = @JoinColumn(name = "role_id", referencedColumnName = "id"))
     private Collection<Role> roles;
 
     @ToString.Exclude
     @OneToMany(fetch = FetchType.LAZY,
-            mappedBy ="id.requester",
+            mappedBy = "pk.requester",
             cascade = {CascadeType.PERSIST, CascadeType.MERGE},
             orphanRemoval=true)
     @Cascade({org.hibernate.annotations.CascadeType.SAVE_UPDATE})
@@ -79,7 +78,7 @@ public class User extends CreatedUpdatedDateTimeBaseModel implements Serializabl
 
     @ToString.Exclude
     @OneToMany(fetch = FetchType.LAZY,
-            mappedBy ="id.addressee",
+            mappedBy = "pk.addressee",
             cascade = {CascadeType.PERSIST, CascadeType.MERGE},
             orphanRemoval=true)
     @Cascade({org.hibernate.annotations.CascadeType.SAVE_UPDATE})
@@ -87,7 +86,7 @@ public class User extends CreatedUpdatedDateTimeBaseModel implements Serializabl
 
     public void addFriend(User friend, FriendshipStatus status) {
         Friendship friendship = Friendship.builder()
-                .id(FriendshipId.builder()
+                .pk(FriendshipPk.builder()
                             .requester(this)
                             .addressee(friend)
                             .build())

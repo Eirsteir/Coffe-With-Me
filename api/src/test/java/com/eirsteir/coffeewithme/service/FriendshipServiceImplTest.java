@@ -1,7 +1,7 @@
 package com.eirsteir.coffeewithme.service;
 
 import com.eirsteir.coffeewithme.domain.friendship.Friendship;
-import com.eirsteir.coffeewithme.domain.friendship.FriendshipId;
+import com.eirsteir.coffeewithme.domain.friendship.FriendshipPk;
 import com.eirsteir.coffeewithme.domain.friendship.FriendshipStatus;
 import com.eirsteir.coffeewithme.domain.user.User;
 import com.eirsteir.coffeewithme.dto.FriendshipDto;
@@ -47,7 +47,7 @@ class FriendshipServiceImplTest {
     private static final String ADDRESSEE_USERNAME = "addressee";
 
     private Friendship friendshipRequested;
-    private FriendshipId friendshipId;
+    private FriendshipPk friendshipPk;
     private User requester;
     private User addressee;
     private FriendRequest friendRequest;
@@ -90,13 +90,13 @@ class FriendshipServiceImplTest {
                .username(ADDRESSEE_USERNAME)
                .build();
 
-        friendshipId = FriendshipId.builder()
+        friendshipPk = FriendshipPk.builder()
                 .requester(requester)
                 .addressee(addressee)
                 .build();
 
         friendshipRequested = Friendship.builder()
-                .id(friendshipId)
+                .pk(friendshipPk)
                 .requester(requester)
                 .addressee(addressee)
                 .status(REQUESTED)
@@ -126,27 +126,27 @@ class FriendshipServiceImplTest {
 
     @Test
     void testRegisterFriendshipWhenDuplicate() {
-        when(friendshipRepository.existsById(Mockito.any(FriendshipId.class)))
+        when(friendshipRepository.existsById(Mockito.any(FriendshipPk.class)))
                 .thenReturn(true);
 
         assertThatExceptionOfType(CWMException.DuplicateEntityException.class)
                 .isThrownBy(() -> friendshipService.registerFriendship(friendRequest))
                 .withMessage("Requested friendship with id=" +
-                                     friendshipId +
+                                     friendshipPk +
                                      " already exists");
     }
 
     @Test
     void testRegisterFriendshipWhenFriendshipIdReversedIsDuplicate() {
-        when(friendshipRepository.existsById(Mockito.any(FriendshipId.class)))
+        when(friendshipRepository.existsById(Mockito.any(FriendshipPk.class)))
                 .thenReturn(true);
 
-        friendshipId = FriendshipId.builder()
+        friendshipPk = FriendshipPk.builder()
                 .requester(addressee)
                 .addressee(requester)
                 .build();
 
-        FriendshipId expectedId = FriendshipId.builder()
+        FriendshipPk expectedId = FriendshipPk.builder()
                 .requester(requester)
                 .addressee(addressee)
                 .build();
@@ -160,7 +160,7 @@ class FriendshipServiceImplTest {
 
     @Test
     void testRemoveFriendshipWhenNotFound() {
-        when(friendshipRepository.existsById(Mockito.any(FriendshipId.class)))
+        when(friendshipRepository.existsById(Mockito.any(FriendshipPk.class)))
                 .thenReturn(true);
 
         FriendshipDto friendshipDto = modelMapper.map(friendshipRequested, FriendshipDto.class);
@@ -168,7 +168,7 @@ class FriendshipServiceImplTest {
         assertThatExceptionOfType(CWMException.EntityNotFoundException.class)
                 .isThrownBy(() -> friendshipService.removeFriendship(friendshipDto))
                 .withMessage("Requested friendship with id=" +
-                                     friendshipId +
+                                     friendshipPk +
                                      " does not exist");
     }
 
@@ -184,7 +184,7 @@ class FriendshipServiceImplTest {
     @ParameterizedTest
     @MethodSource("statusChangeFromRequestedProvider")
     void testUpdateFriendshipFromRequestedStatus(FriendshipStatus newStatus) {
-        when(friendshipRepository.findByIdRequesterIdAndIdAddresseeId(requester.getId(), addressee.getId()))
+        when(friendshipRepository.findByPkRequesterIdAndPkAddresseeId(requester.getId(), addressee.getId()))
                 .thenReturn(Optional.ofNullable(friendshipRequested));
 
         FriendshipDto friendshipDto = modelMapper.map(friendshipRequested, FriendshipDto.class);
@@ -197,7 +197,7 @@ class FriendshipServiceImplTest {
     @Test
     void testUpdateFriendshipFromAcceptedToBlocked() {
         Friendship friendshipAccepted = friendshipRequested.setStatus(ACCEPTED);
-        when(friendshipRepository.findByIdRequesterIdAndIdAddresseeId(requester.getId(), addressee.getId()))
+        when(friendshipRepository.findByPkRequesterIdAndPkAddresseeId(requester.getId(), addressee.getId()))
                 .thenReturn(Optional.ofNullable(friendshipAccepted));
 
         FriendshipDto friendshipDto = modelMapper.map(friendshipAccepted, FriendshipDto.class);
@@ -210,7 +210,7 @@ class FriendshipServiceImplTest {
     @Test
     void testUpdateFriendshipFromAcceptedToAccepted() {
         Friendship friendshipAccepted = friendshipRequested.setStatus(ACCEPTED);
-        when(friendshipRepository.findByIdRequesterIdAndIdAddresseeId(requester.getId(), addressee.getId()))
+        when(friendshipRepository.findByPkRequesterIdAndPkAddresseeId(requester.getId(), addressee.getId()))
                 .thenReturn(Optional.ofNullable(friendshipAccepted));
 
         FriendshipDto friendshipDto = modelMapper.map(friendshipAccepted, FriendshipDto.class);
@@ -218,7 +218,7 @@ class FriendshipServiceImplTest {
 
         assertThatExceptionOfType(CWMException.InvalidStatusChangeException.class)
                 .isThrownBy(() -> friendshipService.updateFriendship(friendshipDto))
-                .withMessage("Invalid status change attempted for friendship with id=" + friendshipId);
+                .withMessage("Invalid status change attempted for friendship with id=" + friendshipPk);
     }
 
     static Stream<Arguments> invalidStatusChangeFromAcceptedProvider() {
@@ -232,7 +232,7 @@ class FriendshipServiceImplTest {
     @MethodSource("invalidStatusChangeFromAcceptedProvider")
     void testUpdateFriendshipFromAcceptedStatusToInvalidStatus(FriendshipStatus newStatus) {
         Friendship friendshipAccepted = friendshipRequested.setStatus(ACCEPTED);
-        when(friendshipRepository.findByIdRequesterIdAndIdAddresseeId(requester.getId(), addressee.getId()))
+        when(friendshipRepository.findByPkRequesterIdAndPkAddresseeId(requester.getId(), addressee.getId()))
                 .thenReturn(Optional.ofNullable(friendshipAccepted));
 
         FriendshipDto friendshipDto = modelMapper.map(friendshipAccepted, FriendshipDto.class);
@@ -240,12 +240,12 @@ class FriendshipServiceImplTest {
 
         assertThatExceptionOfType(CWMException.InvalidStatusChangeException.class)
                 .isThrownBy(() -> friendshipService.updateFriendship(friendshipDto))
-                .withMessage("Invalid status change attempted for friendship with id=" + friendshipId);
+                .withMessage("Invalid status change attempted for friendship with id=" + friendshipPk);
     }
 
     @Test
     void testUpdateFriendshipWhenNotFound() {
-        when(friendshipRepository.findByIdRequesterIdAndIdAddresseeId(requester.getId(), addressee.getId()))
+        when(friendshipRepository.findByPkRequesterIdAndPkAddresseeId(requester.getId(), addressee.getId()))
                 .thenReturn(Optional.empty());
 
         FriendshipDto friendshipDto = modelMapper.map(friendshipRequested, FriendshipDto.class);
@@ -253,7 +253,7 @@ class FriendshipServiceImplTest {
         assertThatExceptionOfType(CWMException.EntityNotFoundException.class)
                 .isThrownBy(() -> friendshipService.updateFriendship(friendshipDto))
                 .withMessage("Requested friendship with id=" +
-                                     friendshipId +
+                                     friendshipPk +
                                      " does not exist");
     }
 
@@ -281,7 +281,7 @@ class FriendshipServiceImplTest {
         List<Friendship> friends = List.of(
                 friendshipRequested.setStatus(ACCEPTED),
                 Friendship.builder()
-                        .id(FriendshipId.builder()
+                        .pk(FriendshipPk.builder()
                                     .requester(newFriendAccepted)
                                     .addressee(requester)
                                     .build()
@@ -291,7 +291,7 @@ class FriendshipServiceImplTest {
                         .status(ACCEPTED)
                         .build(),
                 Friendship.builder()
-                        .id(FriendshipId.builder()
+                        .pk(FriendshipPk.builder()
                                     .requester(newFriendRequested)
                                     .addressee(requester)
                                     .build()

@@ -1,6 +1,6 @@
 package com.eirsteir.coffeewithme.dto;
 
-import com.eirsteir.coffeewithme.domain.friendship.FriendshipId;
+import com.eirsteir.coffeewithme.domain.friendship.FriendshipPk;
 import com.eirsteir.coffeewithme.domain.friendship.FriendshipStatus;
 import lombok.*;
 import lombok.experimental.Accessors;
@@ -14,7 +14,7 @@ import lombok.experimental.Accessors;
 @AllArgsConstructor
 public class FriendshipDto {
 
-    private FriendshipId id;
+    private FriendshipPk id;
     private FriendshipStatus status;
 
 }

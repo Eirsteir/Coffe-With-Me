@@ -4,8 +4,10 @@ import com.eirsteir.coffeewithme.dto.FriendshipDto;
 import com.eirsteir.coffeewithme.dto.UserDto;
 import com.eirsteir.coffeewithme.service.UserPrincipalImpl;
 import com.eirsteir.coffeewithme.service.friendship.FriendshipService;
+import com.eirsteir.coffeewithme.service.user.UserService;
 import com.eirsteir.coffeewithme.web.request.FriendRequest;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.SwaggerDefinition;
 import io.swagger.annotations.Tag;
 import org.modelmapper.ModelMapper;
@@ -31,17 +33,21 @@ public class FriendshipController {
     private FriendshipService friendshipService;
 
     @Autowired
+    private UserService userService;
+
+    @Autowired
     private ModelMapper modelMapper;
 
     @GetMapping
     @ResponseBody
-    Collection<UserDto> allFriendshipsOf(@AuthenticationPrincipal UserPrincipalImpl principal) {
+    @ApiOperation("Find friends of the currently logged in user")
+    Collection<UserDto> getFriendsOf(@AuthenticationPrincipal UserPrincipalImpl principal) {
         UserDto userDto = modelMapper.map(principal.getUser(), UserDto.class);
         List<UserDto> friends = friendshipService.findFriendsOf(userDto);
 
         if (friends.isEmpty())
             throw new ResponseStatusException(
-                    HttpStatus.NO_CONTENT, "User has no friendships");
+                    HttpStatus.NO_CONTENT, "User has no friends");
 
         return friends;
     }

@@ -1,8 +1,6 @@
 package com.eirsteir.coffeewithme.config;
 
 
-import com.eirsteir.coffeewithme.domain.friendship.FriendshipId;
-import com.eirsteir.coffeewithme.domain.friendship.Friendship;
 import com.eirsteir.coffeewithme.domain.friendship.FriendshipStatus;
 import com.eirsteir.coffeewithme.domain.role.Role;
 import com.eirsteir.coffeewithme.domain.role.RoleType;
@@ -86,17 +84,6 @@ public class SetupDataLoader implements ApplicationListener<ContextRefreshedEven
             .password(passwordEncoder.encode("password"))
             .userType(UserType.LOCAL)
             .roles(Collections.singletonList(basicRole))
-            .build();
-//    log.info("[x] Preloading " + userRepository.save(basicUser));
-
-    FriendshipId friendshipId = FriendshipId.builder()
-            .requester(basicUser)
-            .addressee(adminUser)
-            .build();
-    Friendship friendship = Friendship.builder()
-            .requester(basicUser)
-            .addressee(adminUser)
-            .status(FriendshipStatus.ACCEPTED)
             .build();
 
     basicUser.addFriend(adminUser, FriendshipStatus.ACCEPTED);

@@ -2,7 +2,7 @@ package com.eirsteir.coffeewithme;
 
 
 import com.eirsteir.coffeewithme.domain.friendship.Friendship;
-import com.eirsteir.coffeewithme.domain.friendship.FriendshipId;
+import com.eirsteir.coffeewithme.domain.friendship.FriendshipPk;
 import com.eirsteir.coffeewithme.domain.friendship.FriendshipStatus;
 import com.eirsteir.coffeewithme.domain.role.Role;
 import com.eirsteir.coffeewithme.domain.role.RoleType;
@@ -73,25 +73,25 @@ public class SetupTestDataLoader implements ApplicationListener<ContextRefreshed
         User otherUser = userRepository.findByEmail(OTHER_USER_EMAIL)
                 .get();
 
-        FriendshipId friendshipId = FriendshipId.builder()
+        FriendshipPk friendshipPk = FriendshipPk.builder()
                 .requester(requester)
                 .addressee(addressee)
                 .build();
 
         friendshipRepository.save(Friendship.builder()
-                                          .id(friendshipId)
+                                          .pk(friendshipPk)
                                           .requester(requester)
                                           .addressee(addressee)
                                           .status(FriendshipStatus.ACCEPTED)
                                           .build());
 
-        FriendshipId requestedFriendshipId = FriendshipId.builder()
+        FriendshipPk requestedFriendshipPk = FriendshipPk.builder()
                 .requester(requester)
                 .addressee(otherUser)
                 .build();
 
         friendshipRepository.save(Friendship.builder()
-                                          .id(requestedFriendshipId)
+                                          .pk(requestedFriendshipPk)
                                           .requester(requester)
                                           .addressee(otherUser)
                                           .status(FriendshipStatus.REQUESTED)

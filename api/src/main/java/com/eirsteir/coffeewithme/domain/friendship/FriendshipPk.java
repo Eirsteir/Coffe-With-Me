@@ -13,7 +13,7 @@ import java.io.Serializable;
 @NoArgsConstructor
 @EqualsAndHashCode
 @Embeddable
-public class FriendshipId implements Serializable {
+public class FriendshipPk implements Serializable {
 
     private static final long serialVersionUID = 3966996285633364115L;
 
