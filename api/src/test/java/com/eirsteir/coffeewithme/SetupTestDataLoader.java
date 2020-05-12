@@ -74,8 +74,8 @@ public class SetupTestDataLoader implements ApplicationListener<ContextRefreshed
                 .get();
 
         FriendshipId friendshipId = FriendshipId.builder()
-                .requesterId(requester.getId())
-                .addresseeId(addressee.getId())
+                .requester(requester)
+                .addressee(addressee)
                 .build();
 
         friendshipRepository.save(Friendship.builder()
@@ -86,8 +86,8 @@ public class SetupTestDataLoader implements ApplicationListener<ContextRefreshed
                                           .build());
 
         FriendshipId requestedFriendshipId = FriendshipId.builder()
-                .requesterId(requester.getId())
-                .addresseeId(otherUser.getId())
+                .requester(requester)
+                .addressee(otherUser)
                 .build();
 
         friendshipRepository.save(Friendship.builder()

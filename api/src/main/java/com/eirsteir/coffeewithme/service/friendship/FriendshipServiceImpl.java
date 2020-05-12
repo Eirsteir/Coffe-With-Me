@@ -40,8 +40,8 @@ public class FriendshipServiceImpl implements FriendshipService {
         User requester = modelMapper.map(userService.findUserById(friendRequest.getRequesterId()), User.class);
         User addressee = modelMapper.map(userService.findUserById(friendRequest.getAddresseeId()), User.class);
         FriendshipId friendshipId = FriendshipId.builder()
-                .requesterId(requester.getId())
-                .addresseeId(addressee.getId())
+                .requester(requester)
+                .addressee(addressee)
                 .build();
 
         if (friendshipExistsById(friendshipId))
@@ -85,11 +85,11 @@ public class FriendshipServiceImpl implements FriendshipService {
     }
 
     private Friendship getFriendshipToUpdate(FriendshipDto friendshipDto) {
-        Long requesterId = friendshipDto.getId().getRequesterId();
-        Long addresseeId = friendshipDto.getId().getAddresseeId();
+        Long requesterId = friendshipDto.getId().getRequester().getId();
+        Long addresseeId = friendshipDto.getId().getAddressee().getId();
 
         return friendshipRepository.
-                findByRequesterIdAndAddresseeId(requesterId, addresseeId)
+                findByIdRequesterIdAndIdAddresseeId(requesterId, addresseeId)
                     .orElseThrow(() -> CWMException.getException(EntityType.FRIENDSHIP,
                                                                  ExceptionType.ENTITY_NOT_FOUND,
                                                                  friendshipDto.getId().toString()));
@@ -114,7 +114,7 @@ public class FriendshipServiceImpl implements FriendshipService {
     @Override
     public List<UserDto> findFriendsOf(UserDto userDto) {
         User userModel = modelMapper.map(userService.findUserById(userDto.getId()), User.class);
-        return userModel.getFriendships()
+        return userModel.getFriends()
                 .stream()
                 .filter(friendship -> friendship.getStatus() == FriendshipStatus.ACCEPTED)
                 .map(friendship -> this.getFriendFrom(friendship, userModel))

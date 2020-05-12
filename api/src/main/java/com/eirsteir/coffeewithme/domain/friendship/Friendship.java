@@ -1,38 +1,43 @@
 package com.eirsteir.coffeewithme.domain.friendship;
 
-import com.eirsteir.coffeewithme.domain.CreatedUpdatedDateTimeBaseModel;
 import com.eirsteir.coffeewithme.domain.user.User;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
 import lombok.experimental.Accessors;
-import lombok.experimental.SuperBuilder;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
+import java.util.Date;
 
-@Getter
-@Setter
-@ToString
-@SuperBuilder
+@Data
+@Builder
 @NoArgsConstructor
+@AllArgsConstructor
 @Accessors(chain = true)
 @Entity
-public class Friendship extends CreatedUpdatedDateTimeBaseModel {
+@AssociationOverrides({
+        @AssociationOverride(name ="id.requester", joinColumns = @JoinColumn(name ="requester_id")),
+        @AssociationOverride(name ="id.addressee", joinColumns = @JoinColumn(name ="addressee_id"))
+})
+public class Friendship {
 
     @EmbeddedId
-    private FriendshipId id;
+    private FriendshipId id = new FriendshipId();
 
-    @ManyToOne
-    @MapsId("requester_id")
-    @JoinColumn(name = "requester_id")
+    @Transient
     private User requester;
 
-    @ManyToOne
-    @MapsId("addressee_id")
-    @JoinColumn(name = "addressee_id")
+    @Transient
     private User addressee;
 
     private FriendshipStatus status;
 
+    @CreationTimestamp
+    private Date createdDateTime;
+
+    @UpdateTimestamp
+    private Date updatedDateTime;
+
 }
+
+

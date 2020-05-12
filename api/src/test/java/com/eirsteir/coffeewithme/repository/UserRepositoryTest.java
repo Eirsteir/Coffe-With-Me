@@ -79,8 +79,8 @@ public class UserRepositoryTest {
                                                                 .build());
 
         FriendshipId friendshipId = FriendshipId.builder()
-                .requesterId(requester.getId())
-                .addresseeId(addressee.getId())
+                .requester(requester)
+                .addressee(addressee)
                 .build();
         entityManager.persistAndFlush(Friendship.builder()
                                               .id(friendshipId)
@@ -90,8 +90,8 @@ public class UserRepositoryTest {
                                               .build());
 
         FriendshipId requestedFriendshipId = FriendshipId.builder()
-                                                .requesterId(requester.getId())
-                                                .addresseeId(otherUser.getId())
+                                                .requester(requester)
+                                                .addressee(otherUser)
                                                 .build();
         entityManager.persistFlushFind(Friendship.builder()
                                                .id(requestedFriendshipId)

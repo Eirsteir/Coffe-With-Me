@@ -87,17 +87,20 @@ public class SetupDataLoader implements ApplicationListener<ContextRefreshedEven
             .userType(UserType.LOCAL)
             .roles(Collections.singletonList(basicRole))
             .build();
-    log.info("[x] Preloading " + userRepository.save(basicUser));
+//    log.info("[x] Preloading " + userRepository.save(basicUser));
 
     FriendshipId friendshipId = FriendshipId.builder()
-            .requesterId(basicUser.getId())
-            .addresseeId(adminUser.getId())
+            .requester(basicUser)
+            .addressee(adminUser)
             .build();
     Friendship friendship = Friendship.builder()
-            .id(friendshipId)
+            .requester(basicUser)
+            .addressee(adminUser)
             .status(FriendshipStatus.ACCEPTED)
             .build();
-    log.info("[x] Preloading " + friendshipRepository.save(friendship));
+
+    basicUser.addFriend(adminUser, FriendshipStatus.ACCEPTED);
+    log.info("[x] Preloading " + userRepository.save(basicUser));
 
     alreadySetup = true;
   }

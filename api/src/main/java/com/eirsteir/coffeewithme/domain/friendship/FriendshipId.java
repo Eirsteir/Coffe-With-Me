@@ -1,27 +1,26 @@
 package com.eirsteir.coffeewithme.domain.friendship;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import com.eirsteir.coffeewithme.domain.user.User;
+import lombok.*;
 
-import javax.persistence.Column;
 import javax.persistence.Embeddable;
+import javax.persistence.ManyToOne;
 import java.io.Serializable;
 
 @Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
+@EqualsAndHashCode
 @Embeddable
 public class FriendshipId implements Serializable {
 
     private static final long serialVersionUID = 3966996285633364115L;
 
-    @Column(name = "requester_id")
-    private Long requesterId;
+    @ManyToOne
+    User requester;
 
-    @Column(name = "addressee_id")
-    private Long addresseeId;
+    @ManyToOne
+    User addressee;
 
 }

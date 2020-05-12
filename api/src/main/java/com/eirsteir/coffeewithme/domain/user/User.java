@@ -3,20 +3,24 @@ package com.eirsteir.coffeewithme.domain.user;
 
 import com.eirsteir.coffeewithme.domain.CreatedUpdatedDateTimeBaseModel;
 import com.eirsteir.coffeewithme.domain.friendship.Friendship;
+import com.eirsteir.coffeewithme.domain.friendship.FriendshipId;
+import com.eirsteir.coffeewithme.domain.friendship.FriendshipStatus;
 import com.eirsteir.coffeewithme.domain.role.Role;
 import lombok.*;
 import lombok.experimental.Accessors;
+import org.hibernate.annotations.Cascade;
 
 import javax.persistence.*;
 import java.io.Serializable;
-import java.util.Collection;
-import java.util.Date;
-import java.util.Set;
+import java.util.*;
 
 
-@Data
+@Getter
+@Setter
 @Builder
 @Accessors(chain = true)
+@ToString
+@EqualsAndHashCode(of = {"id", "email"}, callSuper = false)
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
@@ -26,6 +30,7 @@ public class User extends CreatedUpdatedDateTimeBaseModel implements Serializabl
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(name ="user_id", nullable =false)
     private Long id;
 
     @Column(unique = true)
@@ -61,11 +66,53 @@ public class User extends CreatedUpdatedDateTimeBaseModel implements Serializabl
     private Boolean credentialsExpired = false;
 
     @ManyToMany(fetch = FetchType.EAGER)
-    @JoinTable(name = "users_roles", joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"), inverseJoinColumns = @JoinColumn(name = "role_id", referencedColumnName = "id"))
+    @JoinTable(name = "users_roles", joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "user_id"), inverseJoinColumns = @JoinColumn(name = "role_id", referencedColumnName = "id"))
     private Collection<Role> roles;
 
     @ToString.Exclude
-    @OneToMany
-    private Set<Friendship> friendships;
+    @OneToMany(fetch = FetchType.LAZY,
+            mappedBy ="id.requester",
+            cascade = {CascadeType.PERSIST, CascadeType.MERGE},
+            orphanRemoval=true)
+    @Cascade({org.hibernate.annotations.CascadeType.SAVE_UPDATE})
+    private List<Friendship> friends = new LinkedList<>();
 
+    @ToString.Exclude
+    @OneToMany(fetch = FetchType.LAZY,
+            mappedBy ="id.addressee",
+            cascade = {CascadeType.PERSIST, CascadeType.MERGE},
+            orphanRemoval=true)
+    @Cascade({org.hibernate.annotations.CascadeType.SAVE_UPDATE})
+    private List<Friendship> friendsOf = new LinkedList<>();
+
+    public void addFriend(User friend, FriendshipStatus status) {
+        Friendship friendship = Friendship.builder()
+                .id(FriendshipId.builder()
+                            .requester(this)
+                            .addressee(friend)
+                            .build())
+                .requester(this)
+                .addressee(friend)
+                .status(status)
+                .build();
+
+        if (this.friends == null)
+            this.friends = new ArrayList<>();
+
+        this.friends.add(friendship);
+        friend.addFriendOf(friendship);
+    }
+
+    private void addFriendOf(Friendship friendship) {
+        if (this.friendsOf == null)
+            this.friendsOf = new ArrayList<>();
+
+        this.friendsOf.add(friendship);
+    }
+
+    // TODO: 12.05.2020 how should this be used?
+    public void removeFriendship(Friendship friendship) {
+        friends.remove(friendship);
+        friendship.getAddressee().friends.remove(friendship);
+    }
 }

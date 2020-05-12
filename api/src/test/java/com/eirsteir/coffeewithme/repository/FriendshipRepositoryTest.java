@@ -45,8 +45,8 @@ class FriendshipRepositoryTest {
                 .build());
 
         friendshipId = FriendshipId.builder()
-                .requesterId(requester.getId())
-                .addresseeId(addressee.getId())
+                .requester(requester)
+                .addressee(addressee)
                 .build();
 
         entityManager.persistAndFlush(Friendship.builder()
@@ -60,7 +60,7 @@ class FriendshipRepositoryTest {
     @Test
     void testFindByIdRequesterOrIdAddresseeAndStatusWhenNoResults() {
         List<Friendship> friendsFound = friendshipRepository
-                .findByRequesterIdOrAddresseeIdAndStatus(requester.getId(), requester.getId(), FriendshipStatus.ACCEPTED);
+                .findByIdRequesterIdOrIdAddresseeIdAndStatus(requester.getId(), requester.getId(), FriendshipStatus.ACCEPTED);
         assertThat(friendsFound).isEmpty();
     }
 
@@ -68,8 +68,8 @@ class FriendshipRepositoryTest {
     void testFindAllByExampleOfRequesterWhenRequesterIsAddressee() {
         User otherUser = entityManager.persistFlushFind(User.builder().build());
         FriendshipId id = FriendshipId.builder()
-                .requesterId(otherUser.getId())
-                .addresseeId(requester.getId())
+                .requester(otherUser)
+                .addressee(requester)
                 .build();
 
         entityManager.persistAndFlush(Friendship.builder()
@@ -80,14 +80,14 @@ class FriendshipRepositoryTest {
                                                            .build());
 
         List<Friendship> friendsFound = friendshipRepository
-                .findByRequesterIdOrAddresseeIdAndStatus(requester.getId(), requester.getId(), FriendshipStatus.ACCEPTED);
+                .findByIdRequesterIdOrIdAddresseeIdAndStatus(requester.getId(), requester.getId(), FriendshipStatus.ACCEPTED);
 
         assertThat(friendsFound).hasSize(2);
     }
 
     @Test
     void testFindByIdRequesterIdAndIdAddresseeIdWhenExists() {
-        Optional<Friendship> friendshipFound = friendshipRepository.findByRequesterIdAndAddresseeId(
+        Optional<Friendship> friendshipFound = friendshipRepository.findByIdRequesterIdAndIdAddresseeId(
                 requester.getId(), addressee.getId());
 
         assertThat(friendshipFound).isPresent();
@@ -95,7 +95,7 @@ class FriendshipRepositoryTest {
 
     @Test
     void testFindByIdRequesterIdAndIdAddresseeIdWhenNotExists() {
-        Optional<Friendship> friendshipFound = friendshipRepository.findByRequesterIdAndAddresseeId(
+        Optional<Friendship> friendshipFound = friendshipRepository.findByIdRequesterIdAndIdAddresseeId(
                 requester.getId(), 100L);
 
         assertThat(friendshipFound).isEmpty();

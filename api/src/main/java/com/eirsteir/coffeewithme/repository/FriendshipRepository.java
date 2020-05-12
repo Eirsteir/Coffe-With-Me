@@ -10,9 +10,9 @@ import java.util.Optional;
 
 public interface FriendshipRepository extends JpaRepository<Friendship, FriendshipId> {
 
-    List<Friendship> findByRequesterIdOrAddresseeIdAndStatus(Long requesterId, Long addresseeId, FriendshipStatus status);
+    List<Friendship> findByIdRequesterIdOrIdAddresseeIdAndStatus(Long requesterId, Long addresseeId, FriendshipStatus status);
 
-    Optional<Friendship> findByRequesterIdAndAddresseeId(Long requesterId, Long addresseeId);
+    Optional<Friendship> findByIdRequesterIdAndIdAddresseeId(Long requesterId, Long addresseeId);
 
     // TODO: 09.05.2020 What about when addressee sends request back to original requester?
 
