@@ -1,0 +1,61 @@
+version: '3.7'
+
+# Define services
+services:
+  # API backend service
+  api:
+    # Configuration for building the docker image for the backend service
+    build:
+      context: api # Use an image built from the specified dockerfile in the `api` directory.
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080" # Forward the exposed port 8080 on the container to port 8080 on the host machine
+    restart: always
+    depends_on:
+      - db # This service depends on H2. Start that first.
+      - redis
+    networks: # Networks to join (Services on the same network can communicate with each other using their name)
+      - api
+      - client
+
+  # Frontend Service
+  client:
+    build:
+      context: client # Use an image built from the specified dockerfile in the `client` directory.
+      dockerfile: Dockerfile
+    ports:
+      - "9090:80" # Map the exposed port 80 on the container to port 9090 on the host machine
+    restart: always
+    depends_on:
+      - api
+    networks:
+      - client
+
+  # Database Service (H2)
+  db:
+    image: 1000kit/h2
+    ports:
+      - "8181:8181"
+      - "1521:1521"
+    restart: always
+    volumes:
+      - h2-data:/opt/h2-data
+    networks:
+      - api
+  # Redis Caching Service
+  redis:
+    image: redis
+    ports:
+      - "6379:6379"
+    networks:
+      - api
+    restart: always
+
+# Volumes
+volumes:
+  h2-data:
+
+# Networks to be created to facilitate communication between containers
+networks:
+  api:
+  client:
