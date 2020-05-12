@@ -1,16 +1,16 @@
 package com.eirsteir.coffeewithme.repository;
 
-import com.eirsteir.coffeewithme.domain.friendship.FriendshipPk;
 import com.eirsteir.coffeewithme.domain.friendship.Friendship;
+import com.eirsteir.coffeewithme.domain.friendship.FriendshipPk;
 import com.eirsteir.coffeewithme.domain.friendship.FriendshipStatus;
 import com.eirsteir.coffeewithme.domain.user.User;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.util.List;
 import java.util.Optional;
@@ -18,12 +18,11 @@ import java.util.Optional;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @DataJpaTest
-@RunWith(SpringRunner.class)
+@ExtendWith(SpringExtension.class)
 class FriendshipRepositoryTest {
     private static final String REQUESTER_USERNAME = "requester";
     private static final String ADDRESSEE_USERNAME = "addressee";
 
-    private Friendship friendship;
     private FriendshipPk friendshipPk;
     private User requester;
     private User addressee;
@@ -60,7 +59,7 @@ class FriendshipRepositoryTest {
     @Test
     void testFindByIdRequesterOrIdAddresseeAndStatusWhenNoResults() {
         List<Friendship> friendsFound = friendshipRepository
-                .findByPkRequesterIdOrPkAddresseeIdAndStatus(requester.getId(), requester.getId(), FriendshipStatus.ACCEPTED);
+                .findByPkRequesterOrPkAddresseeAndStatus(requester, requester, FriendshipStatus.REQUESTED);
         assertThat(friendsFound).isEmpty();
     }
 
@@ -80,7 +79,7 @@ class FriendshipRepositoryTest {
                                                            .build());
 
         List<Friendship> friendsFound = friendshipRepository
-                .findByPkRequesterIdOrPkAddresseeIdAndStatus(requester.getId(), requester.getId(), FriendshipStatus.ACCEPTED);
+                .findByPkRequesterOrPkAddresseeAndStatus(requester, requester, FriendshipStatus.ACCEPTED);
 
         assertThat(friendsFound).hasSize(2);
     }
