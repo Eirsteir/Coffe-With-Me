@@ -35,34 +35,41 @@ public class FriendshipServiceImpl implements FriendshipService {
     @Autowired
     private ModelMapper modelMapper;
 
+
+    @Override
+    public List<UserDto> getFriends(User user) {
+
+        return user.getFriends()
+                .stream()
+                .map(Friendship::getAddressee)
+                .map(friend -> modelMapper.map(friend, UserDto.class))
+                .collect(Collectors.toList());
+    }
+
     @Override
     public FriendshipDto registerFriendship(FriendRequest friendRequest) {
         User requester = modelMapper.map(userService.findUserById(friendRequest.getRequesterId()), User.class);
         User addressee = modelMapper.map(userService.findUserById(friendRequest.getAddresseeId()), User.class);
-        FriendshipPk friendshipPk = FriendshipPk.builder()
-                .requester(requester)
-                .addressee(addressee)
-                .build();
 
-        if (friendshipExistsById(friendshipPk))
+        if (friendshipExists(requester, addressee))
             throw CWMException.getException(EntityType.FRIENDSHIP,
                                             ExceptionType.DUPLICATE_ENTITY,
-                                            friendshipPk.toString());
+                                            requester.getId().toString(),
+                                            addressee.getId().toString());
 
-        Friendship registeredFriendship = friendshipRepository.save(Friendship.builder()
-                .pk(friendshipPk)
-                .status(FriendshipStatus.REQUESTED)
-                .build());
+        Friendship friendship = requester.addFriend(addressee, FriendshipStatus.REQUESTED);
+        return modelMapper.map(friendship, FriendshipDto.class);
+    }
 
-        log.info("[x] Registered friendship: {}", registeredFriendship);
-        return modelMapper.map(registeredFriendship, FriendshipDto.class);
+    private boolean friendshipExists(User requester, User addressee) {
+        return friendshipRepository.existsByPkRequesterAndPkAddressee(requester, addressee);
     }
 
     @Override
     public void removeFriendship(FriendshipDto friendshipDto) {
         FriendshipPk id = modelMapper.map(friendshipDto.getId(), FriendshipPk.class);
 
-        if (friendshipExistsById(id)) {
+        if (friendshipExists(id)) {
             friendshipRepository.deleteById(id);
             log.info("[x] Removed friendship: {}", friendshipDto);
         }
@@ -70,6 +77,10 @@ public class FriendshipServiceImpl implements FriendshipService {
         throw CWMException.getException(EntityType.FRIENDSHIP,
                                         ExceptionType.ENTITY_NOT_FOUND,
                                         friendshipDto.getId().toString());
+    }
+
+    private boolean friendshipExists(FriendshipPk friendshipPk) {
+        return friendshipRepository.existsById(friendshipPk);
     }
 
     @Override
@@ -104,31 +115,10 @@ public class FriendshipServiceImpl implements FriendshipService {
 
     private FriendshipDto updateFriendship(FriendshipDto friendshipDto, Friendship friendshipToUpdate) {
         friendshipToUpdate.setStatus(friendshipDto.getStatus());
-        Friendship acceptedFriendship = friendshipRepository.save(friendshipToUpdate);
+        Friendship updatedFriendship = friendshipRepository.save(friendshipToUpdate);
 
         log.info("[x] Friendship was updated to {}: {}", friendshipDto.getStatus(), friendshipToUpdate);
-        return modelMapper.map(acceptedFriendship, FriendshipDto.class);
+        return modelMapper.map(updatedFriendship, FriendshipDto.class);
     }
 
-    // TODO: 11.05.2020 write a clever query for this
-    @Override
-    public List<UserDto> findFriendsOf(UserDto userDto) {
-        User userModel = modelMapper.map(userService.findUserById(userDto.getId()), User.class);
-        return userModel.getFriends()
-                .stream()
-                .filter(friendship -> friendship.getStatus() == FriendshipStatus.ACCEPTED)
-                .map(friendship -> this.getFriendFrom(friendship, userModel))
-                .map(user -> modelMapper.map(user, UserDto.class))
-                .collect(Collectors.toList());
-    }
-
-    private User getFriendFrom(Friendship friendship, User userModel) {
-        return friendship.getRequester().equals(userModel)
-        ? friendship.getAddressee()
-        : friendship.getRequester();
-    }
-
-    private boolean friendshipExistsById(FriendshipPk friendshipPk) {
-        return friendshipRepository.existsById(friendshipPk);
-    }
 }

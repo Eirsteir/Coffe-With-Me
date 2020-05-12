@@ -263,7 +263,7 @@ class FriendshipServiceImplTest {
                 .thenThrow(CWMException.EntityNotFoundException.class);
 
         assertThatExceptionOfType(CWMException.EntityNotFoundException.class)
-                .isThrownBy(() -> friendshipService.findFriendsOf(modelMapper.map(requester, UserDto.class)));
+                .isThrownBy(() -> friendshipService.getFriends(requester));
     }
 
     @Test
@@ -304,7 +304,7 @@ class FriendshipServiceImplTest {
 
         requester.setFriends(friends);
 
-        List<UserDto> friendsFound = friendshipService.findFriendsOf(modelMapper.map(requester, UserDto.class));
+        List<UserDto> friendsFound = friendshipService.getFriends(requester);
         UserDto firstFriendDto = modelMapper.map(friendshipRequested.getAddressee(), UserDto.class);
 
         assertThat(friendsFound).hasSize(2);

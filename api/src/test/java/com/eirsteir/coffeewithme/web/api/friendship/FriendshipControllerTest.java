@@ -124,7 +124,7 @@ class FriendshipControllerTest {
 
     @Test
     void testAddFriendWhenAddresseeExists_thenReturnHttp200() throws Exception {
-        when(userService.registerFriendship(Mockito.any(FriendRequest.class)))
+        when(friendshipService.registerFriendship(Mockito.any(FriendRequest.class)))
                 .thenReturn(friendshipDto);
 
         mockMvc.perform(post("/user/friends")
@@ -139,7 +139,7 @@ class FriendshipControllerTest {
 
     @Test
     void testAddFriendWhenAddresseeDoesNotExists_thenReturnHttp404() throws Exception {
-        when(userService.registerFriendship(Mockito.any(FriendRequest.class)))
+        when(friendshipService.registerFriendship(Mockito.any(FriendRequest.class)))
                 .thenThrow(CWMException.EntityNotFoundException.class);
 
         mockMvc.perform(post("/user/friends")
@@ -151,7 +151,7 @@ class FriendshipControllerTest {
 
     @Test
     void testAddFriendWhenFriendshipAlreadyExists_thenReturnHttp404() throws Exception {
-        when(userService.registerFriendship(Mockito.any(FriendRequest.class)))
+        when(friendshipService.registerFriendship(Mockito.any(FriendRequest.class)))
                 .thenThrow(CWMException.DuplicateEntityException.class);
 
         mockMvc.perform(post("/user/friends")
@@ -172,7 +172,7 @@ class FriendshipControllerTest {
 
     @Test
     void testGetFriendsWhenUserNotFound_thenReturnHttp404() throws Exception {
-        when(userService.getFriends(Mockito.any(User.class)))
+        when(friendshipService.getFriends(Mockito.any(User.class)))
                 .thenThrow(CWMException.EntityNotFoundException.class);
 
         mockMvc.perform(get("/user/friends")
@@ -183,7 +183,7 @@ class FriendshipControllerTest {
 
     @Test
     void testGetFriendsWhenUserHasNoFriendships_thenReturnHttp204() throws Exception {
-        when(userService.getFriends(Mockito.any(User.class)))
+        when(friendshipService.getFriends(Mockito.any(User.class)))
                 .thenReturn(new ArrayList<>());
 
         mockMvc.perform(get("/user/friends")
@@ -203,7 +203,7 @@ class FriendshipControllerTest {
 
     @Test
     void testGetFriendsWhenUserHasFriendships_thenReturnHttp200WithFriends() throws Exception {
-        when(userService.getFriends(Mockito.any(User.class)))
+        when(friendshipService.getFriends(Mockito.any(User.class)))
                 .thenReturn(Arrays.asList(
                         UserDto.builder()
                         .email(REQUESTER_EMAIL)

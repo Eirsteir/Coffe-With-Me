@@ -42,7 +42,7 @@ public class FriendshipController {
     @ResponseBody
     @ApiOperation("Find friends of the currently logged in user")
     Collection<UserDto> getFriends(@AuthenticationPrincipal UserPrincipalImpl principal) {
-        List<UserDto> friends = userService.getFriends(principal.getUser());
+        List<UserDto> friends = friendshipService.getFriends(principal.getUser());
 
         if (friends.isEmpty())
             throw new ResponseStatusException(
@@ -60,7 +60,7 @@ public class FriendshipController {
             throw new ResponseStatusException(
                     HttpStatus.BAD_REQUEST, "Cannot send friend requests to yourself");
 
-        return userService.registerFriendship(FriendRequest.builder()
+        return friendshipService.registerFriendship(FriendRequest.builder()
                                                             .requesterId(principal.getUser().getId())
                                                             .addresseeId(toFriend)
                                                             .build());
