@@ -181,4 +181,24 @@ public class UserRepositoryTest {
         assertThat(userJohn).isIn(results);
         assertThat(userTom).isNotIn(results);
     }
+
+    @Test
+    void testFindFriendsWhenUserHasFriends() {
+
+    }
+
+    @Test
+    void testFindFriendsWhenUserHasNoFriends() {
+
+    }
+
+    @Test
+    void testFindFriendsOfWhenUserHasFriends() {
+
+    }
+
+    @Test
+    void testFindFriendsOfWhenUserHasNoFriends() {
+
+    }
 }

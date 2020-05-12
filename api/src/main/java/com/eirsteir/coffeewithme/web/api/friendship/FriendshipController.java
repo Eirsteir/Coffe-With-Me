@@ -41,9 +41,8 @@ public class FriendshipController {
     @GetMapping
     @ResponseBody
     @ApiOperation("Find friends of the currently logged in user")
-    Collection<UserDto> getFriendsOf(@AuthenticationPrincipal UserPrincipalImpl principal) {
-        UserDto userDto = modelMapper.map(principal.getUser(), UserDto.class);
-        List<UserDto> friends = friendshipService.findFriendsOf(userDto);
+    Collection<UserDto> getFriends(@AuthenticationPrincipal UserPrincipalImpl principal) {
+        List<UserDto> friends = userService.getFriends(principal.getUser());
 
         if (friends.isEmpty())
             throw new ResponseStatusException(
@@ -61,7 +60,7 @@ public class FriendshipController {
             throw new ResponseStatusException(
                     HttpStatus.BAD_REQUEST, "Cannot send friend requests to yourself");
 
-        return friendshipService.registerFriendship(FriendRequest.builder()
+        return userService.registerFriendship(FriendRequest.builder()
                                                             .requesterId(principal.getUser().getId())
                                                             .addresseeId(toFriend)
                                                             .build());

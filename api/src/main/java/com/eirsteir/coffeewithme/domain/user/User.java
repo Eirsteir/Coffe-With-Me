@@ -84,7 +84,7 @@ public class User extends CreatedUpdatedDateTimeBaseModel implements Serializabl
     @Cascade({org.hibernate.annotations.CascadeType.SAVE_UPDATE})
     private List<Friendship> friendsOf = new LinkedList<>();
 
-    public void addFriend(User friend, FriendshipStatus status) {
+    public Friendship addFriend(User friend, FriendshipStatus status) {
         Friendship friendship = Friendship.builder()
                 .pk(FriendshipPk.builder()
                             .requester(this)
@@ -100,6 +100,8 @@ public class User extends CreatedUpdatedDateTimeBaseModel implements Serializabl
 
         this.friends.add(friendship);
         friend.addFriendOf(friendship);
+
+        return friendship;
     }
 
     private void addFriendOf(Friendship friendship) {
