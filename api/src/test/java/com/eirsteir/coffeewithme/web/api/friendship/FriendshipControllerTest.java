@@ -194,7 +194,9 @@ class FriendshipControllerTest {
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .with(user(userPrincipal)))
                 .andExpect(status().isNoContent())
-                .andExpect(jsonPath("$.message", equalTo("User has no friends")));
+                .andExpect(jsonPath("$.message", equalTo("User with email - " +
+                                                                 requester.getEmail() +
+                                                                 " has no friends")));
     }
 
     @Test
@@ -239,12 +241,28 @@ class FriendshipControllerTest {
                         .email(ADDRESSEE_EMAIL)
                         .build()));
 
-        mockMvc.perform(get("/{id}/friends/requests", requester.getId())
+        mockMvc.perform(get("/friends/requests", requester.getId())
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .with(user(userPrincipal)))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$[0].email", equalTo(REQUESTER_EMAIL)))
                 .andExpect(jsonPath("$[1].email", equalTo(ADDRESSEE_EMAIL)));
+    }
+
+    @Test
+    void testGetFriendRequestsWhenUserHasNoFriendshipsWithStatusRequested_thenReturnHttp204() throws Exception {
+        when(userService.findUserById(requester.getId()))
+                .thenReturn(requester);
+        when(friendshipService.getFriendshipsWithStatus(Mockito.any(UserDto.class), eq(REQUESTED)))
+                .thenReturn(new ArrayList<>());
+
+        mockMvc.perform(get("/friends/requests", requester.getId())
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .with(user(userPrincipal)))
+                .andExpect(status().isNoContent())
+                .andExpect(jsonPath("$.message", equalTo("User with email - " +
+                                                                 REQUESTER_EMAIL +
+                                                                 " has no friend requests")));
     }
 
     @Test

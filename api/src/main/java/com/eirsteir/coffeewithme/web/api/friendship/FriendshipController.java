@@ -1,5 +1,6 @@
 package com.eirsteir.coffeewithme.web.api.friendship;
 
+import com.eirsteir.coffeewithme.domain.friendship.FriendshipStatus;
 import com.eirsteir.coffeewithme.dto.FriendshipDto;
 import com.eirsteir.coffeewithme.dto.UserDto;
 import com.eirsteir.coffeewithme.security.UserPrincipalImpl;
@@ -47,7 +48,7 @@ public class FriendshipController {
 
         if (friends.isEmpty())
             throw new ResponseStatusException(
-                    HttpStatus.NO_CONTENT, "User has no friends");
+                    HttpStatus.NO_CONTENT, "User with email - " +  userDto.getEmail() + " has no friends");
 
         return friends;
     }
@@ -73,6 +74,20 @@ public class FriendshipController {
         validateFriendshipRequest(friendshipDto, principal);
 
         return friendshipService.updateFriendship(friendshipDto);
+    }
+
+    @GetMapping("/friends/requests")
+    List<UserDto> getFriendRequests(@AuthenticationPrincipal UserPrincipalImpl principal) {
+        UserDto userDto = modelMapper.map(principal.getUser(), UserDto.class);
+        List<UserDto> friendRequests = friendshipService.getFriendshipsWithStatus(userDto,
+                                                                                  FriendshipStatus.REQUESTED);
+
+        if (friendRequests.isEmpty())
+            throw new ResponseStatusException(
+                    HttpStatus.NO_CONTENT, "User with email - " +  userDto.getEmail() + " has no friend requests");
+
+
+        return friendRequests;
     }
 
     private void validateFriendshipRequest(FriendshipDto friendshipDto, UserPrincipalImpl principal) {
