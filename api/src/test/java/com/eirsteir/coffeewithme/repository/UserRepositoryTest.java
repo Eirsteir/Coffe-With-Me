@@ -1,13 +1,11 @@
 package com.eirsteir.coffeewithme.repository;
 
-import com.eirsteir.coffeewithme.domain.friendship.Friendship;
-import com.eirsteir.coffeewithme.domain.friendship.FriendshipId;
 import com.eirsteir.coffeewithme.domain.friendship.FriendshipStatus;
 import com.eirsteir.coffeewithme.domain.user.User;
 import com.eirsteir.coffeewithme.web.util.SearchOperation;
 import com.eirsteir.coffeewithme.web.util.SpecSearchCriteria;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
@@ -78,27 +76,8 @@ class UserRepositoryTest {
                                                                 .username(OTHER_USER_USERNAME)
                                                                 .build());
 
-        FriendshipId friendshipId = FriendshipId.builder()
-                .requester(requester)
-                .addressee(addressee)
-                .build();
-        entityManager.persistAndFlush(Friendship.builder()
-                                              .id(friendshipId)
-                                              .requester(requester)
-                                              .addressee(addressee)
-                                              .status(FriendshipStatus.ACCEPTED)
-                                              .build());
-
-        FriendshipId requestedFriendshipId = FriendshipId.builder()
-                                                .requester(requester)
-                                                .addressee(otherUser)
-                                                .build();
-        entityManager.persistFlushFind(Friendship.builder()
-                                               .id(requestedFriendshipId)
-                                               .requester(requester)
-                                               .addressee(otherUser)
-                                               .status(FriendshipStatus.REQUESTED)
-                                               .build());
+        requester.addFriend(addressee, FriendshipStatus.ACCEPTED);
+        requester.addFriend(otherUser, FriendshipStatus.REQUESTED);
 
         userJohn = entityManager.persistFlushFind(User.builder()
                                                           .name("john doe")
@@ -114,6 +93,38 @@ class UserRepositoryTest {
                                                          .name("percy blackney")
                                                          .email("percy@blackney.com")
                                                          .build());
+    }
+
+    @Test
+    void testFindFriendsWithStatusReturnsFriend() {
+        List<User> friendsFound = userRepository.findFriendsFromWithStatus(requester.getId(), FriendshipStatus.ACCEPTED);
+
+        assertThat(addressee).isIn(friendsFound);
+        assertThat(otherUser).isNotIn(friendsFound);
+    }
+
+    @Test
+    void testFindFriendsWithStatusWhenRequested() {
+        List<User> friendsFound = userRepository.findFriendsFromWithStatus(requester.getId(), FriendshipStatus.REQUESTED);
+
+        assertThat(otherUser).isIn(friendsFound);
+        assertThat(addressee).isNotIn(friendsFound);
+    }
+
+    @Test
+    void testFindFriendsOfWithStatusWhenUserIsFriendOfAndStatusIsRequestedReturnsFriend() {
+        List<User> friendsFound = userRepository.findFriendsOfWithStatus(otherUser.getId(), FriendshipStatus.REQUESTED);
+
+        assertThat(requester).isIn(friendsFound);
+        assertThat(addressee).isNotIn(friendsFound);
+    }
+
+    @Test
+    void testFindFriendsOfWithStatusWhenUserIsFriendOfReturnsFriend() {
+        List<User> friendsFound = userRepository.findFriendsOfWithStatus(addressee.getId(), FriendshipStatus.ACCEPTED);
+
+        assertThat(requester).isIn(friendsFound);
+        assertThat(otherUser).isNotIn(friendsFound);
     }
 
     @Test

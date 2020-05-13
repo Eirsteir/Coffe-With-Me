@@ -15,6 +15,7 @@ import java.util.Date;
 @AllArgsConstructor
 @Accessors(chain = true)
 @Entity
+@Table(name = "friendships")
 @AssociationOverrides({
         @AssociationOverride(name = "id.requester", joinColumns = @JoinColumn(name ="requester_id")),
         @AssociationOverride(name = "id.addressee", joinColumns = @JoinColumn(name ="addressee_id"))

@@ -8,8 +8,10 @@ import com.eirsteir.coffeewithme.domain.role.Role;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 import lombok.experimental.Accessors;
-import org.hibernate.annotations.Cascade;
+import org.hibernate.annotations.*;
 
+import javax.persistence.CascadeType;
+import javax.persistence.Entity;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.*;
@@ -96,7 +98,7 @@ public class User extends CreatedUpdatedDateTimeBaseModel implements Serializabl
                 .build();
 
         if (this.friends == null)
-            this.friends = new ArrayList<>();
+            this.friends = new LinkedList<>();
 
         this.friends.add(friendship);
         friend.addFriendOf(friendship);
@@ -106,7 +108,7 @@ public class User extends CreatedUpdatedDateTimeBaseModel implements Serializabl
 
     private void addFriendOf(Friendship friendship) {
         if (this.friendsOf == null)
-            this.friendsOf = new ArrayList<>();
+            this.friendsOf = new LinkedList<>();
 
         this.friendsOf.add(friendship);
     }
