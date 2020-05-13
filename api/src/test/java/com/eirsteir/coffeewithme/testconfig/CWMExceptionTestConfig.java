@@ -1,4 +1,4 @@
-package config;
+package com.eirsteir.coffeewithme.testconfig;
 
 import com.eirsteir.coffeewithme.config.PropertiesConfig;
 import com.eirsteir.coffeewithme.exception.CWMException;

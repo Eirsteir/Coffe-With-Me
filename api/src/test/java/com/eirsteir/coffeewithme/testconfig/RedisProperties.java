@@ -1,4 +1,4 @@
-package config;
+package com.eirsteir.coffeewithme.testconfig;
 
 import lombok.Getter;
 import org.springframework.beans.factory.annotation.Value;

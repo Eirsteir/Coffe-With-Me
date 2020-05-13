@@ -1,7 +1,7 @@
 package web.api.user;
 
 import com.eirsteir.coffeewithme.CoffeeWithMeApplication;
-import config.RedisTestConfig;
+import com.eirsteir.coffeewithme.testconfig.RedisTestConfig;
 import org.junit.runner.RunWith;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;

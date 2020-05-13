@@ -9,7 +9,7 @@ import com.eirsteir.coffeewithme.dto.FriendshipDto;
 import com.eirsteir.coffeewithme.repository.FriendshipRepository;
 import com.eirsteir.coffeewithme.repository.UserRepository;
 import com.eirsteir.coffeewithme.util.JSONUtils;
-import config.RedisTestConfig;
+import com.eirsteir.coffeewithme.testconfig.RedisTestConfig;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;

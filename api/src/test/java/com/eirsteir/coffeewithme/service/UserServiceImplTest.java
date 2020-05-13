@@ -7,7 +7,7 @@ import com.eirsteir.coffeewithme.repository.RoleRepository;
 import com.eirsteir.coffeewithme.repository.UserRepository;
 import com.eirsteir.coffeewithme.service.user.UserService;
 import com.eirsteir.coffeewithme.service.user.UserServiceImpl;
-import config.CWMExceptionTestConfig;
+import com.eirsteir.coffeewithme.testconfig.CWMExceptionTestConfig;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

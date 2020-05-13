@@ -1,4 +1,4 @@
-package config;
+package com.eirsteir.coffeewithme.testconfig;
 
 
 import org.springframework.context.annotation.Bean;

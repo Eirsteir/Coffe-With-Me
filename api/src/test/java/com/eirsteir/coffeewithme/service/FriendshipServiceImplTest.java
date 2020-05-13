@@ -12,7 +12,7 @@ import com.eirsteir.coffeewithme.service.friendship.FriendshipService;
 import com.eirsteir.coffeewithme.service.friendship.FriendshipServiceImpl;
 import com.eirsteir.coffeewithme.service.user.UserService;
 import com.eirsteir.coffeewithme.web.request.FriendRequest;
-import config.CWMExceptionTestConfig;
+import com.eirsteir.coffeewithme.testconfig.CWMExceptionTestConfig;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
