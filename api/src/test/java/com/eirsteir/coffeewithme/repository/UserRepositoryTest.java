@@ -1,7 +1,7 @@
 package com.eirsteir.coffeewithme.repository;
 
 import com.eirsteir.coffeewithme.domain.friendship.Friendship;
-import com.eirsteir.coffeewithme.domain.friendship.FriendshipPk;
+import com.eirsteir.coffeewithme.domain.friendship.FriendshipId;
 import com.eirsteir.coffeewithme.domain.friendship.FriendshipStatus;
 import com.eirsteir.coffeewithme.domain.user.User;
 import com.eirsteir.coffeewithme.web.util.SearchOperation;
@@ -78,23 +78,23 @@ class UserRepositoryTest {
                                                                 .username(OTHER_USER_USERNAME)
                                                                 .build());
 
-        FriendshipPk friendshipPk = FriendshipPk.builder()
+        FriendshipId friendshipId = FriendshipId.builder()
                 .requester(requester)
                 .addressee(addressee)
                 .build();
         entityManager.persistAndFlush(Friendship.builder()
-                                              .pk(friendshipPk)
+                                              .id(friendshipId)
                                               .requester(requester)
                                               .addressee(addressee)
                                               .status(FriendshipStatus.ACCEPTED)
                                               .build());
 
-        FriendshipPk requestedFriendshipPk = FriendshipPk.builder()
+        FriendshipId requestedFriendshipId = FriendshipId.builder()
                                                 .requester(requester)
                                                 .addressee(otherUser)
                                                 .build();
         entityManager.persistFlushFind(Friendship.builder()
-                                               .pk(requestedFriendshipPk)
+                                               .id(requestedFriendshipId)
                                                .requester(requester)
                                                .addressee(otherUser)
                                                .status(FriendshipStatus.REQUESTED)

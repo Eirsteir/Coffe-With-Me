@@ -2,7 +2,7 @@ package web.api.friendship;
 
 import com.eirsteir.coffeewithme.CoffeeWithMeApplication;
 import com.eirsteir.coffeewithme.domain.friendship.Friendship;
-import com.eirsteir.coffeewithme.domain.friendship.FriendshipPk;
+import com.eirsteir.coffeewithme.domain.friendship.FriendshipId;
 import com.eirsteir.coffeewithme.domain.friendship.FriendshipStatus;
 import com.eirsteir.coffeewithme.domain.user.User;
 import com.eirsteir.coffeewithme.dto.FriendshipDto;
@@ -65,12 +65,12 @@ class FriendshipControllerIntegrationTest {
         addressee = userRepository.findByEmail(ADDRESSEE_EMAIL).get();
         User otherUser = userRepository.findByEmail(OTHER_USER_EMAIL).get();
 
-        FriendshipPk requestedFriendshipPk = FriendshipPk.builder()
+        FriendshipId requestedFriendshipId = FriendshipId.builder()
                 .requester(requester)
                 .addressee(otherUser)
                 .build();
 
-        requestedFriendship = friendshipRepository.findById(requestedFriendshipPk).get();
+        requestedFriendship = friendshipRepository.findById(requestedFriendshipId).get();
 
         mvc = MockMvcBuilders
                 .webAppContextSetup(context)

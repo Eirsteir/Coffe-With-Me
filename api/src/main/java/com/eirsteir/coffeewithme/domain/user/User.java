@@ -3,7 +3,7 @@ package com.eirsteir.coffeewithme.domain.user;
 
 import com.eirsteir.coffeewithme.domain.CreatedUpdatedDateTimeBaseModel;
 import com.eirsteir.coffeewithme.domain.friendship.Friendship;
-import com.eirsteir.coffeewithme.domain.friendship.FriendshipPk;
+import com.eirsteir.coffeewithme.domain.friendship.FriendshipId;
 import com.eirsteir.coffeewithme.domain.friendship.FriendshipStatus;
 import com.eirsteir.coffeewithme.domain.role.Role;
 import lombok.*;
@@ -70,7 +70,7 @@ public class User extends CreatedUpdatedDateTimeBaseModel implements Serializabl
 
     @ToString.Exclude
     @OneToMany(fetch = FetchType.LAZY,
-            mappedBy = "pk.requester",
+            mappedBy = "id.requester",
             cascade = {CascadeType.PERSIST, CascadeType.MERGE},
             orphanRemoval=true)
     @Cascade({org.hibernate.annotations.CascadeType.SAVE_UPDATE})
@@ -78,7 +78,7 @@ public class User extends CreatedUpdatedDateTimeBaseModel implements Serializabl
 
     @ToString.Exclude
     @OneToMany(fetch = FetchType.LAZY,
-            mappedBy = "pk.addressee",
+            mappedBy = "id.addressee",
             cascade = {CascadeType.PERSIST, CascadeType.MERGE},
             orphanRemoval=true)
     @Cascade({org.hibernate.annotations.CascadeType.SAVE_UPDATE})
@@ -86,7 +86,7 @@ public class User extends CreatedUpdatedDateTimeBaseModel implements Serializabl
 
     public Friendship addFriend(User friend, FriendshipStatus status) {
         Friendship friendship = Friendship.builder()
-                .pk(FriendshipPk.builder()
+                .id(FriendshipId.builder()
                             .requester(this)
                             .addressee(friend)
                             .build())

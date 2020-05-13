@@ -1,7 +1,7 @@
 package com.eirsteir.coffeewithme.service.friendship;
 
 import com.eirsteir.coffeewithme.domain.friendship.Friendship;
-import com.eirsteir.coffeewithme.domain.friendship.FriendshipPk;
+import com.eirsteir.coffeewithme.domain.friendship.FriendshipId;
 import com.eirsteir.coffeewithme.domain.friendship.FriendshipStatus;
 import com.eirsteir.coffeewithme.domain.user.User;
 import com.eirsteir.coffeewithme.dto.FriendshipDto;
@@ -53,24 +53,23 @@ public class FriendshipServiceImpl implements FriendshipService {
     public FriendshipDto registerFriendship(FriendRequest friendRequest) {
         User requester = modelMapper.map(userService.findUserById(friendRequest.getRequesterId()), User.class);
         User addressee = modelMapper.map(userService.findUserById(friendRequest.getAddresseeId()), User.class);
+        FriendshipId id = FriendshipId.builder()
+                .requester(requester)
+                .addressee(addressee)
+                .build();
 
-        if (friendshipExists(requester, addressee))
+        if (friendshipExists(id))
             throw CWMException.getException(EntityType.FRIENDSHIP,
                                             ExceptionType.DUPLICATE_ENTITY,
-                                            requester.getId().toString(),
-                                            addressee.getId().toString());
+                                            id.toString());
 
         Friendship friendship = requester.addFriend(addressee, FriendshipStatus.REQUESTED);
         return modelMapper.map(friendship, FriendshipDto.class);
     }
 
-    private boolean friendshipExists(User requester, User addressee) {
-        return friendshipRepository.existsByPkRequesterAndPkAddressee(requester, addressee);
-    }
-
     @Override
     public void removeFriendship(FriendshipDto friendshipDto) {
-        FriendshipPk id = modelMapper.map(friendshipDto.getId(), FriendshipPk.class);
+        FriendshipId id = modelMapper.map(friendshipDto.getId(), FriendshipId.class);
 
         if (friendshipExists(id)) {
             friendshipRepository.deleteById(id);
@@ -82,8 +81,8 @@ public class FriendshipServiceImpl implements FriendshipService {
                                         friendshipDto.getId().toString());
     }
 
-    private boolean friendshipExists(FriendshipPk friendshipPk) {
-        return friendshipRepository.existsById(friendshipPk);
+    private boolean friendshipExists(FriendshipId friendshipId) {
+        return friendshipRepository.existsById(friendshipId);
     }
 
     @Override
@@ -95,7 +94,7 @@ public class FriendshipServiceImpl implements FriendshipService {
 
         throw CWMException.getException(EntityType.FRIENDSHIP,
                                         ExceptionType.INVALID_STATUS_CHANGE,
-                                        friendshipToUpdate.getPk().toString());
+                                        friendshipToUpdate.getId().toString());
     }
 
     private Friendship getFriendshipToUpdate(FriendshipDto friendshipDto) {
@@ -103,7 +102,7 @@ public class FriendshipServiceImpl implements FriendshipService {
         Long addresseeId = friendshipDto.getId().getAddressee().getId();
 
         return friendshipRepository.
-                findByPkRequesterIdAndPkAddresseeId(requesterId, addresseeId)
+                findByIdRequesterIdAndIdAddresseeId(requesterId, addresseeId)
                     .orElseThrow(() -> CWMException.getException(EntityType.FRIENDSHIP,
                                                                  ExceptionType.ENTITY_NOT_FOUND,
                                                                  friendshipDto.getId().toString()));

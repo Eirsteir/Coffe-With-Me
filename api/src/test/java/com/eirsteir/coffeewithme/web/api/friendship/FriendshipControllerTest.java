@@ -1,6 +1,6 @@
 package com.eirsteir.coffeewithme.web.api.friendship;
 
-import com.eirsteir.coffeewithme.domain.friendship.FriendshipPk;
+import com.eirsteir.coffeewithme.domain.friendship.FriendshipId;
 import com.eirsteir.coffeewithme.domain.friendship.FriendshipStatus;
 import com.eirsteir.coffeewithme.domain.user.User;
 import com.eirsteir.coffeewithme.dto.FriendshipDto;
@@ -61,7 +61,7 @@ class FriendshipControllerTest {
     private UserPrincipalImpl userPrincipal;
     private User requester;
     private FriendshipDto friendshipDto;
-    private FriendshipPk friendshipPk;
+    private FriendshipId friendshipId;
 
     @Autowired
     private MockMvc mockMvc;
@@ -112,12 +112,12 @@ class FriendshipControllerTest {
         Mockito.when(authentication.getPrincipal())
                 .thenReturn(userPrincipal);
 
-        friendshipPk = FriendshipPk.builder()
+        friendshipId = FriendshipId.builder()
                 .requester(User.builder().id(REQUESTER_ID).build())
                 .addressee(User.builder().id(ADDRESSEE_ID).build())
                 .build();
         friendshipDto = FriendshipDto.builder()
-                .id(friendshipPk)
+                .id(friendshipId)
                 .status(REQUESTED)
                 .build();
     }
@@ -241,12 +241,12 @@ class FriendshipControllerTest {
 
     @Test
     void testAcceptFriendshipWhenFriendshipDoesNotBelongToUser_thenReturnHttp400() throws Exception {
-        friendshipPk = FriendshipPk.builder()
+        friendshipId = FriendshipId.builder()
                 .requester(User.builder().id(100L).build())
                 .addressee(User.builder().id(101L).build())
                 .build();
 
-        friendshipDto.setId(friendshipPk);
+        friendshipDto.setId(friendshipId);
 
         mockMvc.perform(put("/user/friends")
                                 .contentType(MediaType.APPLICATION_JSON)
