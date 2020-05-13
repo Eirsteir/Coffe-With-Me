@@ -56,7 +56,7 @@ public class SetupTestDataLoader implements ApplicationListener<ContextRefreshed
         userRepository.save(addressee);
         userRepository.save(otherUser);
 
-        requester.addFriend(addressee, FriendshipStatus.REQUESTED);
+        requester.addFriend(addressee, FriendshipStatus.ACCEPTED);
         requester.addFriend(otherUser, FriendshipStatus.REQUESTED);
         userRepository.save(requester);
 

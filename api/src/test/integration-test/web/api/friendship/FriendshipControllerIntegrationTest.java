@@ -82,18 +82,18 @@ class FriendshipControllerIntegrationTest {
 
     @Test
     @WithUserDetails(value = REQUESTER_EMAIL, userDetailsServiceBeanName = "userDetailsService")
-    void testGetFriends() throws Exception {
+    void testGetFriendsReturnsAcceptedFriendships() throws Exception {
 
         mvc.perform(get("/user/friends")
                             .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$", hasSize(2)))
+                .andExpect(jsonPath("$", hasSize(1)))
                 .andExpect(jsonPath("$[0].email", equalTo(ADDRESSEE_EMAIL)));
     }
 
     @Test
     @WithUserDetails(value = ADDRESSEE_EMAIL, userDetailsServiceBeanName = "userDetailsService")
-    void testGetFriendsWhenAddresseeIsRequester() throws Exception {
+    void testGetFriendsWhenAddresseeIsRequesterReturnsAcceptedFriendships() throws Exception {
 
         mvc.perform(get("/user/friends")
                             .contentType(MediaType.APPLICATION_JSON))
@@ -104,7 +104,7 @@ class FriendshipControllerIntegrationTest {
 
     @Test
     @WithUserDetails(value = OTHER_USER_EMAIL, userDetailsServiceBeanName = "userDetailsService")
-    void testAddFriendWhenUserFound() throws Exception {
+    void testAddFriendWhenUserFoundReturnsFriendship() throws Exception {
 
         mvc.perform(post("/user/friends")
                             .contentType(MediaType.APPLICATION_JSON)
@@ -118,7 +118,7 @@ class FriendshipControllerIntegrationTest {
 
     @Test
     @WithUserDetails(value = REQUESTER_EMAIL, userDetailsServiceBeanName = "userDetailsService")
-    void testAddFriendToSelf() throws Exception {
+    void testAddFriendToSelfReturnsHttp400() throws Exception {
 
         mvc.perform(post("/user/friends")
                             .contentType(MediaType.APPLICATION_JSON)
@@ -129,7 +129,7 @@ class FriendshipControllerIntegrationTest {
 
     @Test
     @WithUserDetails(value = OTHER_USER_EMAIL, userDetailsServiceBeanName = "userDetailsService")
-    void testAcceptFriendship() throws Exception {
+    void testAcceptFriendshipReturnsUpdatedFriendship() throws Exception {
         requestedFriendship.setStatus(FriendshipStatus.ACCEPTED);
         FriendshipDto friendshipDto = modelMapper.map(requestedFriendship, FriendshipDto.class);
 
@@ -144,7 +144,7 @@ class FriendshipControllerIntegrationTest {
 
     @Test
     @WithUserDetails(value = ADDRESSEE_EMAIL, userDetailsServiceBeanName = "userDetailsService")
-    void acceptFriendshipNotBelongingToUser() throws Exception {
+    void testAcceptFriendshipNotBelongingToUserReturnsHttp400() throws Exception {
         FriendshipDto friendshipDto = modelMapper.map(requestedFriendship, FriendshipDto.class);
 
         mvc.perform(put("/user/friends")
