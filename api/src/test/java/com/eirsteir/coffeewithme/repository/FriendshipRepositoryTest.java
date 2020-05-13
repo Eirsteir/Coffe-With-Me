@@ -59,7 +59,8 @@ class FriendshipRepositoryTest {
     @Test
     void testFindByIdRequesterOrIdAddresseeAndStatusWhenNoResults() {
         List<Friendship> friendsFound = friendshipRepository
-                .findByPkRequesterOrPkAddresseeAndStatus(requester, requester, FriendshipStatus.REQUESTED);
+                .findByUserIdAndStatus(requester.getId(), FriendshipStatus.REQUESTED);
+
         assertThat(friendsFound).isEmpty();
     }
 
@@ -79,7 +80,7 @@ class FriendshipRepositoryTest {
                                                            .build());
 
         List<Friendship> friendsFound = friendshipRepository
-                .findByPkRequesterOrPkAddresseeAndStatus(requester, requester, FriendshipStatus.ACCEPTED);
+                .findByUserIdAndStatus(requester.getId(), FriendshipStatus.ACCEPTED);
 
         assertThat(friendsFound).hasSize(2);
     }

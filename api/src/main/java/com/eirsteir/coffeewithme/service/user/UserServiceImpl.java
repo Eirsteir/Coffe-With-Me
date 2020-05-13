@@ -6,7 +6,6 @@ import com.eirsteir.coffeewithme.domain.user.UserType;
 import com.eirsteir.coffeewithme.dto.UserDto;
 import com.eirsteir.coffeewithme.exception.CWMException;
 import com.eirsteir.coffeewithme.exception.ExceptionType;
-import com.eirsteir.coffeewithme.repository.FriendshipRepository;
 import com.eirsteir.coffeewithme.repository.RoleRepository;
 import com.eirsteir.coffeewithme.repository.UserRepository;
 import com.eirsteir.coffeewithme.web.request.UserRegistrationRequest;
@@ -33,9 +32,6 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     private RoleRepository roleRepository;
-
-    @Autowired
-    private FriendshipRepository friendshipRepository;
 
     @Autowired
     private ModelMapper modelMapper;
