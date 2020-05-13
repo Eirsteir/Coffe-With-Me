@@ -3,9 +3,9 @@ package com.eirsteir.coffeewithme.domain.user;
 
 import com.eirsteir.coffeewithme.domain.CreatedUpdatedDateTimeBaseModel;
 import com.eirsteir.coffeewithme.domain.friendship.Friendship;
-import com.eirsteir.coffeewithme.domain.friendship.FriendshipId;
 import com.eirsteir.coffeewithme.domain.friendship.FriendshipStatus;
 import com.eirsteir.coffeewithme.domain.role.Role;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 import lombok.experimental.Accessors;
 import org.hibernate.annotations.Cascade;
@@ -68,6 +68,8 @@ public class User extends CreatedUpdatedDateTimeBaseModel implements Serializabl
     @JoinTable(name = "users_roles", joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"), inverseJoinColumns = @JoinColumn(name = "role_id", referencedColumnName = "id"))
     private Collection<Role> roles;
 
+    @JsonIgnore
+    @Builder.Default
     @ToString.Exclude
     @OneToMany(fetch = FetchType.LAZY,
             mappedBy = "id.requester",
@@ -76,7 +78,9 @@ public class User extends CreatedUpdatedDateTimeBaseModel implements Serializabl
     @Cascade({org.hibernate.annotations.CascadeType.SAVE_UPDATE})
     private List<Friendship> friends = new LinkedList<>();
 
+    @JsonIgnore
     @ToString.Exclude
+    @Builder.Default
     @OneToMany(fetch = FetchType.LAZY,
             mappedBy = "id.addressee",
             cascade = {CascadeType.PERSIST, CascadeType.MERGE},
@@ -86,10 +90,6 @@ public class User extends CreatedUpdatedDateTimeBaseModel implements Serializabl
 
     public Friendship addFriend(User friend, FriendshipStatus status) {
         Friendship friendship = Friendship.builder()
-                .id(FriendshipId.builder()
-                            .requester(this)
-                            .addressee(friend)
-                            .build())
                 .requester(this)
                 .addressee(friend)
                 .status(status)

@@ -1,4 +1,4 @@
-package com.eirsteir.coffeewithme.service;
+package com.eirsteir.coffeewithme.security;
 
 
 import com.eirsteir.coffeewithme.domain.user.User;

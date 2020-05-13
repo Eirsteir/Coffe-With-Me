@@ -22,13 +22,17 @@ import java.util.Date;
 public class Friendship {
 
     @EmbeddedId
-    private FriendshipId id = new FriendshipId();
+    private FriendshipId id;
 
     @Transient
-    private User requester;
+    public User getRequester() {
+        return id.getRequester();
+    }
 
     @Transient
-    private User addressee;
+    public User getAddressee() {
+        return id.getAddressee();
+    }
 
     private FriendshipStatus status;
 
@@ -38,6 +42,20 @@ public class Friendship {
     @UpdateTimestamp
     private Date updatedDateTime;
 
+
+    public static class FriendshipBuilder {
+        private FriendshipId id = new FriendshipId();
+
+        public FriendshipBuilder requester(User requester) {
+            this.id.setRequester(requester);
+            return this;
+        }
+
+        public FriendshipBuilder addressee(User addressee) {
+            this.id.setAddressee(addressee);
+            return this;
+        }
+    }
 }
 
 

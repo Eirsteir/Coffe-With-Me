@@ -35,18 +35,26 @@ public class FriendshipServiceImpl implements FriendshipService {
     @Autowired
     private ModelMapper modelMapper;
 
-
+    // TODO: 13.05.2020 This returns ALL friends, perhaps write one
+    //  which returns ALL friendships instead or all accepted friends
     @Override
     public List<UserDto> getFriends(User user) {
         user = userService.findUserById(user.getId());
 
-        List<List<Friendship>> allFriends = List.of(user.getFriends(), user.getFriendsOf());
-        return allFriends
+        List<UserDto> friends = user.getFriends()
                 .stream()
-                .flatMap(List::stream)
                 .map(Friendship::getAddressee)
                 .map(friend -> modelMapper.map(friend, UserDto.class))
                 .collect(Collectors.toList());
+
+        List<UserDto> friendsOf = user.getFriendsOf()
+                .stream()
+                .map(Friendship::getRequester)
+                .map(friend -> modelMapper.map(friend, UserDto.class))
+                .collect(Collectors.toList());
+
+        friends.addAll(friendsOf);
+        return friends;
     }
 
     @Override

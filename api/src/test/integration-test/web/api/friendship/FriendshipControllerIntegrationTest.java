@@ -8,8 +8,9 @@ import com.eirsteir.coffeewithme.domain.user.User;
 import com.eirsteir.coffeewithme.dto.FriendshipDto;
 import com.eirsteir.coffeewithme.repository.FriendshipRepository;
 import com.eirsteir.coffeewithme.repository.UserRepository;
-import com.eirsteir.coffeewithme.util.JSONUtils;
 import com.eirsteir.coffeewithme.testconfig.RedisTestConfig;
+import com.eirsteir.coffeewithme.testconfig.SetupTestDataLoader;
+import com.eirsteir.coffeewithme.util.JSONUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
@@ -32,8 +33,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+
 @RunWith(SpringRunner.class)
-@Import(RedisTestConfig.class)
+@Import({RedisTestConfig.class, SetupTestDataLoader.class})
 @SpringBootTest(classes = CoffeeWithMeApplication.class, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 class FriendshipControllerIntegrationTest {
 
@@ -80,29 +82,29 @@ class FriendshipControllerIntegrationTest {
 
     @Test
     @WithUserDetails(value = REQUESTER_EMAIL, userDetailsServiceBeanName = "userDetailsService")
-    void testAllFriendships() throws Exception {
+    void testGetFriends() throws Exception {
 
         mvc.perform(get("/user/friends")
                             .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", hasSize(2)))
-                .andExpect(jsonPath("$[0].email", equalTo(REQUESTER_EMAIL)));
+                .andExpect(jsonPath("$[0].email", equalTo(ADDRESSEE_EMAIL)));
     }
 
     @Test
     @WithUserDetails(value = ADDRESSEE_EMAIL, userDetailsServiceBeanName = "userDetailsService")
-    void testAllFriendshipsWhenAddresseeIsRequester() throws Exception {
+    void testGetFriendsWhenAddresseeIsRequester() throws Exception {
 
         mvc.perform(get("/user/friends")
                             .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", hasSize(1)))
-                .andExpect(jsonPath("$[0].email", equalTo(ADDRESSEE_EMAIL)));
+                .andExpect(jsonPath("$[0].email", equalTo(REQUESTER_EMAIL)));
     }
 
     @Test
     @WithUserDetails(value = OTHER_USER_EMAIL, userDetailsServiceBeanName = "userDetailsService")
-    void testAddFriendshipWhenUserFound() throws Exception {
+    void testAddFriendWhenUserFound() throws Exception {
 
         mvc.perform(post("/user/friends")
                             .contentType(MediaType.APPLICATION_JSON)
@@ -116,7 +118,7 @@ class FriendshipControllerIntegrationTest {
 
     @Test
     @WithUserDetails(value = REQUESTER_EMAIL, userDetailsServiceBeanName = "userDetailsService")
-    void testAddFriendshipToSelf() throws Exception {
+    void testAddFriendToSelf() throws Exception {
 
         mvc.perform(post("/user/friends")
                             .contentType(MediaType.APPLICATION_JSON)
@@ -128,6 +130,7 @@ class FriendshipControllerIntegrationTest {
     @Test
     @WithUserDetails(value = OTHER_USER_EMAIL, userDetailsServiceBeanName = "userDetailsService")
     void testAcceptFriendship() throws Exception {
+        requestedFriendship.setStatus(FriendshipStatus.ACCEPTED);
         FriendshipDto friendshipDto = modelMapper.map(requestedFriendship, FriendshipDto.class);
 
         mvc.perform(put("/user/friends")

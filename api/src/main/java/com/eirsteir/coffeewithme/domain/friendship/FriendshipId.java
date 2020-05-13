@@ -18,9 +18,9 @@ public class FriendshipId implements Serializable {
     private static final long serialVersionUID = 3966996285633364115L;
 
     @ManyToOne
-    User requester;
+    private User requester;
 
     @ManyToOne
-    User addressee;
+    private User addressee;
 
 }

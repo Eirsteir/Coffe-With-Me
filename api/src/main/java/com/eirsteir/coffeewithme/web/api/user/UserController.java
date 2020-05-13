@@ -5,7 +5,7 @@ import com.eirsteir.coffeewithme.domain.user.User;
 import com.eirsteir.coffeewithme.dto.UserDto;
 import com.eirsteir.coffeewithme.repository.UserRepository;
 import com.eirsteir.coffeewithme.repository.UserSpecificationsBuilder;
-import com.eirsteir.coffeewithme.service.UserPrincipalImpl;
+import com.eirsteir.coffeewithme.security.UserPrincipalImpl;
 import com.eirsteir.coffeewithme.service.user.UserService;
 import com.eirsteir.coffeewithme.web.request.UpdateProfileRequest;
 import com.eirsteir.coffeewithme.web.util.SearchOperation;

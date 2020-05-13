@@ -2,7 +2,7 @@ package com.eirsteir.coffeewithme.web.api.friendship;
 
 import com.eirsteir.coffeewithme.dto.FriendshipDto;
 import com.eirsteir.coffeewithme.dto.UserDto;
-import com.eirsteir.coffeewithme.service.UserPrincipalImpl;
+import com.eirsteir.coffeewithme.security.UserPrincipalImpl;
 import com.eirsteir.coffeewithme.service.friendship.FriendshipService;
 import com.eirsteir.coffeewithme.service.user.UserService;
 import com.eirsteir.coffeewithme.web.request.FriendRequest;
@@ -53,7 +53,7 @@ public class FriendshipController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    FriendshipDto addFriendship(@RequestParam("to_friend") Long toFriend,
+    FriendshipDto addFriend(@RequestParam("to_friend") Long toFriend,
                                 @AuthenticationPrincipal UserPrincipalImpl principal) {
 
         if (principal.getUser().getId().equals(toFriend))
