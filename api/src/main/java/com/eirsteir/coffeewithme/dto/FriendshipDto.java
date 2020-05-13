@@ -14,7 +14,7 @@ import lombok.experimental.Accessors;
 @AllArgsConstructor
 public class FriendshipDto {
 
-    private FriendshipPk id;
+    private FriendshipPk id; // TODO: 13.05.2020 dont use this model here
     private FriendshipStatus status;
 
 }

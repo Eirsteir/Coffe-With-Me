@@ -126,7 +126,7 @@ class FriendshipServiceImplTest {
 
     @Test
     void testRegisterFriendshipWhenDuplicate() {
-        when(friendshipRepository.existsById(Mockito.any(FriendshipPk.class)))
+        when(friendshipRepository.existsByPkRequesterAndPkAddressee(requester, addressee))
                 .thenReturn(true);
 
         assertThatExceptionOfType(CWMException.DuplicateEntityException.class)
@@ -138,15 +138,10 @@ class FriendshipServiceImplTest {
 
     @Test
     void testRegisterFriendshipWhenFriendshipIdReversedIsDuplicate() {
-        when(friendshipRepository.existsById(Mockito.any(FriendshipPk.class)))
+        when(friendshipRepository.existsByPkRequesterAndPkAddressee(requester, addressee))
                 .thenReturn(true);
 
-        friendshipPk = FriendshipPk.builder()
-                .requester(addressee)
-                .addressee(requester)
-                .build();
-
-        FriendshipPk expectedId = FriendshipPk.builder()
+        FriendshipPk expectedPk = FriendshipPk.builder()
                 .requester(requester)
                 .addressee(addressee)
                 .build();
@@ -154,7 +149,7 @@ class FriendshipServiceImplTest {
         assertThatExceptionOfType(CWMException.DuplicateEntityException.class)
                 .isThrownBy(() -> friendshipService.registerFriendship(friendRequest))
                 .withMessage("Requested friendship with id=" +
-                                     expectedId +
+                                     expectedPk +
                                      " already exists");
     }
 
@@ -164,11 +159,12 @@ class FriendshipServiceImplTest {
                 .thenReturn(true);
 
         FriendshipDto friendshipDto = modelMapper.map(friendshipRequested, FriendshipDto.class);
-
+        System.out.println(friendshipDto);
+        System.out.println(friendshipRequested);
         assertThatExceptionOfType(CWMException.EntityNotFoundException.class)
                 .isThrownBy(() -> friendshipService.removeFriendship(friendshipDto))
                 .withMessage("Requested friendship with id=" +
-                                     friendshipPk +
+                                     friendshipRequested.getPk() +
                                      " does not exist");
     }
 
@@ -238,6 +234,7 @@ class FriendshipServiceImplTest {
         FriendshipDto friendshipDto = modelMapper.map(friendshipAccepted, FriendshipDto.class);
         friendshipDto.setStatus(newStatus);
 
+
         assertThatExceptionOfType(CWMException.InvalidStatusChangeException.class)
                 .isThrownBy(() -> friendshipService.updateFriendship(friendshipDto))
                 .withMessage("Invalid status change attempted for friendship with id=" + friendshipPk);
@@ -258,7 +255,7 @@ class FriendshipServiceImplTest {
     }
 
     @Test
-    void testFindAllFriendsOfWhenUserNotFound() {
+    void testGetFriendsWhenUserNotFound() {
         when(userService.findUserById(requester.getId()))
                 .thenThrow(CWMException.EntityNotFoundException.class);
 
@@ -267,7 +264,7 @@ class FriendshipServiceImplTest {
     }
 
     @Test
-    void testFindAllFriendsOfWhenUserHasFriendships() {
+    void testGetFriendsWhenUserHasFriendships() {
         when(userService.findUserById(requester.getId()))
                 .thenReturn(requester);
 
@@ -278,8 +275,8 @@ class FriendshipServiceImplTest {
                 .id(101L)
                 .build();
 
-        List<Friendship> friends = List.of(
-                friendshipRequested.setStatus(ACCEPTED),
+        List<Friendship> friends = List.of(friendshipRequested.setStatus(ACCEPTED));
+        List<Friendship> friendsOf = List.of(
                 Friendship.builder()
                         .pk(FriendshipPk.builder()
                                     .requester(newFriendAccepted)
@@ -303,11 +300,12 @@ class FriendshipServiceImplTest {
         );
 
         requester.setFriends(friends);
+        requester.setFriendsOf(friendsOf);
 
         List<UserDto> friendsFound = friendshipService.getFriends(requester);
         UserDto firstFriendDto = modelMapper.map(friendshipRequested.getAddressee(), UserDto.class);
 
-        assertThat(friendsFound).hasSize(2);
+        assertThat(friendsFound).hasSize(3);
         assertThat(friendsFound).contains(firstFriendDto);
     }
 

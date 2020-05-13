@@ -38,9 +38,12 @@ public class FriendshipServiceImpl implements FriendshipService {
 
     @Override
     public List<UserDto> getFriends(User user) {
+        user = userService.findUserById(user.getId());
 
-        return user.getFriends()
+        List<List<Friendship>> allFriends = List.of(user.getFriends(), user.getFriendsOf());
+        return allFriends
                 .stream()
+                .flatMap(List::stream)
                 .map(Friendship::getAddressee)
                 .map(friend -> modelMapper.map(friend, UserDto.class))
                 .collect(Collectors.toList());
@@ -92,7 +95,7 @@ public class FriendshipServiceImpl implements FriendshipService {
 
         throw CWMException.getException(EntityType.FRIENDSHIP,
                                         ExceptionType.INVALID_STATUS_CHANGE,
-                                        friendshipDto.getId().toString());
+                                        friendshipToUpdate.getPk().toString());
     }
 
     private Friendship getFriendshipToUpdate(FriendshipDto friendshipDto) {
