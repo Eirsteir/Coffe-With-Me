@@ -10,6 +10,7 @@ import com.eirsteir.coffeewithme.exception.CWMException;
 import com.eirsteir.coffeewithme.exception.EntityType;
 import com.eirsteir.coffeewithme.exception.ExceptionType;
 import com.eirsteir.coffeewithme.repository.FriendshipRepository;
+import com.eirsteir.coffeewithme.repository.UserRepository;
 import com.eirsteir.coffeewithme.service.user.UserService;
 import com.eirsteir.coffeewithme.web.request.FriendRequest;
 import lombok.extern.slf4j.Slf4j;
@@ -20,6 +21,7 @@ import org.springframework.stereotype.Service;
 import javax.transaction.Transactional;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Slf4j
 @Service
@@ -33,28 +35,26 @@ public class FriendshipServiceImpl implements FriendshipService {
     private FriendshipRepository friendshipRepository;
 
     @Autowired
+    private UserRepository userRepository;
+
+    @Autowired
     private ModelMapper modelMapper;
 
-    // TODO: 13.05.2020 This returns ALL friends, perhaps write one
-    //  which returns ALL friendships instead or all accepted friends
     @Override
     public List<UserDto> getFriends(User user) {
         user = userService.findUserById(user.getId());
 
-        List<UserDto> friends = user.getFriends()
+        Stream<UserDto> friendsDtoStream = userRepository.findFriendsFromWithStatus(user.getId(),
+                                                                                 FriendshipStatus.ACCEPTED)
                 .stream()
-                .map(Friendship::getAddressee)
-                .map(friend -> modelMapper.map(friend, UserDto.class))
-                .collect(Collectors.toList());
+                .map(friend -> modelMapper.map(friend, UserDto.class));
 
-        List<UserDto> friendsOf = user.getFriendsOf()
+        Stream<UserDto> friendsOfDtoStream = userRepository.findFriendsOfWithStatus(user.getId(), FriendshipStatus.ACCEPTED)
                 .stream()
-                .map(Friendship::getRequester)
-                .map(friend -> modelMapper.map(friend, UserDto.class))
-                .collect(Collectors.toList());
+                .map(friend -> modelMapper.map(friend, UserDto.class));
 
-        friends.addAll(friendsOf);
-        return friends;
+        return Stream.concat(friendsDtoStream, friendsOfDtoStream)
+                .collect(Collectors.toList());
     }
 
     @Override

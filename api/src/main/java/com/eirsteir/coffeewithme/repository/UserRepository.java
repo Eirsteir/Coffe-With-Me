@@ -24,20 +24,20 @@ public interface UserRepository extends JpaRepository<User, Long>, JpaSpecificat
     @Transactional
     void updateLastLogin(@Param("lastLogin") Date lastLogin);
 
-    @Query("SELECT f " +
-            "FROM User f " +
-            "JOIN Friendship fr ON fr.id.addressee.id = f.id " +
-            "JOIN User u ON u.id = fr.id.requester.id " +
-            "WHERE u.id = :userId " +
-            "AND fr.status = :status")
+    @Query("SELECT friend " +
+            "FROM User friend " +
+            "JOIN Friendship friendship ON friendship.id.addressee.id = friend.id " +
+            "JOIN User user ON user.id = friendship.id.requester.id " +
+            "WHERE user.id = :userId " +
+            "AND friendship.status = :status")
     List<User> findFriendsFromWithStatus(Long userId, FriendshipStatus status);
 
-    @Query("SELECT f " +
-            "FROM User f " +
-            "JOIN Friendship fr ON fr.id.requester.id = f.id " +
-            "JOIN User u ON u.id = fr.id.addressee.id " +
-            "WHERE u.id = :userId " +
-            "AND fr.status = :status")
+    @Query("SELECT friend " +
+            "FROM User friend " +
+            "JOIN Friendship friendship ON friendship.id.requester.id = friend.id " +
+            "JOIN User user ON user.id = friendship.id.addressee.id " +
+            "WHERE user.id = :userId " +
+            "AND friendship.status = :status")
     List<User> findFriendsOfWithStatus(Long userId, FriendshipStatus status);
 
 }

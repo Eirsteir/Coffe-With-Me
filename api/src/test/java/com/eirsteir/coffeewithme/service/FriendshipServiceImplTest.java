@@ -8,6 +8,7 @@ import com.eirsteir.coffeewithme.dto.FriendshipDto;
 import com.eirsteir.coffeewithme.dto.UserDto;
 import com.eirsteir.coffeewithme.exception.CWMException;
 import com.eirsteir.coffeewithme.repository.FriendshipRepository;
+import com.eirsteir.coffeewithme.repository.UserRepository;
 import com.eirsteir.coffeewithme.service.friendship.FriendshipService;
 import com.eirsteir.coffeewithme.service.friendship.FriendshipServiceImpl;
 import com.eirsteir.coffeewithme.service.user.UserService;
@@ -29,6 +30,7 @@ import org.springframework.context.annotation.Import;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
@@ -60,6 +62,9 @@ class FriendshipServiceImplTest {
 
     @MockBean
     private FriendshipRepository friendshipRepository;
+
+    @MockBean
+    private UserRepository userRepository;
 
     @MockBean
     private UserService userService;
@@ -264,49 +269,41 @@ class FriendshipServiceImplTest {
     }
 
     @Test
-    void testGetFriendsWhenUserHasFriendships() {
+    void testGetFriendsWhenUserHasFriendshipsReturnsUserDtosOfAcceptedFriendships() {
         when(userService.findUserById(requester.getId()))
                 .thenReturn(requester);
 
         User newFriendAccepted = User.builder()
                 .id(100L)
                 .build();
-        User newFriendRequested = User.builder()
-                .id(101L)
-                .build();
 
-        List<Friendship> friends = List.of(friendshipRequested.setStatus(ACCEPTED));
-        List<Friendship> friendsOf = List.of(
-                Friendship.builder()
-                        .id(FriendshipId.builder()
-                                    .requester(newFriendAccepted)
-                                    .addressee(requester)
-                                    .build()
-                        )
-                        .requester(newFriendAccepted)
-                        .addressee(requester)
-                        .status(ACCEPTED)
-                        .build(),
-                Friendship.builder()
-                        .id(FriendshipId.builder()
-                                    .requester(newFriendRequested)
-                                    .addressee(requester)
-                                    .build()
-                        )
-                        .requester(newFriendRequested)
-                        .addressee(requester)
-                        .status(REQUESTED)
-                        .build()
-        );
+        when(userRepository.findFriendsFromWithStatus(requester.getId(), ACCEPTED))
+                .thenReturn(List.of(addressee));
 
-        requester.setFriends(friends);
-        requester.setFriendsOf(friendsOf);
+        when(userRepository.findFriendsOfWithStatus(requester.getId(), ACCEPTED))
+                .thenReturn(List.of(newFriendAccepted));
 
         List<UserDto> friendsFound = friendshipService.getFriends(requester);
         UserDto firstFriendDto = modelMapper.map(friendshipRequested.getAddressee(), UserDto.class);
 
-        assertThat(friendsFound).hasSize(3);
+        assertThat(friendsFound).hasSize(2);
         assertThat(friendsFound).contains(firstFriendDto);
+    }
+
+    @Test
+    void testGetFriendsWhenUserHasNoFriendshipsReturnsEmptyList() {
+        when(userService.findUserById(requester.getId()))
+                .thenReturn(requester);
+
+        when(userRepository.findFriendsFromWithStatus(requester.getId(), ACCEPTED))
+                .thenReturn(new ArrayList<>());
+
+        when(userRepository.findFriendsOfWithStatus(requester.getId(), ACCEPTED))
+                .thenReturn(new ArrayList<>());
+
+        List<UserDto> friendsFound = friendshipService.getFriends(requester);
+
+        assertThat(friendsFound).isEmpty();
     }
 
 }

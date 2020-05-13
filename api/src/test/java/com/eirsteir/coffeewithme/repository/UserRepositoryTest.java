@@ -96,7 +96,7 @@ class UserRepositoryTest {
     }
 
     @Test
-    void testFindFriendsWithStatusReturnsFriend() {
+    void testFindFriendsFromWithStatusReturnsFriend() {
         List<User> friendsFound = userRepository.findFriendsFromWithStatus(requester.getId(), FriendshipStatus.ACCEPTED);
 
         assertThat(addressee).isIn(friendsFound);
@@ -104,11 +104,18 @@ class UserRepositoryTest {
     }
 
     @Test
-    void testFindFriendsWithStatusWhenRequested() {
+    void testFindFriendsFromWithStatusWhenRequested() {
         List<User> friendsFound = userRepository.findFriendsFromWithStatus(requester.getId(), FriendshipStatus.REQUESTED);
 
         assertThat(otherUser).isIn(friendsFound);
         assertThat(addressee).isNotIn(friendsFound);
+    }
+
+    @Test
+    void testFindFriendsFromWithStatusWhenUserHasNoFriends() {
+        List<User> friendsFound = userRepository.findFriendsFromWithStatus(userJohn.getId(), FriendshipStatus.ACCEPTED);
+
+        assertThat(friendsFound).isEmpty();
     }
 
     @Test
@@ -125,6 +132,13 @@ class UserRepositoryTest {
 
         assertThat(requester).isIn(friendsFound);
         assertThat(otherUser).isNotIn(friendsFound);
+    }
+
+    @Test
+    void testFindFriendsOfWithStatusWhenUserHasNoFriends() {
+        List<User> friendsFound = userRepository.findFriendsOfWithStatus(userJohn.getId(), FriendshipStatus.ACCEPTED);
+
+        assertThat(friendsFound).isEmpty();
     }
 
     @Test
