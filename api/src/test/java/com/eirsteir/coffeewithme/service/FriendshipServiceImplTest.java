@@ -264,8 +264,10 @@ class FriendshipServiceImplTest {
         when(userService.findUserById(requester.getId()))
                 .thenThrow(CWMException.EntityNotFoundException.class);
 
+        UserDto requesterDto = modelMapper.map(requester, UserDto.class);
+
         assertThatExceptionOfType(CWMException.EntityNotFoundException.class)
-                .isThrownBy(() -> friendshipService.getFriends(requester));
+                .isThrownBy(() -> friendshipService.getFriends(requesterDto));
     }
 
     @Test
@@ -283,7 +285,8 @@ class FriendshipServiceImplTest {
         when(userRepository.findFriendsOfWithStatus(requester.getId(), ACCEPTED))
                 .thenReturn(List.of(newFriendAccepted));
 
-        List<UserDto> friendsFound = friendshipService.getFriends(requester);
+        UserDto requesterDto = modelMapper.map(requester, UserDto.class);
+        List<UserDto> friendsFound = friendshipService.getFriends(requesterDto);
         UserDto firstFriendDto = modelMapper.map(friendshipRequested.getAddressee(), UserDto.class);
 
         assertThat(friendsFound).hasSize(2);
@@ -301,9 +304,32 @@ class FriendshipServiceImplTest {
         when(userRepository.findFriendsOfWithStatus(requester.getId(), ACCEPTED))
                 .thenReturn(new ArrayList<>());
 
-        List<UserDto> friendsFound = friendshipService.getFriends(requester);
+        UserDto requesterDto = modelMapper.map(requester, UserDto.class);
+        List<UserDto> friendsFound = friendshipService.getFriends(requesterDto);
 
         assertThat(friendsFound).isEmpty();
     }
 
+    @Test
+    void testGetFriendshipsWithStatusRequestedReturnsFriendshipsWithStatusRequested() {
+        when(userService.findUserById(requester.getId()))
+                .thenReturn(requester);
+
+        User newFriend = User.builder()
+                .id(100L)
+                .build();
+
+        when(userRepository.findFriendsFromWithStatus(requester.getId(), REQUESTED))
+                .thenReturn(List.of(addressee));
+
+        when(userRepository.findFriendsOfWithStatus(requester.getId(), REQUESTED))
+                .thenReturn(List.of(newFriend));
+
+        UserDto requesterDto = modelMapper.map(requester, UserDto.class);
+        List<UserDto> friendRequests = friendshipService.getFriendshipsWithStatus(requesterDto, REQUESTED);
+        UserDto firstFriendDto = modelMapper.map(friendshipRequested.getAddressee(), UserDto.class);
+
+        assertThat(friendRequests).hasSize(2);
+        assertThat(friendRequests).contains(firstFriendDto);
+    }
 }

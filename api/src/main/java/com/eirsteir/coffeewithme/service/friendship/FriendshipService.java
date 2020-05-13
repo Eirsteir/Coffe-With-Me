@@ -1,6 +1,6 @@
 package com.eirsteir.coffeewithme.service.friendship;
 
-import com.eirsteir.coffeewithme.domain.user.User;
+import com.eirsteir.coffeewithme.domain.friendship.FriendshipStatus;
 import com.eirsteir.coffeewithme.dto.FriendshipDto;
 import com.eirsteir.coffeewithme.dto.UserDto;
 import com.eirsteir.coffeewithme.web.request.FriendRequest;
@@ -15,6 +15,8 @@ public interface FriendshipService {
 
     FriendshipDto updateFriendship(FriendshipDto friendshipDto);
 
-    List<UserDto> getFriends(User user);
+    List<UserDto> getFriends(UserDto user);
+
+    List<UserDto> getFriendshipsWithStatus(UserDto user, FriendshipStatus status);
 
 }

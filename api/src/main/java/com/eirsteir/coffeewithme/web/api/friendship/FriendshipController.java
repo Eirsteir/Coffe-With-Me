@@ -22,7 +22,6 @@ import java.util.Collection;
 import java.util.List;
 
 @RestController
-@RequestMapping("/user/friends")
 @Api(tags = {"Friendships"})
 @SwaggerDefinition(tags = {
         @Tag(name = "Swagger Resource", description = "Friendship management operations for this application")
@@ -38,11 +37,13 @@ public class FriendshipController {
     @Autowired
     private ModelMapper modelMapper;
 
-    @GetMapping
+    @GetMapping("/{id}/friends")
     @ResponseBody
-    @ApiOperation("Find friends of the currently logged in user")
-    Collection<UserDto> getFriends(@AuthenticationPrincipal UserPrincipalImpl principal) {
-        List<UserDto> friends = friendshipService.getFriends(principal.getUser());
+    @ApiOperation("Find friends of user with given id")
+    Collection<UserDto> getFriends(@PathVariable Long id,
+            @AuthenticationPrincipal UserPrincipalImpl principal) {
+        UserDto userDto = modelMapper.map(userService.findUserById(id), UserDto.class);
+        List<UserDto> friends = friendshipService.getFriends(userDto);
 
         if (friends.isEmpty())
             throw new ResponseStatusException(
@@ -51,7 +52,7 @@ public class FriendshipController {
         return friends;
     }
 
-    @PostMapping
+    @PostMapping("/friends")
     @ResponseStatus(HttpStatus.CREATED)
     FriendshipDto addFriend(@RequestParam("to_friend") Long toFriend,
                                 @AuthenticationPrincipal UserPrincipalImpl principal) {
@@ -66,7 +67,7 @@ public class FriendshipController {
                                                             .build());
     }
 
-    @PutMapping
+    @PutMapping("/friends")
     FriendshipDto updateFriendship(@RequestBody @Valid FriendshipDto friendshipDto,
                                    @AuthenticationPrincipal UserPrincipalImpl principal) {
         validateFriendshipRequest(friendshipDto, principal);
