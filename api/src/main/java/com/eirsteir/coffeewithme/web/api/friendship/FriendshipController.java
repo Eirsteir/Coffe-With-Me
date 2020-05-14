@@ -25,7 +25,7 @@ import java.util.List;
 @RestController
 @Api(tags = {"Friendships"})
 @SwaggerDefinition(tags = {
-        @Tag(name = "Swagger Resource", description = "Friendship management operations for this application")
+        @Tag(name = "Friendships", description = "Friendship management operations for this application")
 })
 public class FriendshipController {
 

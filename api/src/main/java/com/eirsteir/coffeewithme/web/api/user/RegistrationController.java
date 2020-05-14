@@ -16,7 +16,7 @@ import javax.validation.Valid;
 @RequestMapping("/user")
 @Api(tags = {"Registration"})
 @SwaggerDefinition(tags = {
-        @Tag(name = "Swagger Resource", description = "User registration management operations for this application")
+        @Tag(name = "Registration", description = "User registration management operations for this application")
 })
 public class RegistrationController {
 

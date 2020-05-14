@@ -46,6 +46,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                   .antMatchers("/error").permitAll()
                   .antMatchers(BASE_URL + "/user/registration").permitAll()
                   .antMatchers(BASE_URL + "/swagger-ui").permitAll()
+                  .antMatchers("/h2-console/**").permitAll()
                   .anyRequest().authenticated()
               .and()
                   .logout()
@@ -57,7 +58,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                   .exceptionHandling()
                   .authenticationEntryPoint(new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED))
               .and()
-              .csrf().disable();
+              .csrf().disable()
+              .headers().frameOptions().disable(); // Allow H2-console
+
 //                  .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
   }
 
