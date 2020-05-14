@@ -1,41 +1,23 @@
-#### Stage 1: Build the application
 FROM adoptopenjdk/openjdk11 as build
+WORKDIR /app/api
 
-# Set the current working directory inside the image
-WORKDIR /app
-
-# Copy maven executable to the image
 COPY mvnw .
 COPY .mvn .mvn
-
-# Copy the pom.xml file
 COPY pom.xml .
-
-RUN apt-get update && \
-    apt-get install dos2unix && \
-    apt-get clean
-RUN dos2unix mvnw
-
-# Build all the dependencies in preparation to go offline. 
-# This is a separate step so the dependencies will be cached unless 
-# the pom.xml file has changed.
-RUN ./mvnw dependency:go-offline -B
-
-# Copy the project source
 COPY src src
 
-# Package the application
-RUN ./mvnw package -DskipTests
+RUN apt-get update && apt-get install -y dos2unix
+RUN dos2unix mvnw && apt-get --purge remove -y dos2unix && rm -rf /var/lib/apt/lists/*
+
+RUN ./mvnw install -DskipTests -Pdocker
 RUN mkdir -p target/dependency && (cd target/dependency; jar -xf ../*.jar)
 
-#### Stage 2: A minimal docker image with command to run the app 
+EXPOSE 8080
+
 FROM adoptopenjdk/openjdk11:alpine-jre
-
-ARG DEPENDENCY=/app/target/dependency
-
-# Copy project dependencies from the build stage
+VOLUME /tmp
+ARG DEPENDENCY=app/api/target/dependency
 COPY --from=build ${DEPENDENCY}/BOOT-INF/lib /app/lib
 COPY --from=build ${DEPENDENCY}/META-INF /app/META-INF
 COPY --from=build ${DEPENDENCY}/BOOT-INF/classes /app
-
 ENTRYPOINT ["java","-cp","app:app/lib/*","com.eirsteir.coffeewithme.CoffeeWithMeApplication"]
