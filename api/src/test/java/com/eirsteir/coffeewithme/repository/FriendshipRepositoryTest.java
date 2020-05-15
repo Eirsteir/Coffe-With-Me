@@ -43,13 +43,7 @@ class FriendshipRepositoryTest {
                 .username(ADDRESSEE_USERNAME)
                 .build());
 
-        friendshipId = FriendshipId.builder()
-                .requester(requester)
-                .addressee(addressee)
-                .build();
-
         entityManager.persistAndFlush(Friendship.builder()
-                                              .id(friendshipId)
                                               .requester(requester)
                                               .addressee(addressee)
                                               .status(FriendshipStatus.ACCEPTED)
@@ -67,17 +61,12 @@ class FriendshipRepositoryTest {
     @Test
     void testFindAllByExampleOfRequesterWhenRequesterIsAddressee() {
         User otherUser = entityManager.persistFlushFind(User.builder().build());
-        FriendshipId id = FriendshipId.builder()
-                .requester(otherUser)
-                .addressee(requester)
-                .build();
 
         entityManager.persistAndFlush(Friendship.builder()
-                                                            .id(id)
-                                                           .requester(requester)
-                                                           .addressee(addressee)
-                                                           .status(FriendshipStatus.ACCEPTED)
-                                                           .build());
+                                                   .requester(addressee)
+                                                   .addressee(requester)
+                                                   .status(FriendshipStatus.ACCEPTED)
+                                                   .build());
 
         List<Friendship> friendsFound = friendshipRepository
                 .findByUserIdAndStatus(requester.getId(), FriendshipStatus.ACCEPTED);
