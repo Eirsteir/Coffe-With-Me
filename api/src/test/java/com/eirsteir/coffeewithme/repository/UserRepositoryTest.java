@@ -2,8 +2,9 @@ package com.eirsteir.coffeewithme.repository;
 
 import com.eirsteir.coffeewithme.domain.friendship.FriendshipStatus;
 import com.eirsteir.coffeewithme.domain.user.User;
-import com.eirsteir.coffeewithme.web.util.SearchOperation;
-import com.eirsteir.coffeewithme.web.util.SpecSearchCriteria;
+import com.eirsteir.coffeewithme.repository.rsql.RqslVisitorImpl;
+import cz.jirutka.rsql.parser.RSQLParser;
+import cz.jirutka.rsql.parser.ast.Node;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -96,7 +97,7 @@ class UserRepositoryTest {
     }
 
     @Test
-    void testFindFriendsFromWithStatusReturnsFriend() {
+    void testFindFriendsFromWithStatus_thenReturnFriend() {
         List<User> friendsFound = userRepository.findFriendsFromWithStatus(requester.getId(), FriendshipStatus.ACCEPTED);
 
         assertThat(addressee).isIn(friendsFound);
@@ -104,7 +105,7 @@ class UserRepositoryTest {
     }
 
     @Test
-    void testFindFriendsFromWithStatusWhenRequested() {
+    void testFindFriendsFromWithStatusWhenRequested_thenReturnFriends() {
         List<User> friendsFound = userRepository.findFriendsFromWithStatus(requester.getId(), FriendshipStatus.REQUESTED);
 
         assertThat(otherUser).isIn(friendsFound);
@@ -112,14 +113,14 @@ class UserRepositoryTest {
     }
 
     @Test
-    void testFindFriendsFromWithStatusWhenUserHasNoFriends() {
+    void testFindFriendsFromWithStatusWhenUserHasNoFriends_thenReturnEmptyList() {
         List<User> friendsFound = userRepository.findFriendsFromWithStatus(userJohn.getId(), FriendshipStatus.ACCEPTED);
 
         assertThat(friendsFound).isEmpty();
     }
 
     @Test
-    void testFindFriendsOfWithStatusWhenUserIsFriendOfAndStatusIsRequestedReturnsFriend() {
+    void testFindFriendsOfWithStatusWhenUserIsFriendOfAndStatusIsRequested_thenReturnFriend() {
         List<User> friendsFound = userRepository.findFriendsOfWithStatus(otherUser.getId(), FriendshipStatus.REQUESTED);
 
         assertThat(requester).isIn(friendsFound);
@@ -127,7 +128,7 @@ class UserRepositoryTest {
     }
 
     @Test
-    void testFindFriendsOfWithStatusWhenUserIsFriendOfReturnsFriend() {
+    void testFindFriendsOfWithStatusWhenUserIsFriendOfReturnsFriend_thenReturnFriends() {
         List<User> friendsFound = userRepository.findFriendsOfWithStatus(addressee.getId(), FriendshipStatus.ACCEPTED);
 
         assertThat(requester).isIn(friendsFound);
@@ -135,14 +136,14 @@ class UserRepositoryTest {
     }
 
     @Test
-    void testFindFriendsOfWithStatusWhenUserHasNoFriends() {
+    void testFindFriendsOfWithStatusWhenUserHasNoFriends_thenReturnEmptyList() {
         List<User> friendsFound = userRepository.findFriendsOfWithStatus(userJohn.getId(), FriendshipStatus.ACCEPTED);
 
         assertThat(friendsFound).isEmpty();
     }
 
     @Test
-    void testFindByEmailReturnsOptionalUser() {
+    void testFindByEmail_thenReturnsOptionalUser() {
         entityManager.persistAndFlush(user);
         Optional<User> foundUser = userRepository.findByEmail(EMAIL_ALEX);
 
@@ -151,36 +152,36 @@ class UserRepositoryTest {
     }
 
     @Test
-    void testFindByEmailNotFoundReturnEmptyOptional() {
+    void testFindByEmailNotFound_thenReturnEmptyOptional() {
         Optional<User> foundUser = userRepository.findByEmail(EMAIL_ALEX);
 
         assertThat(foundUser).isEmpty();
     }
 
     @Test
-    void givenFirstAndLastName_whenGettingListOfUsers_thenCorrect() {
-        UserSpecification spec = new UserSpecification(
-                new SpecSearchCriteria("name", SearchOperation.EQUALITY, "john doe"));
-        List<User> results = userRepository.findAll(Specification.where(spec));
+    void testFindAllGivenNameWhenGettingListOfUsers_thenReturnMatchingUsers() {
+        Node rootNode = new RSQLParser().parse("name=='john doe'");
+        Specification<User> spec = rootNode.accept(new RqslVisitorImpl<>());
+        List<User> results = userRepository.findAll(spec);
 
         assertThat(userJohn).isIn(results);
         assertThat(userTom).isNotIn(results);
     }
 
     @Test
-    void givenFirstNameInverse_whenGettingListOfUsers_thenCorrect() {
-        UserSpecification spec = new UserSpecification(
-                new SpecSearchCriteria("name", SearchOperation.NEGATION, "john doe"));
-        List<User> results = userRepository.findAll(Specification.where(spec));
+    void testFindAllGivenFirstNameNegation_thenReturnMatchingUsers() {
+        Node rootNode = new RSQLParser().parse("name!='john doe'");
+        Specification<User> spec = rootNode.accept(new RqslVisitorImpl<>());
+        List<User> results = userRepository.findAll(spec);
 
         assertThat(userTom).isIn(results);
         assertThat(userJohn).isNotIn(results);
     }
 
     @Test
-    void givenFirstNamePrefix_whenGettingListOfUsers_thenCorrect() {
-        UserSpecification spec = new UserSpecification(
-                new SpecSearchCriteria("name", SearchOperation.STARTS_WITH, "jo"));
+    void testFindAllGivenNamePrefix_thenReturnMatchingUsers() {
+        Node rootNode = new RSQLParser().parse("name==jo*");
+         Specification<User> spec = rootNode.accept(new RqslVisitorImpl<>());
         List<User> results = userRepository.findAll(spec);
 
         assertThat(userJohn).isIn(results);
@@ -188,19 +189,9 @@ class UserRepositoryTest {
     }
 
     @Test
-    void givenFirstNameSuffix_whenGettingListOfUsers_thenCorrect() {
-        UserSpecification spec = new UserSpecification(
-                new SpecSearchCriteria("name", SearchOperation.ENDS_WITH, "ey"));
-        List<User> results = userRepository.findAll(spec);
-
-        assertThat(userPercy).isIn(results);
-        assertThat(userTom).isNotIn(results);
-    }
-
-    @Test
-    void givenFirstNameSubstring_whenGettingListOfUsers_thenCorrect() {
-        UserSpecification spec = new UserSpecification(
-                new SpecSearchCriteria("name", SearchOperation.CONTAINS, "oh"));
+    void testFindAllGivenListOfName_thenReturnMatchingUsers() {
+        Node rootNode = new RSQLParser().parse("name=in=('john doe',jack)");
+        Specification<User> spec = rootNode.accept(new RqslVisitorImpl<>());
         List<User> results = userRepository.findAll(spec);
 
         assertThat(userJohn).isIn(results);
@@ -208,22 +199,22 @@ class UserRepositoryTest {
     }
 
     @Test
-    void testFindFriendsWhenUserHasFriends() {
+    void testFindFriendsWhenUserHasFriends_thenReturnFriends() {
 
     }
 
     @Test
-    void testFindFriendsWhenUserHasNoFriends() {
+    void testFindFriendsWhenUserHasNoFriends_thenReturnEmptyList() {
 
     }
 
     @Test
-    void testFindFriendsOfWhenUserHasFriends() {
+    void testFindFriendsOfWhenUserHasFriendsOf_thenReturnFriendsOf() {
 
     }
 
     @Test
-    void testFindFriendsOfWhenUserHasNoFriends() {
+    void testFindFriendsOfWhenUserHasNoFriendsOf_thenReturnEmptyList() {
 
     }
 }
