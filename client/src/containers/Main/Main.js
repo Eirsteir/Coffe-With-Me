@@ -52,7 +52,12 @@ const Account = Loadable({
 });
 
 const Search = Loadable({
-    loader: () => import("../Search/SearchPage"),
+    loader: () => import("../SearchPage/SearchPage"),
+    loading: Loading
+});
+
+const ProfilePage = Loadable({
+    loader: () => import("../ProfilePage/ProfilePage"),
     loading: Loading
 });
 
@@ -121,19 +126,13 @@ class Main extends React.Component {
                         />
                     )}
                 />
-                {/*<Route*/}
-                {/*    exact*/}
-                {/*    path="/:id"*/}
-                {/*    render={props => (*/}
-                {/*        <Account // Profile*/}
-                {/*            {...props}*/}
-                {/*            isAuthenticated={isAuthenticated}*/}
-                {/*            name={user.name}*/}
-                {/*            email={user.email}*/}
-                {/*            joined={user.joined}*/}
-                {/*        />*/}
-                {/*    )}*/}
-                {/*/>*/}
+                <Route
+                    exact
+                    path="/:id"
+                    render={props => (
+                        <ProfilePage />
+                    )}
+                />
                 <Route
                     exact
                     path={`/search`}

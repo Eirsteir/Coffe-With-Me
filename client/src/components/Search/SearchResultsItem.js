@@ -22,7 +22,7 @@ const PopularTagsItem = ({ id, username, name }) => {
                 }}
             >
                 <Link 
-                    to="/profile"
+                    to={`/profile${id}`}
                     style={{
                         textDecoration: "none",
                         color: "#fff",

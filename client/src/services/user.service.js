@@ -2,8 +2,7 @@ import {createBasicAuthToken, getAuthTokenHeader, saveAuthTokenInLocal} from '..
 
 export const userService = {
     login,
-    logout,
-    getAll
+    logout
 };
 
 function login(email, password) {
@@ -49,22 +48,11 @@ export function logout() {
         .catch(console.log);
 }
 
-function getAll() {
-    const requestOptions = {
-        method: 'GET',
-        headers: getAuthTokenHeader()
-    };
-
-    // todo
-    return fetch(`api/users`, requestOptions).then(handleResponse);
-}
-
 export function handleResponse(response) {
     return response.text().then(text => {
         const data = text && JSON.parse(text);
         if (!response.ok) {
             if (response.status === 401) {
-                // auto logout if 401 response returned from api
                 logout();
                 this.props.history.push("/");
             }
