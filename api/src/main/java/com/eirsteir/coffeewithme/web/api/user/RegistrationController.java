@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 
 @RestController
-@RequestMapping("/user")
 @Api(tags = {"Registration"})
 @SwaggerDefinition(tags = {
         @Tag(name = "Registration", description = "User registration management operations for this application")

@@ -7,7 +7,6 @@ import com.eirsteir.coffeewithme.testconfig.RedisTestConfig;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
@@ -22,6 +21,7 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasSize;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -44,46 +44,56 @@ class UserControllerIntegrationTest {
     @Autowired
     private UserRepository userRepository;
 
-    @Autowired
-    private ModelMapper modelMapper;
 
     @BeforeEach
     public void setup() {
+        userJohn = userRepository.findByEmail(JOHN_EMAIL).get();
+        userTom = userRepository.findByEmail(TOM_EMAIL).get();
+
         mvc = MockMvcBuilders
                 .webAppContextSetup(context)
                 .apply(springSecurity())
                 .build();
-
-        userJohn = User.builder()
-                .name("John Doe")
-                .email(JOHN_EMAIL)
-                .username("doe")
-                .build();
-        userRepository.save(userJohn);
-
-        userTom = User.builder()
-                .name("Tom Doe")
-                .email(TOM_EMAIL)
-                .build();
-        userRepository.save(userJohn);
-
     }
 
     @Test
-    @WithUserDetails(value = JOHN_EMAIL, userDetailsServiceBeanName = "userDetailsService")
-    void testGetFriendsReturnsAcceptedFriendships() throws Exception {
+    @WithUserDetails(userDetailsServiceBeanName = "userDetailsService")
+    void testSearchByName_thenReturnMatchingUsers() throws Exception {
 
-        mvc.perform(get("/users", userJohn.getId())
+        mvc.perform(get("/users?search=name=='John Doe'")
                             .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", hasSize(1)))
                 .andExpect(jsonPath("$[0].email", equalTo(JOHN_EMAIL)));
     }
-    @Test
-    @WithUserDetails(value = JOHN_EMAIL, userDetailsServiceBeanName = "userDetailsService")
-    public void givenFirstAndLastName_whenGettingListOfUsers_thenCorrect() throws Exception {
 
-        mvc.perform(get("/?search=name:doe", userJohn.getId())
+    @Test
+    @WithUserDetails(userDetailsServiceBeanName = "userDetailsService")
+    void testSearchByNameInverse_thenReturnMatchingUsers() throws Exception {
+
+        mvc.perform(get("/users?search=name!='John Doe'")
+                            .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$", hasSize(4)))
+                .andExpect(jsonPath("$[0].email", equalTo(TOM_EMAIL)));
+    }
+
+    @Test
+    @WithUserDetails(userDetailsServiceBeanName = "userDetailsService")
+    void testSearchByNamePrefix_thenReturnMatchingUsers() throws Exception{
+
+        mvc.perform(get("/users?search=name==Jo*")
+                            .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$", hasSize(1)))
+                .andExpect(jsonPath("$[0].email", equalTo(JOHN_EMAIL)));
+    }
+
+    @Test
+    @WithUserDetails(userDetailsServiceBeanName = "userDetailsService")
+    void testSearchByNameSuffix_thenReturnMatchingUsers() throws Exception {
+
+        mvc.perform(get("/users?search=name==*e")
                             .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", hasSize(2)))
@@ -92,21 +102,10 @@ class UserControllerIntegrationTest {
     }
 
     @Test
-    @WithUserDetails(value = JOHN_EMAIL, userDetailsServiceBeanName = "userDetailsService")
-    public void givenFirstNameInverse_whenGettingListOfUsers_thenCorrect() throws Exception {
+    @WithUserDetails(userDetailsServiceBeanName = "userDetailsService")
+    void testSearchByNameSubstring_thenReturnMatchingUsers() throws Exception {
 
-        mvc.perform(get("/?search=name!john+doe", userJohn.getId())
-                            .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$", hasSize(1)))
-                .andExpect(jsonPath("$[0].email", equalTo(TOM_EMAIL)));
-    }
-
-    @Test
-    @WithUserDetails(value = JOHN_EMAIL, userDetailsServiceBeanName = "userDetailsService")
-    public void givenFirstNamePrefix_whenGettingListOfUsers_thenCorrect() throws Exception{
-
-        mvc.perform(get("/?search=name:jo*", userJohn.getId())
+        mvc.perform(get("/users?search=name==*oh*")
                             .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", hasSize(1)))
@@ -114,22 +113,10 @@ class UserControllerIntegrationTest {
     }
 
     @Test
-    @WithUserDetails(value = JOHN_EMAIL, userDetailsServiceBeanName = "userDetailsService")
-    public void givenFirstNameSuffix_whenGettingListOfUsers_thenCorrect() throws Exception {
+    @WithUserDetails(userDetailsServiceBeanName = "userDetailsService")
+    void testSearchByNameOrUsername_thenReturnMatchingUsers() throws Exception {
 
-        mvc.perform(get("/?search=name:*e", userJohn.getId())
-                            .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$", hasSize(2)))
-                .andExpect(jsonPath("$[0].email", equalTo(JOHN_EMAIL)))
-                .andExpect(jsonPath("$[0].email", equalTo(TOM_EMAIL)));
-    }
-
-    @Test
-    @WithUserDetails(value = JOHN_EMAIL, userDetailsServiceBeanName = "userDetailsService")
-    public void givenFirstNameSubstring_whenGettingListOfUsers_thenCorrect() throws Exception {
-
-        mvc.perform(get("/?search=name:*oh*", userJohn.getId())
+        mvc.perform(get("/users?search=name==john,username==johndoe")
                             .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", hasSize(1)))
@@ -137,13 +124,26 @@ class UserControllerIntegrationTest {
     }
 
     @Test
-    @WithUserDetails(value = JOHN_EMAIL, userDetailsServiceBeanName = "userDetailsService")
-    public void givenFirstOrLastName_whenGettingListOfUsers_thenCorrect() throws Exception {
+    @WithUserDetails(userDetailsServiceBeanName = "userDetailsService")
+    void testSearchByNameAndUsername_thenReturnMatchingUsers() throws Exception {
 
-        mvc.perform(get("/?search=name:john,'username:doe", userJohn.getId())
+        mvc.perform(get("/users?search=name=='John Doe';username==johndoe")
                             .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", hasSize(1)))
                 .andExpect(jsonPath("$[0].email", equalTo(JOHN_EMAIL)));
     }
+
+    @Test
+    @WithUserDetails(userDetailsServiceBeanName = "userDetailsService")
+    void testSearchByNameWhenNoResults_thenReturnHttp204() throws Exception {
+        String query = "name==john";
+        mvc.perform(get("/users?search=" + query)
+                            .contentType(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().isNoContent())
+                .andExpect(jsonPath("$.message",
+                                    equalTo("Search query '" + query + "' yielded no results")));
+    }
+
 }

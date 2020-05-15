@@ -23,9 +23,9 @@ import java.util.Collection;
 import java.util.List;
 
 @RestController
-@Api(tags = {"Friendships"})
+@Api(tags = {"Friends"})
 @SwaggerDefinition(tags = {
-        @Tag(name = "Friendships", description = "Friendship management operations for this application")
+        @Tag(name = "Friends", description = "Friendship management operations for this application")
 })
 public class FriendshipController {
 
@@ -55,6 +55,7 @@ public class FriendshipController {
 
     @PostMapping("/friends")
     @ResponseStatus(HttpStatus.CREATED)
+    @ApiOperation("Send a new friend request")
     FriendshipDto addFriend(@RequestParam("to_friend") Long toFriend,
                                 @AuthenticationPrincipal UserPrincipalImpl principal) {
 
@@ -69,14 +70,16 @@ public class FriendshipController {
     }
 
     @PutMapping("/friends")
+    @ApiOperation("Update given friendship")
     FriendshipDto updateFriendship(@RequestBody @Valid FriendshipDto friendshipDto,
                                    @AuthenticationPrincipal UserPrincipalImpl principal) {
-        validateFriendshipRequest(friendshipDto, principal);
+        validateFriendshipDto(friendshipDto, principal);
 
         return friendshipService.updateFriendship(friendshipDto);
     }
 
     @GetMapping("/friends/requests")
+    @ApiOperation("Get all friend requests of the currently logged in user")
     List<UserDto> getFriendRequests(@AuthenticationPrincipal UserPrincipalImpl principal) {
         UserDto userDto = modelMapper.map(principal.getUser(), UserDto.class);
         List<UserDto> friendRequests = friendshipService.getFriendshipsWithStatus(userDto,
@@ -90,7 +93,7 @@ public class FriendshipController {
         return friendRequests;
     }
 
-    private void validateFriendshipRequest(FriendshipDto friendshipDto, UserPrincipalImpl principal) {
+    private void validateFriendshipDto(FriendshipDto friendshipDto, UserPrincipalImpl principal) {
         Long requesterId = friendshipDto.getId().getRequester().getId();
         Long addresseeId = friendshipDto.getId().getAddressee().getId();
         Long principalId = principal.getUser().getId();

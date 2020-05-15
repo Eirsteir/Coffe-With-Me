@@ -1,6 +1,7 @@
 package com.eirsteir.coffeewithme.domain.role;
 
 import com.eirsteir.coffeewithme.domain.user.User;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 import lombok.experimental.Accessors;
 
@@ -25,6 +26,7 @@ public class Role implements Serializable {
   @Column(unique = true)
   private RoleType type;
 
+  @JsonIgnore
   @ToString.Exclude
   @ManyToMany(mappedBy = "roles")
   private Collection<User> users;

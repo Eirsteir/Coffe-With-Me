@@ -3,6 +3,9 @@ package com.eirsteir.coffeewithme.service.user;
 import com.eirsteir.coffeewithme.domain.user.User;
 import com.eirsteir.coffeewithme.dto.UserDto;
 import com.eirsteir.coffeewithme.web.request.UserRegistrationRequest;
+import org.springframework.data.jpa.domain.Specification;
+
+import java.util.List;
 
 public interface UserService {
 
@@ -14,4 +17,5 @@ public interface UserService {
 
     User findUserById(Long id);
 
+    List<UserDto> searchUsers(Specification<User> spec);
 }

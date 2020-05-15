@@ -12,12 +12,15 @@ import com.eirsteir.coffeewithme.web.request.UserRegistrationRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import static com.eirsteir.coffeewithme.exception.EntityType.USER;
 import static com.eirsteir.coffeewithme.exception.ExceptionType.ENTITY_NOT_FOUND;
@@ -71,6 +74,14 @@ public class UserServiceImpl implements UserService {
     public User findUserById(Long id) {
         return userRepository.findById(id)
                         .orElseThrow(() -> CWMException.getException(USER, ENTITY_NOT_FOUND, id.toString()));
+    }
+
+    @Override
+    public List<UserDto> searchUsers(Specification<User> spec) {
+        return userRepository.findAll(spec)
+                .stream()
+                .map(user -> modelMapper.map(user, UserDto.class))
+                .collect(Collectors.toList());
     }
 
     @Override

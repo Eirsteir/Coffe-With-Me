@@ -5,26 +5,28 @@ import com.eirsteir.coffeewithme.domain.user.User;
 import com.eirsteir.coffeewithme.dto.UserDto;
 import com.eirsteir.coffeewithme.repository.UserRepository;
 import com.eirsteir.coffeewithme.repository.rsql.RqslVisitorImpl;
-import com.eirsteir.coffeewithme.security.UserPrincipalImpl;
 import com.eirsteir.coffeewithme.service.user.UserService;
-import com.eirsteir.coffeewithme.web.request.UpdateProfileRequest;
 import cz.jirutka.rsql.parser.RSQLParser;
 import cz.jirutka.rsql.parser.ast.Node;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.SwaggerDefinition;
 import io.swagger.annotations.Tag;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.domain.Specification;
-import org.springframework.security.core.Authentication;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.server.ResponseStatusException;
 
-import javax.validation.Valid;
 import java.util.List;
 
 @Slf4j
-@RestController
+@RestController("/users")
 @Api(tags = {"Users"})
 @SwaggerDefinition(tags = {
         @Tag(name = "Users", description = "User management operations for this application")
@@ -40,29 +42,25 @@ public class UserController {
     @Autowired
     private ModelMapper modelMapper;
 
-    @GetMapping("/user")
+    @GetMapping("/{id}")
     @ResponseBody
-    UserDto user(Authentication authentication) {
-        UserPrincipalImpl principal = (UserPrincipalImpl) authentication.getPrincipal();
-        return modelMapper.map(principal.getUser(), UserDto.class);
+    @ApiOperation("Get user details with given id")
+    UserDto user(@RequestParam Long id) {
+        User user = userService.findUserById(id);
+        return modelMapper.map(user, UserDto.class);
     }
 
-    @PutMapping("/user/update")
-    UserDto updateUser(@RequestBody @Valid UpdateProfileRequest updateProfileRequest, Authentication authentication) {
-        UserPrincipalImpl principal = (UserPrincipalImpl) authentication.getPrincipal();
-
-        UserDto userDto = UserDto.builder()
-                .email(principal.getEmail())
-                .username(updateProfileRequest.getUsername())
-                .build();
-
-        return userService.updateProfile(userDto);
-    }
-
-    @GetMapping("/users")
-    List<User> search(@RequestParam String search) {
+    @GetMapping
+    @ApiOperation("Search for users")
+    List<UserDto> search(@RequestParam String search) { // TODO: 15.05.2020 lowercase all or some queries?
         Node rootNode = new RSQLParser().parse(search);
         Specification<User> spec = rootNode.accept(new RqslVisitorImpl<>());
-        return userRepository.findAll(spec);
+        List<UserDto> results = userService.searchUsers(spec);
+
+        if (results.isEmpty())
+            throw new ResponseStatusException(
+                    HttpStatus.NO_CONTENT, "Search query '" + search + "' yielded no results");
+
+        return results;
     }
 }
