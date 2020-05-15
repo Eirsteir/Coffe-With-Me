@@ -33,3 +33,15 @@ services:
     hostname: redis
     ports:
       - "6379:6379"
+
+  # Database Service (H2)
+  db:
+    image: 1000kit/h2
+    ports:
+      - "8181:8181"
+      - "1521:1521"
+    volumes:
+      - h2-data:/opt/h2-data
+
+volumes:
+  h2-data:

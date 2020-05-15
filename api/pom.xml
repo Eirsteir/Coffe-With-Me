@@ -72,7 +72,7 @@
         <dependency>
             <groupId>cz.jirutka.rsql</groupId>
             <artifactId>rsql-parser</artifactId>
-            <version>2.1.0</version>
+            <version>${rsql.parser.version}</version>
         </dependency>
 
         <!--   Springfox   -->
@@ -125,6 +125,7 @@
         <passay.version>1.0</passay.version>
         <modelmapper.version>2.3.0</modelmapper.version>
         <spring.fox.version>3.0.0-SNAPSHOT</spring.fox.version>
+        <rsql.parser.version>2.1.0</rsql.parser.version>
     </properties>
 
     <build>
@@ -173,12 +174,6 @@
             </activation>
             <properties>
                 <spring.profiles.active>dev</spring.profiles.active>
-            </properties>
-        </profile>
-        <profile>
-            <id>docker</id>
-            <properties>
-                <spring.profiles.active>docker</spring.profiles.active>
             </properties>
         </profile>
     </profiles>
