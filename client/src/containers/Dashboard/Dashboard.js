@@ -20,14 +20,14 @@ class Dashboard extends React.Component {
         super(props);
         this.state = initialState;
     }
-
+    
     componentDidMount() {
         const token = window.localStorage.getItem("auth");
         this.fetchFriends(token);
     }
 
     fetchFriends = token => {
-        fetch(`/api/user/friends`, {
+        fetch(`/api/${encodeURIComponent(this.props.user.id)}/friends`, {
             method: "GET",
             headers: {
                 "Content-Type": "application/json",

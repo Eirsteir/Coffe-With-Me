@@ -17,8 +17,10 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 
 
+
 @Slf4j
-@RestController("/me")
+@RestController
+@RequestMapping("/me")
 @Api(tags = {"Account"})
 @SwaggerDefinition(tags = {
         @Tag(name = "Account", description = "Account management operations for this application")
@@ -38,7 +40,6 @@ public class AccountController {
         UserPrincipalImpl principal = (UserPrincipalImpl) authentication.getPrincipal();
         return modelMapper.map(principal.getUser(), UserDto.class);
     }
-
 
     @PutMapping("/update")
     @ResponseBody

@@ -1,5 +1,5 @@
 FROM adoptopenjdk/openjdk11 as build
-WORKDIR /app/api
+WORKDIR /app
 
 COPY mvnw .
 COPY .mvn .mvn
@@ -17,7 +17,7 @@ EXPOSE 8080
 
 FROM adoptopenjdk/openjdk11:alpine-jre
 VOLUME /tmp
-ARG DEPENDENCY=app/api/target/dependency
+ARG DEPENDENCY=app/target/dependency
 COPY --from=build ${DEPENDENCY}/BOOT-INF/lib /app/lib
 COPY --from=build ${DEPENDENCY}/META-INF /app/META-INF
 COPY --from=build ${DEPENDENCY}/BOOT-INF/classes /app

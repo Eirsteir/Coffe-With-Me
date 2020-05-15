@@ -41,8 +41,7 @@ public class FriendshipController {
     @GetMapping("/{id}/friends")
     @ResponseBody
     @ApiOperation("Find friends of user with given id")
-    Collection<UserDto> getFriends(@PathVariable Long id,
-            @AuthenticationPrincipal UserPrincipalImpl principal) {
+    Collection<UserDto> getFriends(@PathVariable Long id) {
         UserDto userDto = modelMapper.map(userService.findUserById(id), UserDto.class);
         List<UserDto> friends = friendshipService.getFriends(userDto);
 

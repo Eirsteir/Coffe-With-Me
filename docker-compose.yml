@@ -4,7 +4,7 @@ services:
   # API backend service
   api:
     build:
-      context: ./api
+      context: api
       dockerfile: Dockerfile
     ports:
       - 8080:8080
@@ -17,7 +17,7 @@ services:
   # Client Service
   client:
     build:
-      context: ./client
+      context: client
       dockerfile: Dockerfile
     ports:
       - 3000:3000

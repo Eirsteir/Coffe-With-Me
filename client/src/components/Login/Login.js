@@ -1,5 +1,5 @@
 import React from "react";
-import { withRouter } from "react-router";
+import { withRouter } from "react-router-dom";
 import PropTypes from "prop-types";
 import { withStyles } from "@material-ui/core/styles";
 import TextField from "@material-ui/core/TextField";
@@ -14,7 +14,9 @@ import InputAdornment from "@material-ui/core/InputAdornment";
 import Visibility from "@material-ui/icons/Visibility";
 import VisibilityOff from "@material-ui/icons/VisibilityOff";
 import IconButton from "@material-ui/core/IconButton";
+
 import {createBasicAuthToken, saveAuthTokenInLocal} from "../../helpers/auth-headers";
+import {handleResponse} from "../../services/user.service";
 
 
 const styles = theme => ({
@@ -28,23 +30,29 @@ const styles = theme => ({
         marginLeft: theme.spacing(1),
         marginRight: theme.spacing(1),
         width: 200,
-        margin: "1em"
+        margin: "1em",
+        '& .MuiInput-underline:before': {
+            borderBottomColor: '#fff8', // Semi-transparent underline
+        }
     },
     paper: {
         width: "17em",
-        backgroundColor: "#fff"
+        backgroundColor: "transparent"
     },
     form: {
         display: "flex",
         flexWrap: "wrap",
         justifyContent: "space-around",
-        padding: "2em"
     },
     button: {
+        fontSize: "1em",
         marginTop: "2em"
     },
     control: {
         padding: ".5em"
+    },
+    input: {
+        color: "white"
     }
 });
 
@@ -80,7 +88,7 @@ class Login extends React.Component {
 
     handleLogin = () => {
         this.toggleLoading();
-        fetch(`api/user`, {
+        fetch(`api/me`, {
             method: "GET",
             headers: { "Content-Type": "application/json" ,
                         Authorization: createBasicAuthToken(
@@ -89,7 +97,7 @@ class Login extends React.Component {
                         )
             }
         })
-            .then(response => response.json())
+            .then(handleResponse)
             .then(user => {
                 if (user.id && user.email) {
                     saveAuthTokenInLocal(createBasicAuthToken(
@@ -107,7 +115,7 @@ class Login extends React.Component {
             })
             .catch(err => {
                 this.toggleLoading();
-                console.warn("unable to log in");
+                console.warn("Unable to log in" + err);
             });
     };
 
@@ -128,7 +136,7 @@ class Login extends React.Component {
         const { classes } = this.props;
         return (
             <div className={classes.login}>
-                <Paper className={classes.paper} elevation={16}>
+                <Paper className={classes.paper} elevation={0}>
                     <Typography
                         variant="h4"
                         component="h3"
@@ -136,12 +144,12 @@ class Login extends React.Component {
                         style={{
                             display: "flex",
                             justifyContent: "center",
-                            backgroundColor: "#cc285d",
                             color: "#fff",
-                            fontWeight: 300
+                            fontWeight: 300,
+                            letterSpacing: 1
                         }}
                     >
-                        Log in
+                        Login
                     </Typography>
                     <form
                         onKeyDown={this.onKeyDown}
@@ -155,6 +163,11 @@ class Login extends React.Component {
                             className={classes.textField}
                             margin="normal"
                             onChange={this.onEmailChange}
+                            InputLabelProps={{
+                                style: {
+                                    color: '#fff',
+                                }
+                            }}
                         />
                         <FormControl className={classes.textField}>
                             <InputLabel htmlFor="adornment-password">Password</InputLabel>
@@ -203,7 +216,7 @@ class Login extends React.Component {
                             {this.state.isLoading ? (
                                 <CircularProgress style={{ color: "#fff" }} size={20} />
                             ) : (
-                                "Log in"
+                                "Submit"
                             )}
                         </Button>
                     </form>

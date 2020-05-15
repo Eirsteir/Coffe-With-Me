@@ -11,10 +11,10 @@ import Main from "../Main/Main";
 const theme = createMuiTheme({
   palette: {
     primary: {
-      main: "#3CF2FD" // #cc285d
+      main: "#616773" 
     },
     secondary: {
-      main: "#3CF2FD"
+      main: "#A4A9B3"
     }
   }
 });
@@ -27,7 +27,7 @@ const initialState = {
     email: "",
     username: "",
   },
-  isLoading: false
+  isLoading: false,
 };
 
 class App extends Component {
@@ -47,7 +47,7 @@ class App extends Component {
     const token = window.localStorage.getItem("auth");
     if (token) {
       this.toggleLoading();
-      fetch(`/api/user`, {
+      fetch(`/api/me`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",

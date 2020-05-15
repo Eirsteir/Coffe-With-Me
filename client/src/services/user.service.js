@@ -14,7 +14,7 @@ function login(email, password) {
         }
     };
 
-    return fetch(`api/user`, requestOptions)
+    return fetch(`api/me`, requestOptions)
         .then(handleResponse)
         .then(user => {
             // login successful if there's a user in the response

@@ -1,6 +1,8 @@
 import React from "react";
+import {Link} from "react-router-dom";
 
-const FriendItem = ({ friend }) => {
+
+const PopularTagsItem = ({ id, username, name }) => {
     return (
         <div
             style={{
@@ -11,7 +13,6 @@ const FriendItem = ({ friend }) => {
                 fontSize: ".9rem"
             }}
         >
-            <p>{friend.username ? friend.username : friend.name}</p>
             <div
                 style={{
                     display: "flex",
@@ -20,10 +21,21 @@ const FriendItem = ({ friend }) => {
                     height: "110%"
                 }}
             >
-                View profile
+                <Link 
+                    to="/profile"
+                    style={{
+                        textDecoration: "none",
+                        color: "#fff",
+                        textTransform: "capitalize",
+                        fontSize: "1rem",
+                        letterSpacing: 1
+                    }}
+                >
+                    {username == null ? name  : username}
+                </Link>
             </div>
         </div>
     );
 };
 
-export default FriendItem;
+export default PopularTagsItem;

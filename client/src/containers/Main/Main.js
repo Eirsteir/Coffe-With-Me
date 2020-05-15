@@ -51,9 +51,16 @@ const Account = Loadable({
     loading: Loading
 });
 
+const Search = Loadable({
+    loader: () => import("../Search/SearchPage"),
+    loading: Loading
+});
+
 class Main extends React.Component {
     render() {
-        const { user, loadUser, toggleAuthenticatedState, isAuthenticated } = this.props;
+        const { user, loadUser, toggleAuthenticatedState, 
+            isAuthenticated } = this.props;
+
         return (
             <Switch>
                 <Route
@@ -111,7 +118,28 @@ class Main extends React.Component {
                             name={user.name}
                             email={user.email}
                             joined={user.joined}
-                            currency={user.currency}
+                        />
+                    )}
+                />
+                {/*<Route*/}
+                {/*    exact*/}
+                {/*    path="/:id"*/}
+                {/*    render={props => (*/}
+                {/*        <Account // Profile*/}
+                {/*            {...props}*/}
+                {/*            isAuthenticated={isAuthenticated}*/}
+                {/*            name={user.name}*/}
+                {/*            email={user.email}*/}
+                {/*            joined={user.joined}*/}
+                {/*        />*/}
+                {/*    )}*/}
+                {/*/>*/}
+                <Route
+                    exact
+                    path={`/search`}
+                    render={props => (
+                        <Search
+                            {...props}
                         />
                     )}
                 />

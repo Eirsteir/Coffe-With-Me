@@ -47,6 +47,7 @@ const LandingPage = ({ onRouteChange }) => {
                 >
                     <Grid item>
                         <Button
+                            variant="text"
                             style={{ backgroundColor: "#dd1173", padding: "0.5rem 0", width: "8rem" }}
                         >
                             <Link
@@ -65,6 +66,7 @@ const LandingPage = ({ onRouteChange }) => {
                     </Grid>
                     <Grid item>
                         <Button
+                            variant="text"
                             style={{ backgroundColor: "#dd1173", padding: "0.5rem 0", width: "8rem"  }}
                         >
                             <Link

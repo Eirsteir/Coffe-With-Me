@@ -16,16 +16,14 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
 @Slf4j
 @RestController
+@RequestMapping("/users")
 @Api(tags = {"Users"})
 @SwaggerDefinition(tags = {
         @Tag(name = "Users", description = "User management operations for this application")
@@ -38,7 +36,7 @@ public class UserController {
     @Autowired
     private ModelMapper modelMapper;
 
-    @GetMapping("/users/{id}")
+    @GetMapping("/{id}")
     @ResponseBody
     @ApiOperation("Get user details with given id")
     UserDto user(@RequestParam Long id) {
@@ -46,7 +44,7 @@ public class UserController {
         return modelMapper.map(user, UserDto.class);
     }
 
-    @GetMapping("/users")
+    @GetMapping
     @ApiOperation("Search for users")
     List<UserDto> search(@RequestParam String search) { // TODO: 15.05.2020 lowercase all or some queries?
         Node rootNode = new RSQLParser().parse(search);
