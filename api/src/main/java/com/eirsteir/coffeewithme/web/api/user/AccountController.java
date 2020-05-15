@@ -33,14 +33,15 @@ public class AccountController {
 
     @GetMapping
     @ResponseBody
-    @ApiOperation("Get the currently logged in user details")
-    UserDto me(Authentication authentication) {
+    @ApiOperation("Get the currently logged in users details")
+    UserDto account(Authentication authentication) {
         UserPrincipalImpl principal = (UserPrincipalImpl) authentication.getPrincipal();
         return modelMapper.map(principal.getUser(), UserDto.class);
     }
 
 
     @PutMapping("/update")
+    @ResponseBody
     @ApiOperation("Update the currently logged in user")
     UserDto updateUser(@RequestBody @Valid UpdateProfileRequest updateProfileRequest, Authentication authentication) {
         UserPrincipalImpl principal = (UserPrincipalImpl) authentication.getPrincipal();

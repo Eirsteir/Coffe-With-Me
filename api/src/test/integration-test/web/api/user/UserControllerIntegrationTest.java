@@ -1,8 +1,6 @@
 package web.api.user;
 
 import com.eirsteir.coffeewithme.CoffeeWithMeApplication;
-import com.eirsteir.coffeewithme.domain.user.User;
-import com.eirsteir.coffeewithme.repository.UserRepository;
 import com.eirsteir.coffeewithme.testconfig.RedisTestConfig;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -33,23 +31,13 @@ class UserControllerIntegrationTest {
     public static final String JOHN_EMAIL = "john@doe.com";
     public static final String TOM_EMAIL = "tom@doe.com";
 
-    private User userJohn;
-    private User userTom;
-
     @Autowired
     private WebApplicationContext context;
 
     private MockMvc mvc;
 
-    @Autowired
-    private UserRepository userRepository;
-
-
     @BeforeEach
     public void setup() {
-        userJohn = userRepository.findByEmail(JOHN_EMAIL).get();
-        userTom = userRepository.findByEmail(TOM_EMAIL).get();
-
         mvc = MockMvcBuilders
                 .webAppContextSetup(context)
                 .apply(springSecurity())

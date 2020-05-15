@@ -7,7 +7,7 @@ services:
       context: ./api
       dockerfile: Dockerfile
     ports:
-      - "8080:8080"
+      - 8080:8080
     restart: always
     depends_on:
       - redis
@@ -20,7 +20,7 @@ services:
       context: ./client
       dockerfile: Dockerfile
     ports:
-      - "3000:3000"
+      - 3000:3000
     restart: on-failure
     stdin_open: true
     volumes:
@@ -29,17 +29,17 @@ services:
 
   # Redis Caching Service
   redis:
-    image: "redis:alpine"
+    image: redis:alpine
     hostname: redis
     ports:
-      - "6379:6379"
+      - 6379:6379
 
   # Database Service (H2)
   db:
     image: 1000kit/h2
     ports:
-      - "8181:8181"
-      - "1521:1521"
+      - 8181:8181
+      - 1521:1521
     volumes:
       - h2-data:/opt/h2-data
 

@@ -3,7 +3,6 @@ package com.eirsteir.coffeewithme.web.api.user;
 
 import com.eirsteir.coffeewithme.domain.user.User;
 import com.eirsteir.coffeewithme.dto.UserDto;
-import com.eirsteir.coffeewithme.repository.UserRepository;
 import com.eirsteir.coffeewithme.repository.rsql.RqslVisitorImpl;
 import com.eirsteir.coffeewithme.service.user.UserService;
 import cz.jirutka.rsql.parser.RSQLParser;
@@ -26,7 +25,7 @@ import org.springframework.web.server.ResponseStatusException;
 import java.util.List;
 
 @Slf4j
-@RestController("/users")
+@RestController
 @Api(tags = {"Users"})
 @SwaggerDefinition(tags = {
         @Tag(name = "Users", description = "User management operations for this application")
@@ -37,12 +36,9 @@ public class UserController {
     private UserService userService;
 
     @Autowired
-    private UserRepository userRepository;
-
-    @Autowired
     private ModelMapper modelMapper;
 
-    @GetMapping("/{id}")
+    @GetMapping("/users/{id}")
     @ResponseBody
     @ApiOperation("Get user details with given id")
     UserDto user(@RequestParam Long id) {
@@ -50,7 +46,7 @@ public class UserController {
         return modelMapper.map(user, UserDto.class);
     }
 
-    @GetMapping
+    @GetMapping("/users")
     @ApiOperation("Search for users")
     List<UserDto> search(@RequestParam String search) { // TODO: 15.05.2020 lowercase all or some queries?
         Node rootNode = new RSQLParser().parse(search);
