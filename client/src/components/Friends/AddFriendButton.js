@@ -5,15 +5,6 @@ import Button from '@material-ui/core/Button';
 import PersonAddIcon from '@material-ui/icons/PersonAdd';
 import createMuiTheme from "@material-ui/core/styles/createMuiTheme";
 
-const theme = createMuiTheme({
-    spacing: 4
-});
-const styles = {
-    formControl: {
-        margin: theme.spacing(1),
-        minWidth: 120,
-      }
-};
 
 class AddFriendButton extends React.Component {
     constructor(props) {
@@ -34,8 +25,7 @@ class AddFriendButton extends React.Component {
     }
 
     render() {
-
-
+        
         return (
             <div
                 style={{
@@ -43,12 +33,13 @@ class AddFriendButton extends React.Component {
                     justifyContent: "space-between",
                     height: "2.5rem",
                     color: "#c3cdd0",
-                    fontSize: ".9rem"
+                    fontSize: ".9rem",
+                    marginTop: ".9rem"
                 }}
             >
                 <Button 
                     variant="outlined" 
-                    color="primary"
+                    color="secondary"
                     size="small"
                     disableElevation
                     endIcon={<PersonAddIcon />}
@@ -61,4 +52,4 @@ class AddFriendButton extends React.Component {
     }
 };
 
-export default withStyles(styles)(AddFriendButton);
+export default AddFriendButton;
