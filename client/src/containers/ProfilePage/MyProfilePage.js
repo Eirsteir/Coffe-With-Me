@@ -5,7 +5,7 @@ import Grid from "@material-ui/core/Grid";
 import Typography from "@material-ui/core/Typography";
 
 import MyFriendshipsTabs from "../../components/Friends/MyFriendshipsTabs";
-
+import {handleResponse} from "../../services/user.service";
 
 class MyProfilePage extends React.Component {
 
@@ -17,16 +17,53 @@ class MyProfilePage extends React.Component {
                 name: "",
                 email: "",
                 username: "",
-                isFriend: false,
-            }
+            },
+            friends: [],
+            friendRequests: []
         }
     }
 
     componentDidMount() {
-        console.log(this.props);
+        const token = window.localStorage.getItem("auth");
 
+        this.fetchFriends(token)
+        this.fetchFriendRequests(token);
     }
 
+    fetchFriends = token  => {
+        fetch(`/api/${encodeURIComponent(this.props.user.id)}/friends`, {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: token
+            }
+        })
+            .then(handleResponse)
+            .then(friends => {
+                if (friends.length) {
+                    return this.setState({ friends: friends})
+                }
+            })
+            .catch(console.log);
+    };
+
+    fetchFriendRequests = token  => {
+        fetch(`/api/friends/requests`, {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: token
+            }
+        })
+            .then(handleResponse)
+            .then(requests => {
+                if (requests.length) {
+                    return this.setState({ friendRequests: requests})
+                }
+            })
+            .catch(console.log);
+    };
+    
     render() {
         const { user } = this.props;
 
@@ -86,7 +123,10 @@ class MyProfilePage extends React.Component {
                         }}
                     >
 
-                        <MyFriendshipsTabs />
+                        <MyFriendshipsTabs 
+                            friends={this.state.friends} 
+                            friendRequests={this.state.friendRequests}    
+                        />
                         
                     </Grid>
                 </Grid>

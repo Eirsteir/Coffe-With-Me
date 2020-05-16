@@ -1,9 +1,10 @@
 import React from 'react';
-import { makeStyles, withStyles } from '@material-ui/core/styles';
+
+import { makeStyles, withStyles, createMuiTheme } from '@material-ui/core/styles';
 import Tabs from '@material-ui/core/Tabs';
-import Tab from '@material-ui/core/Tab';
 import Typography from '@material-ui/core/Typography';
 
+import FriendsTab from "./FriendsTab";
 
 const StyledTabs = withStyles({
   indicator: {
@@ -18,7 +19,8 @@ const StyledTabs = withStyles({
   },
 })((props) => <Tabs {...props} TabIndicatorProps={{ children: <div /> }} />);
 
-const StyledTab = withStyles((theme) => ({
+const theme = createMuiTheme();
+const tabStyles = {
   root: {
     textTransform: 'none',
     color: '#fff',
@@ -29,7 +31,8 @@ const StyledTab = withStyles((theme) => ({
       opacity: 1,
     },
   },
-}))((props) => <Tab disableRipple {...props} />);
+}
+// ))((props) => <Tab disableRipple {...props} />);
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -56,9 +59,9 @@ export default function MyFriendshipsTabs() {
     <div className={classes.root}>
       <div className={classes.demo2}>
         <StyledTabs value={value} onChange={handleChange} aria-label="Users friendships tabs">
-          <StyledTab label="Friends" />
-          <StyledTab label="Friend Requests" />
-          <StyledTab label="Recently Added?" />
+          {withStyles(tabStyles)(<FriendsTab label="Friends" />)}
+          {/* <StyledTab label="Friend Requests" />
+          <StyledTab label="Recently Added?" /> */}
         </StyledTabs>
         <Typography className={classes.padding} />
       </div>
