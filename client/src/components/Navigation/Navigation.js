@@ -175,7 +175,7 @@ class Navigation extends React.Component {
                 open={isMenuOpen}
                 onClose={handleMenuClose}
             >
-                <MenuItem onClick={() => this.handleClick("/profile")}>Profile</MenuItem>
+                <MenuItem onClick={() => this.handleClick(`/users/${user.name}`)}>Profile</MenuItem>
                 <MenuItem onClick={() => this.handleClick("/account")}>My account</MenuItem>
             </Menu>
         );
@@ -215,9 +215,9 @@ class Navigation extends React.Component {
                     </IconButton>
                     <p>Notifications</p>
                 </MenuItem>
-                <MenuItem onClick={handleMenuOpen}>
+                <MenuItem onClick={() => this.handleClick("/me")}>
                     <IconButton
-                        aria-label="account of current user"
+                        aria-label="profile of current user"
                         aria-controls="primary-search-account-menu"
                         aria-haspopup="true"
                         color="inherit"
@@ -300,7 +300,7 @@ class Navigation extends React.Component {
                                     aria-label="account of current user"
                                     aria-controls={profileMenuId}
                                     aria-haspopup="true"
-                                    onClick={handleMenuOpen}
+                                    onClick={() => this.handleClick("/me")}
                                     color="inherit"
                                 >
                                     <AccountCircle />

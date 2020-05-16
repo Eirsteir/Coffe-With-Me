@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import { withRouter } from "react-router-dom";
 
 import { MuiThemeProvider, createMuiTheme } from "@material-ui/core/styles";
+import Container from '@material-ui/core/Container';
 
 import Navigation from "../../components/Navigation/Navigation";
 import ErrorBoundary from "../../components/ErrorBoundary/ErrorBoundary";
@@ -90,7 +91,10 @@ class App extends Component {
     const { isAuthenticated } = this.state;
 
     return (
-        <div>
+        <Container 
+          fixed={true}
+          maxWidth="md"
+        >
           <Navigation
               theme={theme}
               user={this.state.user}
@@ -107,7 +111,7 @@ class App extends Component {
               />
             </ErrorBoundary>
           </MuiThemeProvider>
-        </div>
+        </Container>
     );
   }
 }

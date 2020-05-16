@@ -4,16 +4,14 @@ import {withRouter} from "react-router-dom";
 import Grid from "@material-ui/core/Grid";
 import Typography from "@material-ui/core/Typography";
 
-import FriendSelect from "../../components/Friends/FriendSelect";
-import AddFriendSelect from "../../components/Friends/AddFriendButton";
-import {handleResponse} from "../../services/user.service";
+import MyFriendshipsTabs from "../../components/Friends/MyFriendshipsTabs";
 
-class ProfilePage extends React.Component {
+
+class MyProfilePage extends React.Component {
 
     constructor(props) {
         super(props);
         this.state = {
-            userId: "",
             user: {
                 id: "",
                 name: "",
@@ -25,61 +23,24 @@ class ProfilePage extends React.Component {
     }
 
     componentDidMount() {
-        const { match: { params } } = this.props;
         console.log(this.props);
-        
-        this.getUser(params.id);
+
     }
 
-    getUser = id => {        
-        const token = window.localStorage.getItem("auth");
-
-        fetch(`/api/users/${encodeURIComponent(id)}`, {
-            method: "GET",
-            headers: {
-                "Content-Type": "application/json",
-                Authorization: token
-            }
-        })
-            .then(handleResponse)
-            .then(user => {
-                this.setState({ user });
-            })
-            .catch(console.log);
-    };
-
-    handleAddFriend = () => {
-        const token = window.localStorage.getItem("auth");
-        
-        fetch(`/api/friends?to_friend=${encodeURIComponent(this.state.user.id)}`, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                Authorization: token
-            }
-        })
-            .then(handleResponse)
-            .then(friendship => {
-                console.log(friendship);
-                
-            })
-            .catch(console.log);    
-        }
-
     render() {
-        const { userId } = this.props;
-        const user = this.state.user;
+        const { user } = this.props;
 
         return (
-            <div id="landing-page-container">
+            <div>
                 <Grid
                     container
                     spacing={1}
                     direction="column"
                     alignItems="center"
-                    justify="center"
+                    justify="top"
                     style={{
-                        minHeight: '70vh'
+                        minHeight: '70vh',
+                        marginTop: "2rem"
                     }}
                 >
                     <Grid item>
@@ -118,16 +79,20 @@ class ProfilePage extends React.Component {
                         </Typography>
                     </Grid>
 
-                    { 
-                        user.isFriend 
-                        ? <FriendSelect id={userId} friendId={user.id} /> 
-                        : <AddFriendSelect id={userId} friendId={user.id} onClick={this.handleAddFriend} />
-                    }
+                    <Grid 
+                        item
+                        style={{
+                            marginTop: "1rem"
+                        }}
+                    >
 
+                        <MyFriendshipsTabs />
+                        
+                    </Grid>
                 </Grid>
             </div>
         );
     }
 }
 
-export default withRouter(ProfilePage);
+export default withRouter(MyProfilePage);

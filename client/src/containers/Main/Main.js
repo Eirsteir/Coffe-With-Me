@@ -46,8 +46,8 @@ const Register = Loadable({
     loading: Loading
 });
 
-const Account = Loadable({
-    loader: () => import("../Account/Account"),
+const MyProfile = Loadable({
+    loader: () => import("../ProfilePage/MyProfilePage"),
     loading: Loading
 });
 
@@ -115,14 +115,13 @@ class Main extends React.Component {
                 />
                 <Route
                     exact
-                    path="/account"
+                    path="/me"
                     render={props => (
-                        <Account
+                        <MyProfile
                             {...props}
                             isAuthenticated={isAuthenticated}
-                            name={user.name}
-                            email={user.email}
-                            joined={user.joined}
+                            user={user}
+                            loadUser={loadUser}
                         />
                     )}
                 />

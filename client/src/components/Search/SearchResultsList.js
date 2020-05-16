@@ -2,28 +2,24 @@ import React from "react";
 import SearchResultsItem from "./SearchResultsItem";
 
 
-class SearchResultsList
-    extends React.Component {
-
-    render() {
-        const { userId, results } = this.props;
+const SearchResultsList = (props) => {
         
-        return (
-            <div style={{ marginTop: "1rem" }}>
-                {results.map((user, i) => {
+    const { userId, results } = props;
+    
+    return (
+        <div style={{ marginTop: "1rem" }}>
+            {results.map((user, i) => {
 
-                    return (
-                        <SearchResultsItem
-                            key={i}
-                            userId={userId}
-                            user={user}
-                        />
-                    );
-                })}
-            </div>
-        );
-    }
+                return (
+                    <SearchResultsItem
+                        key={i}
+                        userId={userId}
+                        user={user}
+                    />
+                );
+            })}
+        </div>
+    );
 }
 
-export default SearchResultsList
-;
+export default SearchResultsList;

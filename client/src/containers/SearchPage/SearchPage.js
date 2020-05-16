@@ -9,7 +9,7 @@ import Typography from "@material-ui/core/Typography";
 class SearchPage extends Component {
 
     render() {
-        const { results, isAuthenticated } = this.props.location.state;        
+        const { userId, results, isAuthenticated } = this.props.location.state;        
 
         if (!isAuthenticated) {
             return <Redirect to="/" />;
@@ -58,7 +58,7 @@ class SearchPage extends Component {
                      : (
                          <div style={{ marginTop: "1rem" }}>
 
-                             <SearchResultsList results={results}/>
+                             <SearchResultsList userId={userId} results={results}/>
 
                          </div>
                      )}
