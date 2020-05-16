@@ -1,26 +1,39 @@
 import React from "react";
+import {Link} from "react-router-dom";
 
-const FriendItem = ({ friend }) => {
+const FriendItem = ({ userId, friend }) => {
     return (
         <div
             style={{
                 display: "flex",
                 justifyContent: "space-between",
+                                    alignItems: "center",
                 height: "2.5rem",
-                color: "#c3cdd0",
+                color: "#fff",
                 fontSize: ".9rem"
             }}
         >
-            <p>{friend.username ? friend.username : friend.name}</p>
-            <div
-                style={{
-                    display: "flex",
-                    justifyContent: "space-between",
-                    alignItems: "center",
-                    height: "110%"
-                }}
-            >
-                View profile
+
+            {friend.username == null ? friend.name  : friend.username}
+
+            <div>
+                <Link 
+                    to={{
+                        pathname: `/users/${friend.id}`,
+                        state: {
+                            userId: userId,
+                            friendId: friend.id
+                        }  
+                    }}
+                    style={{
+                        textDecoration: "none",
+                        color: "#fff",
+                        fontSize: ".9rem",
+                        letterSpacing: 1
+                    }}
+                >
+                    View profile
+                </Link>
             </div>
         </div>
     );

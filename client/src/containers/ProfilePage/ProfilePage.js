@@ -4,6 +4,8 @@ import {withRouter} from "react-router-dom";
 import Grid from "@material-ui/core/Grid";
 import Typography from "@material-ui/core/Typography";
 
+import FriendSelect from "../../components/Friends/FriendSelect";
+import AddFriendSelect from "../../components/Friends/AddFriendButton";
 import {handleResponse} from "../../services/user.service";
 
 class ProfilePage extends React.Component {
@@ -11,20 +13,23 @@ class ProfilePage extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
+            userId: "",
             user: {
+                id: "",
                 name: "",
                 email: "",
                 username: "",
+                isFriend: false,
             }
         }
     }
 
     componentDidMount() {
         const { match: { params } } = this.props;
-        console.log(this.props);
         
         this.getUser(params.id);
     }
+
     getUser = id => {        
         const token = window.localStorage.getItem("auth");
 
@@ -43,6 +48,7 @@ class ProfilePage extends React.Component {
     };
 
     render() {
+        const { userId } = this.props;
         const user = this.state.user;
 
         return (
@@ -92,6 +98,13 @@ class ProfilePage extends React.Component {
                             {user.email}
                         </Typography>
                     </Grid>
+
+                    { 
+                        user.isFriend 
+                        ? <FriendSelect id={userId} friendId={user.id} /> 
+                        : <AddFriendSelect id={userId} friendId={user.id} />
+                    }
+
                 </Grid>
             </div>
         );

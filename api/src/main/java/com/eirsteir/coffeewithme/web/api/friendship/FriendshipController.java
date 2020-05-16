@@ -69,12 +69,19 @@ public class FriendshipController {
     }
 
     @PutMapping("/friends")
-    @ApiOperation("Update given friendship")
+    @ApiOperation("Update friendship")
     FriendshipDto updateFriendship(@RequestBody @Valid FriendshipDto friendshipDto,
                                    @AuthenticationPrincipal UserPrincipalImpl principal) {
         validateFriendshipDto(friendshipDto, principal);
 
         return friendshipService.updateFriendship(friendshipDto);
+    }
+
+    @DeleteMapping("/friends")
+    @ApiOperation("Delete friendship")
+    void deleteFriendship(@RequestBody @Valid FriendshipDto friendshipDto,
+                                   @AuthenticationPrincipal UserPrincipalImpl principal) {
+        throw new ResponseStatusException(HttpStatus.NOT_IMPLEMENTED);
     }
 
     @GetMapping("/friends/requests")

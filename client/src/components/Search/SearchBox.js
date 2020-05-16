@@ -60,7 +60,7 @@ class SearchBox extends React.Component {
             isLoading: false,
         };
     }
-
+    
     toggleLoading = () => {
         this.setState((prevState, props) => ({
             isLoading: !prevState.isLoading
@@ -100,8 +100,11 @@ class SearchBox extends React.Component {
                 this.toggleLoading();
                 this.props.history.push(
                     `/search?q=${this.state.searchValue}`,
-                    {results: results,
-                    isAuthenticated: this.props.isAuthenticated});
+                    {
+                        results: results,
+                        userId: this.props.userId,
+                        isAuthenticated: this.props.isAuthenticated
+                    });
             })
             .catch(err => {
                 this.toggleLoading();

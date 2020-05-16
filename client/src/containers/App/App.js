@@ -92,6 +92,8 @@ class App extends Component {
     return (
         <div>
           <Navigation
+              theme={theme}
+              user={this.state.user}
               isAuthenticated={isAuthenticated}
               toggleAuthenticatedState={this.toggleAuthenticatedState}
           />

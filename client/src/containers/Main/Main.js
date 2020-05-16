@@ -131,6 +131,7 @@ class Main extends React.Component {
                     component={ProfilePage}
                 />
                 <Route
+                    exact
                     path="/search"
                     component={SearchPage}
                 />

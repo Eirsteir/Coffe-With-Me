@@ -2,7 +2,7 @@ import React from "react";
 import {Link} from "react-router-dom";
 
 
-const SearchResultsItem = ({ user }) => {
+const SearchResultsItem = ({ userId, user }) => {
     
     return (
         <div
@@ -23,7 +23,13 @@ const SearchResultsItem = ({ user }) => {
                 }}
             >
                 <Link 
-                    to={`/users/${user.id}`}
+                    to={{
+                        pathname: `/users/${user.id}`,
+                        state: {
+                            userId: userId,
+                            friendId: user.id
+                        }  
+                    }}
                     style={{
                         textDecoration: "none",
                         color: "#fff",

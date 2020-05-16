@@ -6,7 +6,7 @@ class SearchResultsList
     extends React.Component {
 
     render() {
-        const { results } = this.props;
+        const { userId, results } = this.props;
         
         return (
             <div style={{ marginTop: "1rem" }}>
@@ -15,6 +15,7 @@ class SearchResultsList
                     return (
                         <SearchResultsItem
                             key={i}
+                            userId={userId}
                             user={user}
                         />
                     );

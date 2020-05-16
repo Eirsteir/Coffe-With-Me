@@ -75,6 +75,7 @@ class Navigation extends React.Component {
         super(props);
         this.state = {
             searchValue: "",
+            user: {},
             isAuthenticated: this.props.isAuthenticated,
             isLoading: false,
             open: false,
@@ -114,7 +115,7 @@ class Navigation extends React.Component {
     };
 
     render() {
-        const { classes, isAuthenticated, searchResults, loadSearchResults } = this.props;
+        const { classes, user, isAuthenticated, searchResults, loadSearchResults } = this.props;
         
         const isMenuOpen = Boolean(this.state.anchorEl);
         const isMobileMenuOpen = Boolean(this.state.mobileMoreAnchorEl);
@@ -275,6 +276,7 @@ class Navigation extends React.Component {
                             {/*</Typography>*/}
 
                             <SearchBox
+                                userId={user.id}
                                 searchResults={searchResults}
                                 loadSearchResults={loadSearchResults}
                                 isAuthenticated={isAuthenticated}
