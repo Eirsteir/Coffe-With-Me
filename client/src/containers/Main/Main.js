@@ -51,7 +51,7 @@ const Account = Loadable({
     loading: Loading
 });
 
-const Search = Loadable({
+const SearchPage = Loadable({
     loader: () => import("../SearchPage/SearchPage"),
     loading: Loading
 });
@@ -127,20 +127,12 @@ class Main extends React.Component {
                     )}
                 />
                 <Route
-                    exact
-                    path="/:id"
-                    render={props => (
-                        <ProfilePage />
-                    )}
+                    path="/users/:id"
+                    component={ProfilePage}
                 />
                 <Route
-                    exact
-                    path={`/search`}
-                    render={props => (
-                        <Search
-                            {...props}
-                        />
-                    )}
+                    path="/search"
+                    component={SearchPage}
                 />
             </Switch>
         );

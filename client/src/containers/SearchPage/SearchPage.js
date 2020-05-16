@@ -9,15 +9,13 @@ import Typography from "@material-ui/core/Typography";
 class SearchPage extends Component {
 
     render() {
-        const { results, isAuthenticated } = this.props.location.state;
+        const { results, isAuthenticated } = this.props.location.state;        
 
-        console.log(this.props.location);
         if (!isAuthenticated) {
             return <Redirect to="/" />;
         }
 
         return (
-
             <div
                 style={{
                         color: "#fff",
@@ -32,8 +30,8 @@ class SearchPage extends Component {
                  container
                  spacing={1}
                  direction="column"
-                 alignItems="left"
-                 justify="left"
+                 alignItems="flex-start"
+                 justify="flex-start"
                  style={{ minHeight: '70vh' }}
              >
                  <Grid item>

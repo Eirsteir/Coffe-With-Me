@@ -68,7 +68,10 @@ public class SetupTestDataLoader implements ApplicationListener<ContextRefreshed
                 .email(TOM_EMAIL)
                 .build();
 
-        userRepository.saveAll(Arrays.asList(defaultUser, addressee, otherUser, userJohn, userTom));
+        userRepository.saveAll(Arrays.asList(addressee, otherUser, userJohn, userTom));
+
+        defaultUser.addFriend(addressee, FriendshipStatus.ACCEPTED);
+        userRepository.save(defaultUser);
 
         requester.addFriend(addressee, FriendshipStatus.ACCEPTED);
         requester.addFriend(otherUser, FriendshipStatus.REQUESTED);

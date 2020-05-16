@@ -2,7 +2,8 @@ import React from "react";
 import {Link} from "react-router-dom";
 
 
-const PopularTagsItem = ({ id, username, name }) => {
+const SearchResultsItem = ({ user }) => {
+    
     return (
         <div
             style={{
@@ -22,7 +23,7 @@ const PopularTagsItem = ({ id, username, name }) => {
                 }}
             >
                 <Link 
-                    to={`/profile${id}`}
+                    to={`/users/${user.id}`}
                     style={{
                         textDecoration: "none",
                         color: "#fff",
@@ -31,11 +32,11 @@ const PopularTagsItem = ({ id, username, name }) => {
                         letterSpacing: 1
                     }}
                 >
-                    {username == null ? name  : username}
+                    {user.username == null ? user.name  : user.username}
                 </Link>
             </div>
         </div>
     );
 };
 
-export default PopularTagsItem;
+export default SearchResultsItem;

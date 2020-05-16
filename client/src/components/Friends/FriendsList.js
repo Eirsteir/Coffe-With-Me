@@ -3,9 +3,6 @@ import React from "react";
 import FriendItem from "./FriendItem";
 
 class FriendsList extends React.Component {
-  constructor(props) {
-    super(props);
-  }
 
   render() {
     const { friends } = this.props;

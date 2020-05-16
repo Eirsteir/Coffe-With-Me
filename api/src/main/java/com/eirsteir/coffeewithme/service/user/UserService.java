@@ -18,4 +18,6 @@ public interface UserService {
     User findUserById(Long id);
 
     List<UserDto> searchUsers(Specification<User> spec);
+
+    UserDto findUserById(Long id, User currentUser);
 }

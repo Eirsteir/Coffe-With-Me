@@ -48,14 +48,20 @@ public class FriendshipServiceImpl implements FriendshipService {
     @Override
     public List<UserDto> getFriendshipsWithStatus(UserDto userDto, FriendshipStatus status) {
         User user = userService.findUserById(userDto.getId());
+        List<User> friends = findFriends(user.getId(), status);
 
-        Stream<UserDto> friendsDtoStream = userRepository.findFriendsFromWithStatus(user.getId(), status)
-                .stream()
-                .map(friend -> modelMapper.map(friend, UserDto.class));
+        return friends.stream()
+                .map(friend -> modelMapper.map(friend, UserDto.class))
+                .collect(Collectors.toList());
+    }
 
-        Stream<UserDto> friendsOfDtoStream = userRepository.findFriendsOfWithStatus(user.getId(), status)
-                .stream()
-                .map(friend -> modelMapper.map(friend, UserDto.class));
+    @Override
+    public List<User> findFriends(Long id, FriendshipStatus status) {
+        Stream<User> friendsDtoStream = userRepository.findFriendsFromWithStatus(id, status)
+                .stream();
+
+        Stream<User> friendsOfDtoStream = userRepository.findFriendsOfWithStatus(id, status)
+                .stream();
 
         return Stream.concat(friendsDtoStream, friendsOfDtoStream)
                 .collect(Collectors.toList());

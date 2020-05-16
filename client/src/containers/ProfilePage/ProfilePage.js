@@ -1,5 +1,5 @@
 import React from "react";
-import {useParams, withRouter} from "react-router-dom";
+import {withRouter} from "react-router-dom";
 
 import Grid from "@material-ui/core/Grid";
 import Typography from "@material-ui/core/Typography";
@@ -19,12 +19,16 @@ class ProfilePage extends React.Component {
         }
     }
 
-    getUser = () => {
-        let { id } = useParams();
+    componentDidMount() {
+        const { match: { params } } = this.props;
+        console.log(this.props);
+        
+        this.getUser(params.id);
+    }
+    getUser = id => {        
         const token = window.localStorage.getItem("auth");
-        this.props.toggleAuthenticatedState();
 
-        fetch(`api/users${encodeURIComponent(id)}`, {
+        fetch(`/api/users/${encodeURIComponent(id)}`, {
             method: "GET",
             headers: {
                 "Content-Type": "application/json",
@@ -39,7 +43,7 @@ class ProfilePage extends React.Component {
     };
 
     render() {
-        const user = this.getUser();
+        const user = this.state.user;
 
         return (
             <div id="landing-page-container">

@@ -1,10 +1,12 @@
 package com.eirsteir.coffeewithme.service;
 
+import com.eirsteir.coffeewithme.domain.friendship.FriendshipStatus;
 import com.eirsteir.coffeewithme.domain.user.User;
 import com.eirsteir.coffeewithme.dto.UserDto;
 import com.eirsteir.coffeewithme.exception.CWMException;
 import com.eirsteir.coffeewithme.repository.RoleRepository;
 import com.eirsteir.coffeewithme.repository.UserRepository;
+import com.eirsteir.coffeewithme.service.friendship.FriendshipService;
 import com.eirsteir.coffeewithme.service.user.UserService;
 import com.eirsteir.coffeewithme.service.user.UserServiceImpl;
 import com.eirsteir.coffeewithme.testconfig.CWMExceptionTestConfig;
@@ -25,12 +27,14 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+import static org.mockito.Mockito.when;
 
 
 @Import(CWMExceptionTestConfig.class)
@@ -69,6 +73,9 @@ class UserServiceImplTest {
     private UserRepository userRepository;
 
     @MockBean
+    private FriendshipService friendshipService;
+
+    @MockBean
     private RoleRepository roleRepository;
 
     private User user;
@@ -88,10 +95,10 @@ class UserServiceImplTest {
                 .mobileNumber(MOBILE_NUMBER_ALEX)
                 .build();
 
-         Mockito.when(userRepository.findByEmail(EMAIL_ALEX))
+         when(userRepository.findByEmail(EMAIL_ALEX))
                 .thenReturn(Optional.of(user));
 
-        Mockito.when(userRepository.save(Mockito.any(User.class)))
+        when(userRepository.save(Mockito.any(User.class)))
                 .thenReturn(user);
     }
 
@@ -116,7 +123,7 @@ class UserServiceImplTest {
     @Test
     @SuppressWarnings("unchecked")
     void testSearchUsersWithMatch_thenReturnListOfUserDto() {
-        Mockito.when(userRepository.findAll(Mockito.any(Specification.class)))
+        when(userRepository.findAll(Mockito.any(Specification.class)))
                 .thenReturn(Collections.singletonList(user));
 
         List<UserDto> results = userService.searchUsers(spec);
@@ -146,5 +153,35 @@ class UserServiceImplTest {
         assertThatExceptionOfType(CWMException.EntityNotFoundException.class)
                 .isThrownBy(() -> userService.updateProfile(updateProfileRequestDto))
                 .withMessage("Requested user with email - not.found@email.com does not exist");
+    }
+
+    @Test
+    void testFindFriendsByIdWithCurrentUserWhenAreFriends_thenReturnIsFriendsTrue() {
+        User friend = User.builder()
+                .id(100L)
+                .build();
+        when(friendshipService.findFriends(user.getId(), FriendshipStatus.ACCEPTED))
+                .thenReturn(Collections.singletonList(friend));
+        when(userRepository.findById(friend.getId()))
+                .thenReturn(Optional.of(friend));
+
+        UserDto userDtoWithFriend = userService.findUserById(friend.getId(), user);
+
+        assertThat(userDtoWithFriend.getIsFriend()).isTrue();
+    }
+
+    @Test
+    void testFindFriendsByIdWithCurrentUserWhenAreNotFriends_thenReturnIsFriendsFalse() {
+        User friend = User.builder()
+                .id(100L)
+                .build();
+        when(friendshipService.findFriends(user.getId(), FriendshipStatus.ACCEPTED))
+                .thenReturn(new ArrayList<>());
+        when(userRepository.findById(friend.getId()))
+                .thenReturn(Optional.of(friend));
+
+        UserDto userDtoWithFriend = userService.findUserById(friend.getId(), user);
+
+        assertThat(userDtoWithFriend.getIsFriend()).isFalse();
     }
 }

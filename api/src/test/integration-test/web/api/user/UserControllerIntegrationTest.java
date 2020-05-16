@@ -1,6 +1,7 @@
 package web.api.user;
 
 import com.eirsteir.coffeewithme.CoffeeWithMeApplication;
+import com.eirsteir.coffeewithme.repository.UserRepository;
 import com.eirsteir.coffeewithme.testconfig.RedisTestConfig;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -19,7 +20,6 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasSize;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -30,6 +30,12 @@ class UserControllerIntegrationTest {
 
     public static final String JOHN_EMAIL = "john@doe.com";
     public static final String TOM_EMAIL = "tom@doe.com";
+    private static final String ADDRESSEE_EMAIL = "addressee@test.com";
+
+    private Long addresseeId;
+
+    @Autowired
+    private UserRepository userRepository;
 
     @Autowired
     private WebApplicationContext context;
@@ -38,6 +44,7 @@ class UserControllerIntegrationTest {
 
     @BeforeEach
     public void setup() {
+        addresseeId = userRepository.findByEmail(ADDRESSEE_EMAIL).get().getId();
         mvc = MockMvcBuilders
                 .webAppContextSetup(context)
                 .apply(springSecurity())
@@ -128,10 +135,31 @@ class UserControllerIntegrationTest {
         String query = "name==john";
         mvc.perform(get("/users?search=" + query)
                             .contentType(MediaType.APPLICATION_JSON))
-                .andDo(print())
                 .andExpect(status().isNoContent())
                 .andExpect(jsonPath("$.message",
                                     equalTo("Search query '" + query + "' yielded no results")));
+    }
+
+    @Test
+    @WithUserDetails(userDetailsServiceBeanName = "userDetailsService")
+    void testUserWhenCurrentUserIsFriend_thenReturnHttp200WithIsFriendEqualToTrue() throws Exception {
+
+        mvc.perform(get("/users/" + addresseeId)
+                            .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.isFriend", equalTo(true)));
+
+    }
+
+    @Test
+    @WithUserDetails(value = JOHN_EMAIL, userDetailsServiceBeanName = "userDetailsService")
+    void testUserWhenCurrentUserIsNotFriend_thenReturnHttp200WithIsFriendEqualToFalse() throws Exception {
+
+        mvc.perform(get("/users/" + addresseeId)
+                            .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.isFriend", equalTo(false)));
+
     }
 
 }
