@@ -10,18 +10,14 @@ class FriendsList extends React.Component {
     return (
       <div
         style={{
-          backgroundColor: "#343b64",
-          color: "#fff",
           height: "18rem",
           padding: "1rem",
           border: "none",
           borderRadius: 5
         }}
       >
-        Friends
-
         { !friends.length
-        ? <div>Add some friends!</div>
+        ? <p>Add some friends!</p>
         : (
             <div style={{ marginTop: "1rem" }}>
               {friends.map((friend, i) => {

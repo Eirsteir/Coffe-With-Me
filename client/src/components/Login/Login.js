@@ -188,11 +188,6 @@ class Login extends React.Component {
                                         color: "#d3d3d3"
                                     }
                                 }}
-                                InputLabelProps={{
-                                    style: {
-                                        color: '#d3d3d3',
-                                    }
-                                }}
                                 endAdornment={
                                     <InputAdornment position="end">
                                         <IconButton

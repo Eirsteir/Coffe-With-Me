@@ -26,26 +26,8 @@ class MyProfilePage extends React.Component {
     componentDidMount() {
         const token = window.localStorage.getItem("auth");
 
-        this.fetchFriends(token)
         this.fetchFriendRequests(token);
     }
-
-    fetchFriends = token  => {
-        fetch(`/api/${encodeURIComponent(this.props.user.id)}/friends`, {
-            method: "GET",
-            headers: {
-                "Content-Type": "application/json",
-                Authorization: token
-            }
-        })
-            .then(handleResponse)
-            .then(friends => {
-                if (friends.length) {
-                    return this.setState({ friends: friends})
-                }
-            })
-            .catch(console.log);
-    };
 
     fetchFriendRequests = token  => {
         fetch(`/api/friends/requests`, {
@@ -74,7 +56,7 @@ class MyProfilePage extends React.Component {
                     spacing={1}
                     direction="column"
                     alignItems="center"
-                    justify="top"
+                    justify="flex-start"
                     style={{
                         minHeight: '70vh',
                         marginTop: "2rem"
@@ -124,8 +106,7 @@ class MyProfilePage extends React.Component {
                     >
 
                         <MyFriendshipsTabs 
-                            friends={this.state.friends} 
-                            friendRequests={this.state.friendRequests}    
+                            userId={user.id}
                         />
                         
                     </Grid>

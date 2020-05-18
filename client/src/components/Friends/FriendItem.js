@@ -9,7 +9,6 @@ const FriendItem = ({ userId, friend }) => {
                 justifyContent: "space-between",
                                     alignItems: "center",
                 height: "2.5rem",
-                color: "#fff",
                 fontSize: ".9rem"
             }}
         >
@@ -27,7 +26,6 @@ const FriendItem = ({ userId, friend }) => {
                     }}
                     style={{
                         textDecoration: "none",
-                        color: "#fff",
                         fontSize: ".9rem",
                         letterSpacing: 1
                     }}

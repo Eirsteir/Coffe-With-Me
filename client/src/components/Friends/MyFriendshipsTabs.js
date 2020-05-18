@@ -1,15 +1,20 @@
 import React from 'react';
 
-import { makeStyles, withStyles, createMuiTheme } from '@material-ui/core/styles';
+import { makeStyles, withStyles } from '@material-ui/core/styles';
 import Tabs from '@material-ui/core/Tabs';
 import Typography from '@material-ui/core/Typography';
+import Tab from '@material-ui/core/Tab';
 
-import FriendsTab from "./FriendsTab";
+import TabPanel from "./TabPanel";
+import FriendsTabPanel from "./FriendsTabPanel";
+import FriendRequestsTabPanel from "./FriendRequestsTabPanel";
 
 const StyledTabs = withStyles({
   indicator: {
     display: 'flex',
     justifyContent: 'center',
+    border: "none",
+    borderRadius: 5,
     backgroundColor: 'transparent',
     '& > div': {
       maxWidth: 40,
@@ -19,11 +24,9 @@ const StyledTabs = withStyles({
   },
 })((props) => <Tabs {...props} TabIndicatorProps={{ children: <div /> }} />);
 
-const theme = createMuiTheme();
-const tabStyles = {
+const StyledTab = withStyles((theme) => ({
   root: {
     textTransform: 'none',
-    color: '#fff',
     fontWeight: theme.typography.fontWeightRegular,
     fontSize: theme.typography.pxToRem(15),
     marginRight: theme.spacing(1),
@@ -31,8 +34,7 @@ const tabStyles = {
       opacity: 1,
     },
   },
-}
-// ))((props) => <Tab disableRipple {...props} />);
+}))((props) => <Tab disableRipple {...props} />);
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -41,15 +43,21 @@ const useStyles = makeStyles((theme) => ({
   padding: {
     padding: theme.spacing(3),
   },
+  demo1: {
+    backgroundColor: theme.palette.background.paper,
+  },
   demo2: {
-    backgroundColor: "#616773",
-    borderRadius: 5,
+    backgroundColor: '#DCDCDC',
+    border: "none",
+    borderRadius: 5
   },
 }));
 
-export default function MyFriendshipsTabs() {
+
+export default function MyFriendshipsTabs(props) {
   const classes = useStyles();
   const [value, setValue] = React.useState(0);
+  const { userId } = props;
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
@@ -59,10 +67,15 @@ export default function MyFriendshipsTabs() {
     <div className={classes.root}>
       <div className={classes.demo2}>
         <StyledTabs value={value} onChange={handleChange} aria-label="Users friendships tabs">
-          {withStyles(tabStyles)(<FriendsTab label="Friends" />)}
-          {/* <StyledTab label="Friend Requests" />
-          <StyledTab label="Recently Added?" /> */}
+          <StyledTab label="Friends" />
+          <StyledTab label="Friend Requests" />
+          <StyledTab label="Recently Added" />
         </StyledTabs>
+        <FriendsTabPanel value={value}  index={0} userId={userId} />
+        <FriendRequestsTabPanel value={value}  index={1} userId={userId} />
+        <TabPanel value={value} index={2}>
+          Recently added
+        </TabPanel>
         <Typography className={classes.padding} />
       </div>
     </div>
