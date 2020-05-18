@@ -326,7 +326,7 @@ class FriendshipServiceImplTest {
                 .thenReturn(List.of(newFriend));
 
         UserDto requesterDto = modelMapper.map(requester, UserDto.class);
-        List<UserDto> friendRequests = friendshipService.getFriendshipsWithStatus(requesterDto, REQUESTED);
+        List<UserDto> friendRequests = friendshipService.getAllFriendshipsWithStatus(requesterDto, REQUESTED);
         UserDto firstFriendDto = modelMapper.map(friendshipRequested.getAddressee(), UserDto.class);
 
         assertThat(friendRequests).hasSize(2);

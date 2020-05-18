@@ -20,6 +20,7 @@ public interface FriendshipService {
 
     List<UserDto> getFriends(UserDto user);
 
-    List<UserDto> getFriendshipsWithStatus(UserDto user, FriendshipStatus status);
+    List<UserDto> getAllFriendshipsWithStatus(UserDto user, FriendshipStatus status);
 
+    List<UserDto> getFriendsOfWithStatus(UserDto userDto, FriendshipStatus status);
 }

@@ -88,7 +88,7 @@ public class FriendshipController {
     @ApiOperation("Get all friend requests of the currently logged in user")
     List<UserDto> getFriendRequests(@AuthenticationPrincipal UserPrincipalImpl principal) {
         UserDto userDto = modelMapper.map(principal.getUser(), UserDto.class);
-        List<UserDto> friendRequests = friendshipService.getFriendshipsWithStatus(userDto,
+        List<UserDto> friendRequests = friendshipService.getFriendsOfWithStatus(userDto,
                                                                                   FriendshipStatus.REQUESTED);
 
         if (friendRequests.isEmpty())

@@ -43,16 +43,17 @@ const styles = theme => ({
         display: "flex",
         flexWrap: "wrap",
         justifyContent: "space-around",
+        padding: "2em"
     },
     button: {
-        fontSize: "1em",
+        // fontSize: "1em",
         marginTop: "2em"
     },
     control: {
         padding: ".5em"
     },
     input: {
-        color: "white"
+        color: "#d3d3d3"
     }
 });
 
@@ -163,9 +164,14 @@ class Login extends React.Component {
                             className={classes.textField}
                             margin="normal"
                             onChange={this.onEmailChange}
+                            inputProps={{
+                                style: { 
+                                    color: "#d3d3d3"
+                                }
+                            }}
                             InputLabelProps={{
                                 style: {
-                                    color: '#fff',
+                                    color: '#d3d3d3',
                                 }
                             }}
                         />
@@ -177,6 +183,16 @@ class Login extends React.Component {
                                 value={this.state.loginPassword}
                                 onChange={this.onPasswordChange}
                                 autoComplete="current-password"
+                                inputProps={{
+                                    style: { 
+                                        color: "#d3d3d3"
+                                    }
+                                }}
+                                InputLabelProps={{
+                                    style: {
+                                        color: '#d3d3d3',
+                                    }
+                                }}
                                 endAdornment={
                                     <InputAdornment position="end">
                                         <IconButton

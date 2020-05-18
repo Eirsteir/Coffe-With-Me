@@ -14,6 +14,7 @@ import { handleResponse } from "../../services/user.service";
 
 const styles = theme => ({
     register: {
+        height: "80vh",
         display: "flex",
         justifyContent: "center",
         alignItems: "center",
@@ -25,11 +26,15 @@ const styles = theme => ({
         marginLeft: theme.spacing(1),
         marginRight: theme.spacing(1),
         width: 200,
-        margin: "1em"
+        margin: "1em",
+        '& .MuiInput-underline:before': {
+            borderBottomColor: '#fff8', // Semi-transparent underline
+        }
     },
     paper: {
         marginBottom: "3rem",
-        width: "17em"
+        width: "17em",
+        backgroundColor: "transparent"
     },
     form: {
         display: "flex",
@@ -48,6 +53,9 @@ const styles = theme => ({
     },
     checkbox: {
         fontSize: ".8rem"
+    },
+    input: {
+        color: "#d3d3d3"
     }
 });
 
@@ -122,7 +130,7 @@ class Register extends React.Component {
         const { classes } = this.props;
         return (
             <div className={classes.register}>
-                <Paper className={classes.paper} elevation={16}>
+                <Paper className={classes.paper} elevation={0}>
                     <Typography
                         variant="h4"
                         component="h3"
@@ -130,9 +138,8 @@ class Register extends React.Component {
                         style={{
                             display: "flex",
                             justifyContent: "center",
-                            backgroundColor: "#cc285d",
                             color: "#fff",
-                            fontWeight: 300
+                            letterSpacing: 1
                         }}
                     >
                         Register
@@ -149,6 +156,14 @@ class Register extends React.Component {
                             className={classes.textField}
                             margin="normal"
                             onChange={this.handleChange("name")}
+                            inputProps={{
+                                style: { 
+                                    color: "#d3d3d3"
+                                }
+                            }}
+                            InputLabelProps={{
+                                className: classes.input
+                            }}
                         />
                         <TextField
                             id="input-email"
@@ -157,6 +172,14 @@ class Register extends React.Component {
                             className={classes.textField}
                             margin="normal"
                             onChange={this.handleChange("email")}
+                            inputProps={{
+                                style: { 
+                                    color: "#d3d3d3"
+                                }
+                            }}
+                            InputLabelProps={{
+                                className: classes.input
+                            }}
                         />
                         <TextField
                             id="input-verify-email"
@@ -165,6 +188,14 @@ class Register extends React.Component {
                             className={classes.textField}
                             margin="normal"
                             onChange={this.handleChange("verifyEmail")}
+                            inputProps={{
+                                style: { 
+                                    color: "#d3d3d3"
+                                }
+                            }}
+                            InputLabelProps={{
+                                className: classes.input
+                            }}
                         />
                         <FormControl className={classes.textField}>
                             <TextField
@@ -175,6 +206,14 @@ class Register extends React.Component {
                                 onChange={this.handleChange("password")}
                                 autoComplete="current-password"
                                 helperText="Password must be at least 8 characters long"
+                                inputProps={{
+                                    style: { 
+                                        color: "#d3d3d3"
+                                    }
+                                }}
+                                InputLabelProps={{
+                                    className: classes.input
+                                }}
                             />
                             <TextField
                                 id="adornment-verify-password"
@@ -183,6 +222,14 @@ class Register extends React.Component {
                                 value={this.state.verifyPassword}
                                 onChange={this.handleChange("verifyPassword")}
                                 autoComplete="current-password"
+                                inputProps={{
+                                    style: { 
+                                        color: "#d3d3d3"
+                                    }
+                                }}
+                                InputLabelProps={{
+                                    className: classes.input
+                                }}
                             />
                         </FormControl>
 
@@ -202,7 +249,7 @@ class Register extends React.Component {
                         <Button
                             onClick={this.onSubmit}
                             className={classes.button}
-                            variant="outlined"
+                            variant="text"
                             label="Submit"
                             type="submit"
                             color="secondary"

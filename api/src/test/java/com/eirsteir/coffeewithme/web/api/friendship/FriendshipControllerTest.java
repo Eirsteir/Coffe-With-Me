@@ -232,7 +232,7 @@ class FriendshipControllerTest {
     void testGetFriendRequestsWhenUserHasFriendshipsWithStatusRequested_thenReturnHttp200WithFriends() throws Exception {
         when(userService.findUserById(requester.getId()))
                 .thenReturn(requester);
-        when(friendshipService.getFriendshipsWithStatus(Mockito.any(UserDto.class), eq(REQUESTED)))
+        when(friendshipService.getAllFriendshipsWithStatus(Mockito.any(UserDto.class), eq(REQUESTED)))
                 .thenReturn(Arrays.asList(
                         UserDto.builder()
                         .email(REQUESTER_EMAIL)
@@ -253,7 +253,7 @@ class FriendshipControllerTest {
     void testGetFriendRequestsWhenUserHasNoFriendshipsWithStatusRequested_thenReturnHttp204() throws Exception {
         when(userService.findUserById(requester.getId()))
                 .thenReturn(requester);
-        when(friendshipService.getFriendshipsWithStatus(Mockito.any(UserDto.class), eq(REQUESTED)))
+        when(friendshipService.getAllFriendshipsWithStatus(Mockito.any(UserDto.class), eq(REQUESTED)))
                 .thenReturn(new ArrayList<>());
 
         mockMvc.perform(get("/friends/requests", requester.getId())
