@@ -257,7 +257,7 @@ class Register extends React.Component {
                             {this.state.isLoading ? (
                                 <CircularProgress style={{ color: "#fff" }} size={20} />
                             ) : (
-                                "Register"
+                                "Submit"
                             )}
                         </Button>
                     </form>
