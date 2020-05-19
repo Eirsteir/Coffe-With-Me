@@ -14,6 +14,7 @@ class SearchPage extends React.Component {
             if (user.id === userId) {
                 length--;
             }
+            return null;
         });
         
         return length; 

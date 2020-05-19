@@ -11,7 +11,7 @@ const SearchResultsList = (props) => {
             {results.map((user, i) => {
 
                 if (user.id === userId) {
-                    return;
+                    return null;
                 }
 
                 return (

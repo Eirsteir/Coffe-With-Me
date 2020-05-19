@@ -2,7 +2,7 @@ import React from "react";
 import { withRouter } from "react-router-dom";
 import PropTypes from "prop-types";
 
-import { withStyles, fade, makeStyles } from "@material-ui/core/styles";
+import { withStyles } from "@material-ui/core/styles";
 import AppBar from "@material-ui/core/AppBar";
 import Toolbar from "@material-ui/core/Toolbar";
 import IconButton from "@material-ui/core/IconButton";
@@ -96,8 +96,8 @@ class Navigation extends React.Component {
     handleLogout = () => {
         const token = window.localStorage.getItem("auth");
         this.props.toggleAuthenticatedState();
-        
-        fetch(`api/logout`, {
+    
+        fetch(`/api/logout`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -105,8 +105,6 @@ class Navigation extends React.Component {
             }
         })
             .then(resp => {
-                console.log(resp);
-                
                 if (resp.status === 204 || resp.status === 304) {
                     window.localStorage.removeItem("auth");
                     return this.props.history.push("/");

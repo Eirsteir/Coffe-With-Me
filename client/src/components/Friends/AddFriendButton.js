@@ -1,9 +1,7 @@
 import React from "react";
 
-import {withStyles} from "@material-ui/core/styles";
 import Button from '@material-ui/core/Button';
 import PersonAddIcon from '@material-ui/icons/PersonAdd';
-import createMuiTheme from "@material-ui/core/styles/createMuiTheme";
 
 
 const AddFriendButton = (props) => {
