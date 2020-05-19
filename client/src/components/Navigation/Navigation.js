@@ -1,6 +1,9 @@
 import React from "react";
 import { withRouter } from "react-router-dom";
 import PropTypes from "prop-types";
+import { Stomp } from '@stomp/stompjs';
+import SockJS from 'sockjs-client';
+import SockJsClient from 'react-stomp';
 
 import { withStyles } from "@material-ui/core/styles";
 import AppBar from "@material-ui/core/AppBar";
@@ -35,7 +38,6 @@ const styles = {
     },
     appBar: {
         boxShadow: "none",
-        // backgroundColor: "#343b64"
         backgroundColor: "transparent",
         padding: "1rem 6rem",
         [theme.breakpoints.down("sm")]: {
@@ -69,6 +71,7 @@ const styles = {
     }
 };
 
+
 class Navigation extends React.Component {
     constructor(props) {
         super(props);
@@ -81,6 +84,20 @@ class Navigation extends React.Component {
             anchorEl: null,
             mobileMoreAnchorEl: null,
         };
+    }
+
+    componentDidMount() {
+
+        // var socket = new SockJS('/api/notifications');
+        // var stompClient = Stomp.over(socket);
+        // stompClient.connect({}, function(frame) {
+        //     console.log('Connected: ' + frame);
+
+        //     stompClient.subscribe('/user/queue/notification', function(notification) {
+        //       console.log(JSON.parse(notification.body));
+        //     });
+        //   });
+    
     }
 
     toggleDrawer = () => {
@@ -112,6 +129,10 @@ class Navigation extends React.Component {
             })
             .catch(console.log);
     };
+
+    handleMessage = (message) => {
+        console.log(message);
+    }
 
     render() {
         const { classes, user, isAuthenticated, searchResults, loadSearchResults } = this.props;
@@ -178,7 +199,7 @@ class Navigation extends React.Component {
             </Menu>
         );
 
-        const notificationsMenuId = 'primary-search-account-menu';
+        const notificationsMenuId = 'primary-search-notifications-menu';
         const renderNotificationsMenu = (
             <Menu
                 anchorEl={this.state.anchorEl}
@@ -285,7 +306,7 @@ class Navigation extends React.Component {
                                 <IconButton
                                     aria-label="show 4 new notifications"
                                     color="inherit"
-                                    aria-controls={notificationsMenuId}
+                                    // aria-controls={notificationsMenuId}
                                     aria-haspopup="true"
                                     onClick={handleMenuOpen}
                                 >
@@ -320,6 +341,12 @@ class Navigation extends React.Component {
                     {renderMobileMenu}
                     {renderProfileMenu}
                     {renderNotificationsMenu}
+
+                    <SockJsClient
+                    url={`http://localhost:8080/api/ws`} // auth token?
+                    topics={[`/user/${user.id}/queue/notify`]}
+                    onMessage={(message) => this.handleMessage(message)} />
+
                 </div>
             );
         } else {

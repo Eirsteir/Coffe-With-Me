@@ -1,6 +1,5 @@
 package com.eirsteir.coffeewithme.config;
 
-import org.springframework.messaging.simp.config.MessageBrokerRegistry;
 import org.springframework.stereotype.Component;
 import org.springframework.web.socket.config.annotation.AbstractWebSocketMessageBrokerConfigurer;
 import org.springframework.web.socket.config.annotation.EnableWebSocketMessageBroker;
@@ -10,16 +9,18 @@ import org.springframework.web.socket.config.annotation.StompEndpointRegistry;
 @EnableWebSocketMessageBroker
 public class WebSocketConfig extends AbstractWebSocketMessageBrokerConfigurer {
 
-    static final String MESSAGE_PREFIX = "/topic";
+//    @Override
+//    public void configureMessageBroker(MessageBrokerRegistry registry) {
+//        registry.enableSimpleBroker("/queue");
+//        registry.setApplicationDestinationPrefixes("/app");
+//    }
 
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry) {
-        registry.addEndpoint("/payroll").withSockJS();
-    }
+//        registry.addEndpoint("/notifications")
+//                .setAllowedOrigins("http://localhost:3000", "http://127.0.0.1:3000", "http://client:3000")
+//                .withSockJS();
+        registry.addEndpoint("/ws").setAllowedOrigins("*").withSockJS();
 
-    @Override
-    public void configureMessageBroker(MessageBrokerRegistry registry) {
-        registry.enableSimpleBroker(MESSAGE_PREFIX);
-        registry.setApplicationDestinationPrefixes("/app");
     }
 }

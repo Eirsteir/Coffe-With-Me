@@ -2,9 +2,11 @@ package com.eirsteir.coffeewithme.web.api.friendship;
 
 import com.eirsteir.coffeewithme.domain.friendship.FriendshipStatus;
 import com.eirsteir.coffeewithme.dto.FriendshipDto;
+import com.eirsteir.coffeewithme.dto.NotificationDto;
 import com.eirsteir.coffeewithme.dto.UserDto;
 import com.eirsteir.coffeewithme.security.UserPrincipalImpl;
 import com.eirsteir.coffeewithme.service.friendship.FriendshipService;
+import com.eirsteir.coffeewithme.service.notification.NotificationService;
 import com.eirsteir.coffeewithme.service.user.UserService;
 import com.eirsteir.coffeewithme.web.request.FriendRequest;
 import io.swagger.annotations.Api;
@@ -20,6 +22,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 import javax.validation.Valid;
 import java.util.Collection;
+import java.util.Date;
 import java.util.List;
 
 @RestController
@@ -28,6 +31,9 @@ import java.util.List;
         @Tag(name = "Friends", description = "Friendship management operations for this application")
 })
 public class FriendshipController {
+
+    @Autowired
+    private NotificationService notificationService;
 
     @Autowired
     private FriendshipService friendshipService;
@@ -62,10 +68,23 @@ public class FriendshipController {
             throw new ResponseStatusException(
                     HttpStatus.BAD_REQUEST, "Cannot send friend requests to yourself");
 
-        return friendshipService.registerFriendship(FriendRequest.builder()
-                                                            .requesterId(principal.getUser().getId())
-                                                            .addresseeId(toFriend)
-                                                            .build());
+
+        FriendshipDto friendshipDto = friendshipService.registerFriendship(FriendRequest.builder()
+                                                                                   .requesterId(principal.getUser()
+                                                                                                        .getId())
+                                                                                   .addresseeId(toFriend)
+                                                                                   .build());
+
+        NotificationDto notificationDto = NotificationDto.builder()
+                .id(1L)
+                .createdDateTime(new Date())
+                .isRead(false)
+                .message("New friend request!")
+                .userId(friendshipDto.getAddresseeId())
+                .build();
+        notificationService.notify(notificationDto, "audit@test.com");
+
+        return friendshipDto;
     }
 
     @PutMapping("/friends")
