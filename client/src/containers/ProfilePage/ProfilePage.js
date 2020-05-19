@@ -138,7 +138,7 @@ class ProfilePage extends React.Component {
                         user.isFriend 
                         ? <FriendSelect id={userId} friendId={user.id} />  
                         : friendRequestSent 
-                            ? <CheckIcon /> 
+                            ? <CheckIcon style={{ color: "#e22866", marginTop: "1rem" }} /> 
                             : <AddFriendSelect id={userId} friendId={user.id} onClick={this.handleAddFriend} />
                     }
 

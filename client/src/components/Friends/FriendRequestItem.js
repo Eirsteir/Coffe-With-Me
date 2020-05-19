@@ -110,7 +110,7 @@ class FriendRequestItem extends React.Component {
                 {this.state.isLoading ? (
                         <CircularProgress style={{ color: "secondary" }} size={20} />
                     ) : isFriendRequestUpdated ? (
-                            <CheckIcon />
+                            <CheckIcon style={{ color: "#e22866" }} />
                         ) : (
                             <FormControl className={classes.formControl}>
                             <InputLabel>Update</InputLabel>

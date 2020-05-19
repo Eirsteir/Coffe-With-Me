@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React from "react";
 import { Redirect, withRouter } from "react-router-dom";
 
 import Grid from "@material-ui/core/Grid";
@@ -6,7 +6,7 @@ import Grid from "@material-ui/core/Grid";
 import SearchResultsList from "../../components/Search/SearchResultsList"
 import Typography from "@material-ui/core/Typography";
 
-class SearchPage extends Component {
+class SearchPage extends React.Component {
 
     subtractFromLengthIfUserIsIncluded = (results, userId) => {
         let length = results.length;
