@@ -72,7 +72,7 @@ export default function MyFriendshipsTabs(props) {
           <StyledTab label="Recently Added" />
         </StyledTabs>
         <FriendsTabPanel value={value}  index={0} userId={userId} isAuthenticated={isAuthenticated} />
-        <FriendRequestsTabPanel value={value}  index={1} userId={userId} isAuthenticated={isAuthenticated} />
+        <FriendRequestsTabPanel value={value} index={1} userId={userId} isAuthenticated={isAuthenticated} />
         <TabPanel value={value} index={2}>
           Recently added
         </TabPanel>

@@ -5,7 +5,7 @@ import FriendRequestItem from "./FriendRequestItem";
 class FriendsList extends React.Component {
 
   render() {
-    const { friends, isAuthenticated } = this.props;
+    const { friends, userId, isAuthenticated } = this.props;
 
     return (
       <div
@@ -25,6 +25,7 @@ class FriendsList extends React.Component {
                   <FriendRequestItem
                     key={i}
                     friend={friend}
+                    userId={userId}
                     isAuthenticated={isAuthenticated}
                   />
                 );

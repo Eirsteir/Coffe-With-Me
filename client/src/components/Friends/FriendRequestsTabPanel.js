@@ -45,13 +45,13 @@ class FriendRequestsTabPanel extends React.Component {
       }
 
     render() {
-        const { index, value, isAuthenticated } = this.props;
+        const { index, value, userId, isAuthenticated } = this.props;
         
         return (
             <TabPanel 
                 index={index} 
                 value={value}
-                children={<FriendRequestsList friends={this.state.friends} isAuthenticated={isAuthenticated} />}/>
+                children={<FriendRequestsList friends={this.state.friends} userId={userId} isAuthenticated={isAuthenticated} />}/>
         )
     }
 }

@@ -43,6 +43,8 @@ class FriendRequestItem extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
+            userId: "",
+            friendId: "",
             friendshipStatus: "",
             isLoading: false,
             errorMessage: "",
@@ -57,21 +59,12 @@ class FriendRequestItem extends React.Component {
 
     handleChange = event => {
         this.setState({ friendshipStatus: event.target.value })
-        const action = this.state.friendshipStatus;
-
-        switch (action) {
-            case Action.ACCEPT:
-                updateFriendRequest(FriendshipStatus.ACCEPT);
-                break;
-            case Action.DECLINE:
-                updateFriendRequest(FriendshipStatus.DECLINE);
-                break;
-            case Action.BLOCK:
-                updateFriendRequest(FriendshipStatus.BLOCK);
-                break;
-            default:
-                return;
-        }
+    
+        const requesterId = this.props.friend.id;
+        const addresseeId = this.props.userId;
+        const newStatus = event.target.value;
+        
+        updateFriendRequest(requesterId, addresseeId, newStatus);
     }
 
     render() {

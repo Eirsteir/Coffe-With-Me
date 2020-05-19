@@ -2,25 +2,27 @@ import { getAuthToken } from '../helpers/auth-headers';
 import { handleResponse } from "./user.service";
 
 
-export const FriendshipStatus = Object.freeze({
-    ACCEPTED,
-    DECLINED,
-    BLOCKED,
-});
+export const FriendshipStatus = {
+    ACCEPTED: "ACCEPTED",
+    DECLINED: "DECLINED",
+    BLOCKED: "BLOCKED",
+}
 
 export function updateFriendRequest(requesterId, addresseeId, status) {
 
     const requestOptions = {
-        method: "POST",
+        method: "PUT",
         headers: {
             "Content-Type": "application/json",
             Authorization: getAuthToken()
         },
         body: JSON.stringify({
-            requester: 
+            requesterId: requesterId,
+            addresseeId: addresseeId,
+            status: status
         })
     }
 
-    return fetch(`api/logout`, requestOptions)
+    return fetch(`api/friends`, requestOptions)
     .then(handleResponse);
 }
