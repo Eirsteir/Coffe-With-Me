@@ -3,10 +3,14 @@ import { withRouter, Redirect } from "react-router-dom";
 
 import Grid from "@material-ui/core/Grid";
 import Typography from "@material-ui/core/Typography";
+import CheckIcon from '@material-ui/icons/Check';
 
 import FriendSelect from "../../components/Friends/FriendSelect";
 import AddFriendSelect from "../../components/Friends/AddFriendButton";
-import {handleResponse} from "../../services/user.service";
+import { handleResponse } from "../../services/user.service";
+import { addFriend } from "../../services/friendship.service";
+import { toggleLoading } from "../../helpers/loading";
+
 
 class ProfilePage extends React.Component {
 
@@ -20,7 +24,10 @@ class ProfilePage extends React.Component {
                 email: "",
                 username: "",
                 isFriend: false,
-            }
+            },
+            errorMessage: "",
+            isLoading: "",
+            friendRequestSent: false
         }
     }
 
@@ -29,7 +36,8 @@ class ProfilePage extends React.Component {
         this.getUser(params.id);
     }
 
-    getUser = id => {        
+    getUser = id => {    
+        toggleLoading(this);    
         const token = window.localStorage.getItem("auth");
 
         fetch(`/api/users/${encodeURIComponent(id)}`, {
@@ -41,27 +49,26 @@ class ProfilePage extends React.Component {
         })
             .then(handleResponse)
             .then(user => {
+                toggleLoading(this);
                 this.setState({ user });
             })
-            .catch(console.log);
+            .catch(err => {
+                toggleLoading(this);
+                this.setState({ errorMessage: err.message })
+            });
     };
 
     handleAddFriend = () => {
-        const token = window.localStorage.getItem("auth");
-        
-        fetch(`/api/friends?to_friend=${encodeURIComponent(this.state.user.id)}`, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                Authorization: token
-            }
-        })
-            .then(handleResponse)
+        toggleLoading(this);
+        addFriend(this.state.user.id)
             .then(friendship => {
-                console.log(friendship);
-                
+                toggleLoading(this);
+                this.setState({ friendRequestSent: true });
             })
-            .catch(console.log);    
+            .catch(err => {
+                toggleLoading(this);
+                this.setState({ errorMessage: err.message })
+            });    
         }
 
     hasSentFriendRequest = () => {
@@ -71,7 +78,7 @@ class ProfilePage extends React.Component {
     render() {
         const { userId } = this.props;
         const { isAuthenticated } = this.props.location.state;
-        const user = this.state.user;        
+        const { user, friendRequestSent } = this.state;        
 
         if (!isAuthenticated) {
             return <Redirect to="/" />;
@@ -130,7 +137,9 @@ class ProfilePage extends React.Component {
                     { 
                         user.isFriend 
                         ? <FriendSelect id={userId} friendId={user.id} />  
-                        : <AddFriendSelect id={userId} friendId={user.id} onClick={this.handleAddFriend} />
+                        : friendRequestSent 
+                            ? <CheckIcon /> 
+                            : <AddFriendSelect id={userId} friendId={user.id} onClick={this.handleAddFriend} />
                     }
 
                 </Grid>

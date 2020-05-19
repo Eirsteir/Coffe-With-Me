@@ -11,7 +11,7 @@ import InputLabel from '@material-ui/core/InputLabel';
 import CheckIcon from '@material-ui/icons/Check';
 
 import { FriendshipStatus, updateFriendRequest } from "../../services/friendship.service";
-
+import { toggleLoading } from "../../helpers/loading";
 
 
 const theme = createMuiTheme({
@@ -51,12 +51,6 @@ class FriendRequestItem extends React.Component {
         }
     }
 
-    toggleLoading = () => {
-        this.setState((prevState, props) => ({
-            isLoading: !prevState.isLoading
-        }));
-    };
-
     handleChange = event => {
         this.setState({ friendshipStatus: event.target.value })
         this.handleUpdateFriendRequest(event.target.value);
@@ -66,14 +60,15 @@ class FriendRequestItem extends React.Component {
         const requesterId = this.props.friend.id;
         const addresseeId = this.props.userId;
         
-        this.toggleLoading();
+        toggleLoading(this);
         updateFriendRequest(requesterId, addresseeId, newStatus)
         .then(resp => {
-            this.toggleLoading();
+            toggleLoading(this);
             this.setState({ isFriendRequestUpdated: true })
         })
         .catch(err => {
             console.log(err);
+            toggleLoading(this);
             this.setState({ errorMessage: err.message })
         })
     }

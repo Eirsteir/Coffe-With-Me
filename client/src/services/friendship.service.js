@@ -26,3 +26,27 @@ export function updateFriendRequest(requesterId, addresseeId, status) {
     return fetch(`api/friends`, requestOptions)
     .then(handleResponse);
 }
+
+export function addFriend(toFriend) {
+
+    return fetch(`/api/friends?to_friend=${encodeURIComponent(toFriend)}`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            Authorization: getAuthToken()
+        }
+    })
+        .then(handleResponse);
+}
+
+export function getFriendRequests() {
+
+    return fetch(`/api/friends/requests`, {
+        method: "GET",
+        headers: {
+            "Content-Type": "application/json",
+            Authorization: getAuthToken()
+        }
+    })
+        .then(handleResponse);
+}

@@ -46,7 +46,6 @@ const styles = theme => ({
         padding: "2em"
     },
     button: {
-        // fontSize: "1em",
         marginTop: "2em"
     },
     control: {

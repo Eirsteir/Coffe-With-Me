@@ -1,8 +1,11 @@
 import React from 'react';
 
+import CircularProgress from "@material-ui/core/CircularProgress";
+
 import TabPanel from './TabPanel';
 import FriendRequestsList from "./FriendRequestsList";
-import { handleResponse } from "../../services/user.service";
+import { toggleLoading } from "../../helpers/loading";
+import { getFriendRequests } from "../../services/friendship.service";
 
 class FriendRequestsTabPanel extends React.Component {
     _isMounted = false;
@@ -12,34 +15,31 @@ class FriendRequestsTabPanel extends React.Component {
         this.state = {
             userId: "",
             friends: [],
+            isLoading: false,
+            errorMessage: "",
         };
-
     }
 
     componentDidMount() {
         this._isMounted = true;
-
-        const token = window.localStorage.getItem("auth");
-        this.fetchFriends(token);
+        this.handleFetchFriendRequests();
     }
 
-    fetchFriends = token  => {        
-        fetch(`/api/friends/requests`, {
-            method: "GET",
-            headers: {
-                "Content-Type": "application/json",
-                Authorization: token
-            }
-        })
-            .then(handleResponse)
-            .then(resp => {               
+    handleFetchFriendRequests = ()  => {
+        toggleLoading(this);
+        getFriendRequests()
+            .then(resp => {
+                toggleLoading(this);
                 if (resp.length && this._isMounted) {
-                    return this.setState({ friends: resp})
+                    return this.setState({ friendRequests: resp})
                 }
             })
-            .catch(console.log);
+            .catch(err => {
+                toggleLoading(this);
+                this.setState({ errorMessage: err.message })
+            });
     };
-        
+            
     componentWillUnmount() {
         this._isMounted = false;
       }
@@ -48,12 +48,18 @@ class FriendRequestsTabPanel extends React.Component {
         const { index, value, userId, isAuthenticated } = this.props;
         
         return (
-            <TabPanel 
-                index={index} 
-                value={value}
-                children={<FriendRequestsList friends={this.state.friends} userId={userId} isAuthenticated={isAuthenticated} />}/>
+            this.state.isLoading  
+             ? <CircularProgress style={{ color: "secondary" }} size={20} />
+             : <TabPanel 
+                    index={index} 
+                    value={value}
+                    children={<FriendRequestsList 
+                        friends={this.state.friends} 
+                        userId={userId} 
+                        isAuthenticated={isAuthenticated} />}
+                />
         )
-    }
+    }               
 }
 
 export default FriendRequestsTabPanel;

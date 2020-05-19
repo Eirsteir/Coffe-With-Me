@@ -5,53 +5,8 @@ import Grid from "@material-ui/core/Grid";
 import Typography from "@material-ui/core/Typography";
 
 import MyFriendshipsTabs from "../../components/Friends/MyFriendshipsTabs";
-import {handleResponse} from "../../services/user.service";
 
 class MyProfilePage extends React.Component {
-
-    _isMounted = false;
-
-    constructor(props) {
-        super(props);
-        this.state = {
-            user: {
-                id: "",
-                name: "",
-                email: "",
-                username: "",
-            },
-            friends: [],
-            friendRequests: []
-        }
-    }
-
-    componentDidMount() {
-        this._isMounted = true;
-
-        const token = window.localStorage.getItem("auth");
-        this.fetchFriendRequests(token);
-    }
-
-    fetchFriendRequests = token  => {
-        fetch(`/api/friends/requests`, {
-            method: "GET",
-            headers: {
-                "Content-Type": "application/json",
-                Authorization: token
-            }
-        })
-            .then(handleResponse)
-            .then(resp => {
-                if (resp.length && this._isMounted) {
-                    return this.setState({ friendRequests: resp})
-                }
-            })
-            .catch(console.log);
-    };
-    
-    componentWillUnmount() {
-        this._isMounted = false;
-      }
 
     render() {
         const { user, isAuthenticated } = this.props;       
