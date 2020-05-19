@@ -8,6 +8,7 @@ import MenuItem from '@material-ui/core/MenuItem';
 import FormControl from '@material-ui/core/FormControl';
 import Select from '@material-ui/core/Select';
 import InputLabel from '@material-ui/core/InputLabel';
+import CheckIcon from '@material-ui/icons/Check';
 
 import { FriendshipStatus, updateFriendRequest } from "../../services/friendship.service";
 
@@ -39,15 +40,14 @@ const styles = {
 };
 
 class FriendRequestItem extends React.Component {
-
+   
     constructor(props) {
         super(props);
         this.state = {
-            userId: "",
-            friendId: "",
             friendshipStatus: "",
             isLoading: false,
             errorMessage: "",
+            isFriendRequestUpdated: false
         }
     }
 
@@ -59,17 +59,28 @@ class FriendRequestItem extends React.Component {
 
     handleChange = event => {
         this.setState({ friendshipStatus: event.target.value })
-    
+        this.handleUpdateFriendRequest(event.target.value);
+    }
+
+    handleUpdateFriendRequest = newStatus => {
         const requesterId = this.props.friend.id;
         const addresseeId = this.props.userId;
-        const newStatus = event.target.value;
         
-        updateFriendRequest(requesterId, addresseeId, newStatus);
+        this.toggleLoading();
+        updateFriendRequest(requesterId, addresseeId, newStatus)
+        .then(resp => {
+            this.toggleLoading();
+            this.setState({ isFriendRequestUpdated: true })
+        })
+        .catch(err => {
+            console.log(err);
+            this.setState({ errorMessage: err.message })
+        })
     }
 
     render() {
         const { classes, friend, userId, isAuthenticated } = this.props;
-        const { friendshipStatus } = this.state;
+        const { friendshipStatus, isFriendRequestUpdated } = this.state;
 
         return (
             <div
@@ -103,27 +114,29 @@ class FriendRequestItem extends React.Component {
     
                 {this.state.isLoading ? (
                         <CircularProgress style={{ color: "secondary" }} size={20} />
-                    ) : (
-                        <FormControl className={classes.formControl}>
-                        <InputLabel>Update</InputLabel>
-                            <Select
-                                value={friendshipStatus}
-                                onChange={this.handleChange}
-                                displayEmpty
-                                autoWidth
-                                className={classes.select}
-                                inputProps={{
-                                    'aria-label': 'Friend request operations',
-                                    classes: {
-                                        icon: classes.icon,
-                                    },
-                                }}
-                            >
-                                <MenuItem value={FriendshipStatus.ACCEPTED}>Accept</MenuItem>
-                                <MenuItem value={FriendshipStatus.DECLINED}>Decline</MenuItem>
-                                <MenuItem value={FriendshipStatus.BLOCKED}>Block</MenuItem>
-                            </Select>
-                        </FormControl>
+                    ) : isFriendRequestUpdated ? (
+                            <CheckIcon />
+                        ) : (
+                            <FormControl className={classes.formControl}>
+                            <InputLabel>Update</InputLabel>
+                                <Select
+                                    value={friendshipStatus}
+                                    onChange={this.handleChange}
+                                    displayEmpty
+                                    autoWidth
+                                    className={classes.select}
+                                    inputProps={{
+                                        'aria-label': 'Friend request operations',
+                                        classes: {
+                                            icon: classes.icon,
+                                        },
+                                    }}
+                                >
+                                    <MenuItem value={FriendshipStatus.ACCEPTED}>Accept</MenuItem>
+                                    <MenuItem value={FriendshipStatus.DECLINED}>Decline</MenuItem>
+                                    <MenuItem value={FriendshipStatus.BLOCKED}>Block</MenuItem>
+                                </Select>
+                            </FormControl>
                 )}
             </div>
         );
