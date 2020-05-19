@@ -57,7 +57,7 @@ const useStyles = makeStyles((theme) => ({
 export default function MyFriendshipsTabs(props) {
   const classes = useStyles();
   const [value, setValue] = React.useState(0);
-  const { userId } = props;
+  const { userId, isAuthenticated } = props;
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
@@ -71,8 +71,8 @@ export default function MyFriendshipsTabs(props) {
           <StyledTab label="Friend Requests" />
           <StyledTab label="Recently Added" />
         </StyledTabs>
-        <FriendsTabPanel value={value}  index={0} userId={userId} />
-        <FriendRequestsTabPanel value={value}  index={1} userId={userId} />
+        <FriendsTabPanel value={value}  index={0} userId={userId} isAuthenticated={isAuthenticated} />
+        <FriendRequestsTabPanel value={value}  index={1} userId={userId} isAuthenticated={isAuthenticated} />
         <TabPanel value={value} index={2}>
           Recently added
         </TabPanel>

@@ -1,10 +1,11 @@
 import React from 'react';
 
 import TabPanel from './TabPanel';
-import FriendsList from "./FriendsList";
+import FriendRequestsList from "./FriendRequestsList";
 import { handleResponse } from "../../services/user.service";
 
 class FriendRequestsTabPanel extends React.Component {
+    _isMounted = false;
 
     constructor(props) {
         super(props);
@@ -12,6 +13,11 @@ class FriendRequestsTabPanel extends React.Component {
             userId: "",
             friends: [],
         };
+
+    }
+
+    componentDidMount() {
+        this._isMounted = true;
 
         const token = window.localStorage.getItem("auth");
         this.fetchFriends(token);
@@ -26,26 +32,26 @@ class FriendRequestsTabPanel extends React.Component {
             }
         })
             .then(handleResponse)
-            .then(friends => {
-                console.log(friends);
-                
-                if (friends.length) {
-                    return this.setState({ friends: friends})
+            .then(resp => {               
+                if (resp.length && this._isMounted) {
+                    return this.setState({ friends: resp})
                 }
             })
             .catch(console.log);
     };
-
+        
+    componentWillUnmount() {
+        this._isMounted = false;
+      }
 
     render() {
-        const { index, value } = this.props;
-
+        const { index, value, isAuthenticated } = this.props;
         
         return (
             <TabPanel 
                 index={index} 
                 value={value}
-                children={<FriendsList friends={this.state.friends} />}/>
+                children={<FriendRequestsList friends={this.state.friends} isAuthenticated={isAuthenticated} />}/>
         )
     }
 }

@@ -5,7 +5,6 @@ import PropTypes from "prop-types";
 import { withStyles, fade, makeStyles } from "@material-ui/core/styles";
 import AppBar from "@material-ui/core/AppBar";
 import Toolbar from "@material-ui/core/Toolbar";
-import Typography from "@material-ui/core/Typography";
 import IconButton from "@material-ui/core/IconButton";
 import MenuIcon from "@material-ui/icons/Menu";
 import SwipeableDrawer from "@material-ui/core/SwipeableDrawer";
@@ -97,7 +96,7 @@ class Navigation extends React.Component {
     handleLogout = () => {
         const token = window.localStorage.getItem("auth");
         this.props.toggleAuthenticatedState();
-
+        
         fetch(`api/logout`, {
             method: "POST",
             headers: {
@@ -106,6 +105,8 @@ class Navigation extends React.Component {
             }
         })
             .then(resp => {
+                console.log(resp);
+                
                 if (resp.status === 204 || resp.status === 304) {
                     window.localStorage.removeItem("auth");
                     return this.props.history.push("/");
@@ -137,7 +138,6 @@ class Navigation extends React.Component {
             this.setState({ mobileMoreAnchorEl: event.currentTarget});
         };
 
-
         const iOS = process.browser && /iPad|iPhone|iPod/.test(navigator.userAgent);
         const sideList = (
             <div className={classes.list}>
@@ -153,11 +153,11 @@ class Navigation extends React.Component {
                 <Divider />
 
                 <List component="nav">
-                    <ListItem button>
+                    <ListItem button onClick={this.handleLogout}>
                         <ListItemIcon>
                             <ExitToAppOutlinedIcon />
                         </ListItemIcon>
-                        <ListItemText primary="Log Out" onClick={this.handleLogout} />
+                        <ListItemText primary="Log Out" />
                     </ListItem>
                 </List>
             </div>

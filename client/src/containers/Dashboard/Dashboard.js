@@ -12,9 +12,9 @@ class Dashboard extends React.Component {
     };
 
     render() {
-        const { user } = this.props;
+        const { user, isAuthenticated } = this.props;
 
-        if (!this.props.isAuthenticated) {
+        if (!isAuthenticated) {
             return <Redirect to="/" />;
         }
 

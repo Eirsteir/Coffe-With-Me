@@ -1,6 +1,5 @@
 package com.eirsteir.coffeewithme.web.api.friendship;
 
-import com.eirsteir.coffeewithme.domain.friendship.FriendshipId;
 import com.eirsteir.coffeewithme.domain.friendship.FriendshipStatus;
 import com.eirsteir.coffeewithme.domain.user.User;
 import com.eirsteir.coffeewithme.dto.FriendshipDto;
@@ -12,9 +11,9 @@ import com.eirsteir.coffeewithme.security.UserDetailsServiceImpl;
 import com.eirsteir.coffeewithme.security.UserPrincipalImpl;
 import com.eirsteir.coffeewithme.service.friendship.FriendshipService;
 import com.eirsteir.coffeewithme.service.user.UserService;
+import com.eirsteir.coffeewithme.testconfig.CWMExceptionTestConfig;
 import com.eirsteir.coffeewithme.util.JSONUtils;
 import com.eirsteir.coffeewithme.web.request.FriendRequest;
-import com.eirsteir.coffeewithme.testconfig.CWMExceptionTestConfig;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -62,7 +61,6 @@ class FriendshipControllerTest {
     private UserPrincipalImpl userPrincipal;
     private User requester;
     private FriendshipDto friendshipDto;
-    private FriendshipId friendshipId;
 
     @Autowired
     private MockMvc mockMvc;
@@ -113,12 +111,9 @@ class FriendshipControllerTest {
         Mockito.when(authentication.getPrincipal())
                 .thenReturn(userPrincipal);
 
-        friendshipId = FriendshipId.builder()
-                .requester(User.builder().id(REQUESTER_ID).build())
-                .addressee(User.builder().id(ADDRESSEE_ID).build())
-                .build();
         friendshipDto = FriendshipDto.builder()
-                .id(friendshipId)
+                .requesterId(REQUESTER_ID)
+                .addresseeId(ADDRESSEE_ID)
                 .status(REQUESTED)
                 .build();
     }
@@ -133,8 +128,8 @@ class FriendshipControllerTest {
                                 .param("to_friend", String.valueOf(ADDRESSEE_ID))
                                 .with(user(userPrincipal)))
                 .andExpect(status().isCreated())
-                .andExpect(jsonPath("$.id.requester.id", equalTo(requester.getId().intValue())))
-                .andExpect(jsonPath("$.id.addressee.id", equalTo(ADDRESSEE_ID.intValue())))
+                .andExpect(jsonPath("$.requesterId", equalTo(requester.getId().intValue())))
+                .andExpect(jsonPath("$.addresseeId", equalTo(ADDRESSEE_ID.intValue())))
                 .andExpect(jsonPath("$.status", equalTo(FriendshipStatus.REQUESTED.getStatus())));
     }
 
@@ -232,7 +227,7 @@ class FriendshipControllerTest {
     void testGetFriendRequestsWhenUserHasFriendshipsWithStatusRequested_thenReturnHttp200WithFriends() throws Exception {
         when(userService.findUserById(requester.getId()))
                 .thenReturn(requester);
-        when(friendshipService.getAllFriendshipsWithStatus(Mockito.any(UserDto.class), eq(REQUESTED)))
+        when(friendshipService.getFriendsOfWithStatus(Mockito.any(UserDto.class), eq(REQUESTED)))
                 .thenReturn(Arrays.asList(
                         UserDto.builder()
                         .email(REQUESTER_EMAIL)
@@ -253,7 +248,7 @@ class FriendshipControllerTest {
     void testGetFriendRequestsWhenUserHasNoFriendshipsWithStatusRequested_thenReturnHttp204() throws Exception {
         when(userService.findUserById(requester.getId()))
                 .thenReturn(requester);
-        when(friendshipService.getAllFriendshipsWithStatus(Mockito.any(UserDto.class), eq(REQUESTED)))
+        when(friendshipService.getFriendsOfWithStatus(Mockito.any(UserDto.class), eq(REQUESTED)))
                 .thenReturn(new ArrayList<>());
 
         mockMvc.perform(get("/friends/requests", requester.getId())
@@ -285,12 +280,8 @@ class FriendshipControllerTest {
 
     @Test
     void testAcceptFriendshipWhenFriendshipDoesNotBelongToUser_thenReturnHttp400() throws Exception {
-        friendshipId = FriendshipId.builder()
-                .requester(User.builder().id(100L).build())
-                .addressee(User.builder().id(101L).build())
-                .build();
-
-        friendshipDto.setId(friendshipId);
+        friendshipDto.setRequesterId(100L)
+                .setAddresseeId(101L);
 
         mockMvc.perform(put("/friends")
                                 .contentType(MediaType.APPLICATION_JSON)

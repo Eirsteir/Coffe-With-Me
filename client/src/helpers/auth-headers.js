@@ -1,12 +1,5 @@
-export function getAuthTokenHeader() {
-    // return authorization header with basic auth credentials
-    let user = JSON.parse(localStorage.getItem('auth'));
-
-    if (user && user.authdata) {
-        return { 'Authorization': 'Basic ' + user.authdata };
-    } else {
-        return {};
-    }
+export function getAuthToken() {
+    return window.localStorage.getItem("auth");
 }
 
 export function createBasicAuthToken(email, password) {

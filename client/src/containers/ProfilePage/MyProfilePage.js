@@ -9,6 +9,8 @@ import {handleResponse} from "../../services/user.service";
 
 class MyProfilePage extends React.Component {
 
+    _isMounted = false;
+
     constructor(props) {
         super(props);
         this.state = {
@@ -24,8 +26,9 @@ class MyProfilePage extends React.Component {
     }
 
     componentDidMount() {
-        const token = window.localStorage.getItem("auth");
+        this._isMounted = true;
 
+        const token = window.localStorage.getItem("auth");
         this.fetchFriendRequests(token);
     }
 
@@ -38,16 +41,20 @@ class MyProfilePage extends React.Component {
             }
         })
             .then(handleResponse)
-            .then(requests => {
-                if (requests.length) {
-                    return this.setState({ friendRequests: requests})
+            .then(resp => {
+                if (resp.length && this._isMounted) {
+                    return this.setState({ friendRequests: resp})
                 }
             })
             .catch(console.log);
     };
     
+    componentWillUnmount() {
+        this._isMounted = false;
+      }
+
     render() {
-        const { user } = this.props;
+        const { user, isAuthenticated } = this.props;       
 
         return (
             <div>
@@ -107,6 +114,7 @@ class MyProfilePage extends React.Component {
 
                         <MyFriendshipsTabs 
                             userId={user.id}
+                            isAuthenticated={isAuthenticated}
                         />
                         
                     </Grid>

@@ -145,7 +145,10 @@ class FriendshipControllerIntegrationTest {
     @Test
     @WithUserDetails(value = ADDRESSEE_EMAIL, userDetailsServiceBeanName = "userDetailsService")
     void testAcceptFriendshipNotBelongingToUserReturnsHttp400() throws Exception {
-        FriendshipDto friendshipDto = modelMapper.map(requestedFriendship, FriendshipDto.class);
+        FriendshipDto friendshipDto = FriendshipDto.builder()
+                .requesterId(requestedFriendship.getRequester().getId())
+                .addresseeId(requestedFriendship.getAddressee().getId())
+                .build();
 
         mvc.perform(put("/friends")
                             .contentType(MediaType.APPLICATION_JSON)

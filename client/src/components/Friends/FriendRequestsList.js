@@ -1,6 +1,6 @@
 import React from "react";
 
-import FriendItem from "./FriendItem";
+import FriendRequestItem from "./FriendRequestItem";
 
 class FriendsList extends React.Component {
 
@@ -22,7 +22,7 @@ class FriendsList extends React.Component {
             <div style={{ marginTop: "1rem" }}>
               {friends.map((friend, i) => {
                 return (
-                  <FriendItem
+                  <FriendRequestItem
                     key={i}
                     friend={friend}
                     isAuthenticated={isAuthenticated}

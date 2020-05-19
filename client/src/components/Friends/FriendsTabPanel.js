@@ -12,12 +12,14 @@ class FriendsTabPanel extends React.Component {
             userId: "",
             friends: [],
         };
+    }
 
-        const token = window.localStorage.getItem("auth");
+    componentDidMount() {
+        const token = window.localStorage.getItem("auth");       
         this.fetchFriends(token);
     }
 
-    fetchFriends = token  => {        
+    fetchFriends = (token)  => {        
         fetch(`/api/${encodeURIComponent(this.props.userId)}/friends`, {
             method: "GET",
             headers: {
@@ -36,14 +38,13 @@ class FriendsTabPanel extends React.Component {
 
 
     render() {
-        const { index, value } = this.props;
-
+        const { index, value, isAuthenticated } = this.props;
         
         return (
             <TabPanel 
                 index={index} 
                 value={value}
-                children={<FriendsList friends={this.state.friends} />}/>
+                children={<FriendsList friends={this.state.friends} isAuthenticated={isAuthenticated} />}/>
         )
     }
 }

@@ -8,12 +8,25 @@ import Typography from "@material-ui/core/Typography";
 
 class SearchPage extends Component {
 
+    subtractFromLengthIfUserIsIncluded = (results, userId) => {
+        let length = results.length;
+        results.map((user, i) => {
+            if (user.id === userId) {
+                length--;
+            }
+        });
+        
+        return length; 
+    }
+
     render() {
         const { userId, results, isAuthenticated } = this.props.location.state;        
-
+        
         if (!isAuthenticated) {
             return <Redirect to="/" />;
         }
+
+        const amountOfResults = this.subtractFromLengthIfUserIsIncluded(results, userId);
 
         return (
             <div
@@ -48,7 +61,7 @@ class SearchPage extends Component {
                      <p
                          style={{ color: "#D3D3D3" }}
                      >
-                         {results.length} user{results.length === 1 ? " ": "s "}
+                         {amountOfResults} user{amountOfResults === 1 ? " ": "s "}
                           found | View 50 per page
                      </p>
                  </Grid>
@@ -58,7 +71,7 @@ class SearchPage extends Component {
                      : (
                          <div style={{ marginTop: "1rem" }}>
 
-                             <SearchResultsList userId={userId} results={results}/>
+                             <SearchResultsList userId={userId} results={results} isAuthenticated={isAuthenticated} />
 
                          </div>
                      )}

@@ -2,8 +2,8 @@ import React from "react";
 import {Link} from "react-router-dom";
 
 
-const SearchResultsItem = ({ userId, user }) => {
-    
+const SearchResultsItem = ({ userId, user, isAuthenticated }) => {
+
     return (
         <div
             style={{
@@ -27,7 +27,8 @@ const SearchResultsItem = ({ userId, user }) => {
                         pathname: `/users/${user.id}`,
                         state: {
                             userId: userId,
-                            friendId: user.id
+                            friendId: user.id,
+                            isAuthenticated: isAuthenticated,
                         }  
                     }}
                     style={{

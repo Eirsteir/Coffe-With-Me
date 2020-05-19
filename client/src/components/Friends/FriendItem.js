@@ -1,7 +1,7 @@
 import React from "react";
 import {Link} from "react-router-dom";
 
-const FriendItem = ({ userId, friend }) => {
+const FriendItem = ({ userId, friend, isAuthenticated }) => {
     return (
         <div
             style={{
@@ -21,7 +21,8 @@ const FriendItem = ({ userId, friend }) => {
                         pathname: `/users/${friend.id}`,
                         state: {
                             userId: userId,
-                            friendId: friend.id
+                            friendId: friend.id,
+                            isAuthenticated: isAuthenticated
                         }  
                     }}
                     style={{

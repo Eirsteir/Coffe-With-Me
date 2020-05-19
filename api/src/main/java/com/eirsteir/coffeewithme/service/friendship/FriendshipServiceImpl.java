@@ -90,28 +90,28 @@ public class FriendshipServiceImpl implements FriendshipService {
         if (friendshipExists(id))
             throw CWMException.getException(EntityType.FRIENDSHIP,
                                             ExceptionType.DUPLICATE_ENTITY,
-                                            id.toString());
+                                            friendRequest.getRequesterId().toString(),
+                                            friendRequest.getAddresseeId().toString());
 
         Friendship friendship = requester.addFriend(addressee, FriendshipStatus.REQUESTED);
         return modelMapper.map(friendship, FriendshipDto.class);
     }
 
-    @Override
-    public void removeFriendship(FriendshipDto friendshipDto) {
-        FriendshipId id = modelMapper.map(friendshipDto.getId(), FriendshipId.class);
-
-        if (friendshipExists(id)) {
-            friendshipRepository.deleteById(id);
-            log.info("[x] Removed friendship: {}", friendshipDto);
-        }
-
-        throw CWMException.getException(EntityType.FRIENDSHIP,
-                                        ExceptionType.ENTITY_NOT_FOUND,
-                                        friendshipDto.getId().toString());
-    }
-
     private boolean friendshipExists(FriendshipId friendshipId) {
         return friendshipRepository.existsById(friendshipId);
+    }
+
+    @Override
+    public void removeFriendship(FriendshipDto friendshipDto) {
+        Friendship friendship = friendshipRepository.findByIdRequesterIdAndIdAddresseeId(
+                friendshipDto.getRequesterId(), friendshipDto.getAddresseeId())
+                .orElseThrow(() -> CWMException.getException(EntityType.FRIENDSHIP,
+                                                             ExceptionType.ENTITY_NOT_FOUND,
+                                                             friendshipDto.getRequesterId().toString(),
+                                                             friendshipDto.getAddresseeId().toString()));
+
+        friendshipRepository.delete(friendship);
+        log.info("[x] Removed friendship: {}", friendshipDto);
     }
 
     @Override
@@ -123,18 +123,20 @@ public class FriendshipServiceImpl implements FriendshipService {
 
         throw CWMException.getException(EntityType.FRIENDSHIP,
                                         ExceptionType.INVALID_STATUS_CHANGE,
-                                        friendshipToUpdate.getId().toString());
+                                        friendshipDto.getRequesterId().toString(),
+                                        friendshipDto.getAddresseeId().toString());
     }
 
     private Friendship getFriendshipToUpdate(FriendshipDto friendshipDto) {
-        Long requesterId = friendshipDto.getId().getRequester().getId();
-        Long addresseeId = friendshipDto.getId().getAddressee().getId();
+        Long requesterId = friendshipDto.getRequesterId();
+        Long addresseeId = friendshipDto.getAddresseeId();
 
         return friendshipRepository.
                 findByIdRequesterIdAndIdAddresseeId(requesterId, addresseeId)
                     .orElseThrow(() -> CWMException.getException(EntityType.FRIENDSHIP,
                                                                  ExceptionType.ENTITY_NOT_FOUND,
-                                                                 friendshipDto.getId().toString()));
+                                                                 friendshipDto.getRequesterId().toString(),
+                                                                 friendshipDto.getAddresseeId().toString()));
     }
 
     private boolean isValidStatusChange(FriendshipStatus oldStatus, FriendshipStatus newStatus) {

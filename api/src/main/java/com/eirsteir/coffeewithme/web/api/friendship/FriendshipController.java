@@ -100,8 +100,8 @@ public class FriendshipController {
     }
 
     private void validateFriendshipDto(FriendshipDto friendshipDto, UserPrincipalImpl principal) {
-        Long requesterId = friendshipDto.getId().getRequester().getId();
-        Long addresseeId = friendshipDto.getId().getAddressee().getId();
+        Long requesterId = friendshipDto.getRequesterId();
+        Long addresseeId = friendshipDto.getAddresseeId();
         Long principalId = principal.getUser().getId();
 
         if (addresseeId.equals(principalId))

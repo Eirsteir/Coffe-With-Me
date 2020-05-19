@@ -1,4 +1,4 @@
-import {createBasicAuthToken, getAuthTokenHeader, saveAuthTokenInLocal} from '../helpers/auth-headers';
+import {createBasicAuthToken, saveAuthTokenInLocal} from '../helpers/auth-headers';
 
 export const userService = {
     login,

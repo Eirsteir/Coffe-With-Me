@@ -1,5 +1,5 @@
 import React from "react";
-import {withRouter} from "react-router-dom";
+import { withRouter, Redirect } from "react-router-dom";
 
 import Grid from "@material-ui/core/Grid";
 import Typography from "@material-ui/core/Typography";
@@ -25,9 +25,7 @@ class ProfilePage extends React.Component {
     }
 
     componentDidMount() {
-        const { match: { params } } = this.props;
-        console.log(this.props);
-        
+        const { match: { params } } = this.props;        
         this.getUser(params.id);
     }
 
@@ -66,9 +64,20 @@ class ProfilePage extends React.Component {
             .catch(console.log);    
         }
 
+    hasSentFriendRequest = () => {
+        return false;
+    }
+
     render() {
         const { userId } = this.props;
-        const user = this.state.user;
+        const { isAuthenticated } = this.props.location.state;
+        const user = this.state.user;        
+
+        if (!isAuthenticated) {
+            return <Redirect to="/" />;
+        } else if (user.id === userId) {
+            return <Redirect to="/me" />;
+        }
 
         return (
             <div id="landing-page-container">
@@ -120,7 +129,7 @@ class ProfilePage extends React.Component {
 
                     { 
                         user.isFriend 
-                        ? <FriendSelect id={userId} friendId={user.id} /> 
+                        ? <FriendSelect id={userId} friendId={user.id} />  
                         : <AddFriendSelect id={userId} friendId={user.id} onClick={this.handleAddFriend} />
                     }
 
