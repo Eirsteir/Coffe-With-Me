@@ -3,8 +3,10 @@ package com.eirsteir.coffeewithme.web.api.notifications;
 import com.eirsteir.coffeewithme.CoffeeWithMeApplication;
 import com.eirsteir.coffeewithme.config.ModelMapperConfig;
 import com.eirsteir.coffeewithme.domain.notification.Notification;
+import com.eirsteir.coffeewithme.domain.user.User;
 import com.eirsteir.coffeewithme.dto.NotificationDto;
 import com.eirsteir.coffeewithme.repository.NotificationRepository;
+import com.eirsteir.coffeewithme.repository.UserRepository;
 import com.eirsteir.coffeewithme.testconfig.RedisTestConfig;
 import com.eirsteir.coffeewithme.testconfig.SetupTestDataLoader;
 import com.eirsteir.coffeewithme.util.JSONUtils;
@@ -40,9 +42,13 @@ class NotificationControllerIntegrationTest {
     public static final String OTHER_USER_EMAIL = "other-user@test.com";
 
     private Notification newestNotification;
+    private User addressee;
 
     @Autowired
     private NotificationRepository notificationRepository;
+
+    @Autowired
+    private UserRepository userRepository;
 
     @Autowired
     private WebApplicationContext context;
@@ -55,6 +61,7 @@ class NotificationControllerIntegrationTest {
     @BeforeEach
     void setUp() {
         newestNotification = notificationRepository.findById(7L).get();
+        addressee = userRepository.findByEmail(ADDRESSEE_EMAIL).get();
 
         mvc = MockMvcBuilders
                 .webAppContextSetup(context)
@@ -114,12 +121,37 @@ class NotificationControllerIntegrationTest {
         mvc.perform(put("/notifications")
                             .contentType(MediaType.APPLICATION_JSON)
                             .content(JSONUtils.asJsonString(notificationDtoToUpdate)))
-                .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.isRead", is(true)));
     }
 
     @Test
-    void testUpdateNotificationToReadWhenNotToCurrentUser_thenReturnHttp400() {
+    @WithUserDetails(value = ADDRESSEE_EMAIL, userDetailsServiceBeanName = "userDetailsService")
+    void testUpdateNotificationToReadWhenNotFound_thenReturnHttp400() throws Exception {
+        NotificationDto notificationDtoNotFound = NotificationDto.builder()
+                .id(100L)
+                .toUserId(addressee.getId())
+                .build();
+
+        mvc.perform(put("/notifications")
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(JSONUtils.asJsonString(notificationDtoNotFound)))
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.message",
+                                    equalTo("Requested notification with id - " +
+                                                    notificationDtoNotFound.getId() + " does not exist")));
+    }
+
+    @Test
+    @WithUserDetails(value = OTHER_USER_EMAIL, userDetailsServiceBeanName = "userDetailsService")
+    void testUpdateNotificationToReadWhenNotToCurrentUser_thenReturnHttp400() throws Exception {
+        NotificationDto notificationDtoToUpdate = modelMapper.map(newestNotification, NotificationDto.class);
+
+        mvc.perform(put("/notifications")
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(JSONUtils.asJsonString(notificationDtoToUpdate)))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.message",
+                                    equalTo("Notification does not belong to current user")));
     }
 }
