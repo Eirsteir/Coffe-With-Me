@@ -82,7 +82,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserDto findUserById(Long id, User currentUser) {
+    public UserDto findUserByIdWithIsFriend(Long id, User currentUser) {
         User user = findUserById(id);
         UserDto userDto = modelMapper.map(user, UserDto.class);
         

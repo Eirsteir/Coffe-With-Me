@@ -1,6 +1,7 @@
 package com.eirsteir.coffeewithme.web.api.friendship;
 
 import com.eirsteir.coffeewithme.domain.friendship.FriendshipStatus;
+import com.eirsteir.coffeewithme.domain.notification.NotificationType;
 import com.eirsteir.coffeewithme.dto.FriendshipDto;
 import com.eirsteir.coffeewithme.dto.NotificationDto;
 import com.eirsteir.coffeewithme.dto.UserDto;
@@ -75,14 +76,7 @@ public class FriendshipController {
                                                                                    .addresseeId(toFriend)
                                                                                    .build());
 
-        NotificationDto notificationDto = NotificationDto.builder()
-                .id(1L)
-                .createdDateTime(new Date())
-                .isRead(false)
-                .message("New friend request!")
-                .userId(friendshipDto.getAddresseeId())
-                .build();
-        notificationService.notify(notificationDto);
+        notificationService.notify(friendshipDto.getAddresseeId(), NotificationType.FRIEND_REQUEST);
 
         return friendshipDto;
     }

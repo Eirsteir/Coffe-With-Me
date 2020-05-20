@@ -1,12 +1,11 @@
 package com.eirsteir.coffeewithme.service.notification;
 
+import com.eirsteir.coffeewithme.domain.notification.NotificationType;
 import com.eirsteir.coffeewithme.dto.NotificationDto;
 
 public interface NotificationService {
 
-    void notify(NotificationDto notificationDto);
-
-    NotificationDto registerNotification(NotificationDto notificationDto);
+    void notify(Long userId, NotificationType type);
 
     NotificationDto updateNotification(NotificationDto notificationDto);
 

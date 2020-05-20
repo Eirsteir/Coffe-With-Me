@@ -1,13 +1,16 @@
 package com.eirsteir.coffeewithme.domain.notification;
 
 import com.eirsteir.coffeewithme.domain.user.User;
-import lombok.Data;
+import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.*;
 import java.util.Date;
 
 @Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 @Entity
 public class Notification {
 
@@ -20,6 +23,7 @@ public class Notification {
     @CreationTimestamp
     private Date createdDateTime;
 
+    @Builder.Default
     private boolean isRead = false;
 
     @ManyToOne

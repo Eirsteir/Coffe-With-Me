@@ -39,7 +39,7 @@ public class UserController {
     @ApiOperation("Get user details with given id")
     UserDto user(@PathVariable Long id, @AuthenticationPrincipal UserPrincipalImpl principal) {
 
-        return userService.findUserById(id, principal.getUser());
+        return userService.findUserByIdWithIsFriend(id, principal.getUser());
     }
 
     @GetMapping
