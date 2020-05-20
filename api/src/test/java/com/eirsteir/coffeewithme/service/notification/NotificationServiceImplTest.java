@@ -1,8 +1,10 @@
 package com.eirsteir.coffeewithme.service.notification;
 
+import com.eirsteir.coffeewithme.config.ModelMapperConfig;
 import com.eirsteir.coffeewithme.domain.notification.Notification;
 import com.eirsteir.coffeewithme.domain.notification.NotificationType;
 import com.eirsteir.coffeewithme.domain.user.User;
+import com.eirsteir.coffeewithme.dto.NotificationDto;
 import com.eirsteir.coffeewithme.exception.EntityType;
 import com.eirsteir.coffeewithme.repository.NotificationRepository;
 import com.eirsteir.coffeewithme.service.user.UserService;
@@ -17,14 +19,20 @@ import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Import;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
+import java.util.Arrays;
+import java.util.List;
+
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.*;
 
+@Import({MessageTemplateUtilTestConfig.class, ModelMapperConfig.class})
 @TestPropertySource("classpath:notifications.properties")
-@Import(MessageTemplateUtilTestConfig.class)
 @ExtendWith(SpringExtension.class)
 class NotificationServiceImplTest {
 
@@ -57,6 +65,7 @@ class NotificationServiceImplTest {
         public NotificationService notificationService() {
             return new NotificationServiceImpl();
         }
+
     }
 
     @BeforeEach
@@ -109,5 +118,24 @@ class NotificationServiceImplTest {
                 .convertAndSendToUser(friendRequestNotification.getTo().getId().toString(),
                                       "/queue/notifications",
                                       friendRequestNotification);
+    }
+
+    @Test
+    void testFindAllByUserWhenUserHasNotifications_thenReturnNotificationDtos() {
+        Pageable firstPage = PageRequest.of(0, 2);
+        when(notificationRepository.findAllByTo_IdOrderByCreatedDateTime(toUser.getId(), firstPage))
+                .thenReturn(Arrays.asList(
+                        Notification.builder()
+                                .to(toUser)
+                                .build(),
+                        Notification.builder()
+                                .to(toUser)
+                                .build()
+                ));
+
+        List<NotificationDto> notifications = notificationService.findAllByUser(toUser, firstPage);
+
+        assertThat(notifications).hasSize(2);
+        assertThat(notifications.get(0).getToUserId()).isEqualTo(toUser.getId());
     }
 }

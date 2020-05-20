@@ -9,9 +9,14 @@ import com.eirsteir.coffeewithme.repository.NotificationRepository;
 import com.eirsteir.coffeewithme.service.user.UserService;
 import com.eirsteir.coffeewithme.util.MessageTemplateUtil;
 import lombok.extern.slf4j.Slf4j;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -19,6 +24,9 @@ public class NotificationServiceImpl implements NotificationService {
 
     @Autowired
     private SimpMessagingTemplate template;
+
+    @Autowired
+    private ModelMapper modelMapper;
 
     @Autowired
     private UserService userService;
@@ -71,8 +79,11 @@ public class NotificationServiceImpl implements NotificationService {
     }
 
     @Override
-    public NotificationDto findByUserId(Long userId) {
-        return null;
+    public List<NotificationDto> findAllByUser(User user, Pageable pageable) {
+        return notificationRepository.findAllByTo_IdOrderByCreatedDateTime(user.getId(), pageable)
+                .stream()
+                .map(notification -> modelMapper.map(notification, NotificationDto.class))
+                .collect(Collectors.toList());
     }
 
     @Override

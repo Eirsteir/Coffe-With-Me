@@ -1,5 +1,6 @@
 package com.eirsteir.coffeewithme.web.api.friendship;
 
+import com.eirsteir.coffeewithme.config.ModelMapperConfig;
 import com.eirsteir.coffeewithme.domain.friendship.FriendshipStatus;
 import com.eirsteir.coffeewithme.domain.user.User;
 import com.eirsteir.coffeewithme.dto.FriendshipDto;
@@ -19,7 +20,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mockito;
-import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.context.TestConfiguration;
@@ -48,7 +48,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@Import({SecurityConfig.class, MessageTemplateUtilTestConfig.class})
+@Import({SecurityConfig.class, MessageTemplateUtilTestConfig.class, ModelMapperConfig.class})
 @TestPropertySource("classpath:exception.properties")
 @WebMvcTest(FriendshipController.class)
 @ExtendWith(SpringExtension.class)
@@ -88,11 +88,6 @@ class FriendshipControllerTest {
         @Bean
         public UserDetailsService userDetailsService() {
             return new UserDetailsServiceImpl();
-        }
-
-        @Bean
-        public ModelMapper modelMapper() {
-            return new ModelMapper();
         }
 
     }

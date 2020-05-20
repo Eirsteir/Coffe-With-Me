@@ -1,5 +1,6 @@
 package com.eirsteir.coffeewithme.service;
 
+import com.eirsteir.coffeewithme.config.ModelMapperConfig;
 import com.eirsteir.coffeewithme.domain.friendship.FriendshipStatus;
 import com.eirsteir.coffeewithme.domain.user.User;
 import com.eirsteir.coffeewithme.dto.UserDto;
@@ -15,7 +16,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -37,7 +37,7 @@ import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.mockito.Mockito.when;
 
 
-@Import(MessageTemplateUtilTestConfig.class)
+@Import({MessageTemplateUtilTestConfig.class, ModelMapperConfig.class})
 @TestPropertySource("classpath:exception.properties")
 @ExtendWith(SpringExtension.class)
 class UserServiceImplTest {
@@ -53,11 +53,6 @@ class UserServiceImplTest {
         @Bean
         public UserService userService() {
             return new UserServiceImpl();
-        }
-
-        @Bean
-        public ModelMapper modelMapper() {
-            return new ModelMapper();
         }
 
         @Bean

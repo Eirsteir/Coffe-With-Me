@@ -32,7 +32,7 @@ public class NotificationController {
     @ApiOperation("Get notifications for the currently logged in user")
     List<NotificationDto> getNotifications(Pageable pageable,
                                            @AuthenticationPrincipal UserPrincipalImpl principal) {
-        return null;
+        return notificationService.findAllByUser(principal.getUser(), pageable);
     }
 
     @PutMapping

@@ -1,5 +1,6 @@
 package com.eirsteir.coffeewithme.service;
 
+import com.eirsteir.coffeewithme.config.ModelMapperConfig;
 import com.eirsteir.coffeewithme.domain.friendship.Friendship;
 import com.eirsteir.coffeewithme.domain.friendship.FriendshipId;
 import com.eirsteir.coffeewithme.domain.friendship.FriendshipStatus;
@@ -40,7 +41,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.mockito.Mockito.when;
 
-@Import(MessageTemplateUtilTestConfig.class)
+@Import({MessageTemplateUtilTestConfig.class, ModelMapperConfig.class})
 @TestPropertySource("classpath:exception.properties")
 @ExtendWith(SpringExtension.class)
 class FriendshipServiceImplTest {
@@ -75,11 +76,6 @@ class FriendshipServiceImplTest {
         @Bean
         public FriendshipService friendshipService() {
             return new FriendshipServiceImpl();
-        }
-
-        @Bean
-        public ModelMapper modelMapper() {
-            return new ModelMapper();
         }
     }
 
