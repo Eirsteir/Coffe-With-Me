@@ -15,7 +15,6 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
-import javax.validation.Valid;
 import java.util.List;
 
 @Slf4j
@@ -43,9 +42,9 @@ public class NotificationController {
         return notifications;
     }
 
-    @PutMapping
+    @PutMapping("/{id}")
     @ApiOperation("Update notification")
-    NotificationDto updateNotification(@RequestBody @Valid NotificationDto notificationDto,
+    NotificationDto updateNotificationToRead(@PathVariable Long id,
                                        @AuthenticationPrincipal UserPrincipalImpl principal) {
         return null;
     }
