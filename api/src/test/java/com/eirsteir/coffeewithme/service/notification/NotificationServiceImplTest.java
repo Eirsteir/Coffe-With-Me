@@ -73,7 +73,7 @@ class NotificationServiceImplTest {
 
         friendRequestNotification = Notification.builder()
                 .message(MessageTemplateUtil.getMessageTemplate(EntityType.FRIENDSHIP, NotificationType.REQUESTED))
-                .user(toUser)
+                .to(toUser)
                 .build();
     }
 
@@ -89,7 +89,7 @@ class NotificationServiceImplTest {
         notificationService.notify(TO_USER_ID, FROM_USER_ID, NotificationType.REQUESTED);
 
         verify(template, times(1))
-                .convertAndSendToUser(friendRequestNotification.getUser().getId().toString(),
+                .convertAndSendToUser(friendRequestNotification.getTo().getId().toString(),
                                       "/queue/notifications",
                                       friendRequestNotification);
     }
@@ -106,7 +106,7 @@ class NotificationServiceImplTest {
         notificationService.notify(FROM_USER_ID, TO_USER_ID, NotificationType.ACCEPTED);
 
         verify(template, times(1))
-                .convertAndSendToUser(friendRequestNotification.getUser().getId().toString(),
+                .convertAndSendToUser(friendRequestNotification.getTo().getId().toString(),
                                       "/queue/notifications",
                                       friendRequestNotification);
     }

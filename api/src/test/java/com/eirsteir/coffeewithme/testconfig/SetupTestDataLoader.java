@@ -1,7 +1,9 @@
 package com.eirsteir.coffeewithme.testconfig;
 
 import com.eirsteir.coffeewithme.domain.friendship.FriendshipStatus;
+import com.eirsteir.coffeewithme.domain.notification.Notification;
 import com.eirsteir.coffeewithme.domain.user.User;
+import com.eirsteir.coffeewithme.repository.NotificationRepository;
 import com.eirsteir.coffeewithme.repository.UserRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,6 +31,9 @@ public class SetupTestDataLoader implements ApplicationListener<ContextRefreshed
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private NotificationRepository notificationRepository;
 
     @Override
     @Transactional
@@ -68,14 +73,26 @@ public class SetupTestDataLoader implements ApplicationListener<ContextRefreshed
                 .email(TOM_EMAIL)
                 .build();
 
-        userRepository.saveAll(Arrays.asList(addressee, otherUser, userJohn, userTom));
+        log.debug("[x] Preloading {}", userRepository.saveAll(Arrays.asList(addressee, otherUser, userJohn, userTom)));
 
         defaultUser.addFriend(addressee, FriendshipStatus.ACCEPTED);
-        userRepository.save(defaultUser);
+        log.debug("[x] Preloading {}", userRepository.save(defaultUser));
 
         requester.addFriend(addressee, FriendshipStatus.ACCEPTED);
         requester.addFriend(otherUser, FriendshipStatus.REQUESTED);
-        userRepository.save(requester);
+        log.debug("[x] Preloading {}", userRepository.save(requester));
+
+        Notification notification = Notification.builder()
+                .message("New friend request from " + requester.getName())
+                .to(addressee)
+                .build();
+        log.debug("[x] Preloading {}", notificationRepository.save(notification));
+
+        notification = Notification.builder()
+                .message("Friend request to " + otherUser.getName() + " was accepted")
+                .to(addressee)
+                .build();
+        log.debug("[x] Preloading {}", notificationRepository.save(notification));
 
         alreadySetup = true;
     }

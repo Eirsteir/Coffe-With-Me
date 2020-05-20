@@ -27,6 +27,6 @@ public class Notification {
     private boolean isRead = false;
 
     @ManyToOne
-    private User user;
+    private User to;
 
 }

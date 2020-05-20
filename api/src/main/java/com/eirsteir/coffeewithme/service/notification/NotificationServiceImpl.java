@@ -38,7 +38,7 @@ public class NotificationServiceImpl implements NotificationService {
 
     private void sendToUser(Notification notification) {
         template.convertAndSendToUser(
-                notification.getUser().getId().toString(),
+                notification.getTo().getId().toString(),
                 "/queue/notifications",
                 notification
         );
@@ -49,7 +49,7 @@ public class NotificationServiceImpl implements NotificationService {
 
         Notification notification = Notification.builder()
                 .message(message)
-                .user(toUser)
+                .to(toUser)
                 .build();
 
         log.debug("[x] Registering notification: {}", notification);

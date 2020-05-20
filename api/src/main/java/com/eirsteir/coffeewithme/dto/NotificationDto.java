@@ -15,6 +15,6 @@ public class NotificationDto {
     private String message;
     private Date createdDateTime;
     private boolean isRead;
-    private Long userId;
+    private Long toUserId;
 
 }

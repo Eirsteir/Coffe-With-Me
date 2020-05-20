@@ -10,13 +10,13 @@ import java.util.List;
 
 public interface NotificationRepository extends JpaRepository<Notification, Long> {
 
-    Notification findByUser(User user);
+    Notification findByTo(User user);
 
     @Query("select notification from Notification notification " +
-            "where notification.user.id=:userId " +
+            "where notification.to.id=:userId " +
             "ORDER BY notification.createdDateTime DESC")
     List<Notification> userNotification(Long userId, Pageable pageSize);
 
-    Notification findByUserAndId(User user, Long id);
+    Notification findByToAndId(User user, Long id);
 
 }
