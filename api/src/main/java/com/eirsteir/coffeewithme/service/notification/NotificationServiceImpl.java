@@ -45,14 +45,16 @@ public class NotificationServiceImpl implements NotificationService {
         Notification notificationToSend = registerNotification(toUser, fromUser, type);
 
         log.debug("[x] Sending notification to user with id - {}: {}", toUserId, notificationToSend);
-        sendToUser(notificationToSend);
+        NotificationDto notificationDto = modelMapper.map(notificationToSend, NotificationDto.class);
+
+        sendToUser(notificationDto);
     }
 
-    private void sendToUser(Notification notification) {
+    private void sendToUser(NotificationDto notificationDto) {
         template.convertAndSendToUser(
-                notification.getTo().getId().toString(),
+                notificationDto.getToUserId().toString(),
                 "/queue/notifications",
-                notification
+                notificationDto
         );
     }
 

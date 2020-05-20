@@ -1,8 +1,6 @@
 import React from "react";
 import { withRouter } from "react-router-dom";
 import PropTypes from "prop-types";
-import { Stomp } from '@stomp/stompjs';
-import SockJS from 'sockjs-client';
 import SockJsClient from 'react-stomp';
 
 import { withStyles } from "@material-ui/core/styles";
@@ -27,6 +25,7 @@ import MoreIcon from '@material-ui/icons/MoreVert';
 import createMuiTheme from "@material-ui/core/styles/createMuiTheme";
 
 import SearchBox from "../../components/Search/SearchBox";
+import { getNotifications } from "../../services/notifications.service";
 
 const theme = createMuiTheme({
     spacing: 4
@@ -76,6 +75,7 @@ class Navigation extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
+            notifications: [],
             searchValue: "",
             user: {},
             isAuthenticated: this.props.isAuthenticated,
@@ -83,21 +83,16 @@ class Navigation extends React.Component {
             open: false,
             anchorEl: null,
             mobileMoreAnchorEl: null,
+            clientConnected: false
         };
     }
 
     componentDidMount() {
-
-        // var socket = new SockJS('/api/notifications');
-        // var stompClient = Stomp.over(socket);
-        // stompClient.connect({}, function(frame) {
-        //     console.log('Connected: ' + frame);
-
-        //     stompClient.subscribe('/user/queue/notification', function(notification) {
-        //       console.log(JSON.parse(notification.body));
-        //     });
-        //   });
-    
+        getNotifications()
+            .then(notifications => {                
+                this.setState({ notifications });
+            })
+            .catch(console.log);    
     }
 
     toggleDrawer = () => {
@@ -130,8 +125,12 @@ class Navigation extends React.Component {
             .catch(console.log);
     };
 
-    handleMessage = (message) => {
+    onMessageRecieve = (message, topic) => {
         console.log(message);
+        
+        this.setState(prevState => ({
+            notifications: [...prevState.notifications, message]
+        }));
     }
 
     render() {
@@ -227,8 +226,8 @@ class Navigation extends React.Component {
                 onClose={handleMobileMenuClose}
             >
                 <MenuItem onClick={handleMenuOpen}>
-                    <IconButton aria-label="show 11 new notifications" color="inherit">
-                        <Badge badgeContent={11} color="secondary">
+                    <IconButton aria-label={`show ${this.state.notifications.length} new notifications`} color="inherit">
+                        <Badge badgeContent={this.state.notifications.length} color="secondary">
                             <NotificationsIcon />
                         </Badge>
                     </IconButton>
@@ -304,13 +303,13 @@ class Navigation extends React.Component {
                             <div className={classes.grow} />
                             <div className={classes.sectionDesktop}>
                                 <IconButton
-                                    aria-label="show 4 new notifications"
+                                    aria-label={`show ${this.state.notifications.length} new notifications`}
                                     color="inherit"
-                                    // aria-controls={notificationsMenuId}
+                                    aria-controls={notificationsMenuId}
                                     aria-haspopup="true"
                                     onClick={handleMenuOpen}
                                 >
-                                    <Badge badgeContent={4} color="secondary">
+                                    <Badge badgeContent={this.state.notifications.length} color="secondary">
                                         <NotificationsIcon />
                                     </Badge>
                                 </IconButton>
@@ -343,9 +342,12 @@ class Navigation extends React.Component {
                     {renderNotificationsMenu}
 
                     <SockJsClient
-                    url={`http://localhost:8080/api/ws`} 
-                    topics={[`/user/${user.id}/queue/notifications`]}
-                    onMessage={(message) => this.handleMessage(message)} />
+                        url={`http://localhost:8080/api/ws`} 
+                        topics={[`/user/${user.id}/queue/notifications`]}
+                        onMessage={this.onMessageRecieve} 
+                        onConnect={ () => { this.setState({ clientConnected: true }) } }
+                        onDisconnect={ () => { this.setState({ clientConnected: false }) } }
+                        debug={true} />
 
                 </div>
             );
