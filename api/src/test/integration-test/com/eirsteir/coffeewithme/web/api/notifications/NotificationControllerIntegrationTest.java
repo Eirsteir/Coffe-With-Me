@@ -33,6 +33,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 class NotificationControllerIntegrationTest {
 
     private static final String ADDRESSEE_EMAIL = "addressee@test.com";
+    public static final String OTHER_USER_EMAIL = "other-user@test.com";
 
     private Notification newestNotification;
 
@@ -63,7 +64,6 @@ class NotificationControllerIntegrationTest {
                             .param("page", "0")
                             .param("size", "2")
                             .contentType(MediaType.APPLICATION_JSON))
-                .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", hasSize(2)));
     }
@@ -76,14 +76,22 @@ class NotificationControllerIntegrationTest {
                             .param("page", "0")
                             .param("size", "1")
                             .contentType(MediaType.APPLICATION_JSON))
-                .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", hasSize(1)))
                 .andExpect(jsonPath("$[0].id", equalTo(newestNotification.getId().intValue())));
     }
 
     @Test
-    void testGetNotificationsWhenNoNotifications_thenReturnHttp204() {
+    @WithUserDetails(value = OTHER_USER_EMAIL, userDetailsServiceBeanName = "userDetailsService")
+    void testGetNotificationsWhenNoNotifications_thenReturnHttp204() throws Exception {
+        mvc.perform(get("/notifications")
+                            .param("page", "0")
+                            .param("size", "1")
+                            .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isNoContent())
+                .andExpect(jsonPath("$.message", equalTo("User with email " +
+                                                                 OTHER_USER_EMAIL +
+                                                                 " has no notifications")));
     }
 
     @Test

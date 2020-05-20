@@ -10,8 +10,10 @@ import io.swagger.annotations.Tag;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 import javax.validation.Valid;
 import java.util.List;
@@ -32,7 +34,13 @@ public class NotificationController {
     @ApiOperation("Get notifications for the currently logged in user")
     List<NotificationDto> getNotifications(Pageable pageable,
                                            @AuthenticationPrincipal UserPrincipalImpl principal) {
-        return notificationService.findAllByUser(principal.getUser(), pageable);
+        List<NotificationDto> notifications = notificationService.findAllByUser(principal.getUser(), pageable);
+
+        if (notifications.isEmpty())
+            throw new ResponseStatusException(
+                    HttpStatus.NO_CONTENT, "User with email " + principal.getEmail() + " has no notifications");
+
+        return notifications;
     }
 
     @PutMapping
