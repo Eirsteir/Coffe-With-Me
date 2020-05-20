@@ -151,12 +151,19 @@ class NotificationServiceImplTest {
     void testUpdateNotificationToReadWhenFound_thenSetIsReadToTrue() {
         friendRequestNotification.setRead(true);
 
+        Notification notification = Notification.builder()
+                .id(friendRequestNotification.getId())
+                .to(friendRequestNotification.getTo())
+                .message(friendRequestNotification.getMessage())
+                .isRead(false)
+                .build();
+
         when(notificationRepository.findById(friendRequestNotification.getTo().getId()))
-                .thenReturn(Optional.ofNullable(friendRequestNotification));
+                .thenReturn(Optional.ofNullable(notification));
         when(notificationRepository.save(Mockito.any(Notification.class)))
                 .thenReturn(friendRequestNotification);
 
-        NotificationDto notificationDtoToUpdate = modelMapper.map(friendRequestNotification, NotificationDto.class);
+        NotificationDto notificationDtoToUpdate = modelMapper.map(notification, NotificationDto.class);
         NotificationDto updatedNotificationDto = notificationService.updateNotificationToRead(notificationDtoToUpdate);
 
         assertThat(updatedNotificationDto.getIsRead()).isTrue();

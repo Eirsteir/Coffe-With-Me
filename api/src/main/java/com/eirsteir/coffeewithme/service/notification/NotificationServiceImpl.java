@@ -84,6 +84,8 @@ public class NotificationServiceImpl implements NotificationService {
                                                              ENTITY_NOT_FOUND,
                                                              notificationDto.getId().toString()));
 
+        notificationToUpdate.setRead(true);
+
         return modelMapper.map(
                 notificationRepository.save(notificationToUpdate), NotificationDto.class);
     }
