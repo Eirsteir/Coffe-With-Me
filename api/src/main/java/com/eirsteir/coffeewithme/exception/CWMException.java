@@ -1,25 +1,13 @@
 package com.eirsteir.coffeewithme.exception;
 
-import com.eirsteir.coffeewithme.config.PropertiesConfig;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.eirsteir.coffeewithme.util.MessageTemplateUtil;
 import org.springframework.stereotype.Component;
-
-import java.text.MessageFormat;
-import java.util.Optional;
 
 @Component
 public class CWMException {
 
-    private static PropertiesConfig propertiesConfig;
-
-    @Autowired
-    public CWMException(PropertiesConfig propertiesConfig) {
-        CWMException.propertiesConfig = propertiesConfig;
-    }
-
-
     public static RuntimeException getException(EntityType entityType, ExceptionType exceptionType, String... args) {
-        String messageTemplate = getMessageTemplate(entityType, exceptionType);
+        String messageTemplate = MessageTemplateUtil.getExceptionMessageTemplate(entityType, exceptionType);
         return getException(exceptionType, messageTemplate, args);
     }
 
@@ -43,27 +31,13 @@ public class CWMException {
 
     private static RuntimeException getException(ExceptionType exceptionType, String messageTemplate, String... args) {
         if (ExceptionType.ENTITY_NOT_FOUND.equals(exceptionType))
-            return new EntityNotFoundException(format(messageTemplate, args));
+            return new EntityNotFoundException(MessageTemplateUtil.format(messageTemplate, args));
         else if (ExceptionType.DUPLICATE_ENTITY.equals(exceptionType))
-            return new DuplicateEntityException(format(messageTemplate, args));
+            return new DuplicateEntityException(MessageTemplateUtil.format(messageTemplate, args));
         else if (ExceptionType.INVALID_STATUS_CHANGE.equals(exceptionType))
-            return new InvalidStatusChangeException(format(messageTemplate, args));
+            return new InvalidStatusChangeException(MessageTemplateUtil.format(messageTemplate, args));
 
-        return new RuntimeException(format(messageTemplate, args));
-    }
-
-    private static String getMessageTemplate(EntityType entityType, ExceptionType exceptionType) {
-        return entityType
-                .name()
-                .concat(".")
-                .concat(exceptionType.getValue())
-                .toLowerCase();
-    }
-
-    private static String format(String template, String... args) {
-        Optional<String> templateContent = Optional.ofNullable(propertiesConfig.getConfigValue(template));
-        return templateContent.map(s -> MessageFormat.format(s, args))
-                .orElseGet(() -> String.format(template, args));
+        return new RuntimeException(MessageTemplateUtil.format(messageTemplate, args));
     }
 
 }

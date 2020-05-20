@@ -13,7 +13,7 @@ public enum ExceptionType {
         this.value = value;
     }
 
-    String getValue() {
+    public String getValue() {
         return this.value;
     }
 }

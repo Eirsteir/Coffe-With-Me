@@ -10,8 +10,9 @@ import com.eirsteir.coffeewithme.security.SecurityConfig;
 import com.eirsteir.coffeewithme.security.UserDetailsServiceImpl;
 import com.eirsteir.coffeewithme.security.UserPrincipalImpl;
 import com.eirsteir.coffeewithme.service.friendship.FriendshipService;
+import com.eirsteir.coffeewithme.service.notification.NotificationService;
 import com.eirsteir.coffeewithme.service.user.UserService;
-import com.eirsteir.coffeewithme.testconfig.CWMExceptionTestConfig;
+import com.eirsteir.coffeewithme.testconfig.MessageTemplateUtilTestConfig;
 import com.eirsteir.coffeewithme.util.JSONUtils;
 import com.eirsteir.coffeewithme.web.request.FriendRequest;
 import org.junit.jupiter.api.BeforeEach;
@@ -47,7 +48,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@Import({SecurityConfig.class, CWMExceptionTestConfig.class})
+@Import({SecurityConfig.class, MessageTemplateUtilTestConfig.class})
 @TestPropertySource("classpath:exception.properties")
 @WebMvcTest(FriendshipController.class)
 @ExtendWith(SpringExtension.class)
@@ -67,6 +68,9 @@ class FriendshipControllerTest {
 
     @MockBean
     private FriendshipService friendshipService;
+
+    @MockBean
+    private NotificationService notificationService;
 
     @MockBean
     private UserDetailsService userDetailsService;

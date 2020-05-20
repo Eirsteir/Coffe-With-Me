@@ -82,7 +82,7 @@ public class FriendshipController {
                 .message("New friend request!")
                 .userId(friendshipDto.getAddresseeId())
                 .build();
-        notificationService.notify(notificationDto, "audit@test.com");
+        notificationService.notify(notificationDto);
 
         return friendshipDto;
     }

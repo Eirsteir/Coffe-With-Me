@@ -6,7 +6,7 @@ import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 
 @Component
-@PropertySource("classpath:exception.properties")
+@PropertySource({"classpath:exception.properties", "classpath:notifications.properties"})
 public class PropertiesConfig {
 
     @Autowired

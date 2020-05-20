@@ -9,7 +9,7 @@ import com.eirsteir.coffeewithme.repository.UserRepository;
 import com.eirsteir.coffeewithme.service.friendship.FriendshipService;
 import com.eirsteir.coffeewithme.service.user.UserService;
 import com.eirsteir.coffeewithme.service.user.UserServiceImpl;
-import com.eirsteir.coffeewithme.testconfig.CWMExceptionTestConfig;
+import com.eirsteir.coffeewithme.testconfig.MessageTemplateUtilTestConfig;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -37,7 +37,7 @@ import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.mockito.Mockito.when;
 
 
-@Import(CWMExceptionTestConfig.class)
+@Import(MessageTemplateUtilTestConfig.class)
 @TestPropertySource("classpath:exception.properties")
 @ExtendWith(SpringExtension.class)
 class UserServiceImplTest {
