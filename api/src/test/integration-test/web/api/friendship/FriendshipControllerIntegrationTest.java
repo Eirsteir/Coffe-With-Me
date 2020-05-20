@@ -45,6 +45,7 @@ class FriendshipControllerIntegrationTest {
 
     private User requester;
     private User addressee;
+    private User otherUser;
     private Friendship requestedFriendship;
 
     @Autowired
@@ -65,7 +66,7 @@ class FriendshipControllerIntegrationTest {
     public void setup() {
         requester = userRepository.findByEmail(REQUESTER_EMAIL).get();
         addressee = userRepository.findByEmail(ADDRESSEE_EMAIL).get();
-        User otherUser = userRepository.findByEmail(OTHER_USER_EMAIL).get();
+        otherUser = userRepository.findByEmail(OTHER_USER_EMAIL).get();
 
         FriendshipId requestedFriendshipId = FriendshipId.builder()
                 .requester(requester)
@@ -98,8 +99,8 @@ class FriendshipControllerIntegrationTest {
         mvc.perform(get("/{id}/friends", addressee.getId())
                             .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$", hasSize(1)))
-                .andExpect(jsonPath("$[0].email", equalTo(REQUESTER_EMAIL)));
+                .andExpect(jsonPath("$", hasSize(2)))
+                .andExpect(jsonPath("$[1].email", equalTo(REQUESTER_EMAIL)));
     }
 
     @Test
@@ -111,8 +112,8 @@ class FriendshipControllerIntegrationTest {
                             .param("to_friend", addressee.getId().toString()))
                 .andDo(print())
                 .andExpect(status().isCreated())
-                .andExpect(jsonPath("$.id.requester.email", equalTo(OTHER_USER_EMAIL)))
-                .andExpect(jsonPath("$.id.addressee.email", equalTo(ADDRESSEE_EMAIL)))
+                .andExpect(jsonPath("$.requesterId", equalTo(otherUser.getId().intValue())))
+                .andExpect(jsonPath("$.addresseeId", equalTo(addressee.getId().intValue())))
                 .andExpect(jsonPath("$.status", equalTo(FriendshipStatus.REQUESTED.getStatus())));
     }
 
@@ -137,8 +138,8 @@ class FriendshipControllerIntegrationTest {
                             .contentType(MediaType.APPLICATION_JSON)
                             .content(JSONUtils.asJsonString(friendshipDto)))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.id.requester.email", equalTo(REQUESTER_EMAIL)))
-                .andExpect(jsonPath("$.id.addressee.email", equalTo(OTHER_USER_EMAIL)))
+                .andExpect(jsonPath("$.requesterId", equalTo(requester.getId().intValue())))
+                .andExpect(jsonPath("$.addresseeId", equalTo(otherUser.getId().intValue())))
                 .andExpect(jsonPath("$.status", equalTo(FriendshipStatus.ACCEPTED.getStatus())));
     }
 
