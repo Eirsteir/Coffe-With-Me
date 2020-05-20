@@ -4,19 +4,15 @@ import com.eirsteir.coffeewithme.domain.notification.Notification;
 import com.eirsteir.coffeewithme.domain.user.User;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;
 
 public interface NotificationRepository extends JpaRepository<Notification, Long> {
 
-    Notification findByTo(User user);
+    Notification findByTo(User toUser);
 
-    @Query("select notification from Notification notification " +
-            "where notification.to.id=:userId " +
-            "ORDER BY notification.createdDateTime DESC")
-    List<Notification> userNotification(Long userId, Pageable pageSize);
+    List<Notification> findAllByTo_IdOrderByCreatedDateTime(Long toUserId, Pageable pageable);
 
-    Notification findByToAndId(User user, Long id);
+    Notification findByToAndId(User toUser, Long id);
 
 }

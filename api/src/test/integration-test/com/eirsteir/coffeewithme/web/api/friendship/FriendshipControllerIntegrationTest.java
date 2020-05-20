@@ -110,7 +110,6 @@ class FriendshipControllerIntegrationTest {
         mvc.perform(post("/friends")
                             .contentType(MediaType.APPLICATION_JSON)
                             .param("to_friend", addressee.getId().toString()))
-                .andDo(print())
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.requesterId", equalTo(otherUser.getId().intValue())))
                 .andExpect(jsonPath("$.addresseeId", equalTo(addressee.getId().intValue())))
