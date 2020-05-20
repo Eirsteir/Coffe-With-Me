@@ -5,7 +5,7 @@ import com.eirsteir.coffeewithme.dto.NotificationDto;
 
 public interface NotificationService {
 
-    void notify(Long userId, NotificationType type);
+    void notify(Long userId, Long fromUserId, NotificationType type);
 
     NotificationDto updateNotification(NotificationDto notificationDto);
 

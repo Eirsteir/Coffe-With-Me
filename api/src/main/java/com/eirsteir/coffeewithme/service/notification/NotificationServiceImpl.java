@@ -4,6 +4,7 @@ import com.eirsteir.coffeewithme.domain.notification.Notification;
 import com.eirsteir.coffeewithme.domain.notification.NotificationType;
 import com.eirsteir.coffeewithme.domain.user.User;
 import com.eirsteir.coffeewithme.dto.NotificationDto;
+import com.eirsteir.coffeewithme.exception.EntityType;
 import com.eirsteir.coffeewithme.repository.NotificationRepository;
 import com.eirsteir.coffeewithme.service.user.UserService;
 import com.eirsteir.coffeewithme.util.MessageTemplateUtil;
@@ -26,8 +27,10 @@ public class NotificationServiceImpl implements NotificationService {
     private NotificationRepository notificationRepository;
 
     @Override
-    public void notify(Long toUserId, NotificationType type) {
-        Notification notificationToSend = registerNotification(toUserId, type);
+    public void notify(Long toUserId, Long fromUserId, NotificationType type) {
+        User toUser = userService.findUserById(toUserId);
+        User fromUser = userService.findUserById(fromUserId);
+        Notification notificationToSend = registerNotification(toUser, fromUser, type);
 
         log.debug("[x] Sending notification to user with id - {}: {}", toUserId, notificationToSend);
         sendToUser(notificationToSend);
@@ -41,15 +44,25 @@ public class NotificationServiceImpl implements NotificationService {
         );
     }
 
-    private Notification registerNotification(Long toUserId, NotificationType type) {
-        User toUser = userService.findUserById(toUserId);
+    private Notification registerNotification(User toUser, User fromUser, NotificationType type) {
+        String message = getMessage(fromUser, toUser, type);
+
         Notification notification = Notification.builder()
-                .message(MessageTemplateUtil.getMessageTemplate(type))
+                .message(message)
                 .user(toUser)
                 .build();
 
         log.debug("[x] Registering notification: {}", notification);
         return notificationRepository.save(notification);
+    }
+
+    private String getMessage(User from, User to, NotificationType type) {
+        String messageTemplate = MessageTemplateUtil.getMessageTemplate(EntityType.FRIENDSHIP, type);
+
+        if (type == NotificationType.ACCEPTED)
+            return MessageTemplateUtil.format(messageTemplate, from.getName());
+
+        return MessageTemplateUtil.format(messageTemplate, to.getName());
     }
 
     @Override

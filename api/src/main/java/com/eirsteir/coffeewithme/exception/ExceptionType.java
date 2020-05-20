@@ -1,6 +1,8 @@
 package com.eirsteir.coffeewithme.exception;
 
-public enum ExceptionType {
+import com.eirsteir.coffeewithme.domain.MessageTemplateType;
+
+public enum ExceptionType implements MessageTemplateType {
     ENTITY_NOT_FOUND("not.found"),
     DUPLICATE_ENTITY("duplicate"),
     ENTITY_EXCEPTION("exception"),

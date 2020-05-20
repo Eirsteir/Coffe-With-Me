@@ -7,7 +7,7 @@ import org.springframework.stereotype.Component;
 public class CWMException {
 
     public static RuntimeException getException(EntityType entityType, ExceptionType exceptionType, String... args) {
-        String messageTemplate = MessageTemplateUtil.getExceptionMessageTemplate(entityType, exceptionType);
+        String messageTemplate = MessageTemplateUtil.getMessageTemplate(entityType, exceptionType);
         return getException(exceptionType, messageTemplate, args);
     }
 

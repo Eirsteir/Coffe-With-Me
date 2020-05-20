@@ -3,7 +3,6 @@ package com.eirsteir.coffeewithme.web.api.friendship;
 import com.eirsteir.coffeewithme.domain.friendship.FriendshipStatus;
 import com.eirsteir.coffeewithme.domain.notification.NotificationType;
 import com.eirsteir.coffeewithme.dto.FriendshipDto;
-import com.eirsteir.coffeewithme.dto.NotificationDto;
 import com.eirsteir.coffeewithme.dto.UserDto;
 import com.eirsteir.coffeewithme.security.UserPrincipalImpl;
 import com.eirsteir.coffeewithme.service.friendship.FriendshipService;
@@ -23,7 +22,6 @@ import org.springframework.web.server.ResponseStatusException;
 
 import javax.validation.Valid;
 import java.util.Collection;
-import java.util.Date;
 import java.util.List;
 
 @RestController
@@ -76,7 +74,9 @@ public class FriendshipController {
                                                                                    .addresseeId(toFriend)
                                                                                    .build());
 
-        notificationService.notify(friendshipDto.getAddresseeId(), NotificationType.FRIEND_REQUEST);
+        notificationService.notify(friendshipDto.getAddresseeId(),
+                                   principal.getUser().getId(),
+                                   NotificationType.REQUESTED);
 
         return friendshipDto;
     }
@@ -86,8 +86,14 @@ public class FriendshipController {
     FriendshipDto updateFriendship(@RequestBody @Valid FriendshipDto friendshipDto,
                                    @AuthenticationPrincipal UserPrincipalImpl principal) {
         validateFriendshipDto(friendshipDto, principal);
+        FriendshipDto updatedFriendshipDto = friendshipService.updateFriendship(friendshipDto);
 
-        return friendshipService.updateFriendship(friendshipDto);
+        if (updatedFriendshipDto.getStatus() == FriendshipStatus.ACCEPTED)
+            notificationService.notify(principal.getUser().getId(),
+                                       updatedFriendshipDto.getAddresseeId(),
+                                       NotificationType.ACCEPTED);
+
+        return  updatedFriendshipDto;
     }
 
     @DeleteMapping("/friends")
