@@ -11,7 +11,7 @@ public interface NotificationService {
 
     void notify(Long userId, Long fromUserId, NotificationType type);
 
-    NotificationDto updateNotification(NotificationDto notificationDto);
+    NotificationDto updateNotificationToRead(NotificationDto notificationDto);
 
     List<NotificationDto> findAllByUser(User user, Pageable pageable);
 

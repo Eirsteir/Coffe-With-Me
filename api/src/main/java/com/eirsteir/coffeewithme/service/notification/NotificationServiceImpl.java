@@ -4,6 +4,7 @@ import com.eirsteir.coffeewithme.domain.notification.Notification;
 import com.eirsteir.coffeewithme.domain.notification.NotificationType;
 import com.eirsteir.coffeewithme.domain.user.User;
 import com.eirsteir.coffeewithme.dto.NotificationDto;
+import com.eirsteir.coffeewithme.exception.CWMException;
 import com.eirsteir.coffeewithme.exception.EntityType;
 import com.eirsteir.coffeewithme.repository.NotificationRepository;
 import com.eirsteir.coffeewithme.service.user.UserService;
@@ -17,6 +18,9 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.stream.Collectors;
+
+import static com.eirsteir.coffeewithme.exception.EntityType.NOTIFICATION;
+import static com.eirsteir.coffeewithme.exception.ExceptionType.ENTITY_NOT_FOUND;
 
 @Slf4j
 @Service
@@ -74,8 +78,14 @@ public class NotificationServiceImpl implements NotificationService {
     }
 
     @Override
-    public NotificationDto updateNotification(NotificationDto notificationDto) {
-        return null;
+    public NotificationDto updateNotificationToRead(NotificationDto notificationDto) {
+        Notification notificationToUpdate = notificationRepository.findById(notificationDto.getId())
+                .orElseThrow(() -> CWMException.getException(NOTIFICATION,
+                                                             ENTITY_NOT_FOUND,
+                                                             notificationDto.getId().toString()));
+
+        return modelMapper.map(
+                notificationRepository.save(notificationToUpdate), NotificationDto.class);
     }
 
     @Override

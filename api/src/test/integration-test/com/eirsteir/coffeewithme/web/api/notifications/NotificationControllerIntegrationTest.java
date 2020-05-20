@@ -100,6 +100,10 @@ class NotificationControllerIntegrationTest {
     }
 
     @Test
-    void testUpdateNotificationWhenFound_thenReturnUpdatedNotification() {
+    void testUpdateNotificationToReadWhenFound_thenReturnUpdatedNotification() {
+    }
+
+    @Test
+    void testUpdateNotificationToReadWhenNotToCurrentUser_thenReturnHttp400() {
     }
 }

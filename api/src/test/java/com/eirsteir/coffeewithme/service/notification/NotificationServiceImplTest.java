@@ -5,6 +5,7 @@ import com.eirsteir.coffeewithme.domain.notification.Notification;
 import com.eirsteir.coffeewithme.domain.notification.NotificationType;
 import com.eirsteir.coffeewithme.domain.user.User;
 import com.eirsteir.coffeewithme.dto.NotificationDto;
+import com.eirsteir.coffeewithme.exception.CWMException;
 import com.eirsteir.coffeewithme.exception.EntityType;
 import com.eirsteir.coffeewithme.repository.NotificationRepository;
 import com.eirsteir.coffeewithme.service.user.UserService;
@@ -14,6 +15,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mockito;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -27,12 +29,14 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.mockito.Mockito.*;
 
 @Import({MessageTemplateUtilTestConfig.class, ModelMapperConfig.class})
-@TestPropertySource("classpath:notifications.properties")
+@TestPropertySource({"classpath:notifications.properties", "classpath:exception.properties"})
 @ExtendWith(SpringExtension.class)
 class NotificationServiceImplTest {
 
@@ -58,6 +62,9 @@ class NotificationServiceImplTest {
     @MockBean
     private SimpMessagingTemplate template;
 
+    @Autowired
+    private ModelMapper modelMapper;
+
     @TestConfiguration
     static class FriendshipServiceImplTestContextConfiguration {
 
@@ -81,6 +88,7 @@ class NotificationServiceImplTest {
                 .build();
 
         friendRequestNotification = Notification.builder()
+                .id(1L)
                 .message(MessageTemplateUtil.getMessageTemplate(EntityType.FRIENDSHIP, NotificationType.REQUESTED))
                 .to(toUser)
                 .build();
@@ -104,7 +112,7 @@ class NotificationServiceImplTest {
     }
 
     @Test
-    void testNotifyAcceptedRegistersAndNotifiesUser() {
+    void testNotifyAccepted_thenRegisterAndNotifyUser() {
         when(userService.findUserById(TO_USER_ID))
                 .thenReturn(toUser);
         when(userService.findUserById(FROM_USER_ID))
@@ -137,5 +145,33 @@ class NotificationServiceImplTest {
 
         assertThat(notifications).hasSize(2);
         assertThat(notifications.get(0).getToUserId()).isEqualTo(toUser.getId());
+    }
+
+    @Test
+    void testUpdateNotificationToReadWhenFound_thenSetIsReadToTrue() {
+        friendRequestNotification.setRead(true);
+
+        when(notificationRepository.findById(friendRequestNotification.getTo().getId()))
+                .thenReturn(Optional.ofNullable(friendRequestNotification));
+        when(notificationRepository.save(Mockito.any(Notification.class)))
+                .thenReturn(friendRequestNotification);
+
+        NotificationDto notificationDtoToUpdate = modelMapper.map(friendRequestNotification, NotificationDto.class);
+        NotificationDto updatedNotificationDto = notificationService.updateNotificationToRead(notificationDtoToUpdate);
+
+        assertThat(updatedNotificationDto.getIsRead()).isTrue();
+    }
+
+    @Test
+    void testUpdateNotificationToReadWhenNotFound_thenThrowEntityNotFoundException() {
+        when(notificationRepository.findById(friendRequestNotification.getId()))
+                .thenReturn(Optional.empty());
+
+        NotificationDto notificationDtoToUpdate = modelMapper.map(friendRequestNotification, NotificationDto.class);
+
+        assertThatExceptionOfType(CWMException.EntityNotFoundException.class)
+                .isThrownBy(() -> notificationService.updateNotificationToRead(notificationDtoToUpdate))
+                .withMessage("Requested notification with id - " +
+                                     friendRequestNotification.getId() + " does not exist");
     }
 }

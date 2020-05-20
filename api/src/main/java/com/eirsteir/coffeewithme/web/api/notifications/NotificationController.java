@@ -15,6 +15,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @Slf4j
@@ -42,10 +43,20 @@ public class NotificationController {
         return notifications;
     }
 
-    @PutMapping("/{id}")
+    @PutMapping
     @ApiOperation("Update notification")
-    NotificationDto updateNotificationToRead(@PathVariable Long id,
+    NotificationDto updateNotificationToRead(@RequestBody @Valid NotificationDto notificationDto,
                                        @AuthenticationPrincipal UserPrincipalImpl principal) {
-        return null;
+        validateNotificationUpdate(notificationDto, principal);
+
+        return notificationService.updateNotificationToRead(notificationDto);
+    }
+
+    private void validateNotificationUpdate(NotificationDto notificationDto, UserPrincipalImpl principal) {
+        if (notificationDto.getToUserId().equals(principal.getUser().getId()))
+            return;
+
+        throw new ResponseStatusException(
+                HttpStatus.BAD_REQUEST, "Notification does not belong to current user");
     }
 }
