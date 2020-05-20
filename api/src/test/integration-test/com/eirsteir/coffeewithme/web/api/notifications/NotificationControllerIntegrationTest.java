@@ -1,6 +1,7 @@
 package com.eirsteir.coffeewithme.web.api.notifications;
 
 import com.eirsteir.coffeewithme.CoffeeWithMeApplication;
+import com.eirsteir.coffeewithme.domain.notification.Notification;
 import com.eirsteir.coffeewithme.repository.NotificationRepository;
 import com.eirsteir.coffeewithme.testconfig.RedisTestConfig;
 import com.eirsteir.coffeewithme.testconfig.SetupTestDataLoader;
@@ -17,6 +18,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
+import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasSize;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -32,6 +34,8 @@ class NotificationControllerIntegrationTest {
 
     private static final String ADDRESSEE_EMAIL = "addressee@test.com";
 
+    private Notification newestNotification;
+
     @Autowired
     private NotificationRepository notificationRepository;
 
@@ -42,6 +46,9 @@ class NotificationControllerIntegrationTest {
 
     @BeforeEach
     void setUp() {
+
+        newestNotification = notificationRepository.findById(7L).get();
+
         mvc = MockMvcBuilders
                 .webAppContextSetup(context)
                 .apply(springSecurity())
@@ -59,6 +66,20 @@ class NotificationControllerIntegrationTest {
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", hasSize(2)));
+    }
+
+    @Test
+    @WithUserDetails(value = ADDRESSEE_EMAIL, userDetailsServiceBeanName = "userDetailsService")
+    void testGetNotificationsOnePerPageWhenNotifications_thenReturnNewestNotification() throws Exception {
+
+        mvc.perform(get("/notifications")
+                            .param("page", "0")
+                            .param("size", "1")
+                            .contentType(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$", hasSize(1)))
+                .andExpect(jsonPath("$[0].id", equalTo(newestNotification.getId().intValue())));
     }
 
     @Test
