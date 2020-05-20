@@ -343,8 +343,8 @@ class Navigation extends React.Component {
                     {renderNotificationsMenu}
 
                     <SockJsClient
-                    url={`http://localhost:8080/api/ws`} // auth token?
-                    topics={[`/user/${user.id}/queue/notify`]}
+                    url={`http://localhost:8080/api/ws`} 
+                    topics={[`/user/${user.id}/queue/notifications`]}
                     onMessage={(message) => this.handleMessage(message)} />
 
                 </div>

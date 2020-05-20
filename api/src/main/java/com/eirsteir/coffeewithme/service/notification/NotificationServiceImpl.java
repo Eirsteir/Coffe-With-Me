@@ -14,18 +14,11 @@ public class NotificationServiceImpl implements NotificationService {
     private SimpMessagingTemplate template;
 
     @Override
-    public void notify(NotificationDto notificationDto, String email) {
-        log.debug("Sending notification to user with email - {}: {}", email, notificationDto);
-        template.convertAndSendToUser(
-                email,
-                "/queue/notify",
-                notificationDto
-        );
-
+    public void notify(NotificationDto notificationDto) {
         log.debug("Sending notification to user with id - {}: {}", notificationDto.getUserId(), notificationDto);
         template.convertAndSendToUser(
                 notificationDto.getUserId().toString(),
-                "/queue/notify",
+                "/queue/notifications",
                 notificationDto
         );
     }

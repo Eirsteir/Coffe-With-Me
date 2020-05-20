@@ -9,18 +9,8 @@ import org.springframework.web.socket.config.annotation.StompEndpointRegistry;
 @EnableWebSocketMessageBroker
 public class WebSocketConfig extends AbstractWebSocketMessageBrokerConfigurer {
 
-//    @Override
-//    public void configureMessageBroker(MessageBrokerRegistry registry) {
-//        registry.enableSimpleBroker("/queue");
-//        registry.setApplicationDestinationPrefixes("/app");
-//    }
-
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry) {
-//        registry.addEndpoint("/notifications")
-//                .setAllowedOrigins("http://localhost:3000", "http://127.0.0.1:3000", "http://client:3000")
-//                .withSockJS();
-        registry.addEndpoint("/ws").setAllowedOrigins("*").withSockJS();
-
+        registry.addEndpoint("/ws").setAllowedOrigins("*").withSockJS(); // "http://client:3000"
     }
 }

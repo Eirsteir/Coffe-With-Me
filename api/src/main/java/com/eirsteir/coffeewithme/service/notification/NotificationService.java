@@ -4,7 +4,7 @@ import com.eirsteir.coffeewithme.dto.NotificationDto;
 
 public interface NotificationService {
 
-    void notify(NotificationDto notificationDto, String email);
+    void notify(NotificationDto notificationDto);
 
     NotificationDto registerNotification(NotificationDto notificationDto);
 
