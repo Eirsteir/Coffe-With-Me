@@ -8,7 +8,7 @@
     <version>0.0.1-SNAPSHOT</version>
 
     <name>Coffee With Me API</name>
-    <description>Grab a warm cup of coffee with your friends</description>
+    <description>API for the Coffee-With-Me application</description>
 
     <parent>
         <groupId>org.springframework.boot</groupId>
@@ -90,11 +90,6 @@
             <artifactId>springfox-swagger2</artifactId>
             <version>${spring.fox.version}</version>
         </dependency>
-        <dependency>
-            <groupId>io.springfox</groupId>
-            <artifactId>springfox-data-rest</artifactId>
-            <version>${spring.fox.version}</version>
-        </dependency>
 
         <!--    Test dependencies    -->
         <dependency>
@@ -128,7 +123,7 @@
         <maven.compiler.target>11</maven.compiler.target>
         <passay.version>1.0</passay.version>
         <modelmapper.version>2.3.0</modelmapper.version>
-        <spring.fox.version>3.0.0-SNAPSHOT</spring.fox.version>
+        <spring.fox.version>2.9.2</spring.fox.version>
         <rsql.parser.version>2.1.0</rsql.parser.version>
     </properties>
 
@@ -181,13 +176,5 @@
             </properties>
         </profile>
     </profiles>
-
-    <repositories>
-        <repository>
-            <id>jcenter-snapshots</id>
-            <name>jcenter</name>
-            <url>http://oss.jfrog.org/artifactory/oss-snapshot-local/</url>
-        </repository>
-    </repositories>
 
 </project>
