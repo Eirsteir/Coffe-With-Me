@@ -1,4 +1,4 @@
-package web.api.friendship;
+package com.eirsteir.coffeewithme.web.api.friendship;
 
 import com.eirsteir.coffeewithme.CoffeeWithMeApplication;
 import com.eirsteir.coffeewithme.domain.friendship.Friendship;

@@ -1,4 +1,4 @@
-package web.api.user;
+package com.eirsteir.coffeewithme.web.api.user;
 
 import com.eirsteir.coffeewithme.CoffeeWithMeApplication;
 import com.eirsteir.coffeewithme.repository.UserRepository;
