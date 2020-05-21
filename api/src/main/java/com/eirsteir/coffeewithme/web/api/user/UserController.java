@@ -8,10 +8,6 @@ import com.eirsteir.coffeewithme.security.UserPrincipalImpl;
 import com.eirsteir.coffeewithme.service.user.UserService;
 import cz.jirutka.rsql.parser.RSQLParser;
 import cz.jirutka.rsql.parser.ast.Node;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.SwaggerDefinition;
-import io.swagger.annotations.Tag;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.domain.Specification;
@@ -25,10 +21,6 @@ import java.util.List;
 @Slf4j
 @RestController
 @RequestMapping("/users")
-@Api(tags = {"Users"})
-@SwaggerDefinition(tags = {
-        @Tag(name = "Users", description = "User management operations for this application")
-})
 public class UserController {
 
     @Autowired
@@ -36,15 +28,13 @@ public class UserController {
 
     @GetMapping("/{id}")
     @ResponseBody
-    @ApiOperation("Get user details with given id")
     UserDto user(@PathVariable Long id, @AuthenticationPrincipal UserPrincipalImpl principal) {
 
         return userService.findUserByIdWithIsFriend(id, principal.getUser());
     }
 
     @GetMapping
-    @ApiOperation("Search for users")
-    List<UserDto> search(@RequestParam String search) { // TODO: 15.05.2020 lowercase all or some queries?
+    List<UserDto> search(@RequestParam String search) {
         Node rootNode = new RSQLParser().parse(search);
         Specification<User> spec = rootNode.accept(new RqslVisitorImpl<>());
         List<UserDto> results = userService.searchUsers(spec);

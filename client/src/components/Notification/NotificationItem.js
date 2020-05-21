@@ -1,4 +1,6 @@
 import React from 'react';
+import moment from 'moment';
+
 import { makeStyles } from '@material-ui/core/styles';
 import ListItem from '@material-ui/core/ListItem';
 import Divider from '@material-ui/core/Divider';
@@ -12,17 +14,19 @@ const useStyles = makeStyles((theme) => ({
     display: 'flex',
     alignItems: 'center',
     justifyItems: "space-between"
-  },
+  }
 }));
 
 export default function NotificationItem({notification}) {
   const classes = useStyles();
+  const backgroundColor = notification.isRead ? "none" : "#d2d2d2";
+  const timeSince = moment(notification.createdDateTime).from(new Date());
 
   console.log(notification);
-  
+
   return (
       <div>
-        <ListItem alignItems="flex-start">
+        <ListItem alignItems="flex-start" style={{ backgroundColor: backgroundColor }}> 
             <ListItemAvatar>
             <Avatar alt="Remy Sharp" src="/static/images/avatar/1.jpg" />
             </ListItemAvatar>
@@ -32,7 +36,7 @@ export default function NotificationItem({notification}) {
                 <React.Fragment>
                     <div className={classes.item}>
                         <PersonAddIcon fontSize="small"/>
-                        <p>{notification.createdDateTime}</p>
+                        <p>{timeSince}</p>
                     </div>
                 </React.Fragment>
             }

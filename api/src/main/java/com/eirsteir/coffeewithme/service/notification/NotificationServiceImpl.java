@@ -13,6 +13,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
+import org.springframework.hateoas.server.EntityLinks;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 
@@ -30,6 +31,9 @@ public class NotificationServiceImpl implements NotificationService {
     private SimpMessagingTemplate template;
 
     @Autowired
+    private EntityLinks entityLinks;
+
+    @Autowired
     private ModelMapper modelMapper;
 
     @Autowired
@@ -44,8 +48,9 @@ public class NotificationServiceImpl implements NotificationService {
         User fromUser = userService.findUserById(fromUserId);
         Notification notificationToSend = registerNotification(toUser, fromUser, type);
 
-        log.debug("[x] Sending notification to user with id - {}: {}", toUserId, notificationToSend);
         NotificationDto notificationDto = modelMapper.map(notificationToSend, NotificationDto.class);
+
+        log.debug("[x] Sending notification to user with id - {}: {}", toUserId, notificationDto);
 
         sendToUser(notificationDto);
     }
@@ -56,6 +61,11 @@ public class NotificationServiceImpl implements NotificationService {
                 "/queue/notifications",
                 notificationDto
         );
+    }
+
+    private String getPath(User user) {
+        return this.entityLinks.linkForItemResource(user.getClass(),
+                                                      user.getId()).toUri().getPath();
     }
 
     private Notification registerNotification(User toUser, User fromUser, NotificationType type) {

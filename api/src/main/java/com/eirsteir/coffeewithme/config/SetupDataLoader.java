@@ -2,11 +2,12 @@ package com.eirsteir.coffeewithme.config;
 
 
 import com.eirsteir.coffeewithme.domain.friendship.FriendshipStatus;
+import com.eirsteir.coffeewithme.domain.notification.Notification;
 import com.eirsteir.coffeewithme.domain.role.Role;
 import com.eirsteir.coffeewithme.domain.role.RoleType;
 import com.eirsteir.coffeewithme.domain.user.User;
 import com.eirsteir.coffeewithme.domain.user.UserType;
-import com.eirsteir.coffeewithme.repository.FriendshipRepository;
+import com.eirsteir.coffeewithme.repository.NotificationRepository;
 import com.eirsteir.coffeewithme.repository.RoleRepository;
 import com.eirsteir.coffeewithme.repository.UserRepository;
 import lombok.extern.slf4j.Slf4j;
@@ -33,7 +34,7 @@ public class SetupDataLoader implements ApplicationListener<ContextRefreshedEven
   private RoleRepository roleRepository;
 
   @Autowired
-  private FriendshipRepository friendshipRepository;
+  private NotificationRepository notificationRepository;
 
   @Autowired
   private PasswordEncoder passwordEncoder;
@@ -87,7 +88,14 @@ public class SetupDataLoader implements ApplicationListener<ContextRefreshedEven
             .build();
 
     basicUser.addFriend(adminUser, FriendshipStatus.ACCEPTED);
+    basicUser.addFriend(auditUser, FriendshipStatus.REQUESTED);
     log.info("[x] Preloading " + userRepository.save(basicUser));
+
+    Notification notification = Notification.builder()
+            .to(basicUser)
+            .message("New friend request from Audit")
+            .build();
+    log.info("[x] Preloading " + notificationRepository.save(notification));
 
     alreadySetup = true;
   }

@@ -69,7 +69,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
       "/resources/static/**", "/css/**", "/js/**", "/img/**", "/fonts/**",
       "/images/**", "/scss/**", "/vendor/**", "/favicon.ico", "/auth/**", "/favicon.png",
       "/v2/api-docs", "/configuration/ui", "/configuration/security", "/swagger-ui.html",
-      "/webjars/**", "/swagger-resources/**", "/swagge‌​r-ui.html", "/actuator",
+      "/webjars/**", "/swagger-resources/**", "/api/swagge‌​r-ui.html/**", "/actuator",
       "/actuator/**", "/*.bundle.*");
   }
 

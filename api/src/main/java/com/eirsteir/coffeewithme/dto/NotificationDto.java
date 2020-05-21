@@ -5,6 +5,7 @@ import lombok.*;
 import java.util.Date;
 
 @Getter
+@Setter
 @ToString
 @Builder
 @NoArgsConstructor
@@ -16,5 +17,6 @@ public class NotificationDto {
     private Date createdDateTime;
     private Boolean isRead;
     private Long toUserId;
+    private String path;
 
 }

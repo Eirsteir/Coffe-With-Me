@@ -9,10 +9,6 @@ import com.eirsteir.coffeewithme.service.friendship.FriendshipService;
 import com.eirsteir.coffeewithme.service.notification.NotificationService;
 import com.eirsteir.coffeewithme.service.user.UserService;
 import com.eirsteir.coffeewithme.web.request.FriendRequest;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.SwaggerDefinition;
-import io.swagger.annotations.Tag;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -25,10 +21,6 @@ import java.util.Collection;
 import java.util.List;
 
 @RestController
-@Api(tags = {"Friends"})
-@SwaggerDefinition(tags = {
-        @Tag(name = "Friends", description = "Friendship management operations for this application")
-})
 public class FriendshipController {
 
     @Autowired
@@ -45,7 +37,6 @@ public class FriendshipController {
 
     @GetMapping("/{id}/friends")
     @ResponseBody
-    @ApiOperation("Find friends of user with given id")
     Collection<UserDto> getFriends(@PathVariable Long id) {
         UserDto userDto = modelMapper.map(userService.findUserById(id), UserDto.class);
         List<UserDto> friends = friendshipService.getFriends(userDto);
@@ -59,7 +50,6 @@ public class FriendshipController {
 
     @PostMapping("/friends")
     @ResponseStatus(HttpStatus.CREATED)
-    @ApiOperation("Send a new friend request")
     FriendshipDto addFriend(@RequestParam("to_friend") Long toFriend,
                                 @AuthenticationPrincipal UserPrincipalImpl principal) {
         if (principal.getUser().getId().equals(toFriend))
@@ -80,7 +70,6 @@ public class FriendshipController {
     }
 
     @PutMapping("/friends")
-    @ApiOperation("Update friendship")
     FriendshipDto updateFriendship(@RequestBody @Valid FriendshipDto friendshipDto,
                                    @AuthenticationPrincipal UserPrincipalImpl principal) {
         validateFriendshipDto(friendshipDto, principal);
@@ -95,14 +84,12 @@ public class FriendshipController {
     }
 
     @DeleteMapping("/friends")
-    @ApiOperation("Delete friendship")
     void deleteFriendship(@RequestBody @Valid FriendshipDto friendshipDto,
                                    @AuthenticationPrincipal UserPrincipalImpl principal) {
         throw new ResponseStatusException(HttpStatus.NOT_IMPLEMENTED);
     }
 
     @GetMapping("/friends/requests")
-    @ApiOperation("Get all friend requests of the currently logged in user")
     List<UserDto> getFriendRequests(@AuthenticationPrincipal UserPrincipalImpl principal) {
         UserDto userDto = modelMapper.map(principal.getUser(), UserDto.class);
         List<UserDto> friendRequests = friendshipService.getFriendsOfWithStatus(userDto,
