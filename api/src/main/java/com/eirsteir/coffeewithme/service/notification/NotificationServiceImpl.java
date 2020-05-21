@@ -74,9 +74,9 @@ public class NotificationServiceImpl implements NotificationService {
         String messageTemplate = MessageTemplateUtil.getMessageTemplate(EntityType.FRIENDSHIP, type);
 
         if (type == NotificationType.ACCEPTED)
-            return MessageTemplateUtil.format(messageTemplate, from.getName());
+            return MessageTemplateUtil.format(messageTemplate, to.getName());
 
-        return MessageTemplateUtil.format(messageTemplate, to.getName());
+        return MessageTemplateUtil.format(messageTemplate, from.getName());
     }
 
     @Override

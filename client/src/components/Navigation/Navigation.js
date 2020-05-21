@@ -26,6 +26,7 @@ import createMuiTheme from "@material-ui/core/styles/createMuiTheme";
 
 import SearchBox from "../../components/Search/SearchBox";
 import { getNotifications } from "../../services/notifications.service";
+import NotificationList from "../Notification/NotificationList";
 
 const theme = createMuiTheme({
     spacing: 4
@@ -89,7 +90,7 @@ class Navigation extends React.Component {
 
     componentDidMount() {
         getNotifications()
-            .then(notifications => {                
+            .then(notifications => {                               
                 this.setState({ notifications });
             })
             .catch(console.log);    
@@ -209,8 +210,14 @@ class Navigation extends React.Component {
                 open={isMenuOpen}
                 onClose={handleMenuClose}
             >
-                <p>So many friend requests...</p>
-                <MenuItem onClick={() => this.handleClick("/notifications")}>View more</MenuItem>
+                <NotificationList notifications={this.state.notifications} />
+                <MenuItem 
+                    onClick={() => this.handleClick("/notifications")}
+                    style={{
+                        display: 'flex',
+                        justifyContent: 'center'
+                    }}
+                >View more</MenuItem>
             </Menu>
         );
 
@@ -284,6 +291,7 @@ class Navigation extends React.Component {
                                     {sideList}
                                 </div>
                             </SwipeableDrawer>
+                            
                             {/*<Typography*/}
                             {/*    className={classes.title}*/}
                             {/*    variant="h6"*/}

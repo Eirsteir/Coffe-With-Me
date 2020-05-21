@@ -62,11 +62,9 @@ public class FriendshipController {
     @ApiOperation("Send a new friend request")
     FriendshipDto addFriend(@RequestParam("to_friend") Long toFriend,
                                 @AuthenticationPrincipal UserPrincipalImpl principal) {
-
         if (principal.getUser().getId().equals(toFriend))
             throw new ResponseStatusException(
                     HttpStatus.BAD_REQUEST, "Cannot send friend requests to yourself");
-
 
         FriendshipDto friendshipDto = friendshipService.registerFriendship(FriendRequest.builder()
                                                                                    .requesterId(principal.getUser()
