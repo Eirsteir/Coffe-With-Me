@@ -23,7 +23,7 @@ export default function NotificationItem({notification}) {
   const timeSince = moment(notification.createdDateTime).from(new Date());
 
   console.log(notification);
-
+  
   return (
       <div>
         <ListItem alignItems="flex-start" style={{ backgroundColor: backgroundColor }}> 
