@@ -31,28 +31,31 @@ export default function NotificationItem({notification}) {
 
   return (
       <div>
-        <ListItem alignItems="flex-start" style={{ backgroundColor: backgroundColor }}> 
-          <Link to={path} 
-                style={{
-                  textDecoration: "none"
-              }}
-            >
-            <ListItemAvatar>
-            <Avatar alt="Remy Sharp" src="/static/images/avatar/1.jpg" />
-            </ListItemAvatar>
-            <ListItemText
-            primary={message}
-            secondary={
-                <React.Fragment>
-                    <div className={classes.item}>
-                        <PersonAddIcon fontSize="small"/>
-                        <p>{timeSince}</p>
-                    </div>
-                </React.Fragment>
-            }
-            />
-            </Link>
-        </ListItem>
+        <Link to={path} 
+            style={{
+              textDecoration: "none",
+              color: "#000",
+          }}
+        >
+          <ListItem alignItems="flex-start" style={{ backgroundColor: backgroundColor }}> 
+
+              <ListItemAvatar>
+              <Avatar alt="Remy Sharp" src="/static/images/avatar/1.jpg" />
+              </ListItemAvatar>
+              <ListItemText
+              primary={message}
+              secondary={
+                  <React.Fragment>
+                      <div className={classes.item}>
+                          <PersonAddIcon fontSize="small"/>
+                          <p>{timeSince}</p>
+                      </div>
+                  </React.Fragment>
+              }
+              />
+              
+          </ListItem>
+        </Link>
         <Divider variant="inset" component="li" />
     </div>
   );
