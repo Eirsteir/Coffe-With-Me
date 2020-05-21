@@ -2,6 +2,7 @@ package com.eirsteir.coffeewithme.testconfig;
 
 import com.eirsteir.coffeewithme.domain.friendship.FriendshipStatus;
 import com.eirsteir.coffeewithme.domain.notification.Notification;
+import com.eirsteir.coffeewithme.domain.notification.NotificationType;
 import com.eirsteir.coffeewithme.domain.user.User;
 import com.eirsteir.coffeewithme.repository.NotificationRepository;
 import com.eirsteir.coffeewithme.repository.UserRepository;
@@ -83,14 +84,16 @@ public class SetupTestDataLoader implements ApplicationListener<ContextRefreshed
         log.debug("[x] Preloading {}", userRepository.save(requester));
 
         Notification notification = Notification.builder()
-                .message("New friend request from " + requester.getName())
-                .to(addressee)
+                .user(addressee)
+                .type(NotificationType.FRIENDSHIP_ACCEPTED)
+                .requestedByViewer(false)
                 .build();
         log.debug("[x] Preloading {}", notificationRepository.save(notification));
 
         notification = Notification.builder()
-                .message("Friend request to " + otherUser.getName() + " was accepted")
-                .to(addressee)
+                .user(otherUser)
+                .type(NotificationType.FRIENDSHIP_REQUESTED)
+                .requestedByViewer(false)
                 .build();
         log.debug("[x] Preloading {}", notificationRepository.save(notification));
 

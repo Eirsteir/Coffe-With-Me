@@ -2,6 +2,7 @@ package com.eirsteir.coffeewithme.domain.notification;
 
 import com.eirsteir.coffeewithme.domain.user.User;
 import lombok.*;
+import lombok.experimental.Accessors;
 import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.*;
@@ -11,6 +12,7 @@ import java.util.Date;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@Accessors(chain = true)
 @Entity
 public class Notification {
 
@@ -18,15 +20,17 @@ public class Notification {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    private String message;
-
     @CreationTimestamp
-    private Date createdDateTime;
+    private Date timestamp;
+
+    private NotificationType type; // TODO: 21.05.2020 Add converter
 
     @Builder.Default
-    private boolean isRead = false;
+    private boolean seen = false;
 
     @ManyToOne
-    private User to;
+    private User user;
+
+    private Boolean requestedByViewer;
 
 }

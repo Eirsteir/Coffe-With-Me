@@ -63,8 +63,8 @@ public class FriendshipController {
                                                                                    .build());
 
         notificationService.notify(friendshipDto.getAddresseeId(),
-                                   principal.getUser().getId(),
-                                   NotificationType.REQUESTED);
+                                   principal.getUser(),
+                                   NotificationType.FRIENDSHIP_REQUESTED);
 
         return friendshipDto;
     }
@@ -77,8 +77,8 @@ public class FriendshipController {
 
         if (updatedFriendshipDto.getStatus() == FriendshipStatus.ACCEPTED)
             notificationService.notify(principal.getUser().getId(),
-                                       updatedFriendshipDto.getAddresseeId(),
-                                       NotificationType.ACCEPTED);
+                                       principal.getUser(),
+                                       NotificationType.FRIENDSHIP_ACCEPTED);
 
         return  updatedFriendshipDto;
     }

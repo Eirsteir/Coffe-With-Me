@@ -3,6 +3,7 @@ package com.eirsteir.coffeewithme.config;
 
 import com.eirsteir.coffeewithme.domain.friendship.FriendshipStatus;
 import com.eirsteir.coffeewithme.domain.notification.Notification;
+import com.eirsteir.coffeewithme.domain.notification.NotificationType;
 import com.eirsteir.coffeewithme.domain.role.Role;
 import com.eirsteir.coffeewithme.domain.role.RoleType;
 import com.eirsteir.coffeewithme.domain.user.User;
@@ -92,8 +93,9 @@ public class SetupDataLoader implements ApplicationListener<ContextRefreshedEven
     log.info("[x] Preloading " + userRepository.save(basicUser));
 
     Notification notification = Notification.builder()
-            .to(basicUser)
-            .message("New friend request from Audit")
+            .user(basicUser)
+            .type(NotificationType.FRIENDSHIP_REQUESTED)
+            .requestedByViewer(false)
             .build();
     log.info("[x] Preloading " + notificationRepository.save(notification));
 

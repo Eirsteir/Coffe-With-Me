@@ -6,11 +6,9 @@ import com.eirsteir.coffeewithme.domain.notification.NotificationType;
 import com.eirsteir.coffeewithme.domain.user.User;
 import com.eirsteir.coffeewithme.dto.NotificationDto;
 import com.eirsteir.coffeewithme.exception.CWMException;
-import com.eirsteir.coffeewithme.exception.EntityType;
 import com.eirsteir.coffeewithme.repository.NotificationRepository;
 import com.eirsteir.coffeewithme.service.user.UserService;
 import com.eirsteir.coffeewithme.testconfig.MessageTemplateUtilTestConfig;
-import com.eirsteir.coffeewithme.util.MessageTemplateUtil;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -36,19 +34,19 @@ import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.mockito.Mockito.*;
 
 @Import({MessageTemplateUtilTestConfig.class, ModelMapperConfig.class})
-@TestPropertySource({"classpath:notifications.properties", "classpath:exception.properties"})
+@TestPropertySource("classpath:exception.properties")
 @ExtendWith(SpringExtension.class)
 class NotificationServiceImplTest {
 
     private final long TO_USER_ID = 1L;
 
-    private final long FROM_USER_ID = 2L;
+    private final long CURRENT_USER_ID = 2L;
 
     private Notification friendRequestNotification;
 
     private User toUser;
 
-    private User fromUser;
+    private User currentUser;
 
     @Autowired
     private NotificationService notificationService;
@@ -82,15 +80,16 @@ class NotificationServiceImplTest {
                 .name("To user")
                 .build();
 
-        fromUser = User.builder()
-                .id(FROM_USER_ID)
+        currentUser = User.builder()
+                .id(CURRENT_USER_ID)
                 .name("From user")
                 .build();
 
         friendRequestNotification = Notification.builder()
                 .id(1L)
-                .message(MessageTemplateUtil.getMessageTemplate(EntityType.FRIENDSHIP, NotificationType.REQUESTED))
-                .to(toUser)
+                .type(NotificationType.FRIENDSHIP_REQUESTED)
+                .user(toUser)
+                .requestedByViewer(false)
                 .build();
     }
 
@@ -98,67 +97,72 @@ class NotificationServiceImplTest {
     void testNotifyRequestedRegistersAndNotifiesUser() {
         when(userService.findUserById(TO_USER_ID))
                 .thenReturn(toUser);
-        when(userService.findUserById(FROM_USER_ID))
-                .thenReturn(fromUser);
+        when(userService.findUserById(CURRENT_USER_ID))
+                .thenReturn(currentUser);
         when(notificationRepository.save(Mockito.any(Notification.class)))
                 .thenReturn(friendRequestNotification);
 
-        notificationService.notify(TO_USER_ID, FROM_USER_ID, NotificationType.REQUESTED);
+        notificationService.notify(TO_USER_ID, currentUser, NotificationType.FRIENDSHIP_REQUESTED);
+
+        NotificationDto expectedNotificationDto = modelMapper.map(friendRequestNotification, NotificationDto.class);
 
         verify(template, times(1))
-                .convertAndSendToUser(friendRequestNotification.getTo().getId().toString(),
+                .convertAndSendToUser(friendRequestNotification.getUser().getId().toString(),
                                       "/queue/notifications",
-                                      friendRequestNotification);
+                                      expectedNotificationDto);
     }
 
     @Test
     void testNotifyAccepted_thenRegisterAndNotifyUser() {
         when(userService.findUserById(TO_USER_ID))
                 .thenReturn(toUser);
-        when(userService.findUserById(FROM_USER_ID))
-                .thenReturn(fromUser);
+        when(userService.findUserById(CURRENT_USER_ID))
+                .thenReturn(currentUser);
+
+        friendRequestNotification.setType(NotificationType.FRIENDSHIP_ACCEPTED)
+                .setRequestedByViewer(true);
         when(notificationRepository.save(Mockito.any(Notification.class)))
                 .thenReturn(friendRequestNotification);
+        NotificationDto expectedNotificationDto = modelMapper.map(friendRequestNotification, NotificationDto.class);
 
-        notificationService.notify(FROM_USER_ID, TO_USER_ID, NotificationType.ACCEPTED);
+        notificationService.notify(CURRENT_USER_ID, currentUser, NotificationType.FRIENDSHIP_ACCEPTED);
 
         verify(template, times(1))
-                .convertAndSendToUser(friendRequestNotification.getTo().getId().toString(),
+                .convertAndSendToUser(friendRequestNotification.getUser().getId().toString(),
                                       "/queue/notifications",
-                                      friendRequestNotification);
+                                      expectedNotificationDto);
     }
 
     @Test
-    void testFindAllByUserWhenUserHasNotifications_thenReturnNotificationDtos() {
+    void testFindAllByUserWhenUserHasNotifications_thenReturnListOfNotificationDto() {
         Pageable firstPage = PageRequest.of(0, 2);
-        when(notificationRepository.findAllByTo_IdOrderByCreatedDateTime(toUser.getId(), firstPage))
+        when(notificationRepository.findAllByUserOrderByTimestamp(toUser, firstPage))
                 .thenReturn(Arrays.asList(
                         Notification.builder()
-                                .to(toUser)
+                                .user(toUser)
                                 .build(),
                         Notification.builder()
-                                .to(toUser)
+                                .user(toUser)
                                 .build()
                 ));
 
         List<NotificationDto> notifications = notificationService.findAllByUser(toUser, firstPage);
 
         assertThat(notifications).hasSize(2);
-        assertThat(notifications.get(0).getToUserId()).isEqualTo(toUser.getId());
+        assertThat(notifications.get(0).getUser().getId()).isEqualTo(toUser.getId());
     }
 
     @Test
     void testUpdateNotificationToReadWhenFound_thenSetIsReadToTrue() {
-        friendRequestNotification.setRead(true);
+        friendRequestNotification.setSeen(true);
 
         Notification notification = Notification.builder()
                 .id(friendRequestNotification.getId())
-                .to(friendRequestNotification.getTo())
-                .message(friendRequestNotification.getMessage())
-                .isRead(false)
+                .user(friendRequestNotification.getUser())
+                .seen(false)
                 .build();
 
-        when(notificationRepository.findById(friendRequestNotification.getTo().getId()))
+        when(notificationRepository.findById(friendRequestNotification.getUser().getId()))
                 .thenReturn(Optional.ofNullable(notification));
         when(notificationRepository.save(Mockito.any(Notification.class)))
                 .thenReturn(friendRequestNotification);
@@ -166,7 +170,7 @@ class NotificationServiceImplTest {
         NotificationDto notificationDtoToUpdate = modelMapper.map(notification, NotificationDto.class);
         NotificationDto updatedNotificationDto = notificationService.updateNotificationToRead(notificationDtoToUpdate);
 
-        assertThat(updatedNotificationDto.getIsRead()).isTrue();
+        assertThat(updatedNotificationDto.getSeen()).isTrue();
     }
 
     @Test

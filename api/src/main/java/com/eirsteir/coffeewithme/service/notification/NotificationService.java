@@ -9,12 +9,10 @@ import java.util.List;
 
 public interface NotificationService {
 
-    void notify(Long userId, Long fromUserId, NotificationType type);
+    void notify(Long userId, User currentUser, NotificationType type);
 
     NotificationDto updateNotificationToRead(NotificationDto notificationDto);
 
     List<NotificationDto> findAllByUser(User user, Pageable pageable);
-
-    NotificationDto findByUserIdAndId(Long userId, Long id);
 
 }

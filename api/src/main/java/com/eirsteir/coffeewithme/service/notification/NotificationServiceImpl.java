@@ -5,15 +5,12 @@ import com.eirsteir.coffeewithme.domain.notification.NotificationType;
 import com.eirsteir.coffeewithme.domain.user.User;
 import com.eirsteir.coffeewithme.dto.NotificationDto;
 import com.eirsteir.coffeewithme.exception.CWMException;
-import com.eirsteir.coffeewithme.exception.EntityType;
 import com.eirsteir.coffeewithme.repository.NotificationRepository;
 import com.eirsteir.coffeewithme.service.user.UserService;
-import com.eirsteir.coffeewithme.util.MessageTemplateUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
-import org.springframework.hateoas.server.EntityLinks;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 
@@ -31,9 +28,6 @@ public class NotificationServiceImpl implements NotificationService {
     private SimpMessagingTemplate template;
 
     @Autowired
-    private EntityLinks entityLinks;
-
-    @Autowired
     private ModelMapper modelMapper;
 
     @Autowired
@@ -43,13 +37,11 @@ public class NotificationServiceImpl implements NotificationService {
     private NotificationRepository notificationRepository;
 
     @Override
-    public void notify(Long toUserId, Long fromUserId, NotificationType type) {
+    public void notify(Long toUserId, User currentUser, NotificationType type) {
         User toUser = userService.findUserById(toUserId);
-        User fromUser = userService.findUserById(fromUserId);
-        Notification notificationToSend = registerNotification(toUser, fromUser, type);
+        Notification notificationToSend = registerNotification(toUser, currentUser, type);
 
         NotificationDto notificationDto = modelMapper.map(notificationToSend, NotificationDto.class);
-
         log.debug("[x] Sending notification to user with id - {}: {}", toUserId, notificationDto);
 
         sendToUser(notificationDto);
@@ -57,36 +49,25 @@ public class NotificationServiceImpl implements NotificationService {
 
     private void sendToUser(NotificationDto notificationDto) {
         template.convertAndSendToUser(
-                notificationDto.getToUserId().toString(),
+                notificationDto.getUser().getId().toString(),
                 "/queue/notifications",
                 notificationDto
         );
     }
 
-    private String getPath(User user) {
-        return this.entityLinks.linkForItemResource(user.getClass(),
-                                                      user.getId()).toUri().getPath();
-    }
-
-    private Notification registerNotification(User toUser, User fromUser, NotificationType type) {
-        String message = getMessage(fromUser, toUser, type);
+    private Notification registerNotification(User toUser, User currentUser, NotificationType type) {
+        boolean requestedByViewer = toUser.equals(currentUser);
 
         Notification notification = Notification.builder()
-                .message(message)
-                .to(toUser)
+                .user(toUser)
+                .type(type)
+                .requestedByViewer(requestedByViewer)
                 .build();
 
-        log.debug("[x] Registering notification: {}", notification);
-        return notificationRepository.save(notification);
-    }
+        Notification registeredNotification = notificationRepository.save(notification);
+        log.debug("[x] Registered notification: {}", registeredNotification);
 
-    private String getMessage(User from, User to, NotificationType type) {
-        String messageTemplate = MessageTemplateUtil.getMessageTemplate(EntityType.FRIENDSHIP, type);
-
-        if (type == NotificationType.ACCEPTED)
-            return MessageTemplateUtil.format(messageTemplate, to.getName());
-
-        return MessageTemplateUtil.format(messageTemplate, from.getName());
+        return registeredNotification;
     }
 
     @Override
@@ -96,7 +77,8 @@ public class NotificationServiceImpl implements NotificationService {
                                                              ENTITY_NOT_FOUND,
                                                              notificationDto.getId().toString()));
 
-        notificationToUpdate.setRead(true);
+        notificationToUpdate.setSeen(true);
+        log.debug("[x] Updating notification: {}", notificationToUpdate);
 
         return modelMapper.map(
                 notificationRepository.save(notificationToUpdate), NotificationDto.class);
@@ -104,15 +86,10 @@ public class NotificationServiceImpl implements NotificationService {
 
     @Override
     public List<NotificationDto> findAllByUser(User user, Pageable pageable) {
-        return notificationRepository.findAllByTo_IdOrderByCreatedDateTime(user.getId(), pageable)
+        return notificationRepository.findAllByUserOrderByTimestamp(user, pageable)
                 .stream()
                 .map(notification -> modelMapper.map(notification, NotificationDto.class))
                 .collect(Collectors.toList());
-    }
-
-    @Override
-    public NotificationDto findByUserIdAndId(Long userId, Long id) {
-        return null;
     }
 
 }

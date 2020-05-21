@@ -1,6 +1,5 @@
 package com.eirsteir.coffeewithme.exception;
 
-import com.eirsteir.coffeewithme.util.MessageTemplateUtil;
 import org.springframework.stereotype.Component;
 
 @Component

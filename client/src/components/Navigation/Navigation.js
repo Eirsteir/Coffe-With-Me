@@ -25,7 +25,8 @@ import MoreIcon from '@material-ui/icons/MoreVert';
 import createMuiTheme from "@material-ui/core/styles/createMuiTheme";
 
 import SearchBox from "../../components/Search/SearchBox";
-import { getNotifications } from "../../services/notifications.service";
+import NotificationService from "../../services/NotificationService";
+import AuthService from "../../services/AuthService";
 import NotificationList from "../Notification/NotificationList";
 
 const theme = createMuiTheme({
@@ -89,7 +90,8 @@ class Navigation extends React.Component {
     }
 
     componentDidMount() {
-        getNotifications()
+        // todo: load count and fetch requests on notification list open
+        NotificationService.getNotifications()
             .then(notifications => {                               
                 this.setState({ notifications });
             })
@@ -107,23 +109,7 @@ class Navigation extends React.Component {
     };
 
     handleLogout = () => {
-        const token = window.localStorage.getItem("auth");
-        this.props.toggleAuthenticatedState();
-    
-        fetch(`/api/logout`, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                Authorization: token
-            }
-        })
-            .then(resp => {
-                if (resp.status === 204 || resp.status === 304) {
-                    window.localStorage.removeItem("auth");
-                    return this.props.history.push("/");
-                }
-            })
-            .catch(console.log);
+        AuthService.logout(this.props.history.push, "/")
     };
 
     onMessageRecieve = (message, topic) => {

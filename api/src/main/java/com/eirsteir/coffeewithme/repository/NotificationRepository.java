@@ -9,10 +9,6 @@ import java.util.List;
 
 public interface NotificationRepository extends JpaRepository<Notification, Long> {
 
-    Notification findByTo(User toUser);
-
-    List<Notification> findAllByTo_IdOrderByCreatedDateTime(Long toUserId, Pageable pageable);
-
-    Notification findByToAndId(User toUser, Long id);
+    List<Notification> findAllByUserOrderByTimestamp(User user, Pageable pageable);
 
 }

@@ -1,6 +1,8 @@
 package com.eirsteir.coffeewithme.dto;
 
+import com.eirsteir.coffeewithme.domain.notification.NotificationType;
 import lombok.*;
+import lombok.experimental.Accessors;
 
 import java.util.Date;
 
@@ -10,13 +12,15 @@ import java.util.Date;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@EqualsAndHashCode
+@Accessors(chain = true)
 public class NotificationDto {
 
     private Long id;
-    private String message;
-    private Date createdDateTime;
-    private Boolean isRead;
-    private Long toUserId;
-    private String path;
+    private Date timestamp;
+    private UserDto user;
+    private Boolean seen;
+    private NotificationType type;
+    private Boolean requestedByViewer;
 
 }

@@ -10,6 +10,7 @@ import AddFriendSelect from "../../components/Friends/AddFriendButton";
 import { handleResponse } from "../../services/user.service";
 import { addFriend } from "../../services/friendship.service";
 import { toggleLoading } from "../../helpers/loading";
+import AuthService from "../../services/AuthService";
 
 
 class ProfilePage extends React.Component {
@@ -77,10 +78,9 @@ class ProfilePage extends React.Component {
 
     render() {
         const { userId } = this.props;
-        const { isAuthenticated } = this.props.location.state;
         const { user, friendRequestSent } = this.state;        
-
-        if (!isAuthenticated) {
+        
+        if (!AuthService.isAuthenticated()) {
             return <Redirect to="/" />;
         } else if (user.id === userId) {
             return <Redirect to="/me" />;

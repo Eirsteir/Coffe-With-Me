@@ -43,7 +43,7 @@ public class NotificationController {
     }
 
     private void validateNotificationUpdate(NotificationDto notificationDto, UserPrincipalImpl principal) {
-        if (notificationDto.getToUserId().equals(principal.getUser().getId()))
+        if (notificationDto.getUser().getId().equals(principal.getUser().getId()))
             return;
 
         throw new ResponseStatusException(

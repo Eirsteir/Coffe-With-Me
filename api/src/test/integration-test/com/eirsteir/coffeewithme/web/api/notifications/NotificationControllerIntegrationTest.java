@@ -5,6 +5,7 @@ import com.eirsteir.coffeewithme.config.ModelMapperConfig;
 import com.eirsteir.coffeewithme.domain.notification.Notification;
 import com.eirsteir.coffeewithme.domain.user.User;
 import com.eirsteir.coffeewithme.dto.NotificationDto;
+import com.eirsteir.coffeewithme.dto.UserDto;
 import com.eirsteir.coffeewithme.repository.NotificationRepository;
 import com.eirsteir.coffeewithme.repository.UserRepository;
 import com.eirsteir.coffeewithme.testconfig.RedisTestConfig;
@@ -77,7 +78,7 @@ class NotificationControllerIntegrationTest {
                             .param("size", "2")
                             .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$", hasSize(2)));
+                .andExpect(jsonPath("$", hasSize(1)));
     }
 
     @Test
@@ -90,20 +91,19 @@ class NotificationControllerIntegrationTest {
                             .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", hasSize(1)))
-                .andExpect(jsonPath("$[0].id", equalTo(newestNotification.getId().intValue())));
+                .andExpect(jsonPath("$[0].id", equalTo(newestNotification.getId().intValue())))
+                .andExpect(jsonPath("$[0].seen", is(false)))
+                .andExpect(jsonPath("$[0].requestedByViewer", is(false)));
     }
 
     @Test
-    @WithUserDetails(value = OTHER_USER_EMAIL, userDetailsServiceBeanName = "userDetailsService")
+    @WithUserDetails(userDetailsServiceBeanName = "userDetailsService")
     void testGetNotificationsWhenNoNotifications_thenReturnHttp204() throws Exception {
         mvc.perform(get("/notifications")
                             .param("page", "0")
                             .param("size", "1")
                             .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isNoContent())
-                .andExpect(jsonPath("$.message", equalTo("User with email " +
-                                                                 OTHER_USER_EMAIL +
-                                                                 " has no notifications")));
+                .andExpect(status().isNoContent());
     }
 
     @Test
@@ -121,7 +121,7 @@ class NotificationControllerIntegrationTest {
                             .contentType(MediaType.APPLICATION_JSON)
                             .content(JSONUtils.asJsonString(notificationDtoToUpdate)))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.isRead", is(true)));
+                .andExpect(jsonPath("$.seen", is(true)));
     }
 
     @Test
@@ -129,7 +129,7 @@ class NotificationControllerIntegrationTest {
     void testUpdateNotificationToReadWhenNotFound_thenReturnHttp400() throws Exception {
         NotificationDto notificationDtoNotFound = NotificationDto.builder()
                 .id(100L)
-                .toUserId(addressee.getId())
+                .user(modelMapper.map(addressee, UserDto.class))
                 .build();
 
         mvc.perform(put("/notifications")

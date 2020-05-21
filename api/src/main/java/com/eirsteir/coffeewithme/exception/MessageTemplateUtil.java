@@ -1,8 +1,6 @@
-package com.eirsteir.coffeewithme.util;
+package com.eirsteir.coffeewithme.exception;
 
 import com.eirsteir.coffeewithme.config.PropertiesConfig;
-import com.eirsteir.coffeewithme.domain.MessageTemplateType;
-import com.eirsteir.coffeewithme.exception.EntityType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -20,11 +18,11 @@ public class MessageTemplateUtil {
         MessageTemplateUtil.propertiesConfig = propertiesConfig;
     }
 
-    public static String getMessageTemplate(EntityType entityType, MessageTemplateType type) {
+    public static String getMessageTemplate(EntityType entityType, ExceptionType exceptionType) {
         return entityType
                 .name()
                 .concat(".")
-                .concat(type.getValue())
+                .concat(exceptionType.getValue())
                 .toLowerCase();
     }
 
