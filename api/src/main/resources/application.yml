@@ -1,0 +1,11 @@
+zuul:
+  routes:
+    notifications:
+      url: http://notification-api:9000
+      sensitive-headers:
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: httptrace
