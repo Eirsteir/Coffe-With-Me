@@ -66,10 +66,10 @@ public class NotificationServiceImpl implements NotificationService {
 
     @Override
     public NotificationDto updateNotificationToRead(NotificationDto notificationDto) {
-        Notification notificationToUpdate = notificationRepository.findById(notificationDto.getId())
+        Notification notificationToUpdate = notificationRepository.findById(notificationDto.getNotificationId())
                 .orElseThrow(() -> CWMException.getException(NOTIFICATION,
                                                              ENTITY_NOT_FOUND,
-                                                             notificationDto.getId().toString()));
+                                                             notificationDto.getNotificationId().toString()));
 
         notificationToUpdate.setSeen(true);
         log.debug("[x] Updating notification: {}", notificationToUpdate);

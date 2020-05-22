@@ -1,10 +1,7 @@
 package com.eirsteir.coffeewithme.testconfig;
 
 import com.eirsteir.coffeewithme.domain.friendship.FriendshipStatus;
-import com.eirsteir.coffeewithme.domain.notification.Notification;
-import com.eirsteir.coffeewithme.domain.notification.NotificationType;
 import com.eirsteir.coffeewithme.domain.user.User;
-import com.eirsteir.coffeewithme.repository.NotificationRepository;
 import com.eirsteir.coffeewithme.repository.UserRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,9 +29,6 @@ public class SetupTestDataLoader implements ApplicationListener<ContextRefreshed
 
     @Autowired
     private UserRepository userRepository;
-
-    @Autowired
-    private NotificationRepository notificationRepository;
 
     @Override
     @Transactional
@@ -83,19 +77,6 @@ public class SetupTestDataLoader implements ApplicationListener<ContextRefreshed
         requester.addFriend(otherUser, FriendshipStatus.REQUESTED);
         log.debug("[x] Preloading {}", userRepository.save(requester));
 
-        Notification notification = Notification.builder()
-                .user(addressee)
-                .type(NotificationType.FRIENDSHIP_ACCEPTED)
-                .requestedByViewer(false)
-                .build();
-        log.debug("[x] Preloading {}", notificationRepository.save(notification));
-
-        notification = Notification.builder()
-                .user(otherUser)
-                .type(NotificationType.FRIENDSHIP_REQUESTED)
-                .requestedByViewer(false)
-                .build();
-        log.debug("[x] Preloading {}", notificationRepository.save(notification));
 
         alreadySetup = true;
     }

@@ -11,7 +11,6 @@ import com.eirsteir.coffeewithme.security.SecurityConfig;
 import com.eirsteir.coffeewithme.security.UserDetailsServiceImpl;
 import com.eirsteir.coffeewithme.security.UserPrincipalImpl;
 import com.eirsteir.coffeewithme.service.friendship.FriendshipService;
-import com.eirsteir.coffeewithme.service.notification.NotificationService;
 import com.eirsteir.coffeewithme.service.user.UserService;
 import com.eirsteir.coffeewithme.testconfig.MessageTemplateUtilTestConfig;
 import com.eirsteir.coffeewithme.util.JSONUtils;
@@ -68,9 +67,6 @@ class FriendshipControllerTest {
 
     @MockBean
     private FriendshipService friendshipService;
-
-    @MockBean
-    private NotificationService notificationService;
 
     @MockBean
     private UserDetailsService userDetailsService;

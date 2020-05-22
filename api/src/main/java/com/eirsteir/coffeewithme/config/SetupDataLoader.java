@@ -6,7 +6,6 @@ import com.eirsteir.coffeewithme.domain.role.Role;
 import com.eirsteir.coffeewithme.domain.role.RoleType;
 import com.eirsteir.coffeewithme.domain.user.User;
 import com.eirsteir.coffeewithme.domain.user.UserType;
-import com.eirsteir.coffeewithme.repository.NotificationRepository;
 import com.eirsteir.coffeewithme.repository.RoleRepository;
 import com.eirsteir.coffeewithme.repository.UserRepository;
 import lombok.extern.slf4j.Slf4j;
@@ -31,9 +30,6 @@ public class SetupDataLoader implements ApplicationListener<ContextRefreshedEven
 
   @Autowired
   private RoleRepository roleRepository;
-
-  @Autowired
-  private NotificationRepository notificationRepository;
 
   @Autowired
   private PasswordEncoder passwordEncoder;

@@ -21,6 +21,5 @@ public class NotificationDto {
     private UserDto user;
     private Boolean seen;
     private NotificationType type;
-    private Boolean requestedByViewer;
 
 }

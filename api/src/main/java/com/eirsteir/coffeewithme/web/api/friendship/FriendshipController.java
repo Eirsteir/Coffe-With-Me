@@ -1,12 +1,10 @@
 package com.eirsteir.coffeewithme.web.api.friendship;
 
 import com.eirsteir.coffeewithme.domain.friendship.FriendshipStatus;
-import com.eirsteir.coffeewithme.domain.notification.NotificationType;
 import com.eirsteir.coffeewithme.dto.FriendshipDto;
 import com.eirsteir.coffeewithme.dto.UserDto;
 import com.eirsteir.coffeewithme.security.UserPrincipalImpl;
 import com.eirsteir.coffeewithme.service.friendship.FriendshipService;
-import com.eirsteir.coffeewithme.service.notification.NotificationService;
 import com.eirsteir.coffeewithme.service.user.UserService;
 import com.eirsteir.coffeewithme.web.request.FriendRequest;
 import org.modelmapper.ModelMapper;
@@ -22,9 +20,6 @@ import java.util.List;
 
 @RestController
 public class FriendshipController {
-
-    @Autowired
-    private NotificationService notificationService;
 
     @Autowired
     private FriendshipService friendshipService;
@@ -62,9 +57,9 @@ public class FriendshipController {
                                                                                    .addresseeId(toFriend)
                                                                                    .build());
 
-        notificationService.notify(friendshipDto.getAddresseeId(),
-                                   principal.getUser(),
-                                   NotificationType.FRIENDSHIP_REQUESTED);
+//        notificationService.notify(friendshipDto.getAddresseeId(),
+//                                   principal.getUser(),
+//                                   NotificationType.FRIENDSHIP_REQUESTED);
 
         return friendshipDto;
     }
@@ -75,10 +70,10 @@ public class FriendshipController {
         validateFriendshipDto(friendshipDto, principal);
         FriendshipDto updatedFriendshipDto = friendshipService.updateFriendship(friendshipDto);
 
-        if (updatedFriendshipDto.getStatus() == FriendshipStatus.ACCEPTED)
-            notificationService.notify(principal.getUser().getId(),
-                                       principal.getUser(),
-                                       NotificationType.FRIENDSHIP_ACCEPTED);
+//        if (updatedFriendshipDto.getStatus() == FriendshipStatus.ACCEPTED)
+//            notificationService.notify(principal.getUser().getId(),
+//                                       principal.getUser(),
+//                                       NotificationType.FRIENDSHIP_ACCEPTED);
 
         return  updatedFriendshipDto;
     }

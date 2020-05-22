@@ -45,7 +45,7 @@ public class NotificationController {
         return notifications;
     }
 
-    @GetMapping("/users/{id}")
+    @PutMapping("/users/{id}")
     NotificationDto updateNotificationToRead(@PathVariable Long id, @RequestBody NotificationDto notificationDto) {
         validateNotificationUpdate(notificationDto, id);
 

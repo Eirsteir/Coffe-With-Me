@@ -17,7 +17,7 @@ import java.util.Date;
 @Accessors(chain = true)
 public class NotificationDto {
 
-    private Long id;
+    private Long notificationId;
     private Date timestamp;
     private Notification.UserDetails user;
     private Boolean seen;

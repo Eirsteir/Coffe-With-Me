@@ -13,13 +13,6 @@ public class ExceptionResponse {
     private String details;
     private String status;
 
-    public ExceptionResponse(Date timestamp, String message, String details) {
-        super();
-        this.timestamp = timestamp;
-        this.message = message;
-        this.details = details;
-    }
-
     public ExceptionResponse(Date timestamp, String message, String details, HttpStatus status) {
         super();
         this.timestamp = timestamp;

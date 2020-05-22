@@ -18,7 +18,7 @@ public class Notification {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long id;
+    private Long notificationId;
 
     @CreationTimestamp
     private Date timestamp;
