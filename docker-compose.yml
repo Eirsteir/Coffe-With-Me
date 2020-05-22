@@ -16,7 +16,7 @@ services:
       - /data/api
 
   # API notification service
-  notification:
+  notification-api:
     build:
       context: notification-api
       dockerfile: Dockerfile
