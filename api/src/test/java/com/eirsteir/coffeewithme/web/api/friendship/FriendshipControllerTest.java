@@ -33,6 +33,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.web.reactive.function.client.WebClient;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -77,6 +78,8 @@ class FriendshipControllerTest {
     @MockBean
     private AuthenticationSuccessHandlerImpl authenticationSuccessHandler;
 
+    @MockBean
+    private WebClient webClient;
 
     @TestConfiguration
     static class FriendshipControllerTestContextConfig {

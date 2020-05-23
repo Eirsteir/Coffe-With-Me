@@ -9,22 +9,27 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
+import org.springframework.web.servlet.function.ServerRequest;
 
+import java.security.Principal;
 import java.util.List;
 
 @Slf4j
 @RestController
-@RequestMapping("/notifications")
 public class NotificationController {
 
     @Autowired
     private NotificationService service;
 
-    @PostMapping("/notify")
+    @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    void notify(@RequestBody NotificationRequest notificationRequest) {
+    void notify(@RequestBody NotificationRequest notificationRequest, ServerRequest request, Authentication authentication) {
+        log.debug("[x] Received request: {}", request);
+
         Notification.UserDetails userDetails = Notification.UserDetails.builder()
                 .id(notificationRequest.getUserId())
                 .name(notificationRequest.getName())
@@ -35,7 +40,12 @@ public class NotificationController {
     }
 
     @GetMapping("/users/{id}")
-    List<NotificationDto> getNotifications(@PathVariable Long id, Pageable pageable) {
+    List<NotificationDto> getNotifications(@PathVariable Long id, Pageable pageable, ServerRequest request, Authentication authentication) {
+        log.debug("[x] Received request: {}", request);
+
+        log.debug("[x] Principal: {}", authentication.getPrincipal());
+        log.debug("[x] Auth user details: {}", authentication.getDetails());
+
         List<NotificationDto> notifications = service.findAllByUserId(id, pageable);
 
         if (notifications.isEmpty())
@@ -46,7 +56,9 @@ public class NotificationController {
     }
 
     @PutMapping("/users/{id}")
-    NotificationDto updateNotificationToRead(@PathVariable Long id, @RequestBody NotificationDto notificationDto) {
+    NotificationDto updateNotificationToRead(@PathVariable Long id, @RequestBody NotificationDto notificationDto, ServerRequest request) {
+        log.debug("[x] Received request: {}", request);
+
         validateNotificationUpdate(notificationDto, id);
 
         return service.updateNotificationToRead(notificationDto);

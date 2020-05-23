@@ -10,14 +10,16 @@ import org.springframework.stereotype.Component;
 
 import javax.servlet.http.HttpServletRequest;
 
+import static org.springframework.cloud.netflix.zuul.filters.support.FilterConstants.PRE_TYPE;
+
 @Component
 public class ZuulLoggingFilter extends ZuulFilter {
 
     private Logger logger = LoggerFactory.getLogger(this.getClass());
-    
+
     @Override
     public String filterType() {
-        return "pre";
+        return PRE_TYPE;
     }
 
     @Override

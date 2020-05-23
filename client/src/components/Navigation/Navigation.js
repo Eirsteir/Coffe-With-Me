@@ -336,7 +336,7 @@ class Navigation extends React.Component {
                     {renderNotificationsMenu}
 
                     <SockJsClient
-                        url={`http://localhost:8080/api/ws`} 
+                        url={`http://localhost:8080/api/notifications/ws`} 
                         topics={[`/user/${user.id}/queue/notifications`]}
                         onMessage={this.onMessageRecieve} 
                         onConnect={ () => { this.setState({ clientConnected: true }) } }

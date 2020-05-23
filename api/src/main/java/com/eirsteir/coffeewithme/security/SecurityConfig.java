@@ -45,6 +45,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                   .antMatchers( BASE_URL).permitAll()
                   .antMatchers("/error").permitAll()
                   .antMatchers(BASE_URL + "/user/registration").permitAll()
+                  .antMatchers(BASE_URL + "/actuator/**").permitAll()
                   .antMatchers(BASE_URL + "/swagger-ui").permitAll()
                   .anyRequest().authenticated()
               .and()
