@@ -20,7 +20,7 @@ public class SpringConfig {
     private final String NOTIFICATIONS_API_URI;
 
 
-    public SpringConfig(@Value("${notification-api.uri}") String notificationApiUri) {
+    public SpringConfig(@Value("${notification-api.url}") String notificationApiUri) {
         NOTIFICATIONS_API_URI = notificationApiUri;
     }
 

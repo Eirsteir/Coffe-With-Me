@@ -1,7 +1,7 @@
 zuul:
   routes:
-    notification-api:
-      path: /notifications/**
+    notifications:
+#      path: /api/notifications/**
       url: http://notification-api:9000
       sensitive-headers:
 

@@ -11,14 +11,14 @@ import org.springframework.security.web.util.matcher.RequestHeaderRequestMatcher
 @EnableWebSecurity
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
-    private final String BASE_URL = "/api/notifications";
+    private final String BASE_URL = "/notifications";
 
     @Override
     public void configure(HttpSecurity http) throws Exception {
         http
                 .requestMatcher(new RequestHeaderRequestMatcher("Authorization"))
                 .authorizeRequests()
-                .antMatchers(BASE_URL + "/actuator/**").permitAll()
+                .antMatchers( "/actuator/**").permitAll()
                 .antMatchers("/**").authenticated()
                 .and()
                     .csrf().disable();
