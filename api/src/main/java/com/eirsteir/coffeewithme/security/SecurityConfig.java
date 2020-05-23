@@ -11,12 +11,11 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.HttpStatusEntryPoint;
-
-import static org.springframework.security.config.http.SessionCreationPolicy.ALWAYS;
 
 @Configuration
 @ComponentScan(basePackages = {"com.eirsteir.coffeewithme.service.user"} )
@@ -39,9 +38,14 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
   @Override
   protected void configure(HttpSecurity http) throws Exception {
           http
-              .httpBasic().and()
-              .logout().and()
-              .authorizeRequests()
+              .sessionManagement()
+              .sessionCreationPolicy(SessionCreationPolicy.ALWAYS)
+              .and()
+                  .httpBasic()
+              .and()
+                  .logout()
+              .and()
+                  .authorizeRequests()
                   .antMatchers( BASE_URL).permitAll()
                   .antMatchers("/error").permitAll()
                   .antMatchers(BASE_URL + "/user/registration").permitAll()
@@ -51,9 +55,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
               .and()
                   .logout()
                   .logoutUrl(BASE_URL + "/logout")
-              .and()
-                  .sessionManagement()
-                  .sessionCreationPolicy(ALWAYS)
               .and()
                   .exceptionHandling()
                   .authenticationEntryPoint(new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED))

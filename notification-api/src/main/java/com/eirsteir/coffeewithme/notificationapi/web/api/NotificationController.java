@@ -28,8 +28,10 @@ public class NotificationController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    void notify(@RequestBody NotificationRequest notificationRequest, ServerRequest request, Authentication authentication) {
-        log.debug("[x] Received request: {}", request);
+    void notify(@RequestBody NotificationRequest notificationRequest, @CookieValue("SESSION") String session) {
+        // @CookieValue("SESSION") String session
+
+        log.debug("[x] Received request: {}", notificationRequest);
 
         Notification.UserDetails userDetails = Notification.UserDetails.builder()
                 .id(notificationRequest.getUserId())
@@ -41,11 +43,9 @@ public class NotificationController {
     }
 
     @GetMapping("/users/{id}")
-    List<NotificationDto> getNotifications(@PathVariable Long id, Pageable pageable, ServerRequest request, Authentication authentication) {
-        log.debug("[x] Received request: {}", request);
-
-        log.debug("[x] Principal: {}", authentication.getPrincipal());
-        log.debug("[x] Auth user details: {}", authentication.getDetails());
+    List<NotificationDto> getNotifications(@PathVariable Long id, Pageable pageable, @CookieValue("SESSION") String session, Authentication authentication) {
+        log.debug("[x] Received request with session: {}", session);
+        log.debug("[x] Received request with authentication: {}", authentication);
 
         List<NotificationDto> notifications = service.findAllByUserId(id, pageable);
 

@@ -13,8 +13,6 @@ services:
       - notification-api
       - redis
       - db
-    volumes:
-      - /data/api
 
   # API notification service
   notification-api:
@@ -26,8 +24,6 @@ services:
     restart: always
     depends_on:
       - db
-    volumes:
-      - /data/notification-api
 
   # Client Service
   client:
