@@ -12,7 +12,7 @@ services:
     depends_on:
       - auth-service
       - notification-api
-      - redis
+#      - redis
       - db
 
   # API notification service
@@ -25,7 +25,7 @@ services:
     restart: always
     depends_on:
       - db
-      -
+
   # API notification service
   auth-service:
     build:
