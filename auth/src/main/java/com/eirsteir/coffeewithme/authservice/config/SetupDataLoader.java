@@ -3,9 +3,9 @@ package com.eirsteir.coffeewithme.authservice.config;
 
 import com.eirsteir.coffeewithme.authservice.domain.Role;
 import com.eirsteir.coffeewithme.authservice.domain.RoleType;
-import com.eirsteir.coffeewithme.authservice.domain.UserCredentials;
+import com.eirsteir.coffeewithme.authservice.domain.Account;
 import com.eirsteir.coffeewithme.authservice.repository.RoleRepository;
-import com.eirsteir.coffeewithme.authservice.repository.UserCredentialsRepository;
+import com.eirsteir.coffeewithme.authservice.repository.AccountRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationListener;
@@ -21,7 +21,7 @@ public class SetupDataLoader implements ApplicationListener<ContextRefreshedEven
   private boolean alreadySetup = false;
 
   @Autowired
-  private UserCredentialsRepository userCredentialsRepository;
+  private AccountRepository accountRepository;
 
   @Autowired
   private RoleRepository roleRepository;
@@ -46,17 +46,17 @@ public class SetupDataLoader implements ApplicationListener<ContextRefreshedEven
     Role readerRole = roleRepository.findByType(RoleType.ROLE_READER);
     Role writerRole = roleRepository.findByType(RoleType.ROLE_WRITER);
 
-    UserCredentials userCredentials = new UserCredentials();
-    userCredentials.setEmail("admin@test.com");
-    userCredentials.setPassword(encoder.encode("admin"));
+    Account account = new Account();
+    account.setEmail("admin@test.com");
+    account.setPassword(encoder.encode("admin"));
 
-    log.info("[x] Preloading " + userCredentialsRepository.save(userCredentials));
+    log.info("[x] Preloading " + accountRepository.save(account));
 
-    userCredentials = new UserCredentials();
-    userCredentials.setEmail("user@test.com");
-    userCredentials.setPassword(encoder.encode("password"));
+    account = new Account();
+    account.setEmail("user@test.com");
+    account.setPassword(encoder.encode("password"));
 
-    log.info("[x] Preloading " + userCredentialsRepository.save(userCredentials));
+    log.info("[x] Preloading " + accountRepository.save(account));
 
     alreadySetup = true;
   }

@@ -1,8 +1,8 @@
 package com.eirsteir.coffeewithme.testconfig;
 
-import com.eirsteir.coffeewithme.domain.friendship.FriendshipStatus;
-import com.eirsteir.coffeewithme.domain.user.User;
-import com.eirsteir.coffeewithme.repository.UserRepository;
+import com.eirsteir.coffeewithme.api.domain.friendship.FriendshipStatus;
+import com.eirsteir.coffeewithme.api.domain.user.User;
+import com.eirsteir.coffeewithme.api.repository.UserRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationListener;

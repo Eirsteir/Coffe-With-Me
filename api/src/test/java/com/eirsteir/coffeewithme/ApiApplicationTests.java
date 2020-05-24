@@ -1,6 +1,6 @@
 package com.eirsteir.coffeewithme;
 
-import com.eirsteir.coffeewithme.config.ModelMapperConfig;
+import com.eirsteir.coffeewithme.api.config.ModelMapperConfig;
 import com.eirsteir.coffeewithme.testconfig.SetupTestDataLoader;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

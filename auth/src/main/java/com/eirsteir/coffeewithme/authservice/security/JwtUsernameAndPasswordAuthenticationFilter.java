@@ -1,6 +1,6 @@
 package com.eirsteir.coffeewithme.authservice.security;
 
-import com.eirsteir.coffeewithme.authservice.domain.UserCredentials;
+import com.eirsteir.coffeewithme.authservice.domain.Account;
 import com.eirsteir.coffeewithme.commons.security.JwtConfig;
 import com.eirsteir.coffeewithme.commons.security.UserDetailsImpl;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -44,11 +44,11 @@ public class JwtUsernameAndPasswordAuthenticationFilter extends UsernamePassword
             throws AuthenticationException {
 
         try {
-            UserCredentials userCredentials = new ObjectMapper().readValue(request.getInputStream(), UserCredentials.class);
-            log.debug("[x] Found credentials: {}", userCredentials);
+            Account account = new ObjectMapper().readValue(request.getInputStream(), Account.class);
+            log.debug("[x] Found credentials: {}", account);
 
             UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
-                    userCredentials.getEmail(), userCredentials.getPassword(), Collections.emptyList());
+                    account.getEmail(), account.getPassword(), Collections.emptyList());
 
             log.debug("[x] Attempting to authenticate token: {}", authToken);
             return authManager.authenticate(authToken);
