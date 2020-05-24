@@ -4,18 +4,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpStatus;
-import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.web.authentication.HttpStatusEntryPoint;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+
+import javax.servlet.http.HttpServletResponse;
 
 @Configuration
 @ComponentScan(basePackages = {"com.eirsteir.coffeewithme.service.user"} )
@@ -25,43 +22,23 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
   private final String BASE_URL = "/api";
 
   @Autowired
-  private UserDetailsService userDetailsService;
-
-  @Autowired
-  private AuthenticationSuccessHandlerImpl successHandler;
-
-  @Override
-  public void configure(AuthenticationManagerBuilder auth) {
-          auth.authenticationProvider(authenticationProvider());
-  }
+  private JwtConfig jwtConfig;
 
   @Override
   protected void configure(HttpSecurity http) throws Exception {
           http
-              .sessionManagement()
-              .sessionCreationPolicy(SessionCreationPolicy.ALWAYS)
-              .and()
-                  .httpBasic()
-              .and()
-                  .logout()
-              .and()
-                  .authorizeRequests()
-                  .antMatchers( BASE_URL).permitAll()
-                  .antMatchers("/error").permitAll()
-                  .antMatchers(BASE_URL + "/user/registration").permitAll()
-                  .antMatchers(BASE_URL + "/actuator/**").permitAll()
-                  .antMatchers(BASE_URL + "/swagger-ui").permitAll()
-                  .anyRequest().authenticated()
-              .and()
-                  .logout()
-                  .logoutUrl(BASE_URL + "/logout")
-              .and()
-                  .exceptionHandling()
-                  .authenticationEntryPoint(new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED))
-              .and()
-              .csrf().disable();
-
-//                  .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
+                  .csrf().disable()
+                  .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                  .and()
+                      .exceptionHandling().authenticationEntryPoint((req, res, e) -> res.sendError(HttpServletResponse.SC_UNAUTHORIZED))
+                  .and()
+                      .addFilterAfter(new JwtTokenAuthenticationFilter(jwtConfig), UsernamePasswordAuthenticationFilter.class)
+                      .authorizeRequests()
+                      .antMatchers(BASE_URL).permitAll()
+                      .antMatchers(HttpMethod.POST, jwtConfig.getUri()).permitAll()
+                      .antMatchers(BASE_URL + "/actuator/**").hasRole("ADMIN")
+                      .antMatchers(BASE_URL + "/swagger-ui").permitAll()
+                      .anyRequest().authenticated();
   }
 
   @Override
@@ -76,16 +53,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
   }
 
   @Bean
-  public PasswordEncoder passwordEncoder(){
-    return new BCryptPasswordEncoder();
-  }
-
-  @Bean
-  public DaoAuthenticationProvider authenticationProvider() {
-    final DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
-    authProvider.setUserDetailsService(userDetailsService);
-    authProvider.setPasswordEncoder(passwordEncoder());
-    return authProvider;
+  public JwtConfig jwtConfig() {
+    return new JwtConfig();
   }
 
 }

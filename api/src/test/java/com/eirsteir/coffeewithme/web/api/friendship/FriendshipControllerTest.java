@@ -6,10 +6,7 @@ import com.eirsteir.coffeewithme.domain.user.User;
 import com.eirsteir.coffeewithme.dto.FriendshipDto;
 import com.eirsteir.coffeewithme.dto.UserDto;
 import com.eirsteir.coffeewithme.exception.CWMException;
-import com.eirsteir.coffeewithme.security.AuthenticationSuccessHandlerImpl;
 import com.eirsteir.coffeewithme.security.SecurityConfig;
-import com.eirsteir.coffeewithme.security.UserDetailsServiceImpl;
-import com.eirsteir.coffeewithme.security.UserPrincipalImpl;
 import com.eirsteir.coffeewithme.service.friendship.FriendshipService;
 import com.eirsteir.coffeewithme.service.user.UserService;
 import com.eirsteir.coffeewithme.testconfig.MessageTemplateUtilTestConfig;
@@ -21,9 +18,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.Authentication;
@@ -43,7 +38,6 @@ import static com.eirsteir.coffeewithme.domain.friendship.FriendshipStatus.REQUE
 import static org.hamcrest.Matchers.equalTo;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
-import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -59,7 +53,6 @@ class FriendshipControllerTest {
     private static final String REQUESTER_EMAIL = "requester@test.com";
     private static final String ADDRESSEE_EMAIL = "addressee@test.com";
 
-    private UserPrincipalImpl userPrincipal;
     private User requester;
     private FriendshipDto friendshipDto;
 
@@ -76,20 +69,7 @@ class FriendshipControllerTest {
     private UserService userService;
 
     @MockBean
-    private AuthenticationSuccessHandlerImpl authenticationSuccessHandler;
-
-    @MockBean
     private WebClient webClient;
-
-    @TestConfiguration
-    static class FriendshipControllerTestContextConfig {
-
-        @Bean
-        public UserDetailsService userDetailsService() {
-            return new UserDetailsServiceImpl();
-        }
-
-    }
 
     @BeforeEach
     void setUp() {
@@ -105,10 +85,6 @@ class FriendshipControllerTest {
                 .roles(new ArrayList<>())
                 .build();
 
-        userPrincipal = new UserPrincipalImpl(requester);
-        Mockito.when(authentication.getPrincipal())
-                .thenReturn(userPrincipal);
-
         friendshipDto = FriendshipDto.builder()
                 .requesterId(REQUESTER_ID)
                 .addresseeId(ADDRESSEE_ID)
@@ -123,8 +99,7 @@ class FriendshipControllerTest {
 
         mockMvc.perform(post("/friends")
                                 .contentType(MediaType.APPLICATION_JSON)
-                                .param("to_friend", String.valueOf(ADDRESSEE_ID))
-                                .with(user(userPrincipal)))
+                                .param("to_friend", String.valueOf(ADDRESSEE_ID)))
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.requesterId", equalTo(requester.getId().intValue())))
                 .andExpect(jsonPath("$.addresseeId", equalTo(ADDRESSEE_ID.intValue())))
@@ -138,8 +113,7 @@ class FriendshipControllerTest {
 
         mockMvc.perform(post("/friends")
                                 .contentType(MediaType.APPLICATION_JSON)
-                                .param("to_friend", String.valueOf(ADDRESSEE_ID))
-                                .with(user(userPrincipal)))
+                                .param("to_friend", String.valueOf(ADDRESSEE_ID)))
                 .andExpect(status().isNotFound());
     }
 
@@ -150,8 +124,7 @@ class FriendshipControllerTest {
 
         mockMvc.perform(post("/friends")
                                 .contentType(MediaType.APPLICATION_JSON)
-                                .param("to_friend", String.valueOf(ADDRESSEE_ID))
-                                .with(user(userPrincipal)))
+                                .param("to_friend", String.valueOf(ADDRESSEE_ID)))
                 .andExpect(status().isBadRequest());
     }
 
@@ -171,8 +144,7 @@ class FriendshipControllerTest {
                 .thenThrow(CWMException.EntityNotFoundException.class);
 
         mockMvc.perform(get("/{id}/friends", userNotFoundId)
-                                .contentType(MediaType.APPLICATION_JSON)
-                                .with(user(userPrincipal)))
+                                .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNotFound());
     }
 
@@ -184,8 +156,7 @@ class FriendshipControllerTest {
                 .thenReturn(new ArrayList<>());
 
         mockMvc.perform(get("/{id}/friends", requester.getId())
-                                .contentType(MediaType.APPLICATION_JSON)
-                                .with(user(userPrincipal)))
+                                .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNoContent())
                 .andExpect(jsonPath("$.message", equalTo("User with email - " +
                                                                  requester.getEmail() +
@@ -214,8 +185,7 @@ class FriendshipControllerTest {
                         .build()));
 
         mockMvc.perform(get("/{id}/friends", requester.getId())
-                                .contentType(MediaType.APPLICATION_JSON)
-                                .with(user(userPrincipal)))
+                                .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$[0].email", equalTo(REQUESTER_EMAIL)))
                 .andExpect(jsonPath("$[1].email", equalTo(ADDRESSEE_EMAIL)));
@@ -235,8 +205,7 @@ class FriendshipControllerTest {
                         .build()));
 
         mockMvc.perform(get("/friends/requests", requester.getId())
-                                .contentType(MediaType.APPLICATION_JSON)
-                                .with(user(userPrincipal)))
+                                .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$[0].email", equalTo(REQUESTER_EMAIL)))
                 .andExpect(jsonPath("$[1].email", equalTo(ADDRESSEE_EMAIL)));
@@ -250,8 +219,7 @@ class FriendshipControllerTest {
                 .thenReturn(new ArrayList<>());
 
         mockMvc.perform(get("/friends/requests", requester.getId())
-                                .contentType(MediaType.APPLICATION_JSON)
-                                .with(user(userPrincipal)))
+                                .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNoContent())
                 .andExpect(jsonPath("$.message", equalTo("User with email - " +
                                                                  REQUESTER_EMAIL +
@@ -260,18 +228,12 @@ class FriendshipControllerTest {
 
     @Test
     void testAcceptFriendshipWhenFriendshipExistsAndStatusIsRequested_thenReturnHttp200() throws Exception {
-        Authentication authentication = Mockito.mock(Authentication.class);
-        userPrincipal.getUser().setId(ADDRESSEE_ID);
-
-        Mockito.when(authentication.getPrincipal())
-                .thenReturn(userPrincipal);
         when(friendshipService.updateFriendship(Mockito.any(FriendshipDto.class)))
                 .thenReturn(friendshipDto.setStatus(ACCEPTED));
 
         mockMvc.perform(put("/friends")
                                 .contentType(MediaType.APPLICATION_JSON)
-                                .content(JSONUtils.asJsonString(friendshipDto))
-                                .with(user(userPrincipal)))
+                                .content(JSONUtils.asJsonString(friendshipDto)))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.status", equalTo(ACCEPTED.getStatus())));
     }
@@ -283,8 +245,7 @@ class FriendshipControllerTest {
 
         mockMvc.perform(put("/friends")
                                 .contentType(MediaType.APPLICATION_JSON)
-                                .content(JSONUtils.asJsonString(friendshipDto))
-                                .with(user(userPrincipal)))
+                                .content(JSONUtils.asJsonString(friendshipDto)))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.message",
                                     equalTo("Friendship does not belong to current user")));
@@ -295,8 +256,7 @@ class FriendshipControllerTest {
 
         mockMvc.perform(put("/friends")
                                 .contentType(MediaType.APPLICATION_JSON)
-                                .content(JSONUtils.asJsonString(friendshipDto))
-                                .with(user(userPrincipal)))
+                                .content(JSONUtils.asJsonString(friendshipDto)))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.message",
                                     equalTo("Cannot accept friend request sent by yourself")));
@@ -304,18 +264,13 @@ class FriendshipControllerTest {
 
     @Test
     void testAcceptFriendshipWhenFriendshipNotFound_thenReturnHttp404() throws Exception {
-        Authentication authentication = Mockito.mock(Authentication.class);
-        userPrincipal.getUser().setId(ADDRESSEE_ID);
 
-        Mockito.when(authentication.getPrincipal())
-                .thenReturn(userPrincipal);
         when(friendshipService.updateFriendship(Mockito.any(FriendshipDto.class)))
                 .thenThrow(CWMException.EntityNotFoundException.class);
 
         mockMvc.perform(put("/friends")
                                 .contentType(MediaType.APPLICATION_JSON)
-                                .content(JSONUtils.asJsonString(friendshipDto))
-                                .with(user(userPrincipal)))
+                                .content(JSONUtils.asJsonString(friendshipDto)))
                 .andExpect(status().isNotFound());
     }
 

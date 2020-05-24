@@ -3,7 +3,6 @@ package com.eirsteir.coffeewithme.web.api.user;
 import com.eirsteir.coffeewithme.CoffeeWithMeApplication;
 import com.eirsteir.coffeewithme.config.ModelMapperConfig;
 import com.eirsteir.coffeewithme.repository.UserRepository;
-import com.eirsteir.coffeewithme.testconfig.RedisTestConfig;
 import com.eirsteir.coffeewithme.testconfig.SetupTestDataLoader;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -26,7 +25,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @ExtendWith(SpringExtension.class)
-@Import({RedisTestConfig.class, SetupTestDataLoader.class, ModelMapperConfig.class})
+@Import({SetupTestDataLoader.class, ModelMapperConfig.class})
 @SpringBootTest(classes = CoffeeWithMeApplication.class, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 class UserControllerIntegrationTest {
 
