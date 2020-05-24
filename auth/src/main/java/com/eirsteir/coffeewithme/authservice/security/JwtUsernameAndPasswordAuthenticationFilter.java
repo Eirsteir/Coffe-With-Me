@@ -2,6 +2,7 @@ package com.eirsteir.coffeewithme.authservice.security;
 
 import com.eirsteir.coffeewithme.authservice.domain.UserCredentials;
 import com.eirsteir.coffeewithme.commons.security.JwtConfig;
+import com.eirsteir.coffeewithme.commons.security.UserDetailsImpl;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -61,14 +62,15 @@ public class JwtUsernameAndPasswordAuthenticationFilter extends UsernamePassword
                                             FilterChain chain, Authentication auth)
             throws IOException, ServletException {
 
-        log.debug("[x] Authentication details: {}", auth.getDetails());
         log.debug("[x] Authentication principal: {}", auth.getPrincipal());
-        log.debug("[x] Authentication credentials: {}", auth.getCredentials());
 
-        Long now = System.currentTimeMillis();
+        UserDetailsImpl principal = (UserDetailsImpl) auth.getPrincipal();
+
+        long now = System.currentTimeMillis();
         String token = Jwts.builder()
-                .setSubject(auth.getName())
-//                .claim("cwmId", auth.getDetails())
+                .setSubject(principal.getCwmId().toString())
+                .claim("email", principal.getEmail())
+                .claim("username", principal.getUsername())
                 .claim("authorities", auth.getAuthorities().stream()
                     .map(GrantedAuthority::getAuthority).collect(Collectors.toList()))
                 .setIssuedAt(new Date(now))

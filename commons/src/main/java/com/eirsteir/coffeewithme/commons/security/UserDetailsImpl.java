@@ -1,15 +1,13 @@
 package com.eirsteir.coffeewithme.commons.security;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
+import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
 
 @ToString
+@Getter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
