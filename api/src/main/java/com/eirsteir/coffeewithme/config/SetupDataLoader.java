@@ -11,16 +11,17 @@ import com.eirsteir.coffeewithme.repository.UserRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationListener;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.event.ContextRefreshedEvent;
-import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Arrays;
 import java.util.Collections;
 
-@Component
 @Slf4j
+@Component
 public class SetupDataLoader implements ApplicationListener<ContextRefreshedEvent> {
 
   private boolean alreadySetup = false;
@@ -32,8 +33,7 @@ public class SetupDataLoader implements ApplicationListener<ContextRefreshedEven
   private RoleRepository roleRepository;
 
   @Autowired
-  private PasswordEncoder passwordEncoder;
-
+  private BCryptPasswordEncoder encoder;
 
   @Override
   @Transactional
@@ -56,7 +56,7 @@ public class SetupDataLoader implements ApplicationListener<ContextRefreshedEven
             .name("Admin")
             .username("admin123")
             .email("admin@test.com")
-            .password(passwordEncoder.encode("admin"))
+            .password(encoder.encode("admin"))
             .userType(UserType.LOCAL)
             .roles(Arrays.asList(adminRole, basicRole, readerRole, writerRole))
             .build();
@@ -67,7 +67,7 @@ public class SetupDataLoader implements ApplicationListener<ContextRefreshedEven
             .name("Audit")
             .username("audit21")
             .email("audit@test.com")
-            .password(passwordEncoder.encode("audit"))
+            .password(encoder.encode("audit"))
             .userType(UserType.LOCAL)
             .roles(Arrays.asList(adminRole, basicRole, readerRole))
             .build();
@@ -77,7 +77,7 @@ public class SetupDataLoader implements ApplicationListener<ContextRefreshedEven
             .name("User")
             .username("user01")
             .email("user@test.com")
-            .password(passwordEncoder.encode("password"))
+            .password(encoder.encode("password"))
             .userType(UserType.LOCAL)
             .roles(Collections.singletonList(basicRole))
             .build();
@@ -100,4 +100,8 @@ public class SetupDataLoader implements ApplicationListener<ContextRefreshedEven
     }
   }
 
+  @Bean
+  public BCryptPasswordEncoder encoder() {
+    return new BCryptPasswordEncoder();
+  }
 }

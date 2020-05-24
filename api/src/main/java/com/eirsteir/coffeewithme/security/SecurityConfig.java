@@ -3,7 +3,6 @@ package com.eirsteir.coffeewithme.security;
 import com.eirsteir.coffeewithme.commons.security.JwtConfig;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -16,7 +15,6 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import javax.servlet.http.HttpServletResponse;
 
 @Configuration
-@ComponentScan(basePackages = {"com.eirsteir.coffeewithme.service.user"} )
 @EnableWebSecurity
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
@@ -39,7 +37,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                       .antMatchers(HttpMethod.POST, jwtConfig.getUri()).permitAll()
                       .antMatchers(BASE_URL + "/actuator/**").hasRole("ADMIN")
                       .antMatchers(BASE_URL + "/swagger-ui").permitAll()
-                      .anyRequest().authenticated();
+                      .antMatchers("/console/**").permitAll() // remove in prod
+                      .anyRequest().authenticated()
+                  .and()
+                      .headers().frameOptions().disable();
   }
 
   @Override

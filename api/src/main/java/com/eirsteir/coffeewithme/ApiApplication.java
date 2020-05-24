@@ -6,10 +6,10 @@ import org.springframework.cloud.netflix.zuul.EnableZuulProxy;
 
 @EnableZuulProxy
 @SpringBootApplication
-public class CoffeeWithMeApplication {
+public class ApiApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(CoffeeWithMeApplication.class, args);
+        SpringApplication.run(ApiApplication.class, args);
     }
 
 }

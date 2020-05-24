@@ -11,7 +11,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 @ExtendWith(SpringExtension.class)
 @Import({SetupTestDataLoader.class, ModelMapperConfig.class})
 @SpringBootTest
-class CoffeeWithMeApplicationTests {
+class ApiApplicationTests {
 
     @Test
     void contextLoads() {

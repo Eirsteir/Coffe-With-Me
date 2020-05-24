@@ -1,6 +1,6 @@
 package com.eirsteir.coffeewithme.web.api.user;
 
-import com.eirsteir.coffeewithme.CoffeeWithMeApplication;
+import com.eirsteir.coffeewithme.ApiApplication;
 import com.eirsteir.coffeewithme.config.ModelMapperConfig;
 import com.eirsteir.coffeewithme.repository.UserRepository;
 import com.eirsteir.coffeewithme.testconfig.SetupTestDataLoader;
@@ -26,7 +26,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @ExtendWith(SpringExtension.class)
 @Import({SetupTestDataLoader.class, ModelMapperConfig.class})
-@SpringBootTest(classes = CoffeeWithMeApplication.class, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@SpringBootTest(classes = ApiApplication.class, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 class UserControllerIntegrationTest {
 
     public static final String JOHN_EMAIL = "john@doe.com";

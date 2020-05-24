@@ -5,8 +5,8 @@
 
     <groupId>com.eirsteir.coffeewithme</groupId>
     <artifactId>commons</artifactId>
-    <packaging>jar</packaging>
     <version>0.0.1-SNAPSHOT</version>
+    <packaging>jar</packaging>
 
     <name>commons</name>
     <description>Common dependencies for services in the Coffee-With-Me application</description>
