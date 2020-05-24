@@ -43,7 +43,8 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     @AllArgsConstructor
     private static class AppUser {
         private Long id;
-        private String username, password;
+        private String username;
+        private String password;
         private String role;
     }
 }

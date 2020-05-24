@@ -6,6 +6,9 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -24,6 +27,7 @@ import java.util.Date;
 import java.util.stream.Collectors;
 
 
+@Slf4j
 public class JwtUsernameAndPasswordAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
 
     private AuthenticationManager authManager;
@@ -43,9 +47,11 @@ public class JwtUsernameAndPasswordAuthenticationFilter extends UsernamePassword
 
         try {
             UserCredentials credentials = new ObjectMapper().readValue(request.getInputStream(), UserCredentials.class);
+            log.debug("[x] Found credentials: {}", credentials);
             UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
                     credentials.getUsername(), credentials.getPassword(), Collections.emptyList());
 
+            log.debug("[x] Attempting to authenticate token: {}", authToken);
             return authManager.authenticate(authToken);
         } catch (IOException e) {
             throw new RuntimeException(e);
@@ -70,9 +76,12 @@ public class JwtUsernameAndPasswordAuthenticationFilter extends UsernamePassword
         response.addHeader(jwtConfig.getHeader(), jwtConfig.getPrefix() + token);
     }
 
+    @ToString
     @Getter
     @AllArgsConstructor
+    @NoArgsConstructor
     private static class UserCredentials {
-        private String username, password;
+        private String username;
+        private String password;
     }
 }
