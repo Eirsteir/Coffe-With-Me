@@ -4,7 +4,6 @@ package com.eirsteir.coffeewithme.web.api.user;
 import com.eirsteir.coffeewithme.domain.user.User;
 import com.eirsteir.coffeewithme.dto.UserDto;
 import com.eirsteir.coffeewithme.repository.rsql.RqslVisitorImpl;
-import com.eirsteir.coffeewithme.security.UserPrincipalImpl;
 import com.eirsteir.coffeewithme.service.user.UserService;
 import cz.jirutka.rsql.parser.RSQLParser;
 import cz.jirutka.rsql.parser.ast.Node;
@@ -12,8 +11,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
@@ -26,12 +27,12 @@ public class UserController {
     @Autowired
     private UserService userService;
 
-    @GetMapping("/{id}")
-    @ResponseBody
-    UserDto user(@PathVariable Long id, @AuthenticationPrincipal UserPrincipalImpl principal) {
-
-        return userService.findUserByIdWithIsFriend(id, principal.getUser());
-    }
+//    @GetMapping("/{id}")
+//    @ResponseBody
+//    UserDto user(@PathVariable Long id, @AuthenticationPrincipal UserPrincipalImpl principal) {
+//
+//        return userService.findUserByIdWithIsFriend(id, principal.getUser());
+//    }
 
     @GetMapping
     List<UserDto> search(@RequestParam String search) {

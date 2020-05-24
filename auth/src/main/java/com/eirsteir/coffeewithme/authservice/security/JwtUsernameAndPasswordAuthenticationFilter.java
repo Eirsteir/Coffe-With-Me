@@ -45,6 +45,7 @@ public class JwtUsernameAndPasswordAuthenticationFilter extends UsernamePassword
         try {
             UserCredentials userCredentials = new ObjectMapper().readValue(request.getInputStream(), UserCredentials.class);
             log.debug("[x] Found credentials: {}", userCredentials);
+
             UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
                     userCredentials.getEmail(), userCredentials.getPassword(), Collections.emptyList());
 
@@ -60,9 +61,14 @@ public class JwtUsernameAndPasswordAuthenticationFilter extends UsernamePassword
                                             FilterChain chain, Authentication auth)
             throws IOException, ServletException {
 
+        log.debug("[x] Authentication details: {}", auth.getDetails());
+        log.debug("[x] Authentication principal: {}", auth.getPrincipal());
+        log.debug("[x] Authentication credentials: {}", auth.getCredentials());
+
         Long now = System.currentTimeMillis();
         String token = Jwts.builder()
                 .setSubject(auth.getName())
+//                .claim("cwmId", auth.getDetails())
                 .claim("authorities", auth.getAuthorities().stream()
                     .map(GrantedAuthority::getAuthority).collect(Collectors.toList()))
                 .setIssuedAt(new Date(now))

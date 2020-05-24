@@ -1,16 +1,14 @@
 package com.eirsteir.coffeewithme.web.api.user;
 
-import com.eirsteir.coffeewithme.dto.UserDto;
-import com.eirsteir.coffeewithme.security.UserPrincipalImpl;
 import com.eirsteir.coffeewithme.service.user.UserService;
-import com.eirsteir.coffeewithme.web.request.UpdateProfileRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.Authentication;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
 
-import javax.validation.Valid;
 import java.security.Principal;
 
 
@@ -32,16 +30,16 @@ public class AccountController {
         return principal;
     }
 
-    @PutMapping("/update")
-    @ResponseBody
-    UserDto updateUser(@RequestBody @Valid UpdateProfileRequest updateProfileRequest, Authentication authentication) {
-        UserPrincipalImpl principal = (UserPrincipalImpl) authentication.getPrincipal();
-
-        UserDto userDto = UserDto.builder()
-                .email(principal.getEmail())
-                .username(updateProfileRequest.getUsername())
-                .build();
-
-        return userService.updateProfile(userDto);
-    }
+//    @PutMapping("/update")
+//    @ResponseBody
+//    UserDto updateUser(@RequestBody @Valid UpdateProfileRequest updateProfileRequest, Authentication authentication) {
+//        UserPrincipalImpl principal = (UserPrincipalImpl) authentication.getPrincipal();
+//
+//        UserDto userDto = UserDto.builder()
+//                .email(principal.getEmail())
+//                .username(updateProfileRequest.getUsername())
+//                .build();
+//
+//        return userService.updateProfile(userDto);
+//    }
 }

@@ -82,7 +82,6 @@ class FriendshipControllerTest {
                 .id(REQUESTER_ID)
                 .email(REQUESTER_EMAIL)
                 .password("password")
-                .roles(new ArrayList<>())
                 .build();
 
         friendshipDto = FriendshipDto.builder()
