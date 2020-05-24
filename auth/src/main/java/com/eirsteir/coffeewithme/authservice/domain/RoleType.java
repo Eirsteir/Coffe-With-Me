@@ -1,4 +1,4 @@
-package com.eirsteir.coffeewithme.domain.role;
+package com.eirsteir.coffeewithme.authservice.domain;
 
 import java.util.stream.Stream;
 

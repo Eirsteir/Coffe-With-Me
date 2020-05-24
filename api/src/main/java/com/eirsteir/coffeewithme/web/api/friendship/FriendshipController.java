@@ -25,6 +25,7 @@ import reactor.core.publisher.Mono;
 
 import javax.validation.Valid;
 import java.nio.charset.StandardCharsets;
+import java.security.Principal;
 import java.util.Collection;
 import java.util.List;
 
@@ -61,9 +62,9 @@ public class FriendshipController {
     @PostMapping("/friends")
     @ResponseStatus(HttpStatus.CREATED)
     FriendshipDto addFriend(@RequestParam("to_friend") Long toFriend,
-                                @AuthenticationPrincipal UserPrincipalImpl principal) {
+                                @AuthenticationPrincipal Principal principal) {
 
-        User currentUser = principal.getUser();
+        User currentUser = principal.getprincipal.getUser();
         if (currentUser.getId().equals(toFriend))
             throw new ResponseStatusException(
                     HttpStatus.BAD_REQUEST, "Cannot send friend requests to yourself");

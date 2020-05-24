@@ -1,13 +1,11 @@
 package com.eirsteir.coffeewithme.service.user;
 
 import com.eirsteir.coffeewithme.domain.friendship.FriendshipStatus;
-import com.eirsteir.coffeewithme.domain.role.RoleType;
 import com.eirsteir.coffeewithme.domain.user.User;
 import com.eirsteir.coffeewithme.domain.user.UserType;
 import com.eirsteir.coffeewithme.dto.UserDto;
 import com.eirsteir.coffeewithme.exception.CWMException;
 import com.eirsteir.coffeewithme.exception.ExceptionType;
-import com.eirsteir.coffeewithme.repository.RoleRepository;
 import com.eirsteir.coffeewithme.repository.UserRepository;
 import com.eirsteir.coffeewithme.service.friendship.FriendshipService;
 import com.eirsteir.coffeewithme.web.request.UserRegistrationRequest;
@@ -19,7 +17,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -34,9 +31,6 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     private UserRepository userRepository;
-
-    @Autowired
-    private RoleRepository roleRepository;
 
     @Autowired
     private FriendshipService friendshipService;
@@ -57,9 +51,7 @@ public class UserServiceImpl implements UserService {
 
         User userModel = modelMapper.map(userRegistrationRequest, User.class);
         userModel.setPassword(passwordEncoder.encode(userRegistrationRequest.getPassword()))
-            .setUserType(UserType.LOCAL)
-            .setRoles(Collections.singletonList(
-                    roleRepository.findByType(RoleType.ROLE_USER)));
+            .setUserType(UserType.LOCAL);
 
         User signedUpUserModel = userRepository.save(userModel);
         log.info("[x] Registered user: {}", signedUpUserModel);

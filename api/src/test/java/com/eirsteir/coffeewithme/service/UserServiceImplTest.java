@@ -5,7 +5,6 @@ import com.eirsteir.coffeewithme.domain.friendship.FriendshipStatus;
 import com.eirsteir.coffeewithme.domain.user.User;
 import com.eirsteir.coffeewithme.dto.UserDto;
 import com.eirsteir.coffeewithme.exception.CWMException;
-import com.eirsteir.coffeewithme.repository.RoleRepository;
 import com.eirsteir.coffeewithme.repository.UserRepository;
 import com.eirsteir.coffeewithme.service.friendship.FriendshipService;
 import com.eirsteir.coffeewithme.service.user.UserService;
@@ -69,9 +68,6 @@ class UserServiceImplTest {
 
     @MockBean
     private FriendshipService friendshipService;
-
-    @MockBean
-    private RoleRepository roleRepository;
 
     private User user;
     private UserDto userDto;

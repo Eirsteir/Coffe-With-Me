@@ -4,17 +4,16 @@ package com.eirsteir.coffeewithme.domain.user;
 import com.eirsteir.coffeewithme.domain.CreatedUpdatedDateTimeBaseModel;
 import com.eirsteir.coffeewithme.domain.friendship.Friendship;
 import com.eirsteir.coffeewithme.domain.friendship.FriendshipStatus;
-import com.eirsteir.coffeewithme.domain.role.Role;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 import lombok.experimental.Accessors;
-import org.hibernate.annotations.*;
+import org.hibernate.annotations.Cascade;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Entity;
 import javax.persistence.*;
 import java.io.Serializable;
-import java.util.*;
+import java.util.Date;
+import java.util.LinkedList;
+import java.util.List;
 
 
 @Getter
@@ -65,10 +64,6 @@ public class User extends CreatedUpdatedDateTimeBaseModel implements Serializabl
     @ToString.Exclude
     @Builder.Default
     private Boolean credentialsExpired = false;
-
-    @ManyToMany(fetch = FetchType.EAGER)
-    @JoinTable(name = "users_roles", joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"), inverseJoinColumns = @JoinColumn(name = "role_id", referencedColumnName = "id"))
-    private Collection<Role> roles;
 
     @JsonIgnore
     @Builder.Default

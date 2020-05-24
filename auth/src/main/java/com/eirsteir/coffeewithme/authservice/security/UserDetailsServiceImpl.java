@@ -1,50 +1,38 @@
 package com.eirsteir.coffeewithme.authservice.security;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
+import com.eirsteir.coffeewithme.authservice.domain.Role;
+import com.eirsteir.coffeewithme.authservice.domain.UserCredentials;
+import com.eirsteir.coffeewithme.authservice.repository.UserCredentialsRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.AuthorityUtils;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
-import java.util.Arrays;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 public class UserDetailsServiceImpl implements UserDetailsService {
 
     @Autowired
-    private BCryptPasswordEncoder encoder;
+    private UserCredentialsRepository repository;
 
     @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        // TODO: 24.05.2020 Properly implement this
+    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
+        UserCredentials userCredentials = repository.findByEmail(email)
+                .orElseThrow(() -> new UsernameNotFoundException("[x] Email: " + email + " not found"));
 
-        final List<AppUser> users = Arrays.asList(
-                new AppUser(1L, "omar", encoder.encode("12345"), "ROLE_USER"),
-                new AppUser(2L, "admin", encoder.encode("12345"), "ROLE_ADMIN")
-        );
-
-        for (AppUser appUser : users) {
-            if (appUser.getUsername().equals(username)) {
-                List<GrantedAuthority> grantedAuthorities = AuthorityUtils
-                        .commaSeparatedStringToAuthorityList(appUser.getRole());
-                return new User(appUser.getUsername(), appUser.getPassword(), grantedAuthorities);
-            }
-        }
-
-        throw new UsernameNotFoundException("Username: " + username + " not found");
+        return new User(userCredentials.getEmail(), userCredentials.getPassword(), getAuthorities(userCredentials));
     }
 
-    @Getter
-    @AllArgsConstructor
-    private static class AppUser {
-        private Long id;
-        private String username;
-        private String password;
-        private String role;
+    public Collection<? extends GrantedAuthority> getAuthorities(UserCredentials userCredentials) {
+        List<GrantedAuthority> authorities = new ArrayList<>();
+        for (Role role : userCredentials.getRoles())
+            authorities.add(new SimpleGrantedAuthority(role.getType().name()));
+
+        return authorities;
     }
 }

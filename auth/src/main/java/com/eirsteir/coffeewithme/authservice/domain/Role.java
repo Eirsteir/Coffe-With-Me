@@ -1,13 +1,13 @@
-package com.eirsteir.coffeewithme.domain.role;
+package com.eirsteir.coffeewithme.authservice.domain;
 
-import com.eirsteir.coffeewithme.domain.user.User;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
 
 import javax.persistence.*;
 import java.io.Serializable;
-import java.util.Collection;
 
 @Data
 @Builder
@@ -25,10 +25,5 @@ public class Role implements Serializable {
 
   @Column(unique = true)
   private RoleType type;
-
-  @JsonIgnore
-  @ToString.Exclude
-  @ManyToMany(mappedBy = "roles")
-  private Collection<User> users;
 
 }

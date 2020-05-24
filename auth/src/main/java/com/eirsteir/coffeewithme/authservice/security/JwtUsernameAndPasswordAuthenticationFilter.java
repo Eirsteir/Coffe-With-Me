@@ -1,13 +1,10 @@
 package com.eirsteir.coffeewithme.authservice.security;
 
+import com.eirsteir.coffeewithme.authservice.domain.UserCredentials;
 import com.eirsteir.coffeewithme.commons.security.JwtConfig;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -46,10 +43,10 @@ public class JwtUsernameAndPasswordAuthenticationFilter extends UsernamePassword
             throws AuthenticationException {
 
         try {
-            UserCredentials credentials = new ObjectMapper().readValue(request.getInputStream(), UserCredentials.class);
-            log.debug("[x] Found credentials: {}", credentials);
+            UserCredentials userCredentials = new ObjectMapper().readValue(request.getInputStream(), UserCredentials.class);
+            log.debug("[x] Found credentials: {}", userCredentials);
             UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
-                    credentials.getUsername(), credentials.getPassword(), Collections.emptyList());
+                    userCredentials.getEmail(), userCredentials.getPassword(), Collections.emptyList());
 
             log.debug("[x] Attempting to authenticate token: {}", authToken);
             return authManager.authenticate(authToken);
@@ -76,12 +73,4 @@ public class JwtUsernameAndPasswordAuthenticationFilter extends UsernamePassword
         response.addHeader(jwtConfig.getHeader(), jwtConfig.getPrefix() + token);
     }
 
-    @ToString
-    @Getter
-    @AllArgsConstructor
-    @NoArgsConstructor
-    private static class UserCredentials {
-        private String username;
-        private String password;
-    }
 }
