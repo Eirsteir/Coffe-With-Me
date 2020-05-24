@@ -15,6 +15,7 @@ public class UserDetailsImpl implements UserDetails {
 
     private Long cwmId;
     private String email;
+    private String username;
     private String password;
     Collection<? extends GrantedAuthority> roles;
 
@@ -30,7 +31,7 @@ public class UserDetailsImpl implements UserDetails {
 
     @Override
     public String getUsername() {
-        return email;
+        return username;
     }
 
     @Override
