@@ -11,6 +11,8 @@
 	<modules>
 		<module>api</module>
 		<module>notification-api</module>
+		<module>auth</module>
+		<module>commons</module>
 	</modules>
 
 </project>

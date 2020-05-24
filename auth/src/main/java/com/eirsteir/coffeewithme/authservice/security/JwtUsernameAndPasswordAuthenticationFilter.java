@@ -1,5 +1,6 @@
 package com.eirsteir.coffeewithme.authservice.security;
 
+import com.eirsteir.coffeewithme.commons.security.JwtConfig;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;

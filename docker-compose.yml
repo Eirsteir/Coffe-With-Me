@@ -10,6 +10,7 @@ services:
       - 8080:8080
     restart: always
     depends_on:
+      - auth-service
       - notification-api
       - redis
       - db
@@ -21,6 +22,17 @@ services:
       dockerfile: Dockerfile
     ports:
       - 9000:9000
+    restart: always
+    depends_on:
+      - db
+      -
+  # API notification service
+  auth-service:
+    build:
+      context: auth
+      dockerfile: Dockerfile
+    ports:
+      - 9100:9100
     restart: always
     depends_on:
       - db
@@ -38,12 +50,12 @@ services:
       - /app/node_modules
       - ./client:/app
 
-  # Redis Caching Service
-  redis:
-    image: redis:alpine
-    hostname: redis
-    ports:
-      - 6379:6379
+#  # Redis Caching Service
+#  redis:
+#    image: redis:alpine
+#    hostname: redis
+#    ports:
+#      - 6379:6379
 
   # Database Service (H2)
   db:

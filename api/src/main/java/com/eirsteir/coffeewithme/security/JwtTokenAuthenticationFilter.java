@@ -1,5 +1,6 @@
 package com.eirsteir.coffeewithme.security;
 
+import com.eirsteir.coffeewithme.commons.security.JwtConfig;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import lombok.AllArgsConstructor;

@@ -1,4 +1,4 @@
-package com.eirsteir.coffeewithme.security;
+package com.eirsteir.coffeewithme.commons.security;
 
 import lombok.Getter;
 import org.springframework.beans.factory.annotation.Value;

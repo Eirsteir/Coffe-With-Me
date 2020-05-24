@@ -1,5 +1,6 @@
 package com.eirsteir.coffeewithme.authservice.security;
 
+import com.eirsteir.coffeewithme.commons.security.JwtConfig;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpMethod;
@@ -21,7 +22,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     private UserDetailsService userDetailsService;
 
     @Autowired
-    private Jwtconfig jwtconfig;
+    private JwtConfig jwtconfig;
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
