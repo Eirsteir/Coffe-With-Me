@@ -24,6 +24,8 @@ public class AuthController {
     @Autowired
     private AccountService accountService;
 
+
+
     @PostMapping("/register")
     ResponseEntity<Object> register(@RequestBody @Valid UserRegistrationRequest userRegistrationRequest) {
 
