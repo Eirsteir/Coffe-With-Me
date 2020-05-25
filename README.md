@@ -1,6 +1,7 @@
 # Coffee With Me
 
 ### Run the application
-Needs to be run manually in development // todo: more detailed instructions
+To run the application, run eureka server, gateway and then the three services.
 
-*(Failing)* To get started quickly, run `docker-compose up --build` and go to `localhost:3000`.
+The client requires npm installed and can be run with `npm start` 
+to launch the frontend and `localhost:3000`. 
