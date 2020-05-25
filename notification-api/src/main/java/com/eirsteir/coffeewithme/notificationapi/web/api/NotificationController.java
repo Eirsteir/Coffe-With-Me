@@ -1,21 +1,19 @@
 package com.eirsteir.coffeewithme.notificationapi.web.api;
 
 
+import com.eirsteir.coffeewithme.commons.security.UserDetailsImpl;
 import com.eirsteir.coffeewithme.notificationapi.domain.Notification;
 import com.eirsteir.coffeewithme.notificationapi.dto.NotificationDto;
 import com.eirsteir.coffeewithme.notificationapi.service.NotificationService;
-import com.eirsteir.coffeewithme.notificationapi.web.api.request.NotificationRequest;
+import com.eirsteir.coffeewithme.notificationapi.web.request.NotificationRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
-import org.springframework.web.servlet.function.ServerRequest;
 
-import java.security.Principal;
 import java.util.List;
 
 @Slf4j
@@ -28,24 +26,23 @@ public class NotificationController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    void notify(@RequestBody NotificationRequest notificationRequest, @CookieValue("SESSION") String session) {
-        // @CookieValue("SESSION") String session
-
-        log.debug("[x] Received request: {}", notificationRequest);
+    void notify(@RequestBody NotificationRequest notificationRequest,
+                @AuthenticationPrincipal UserDetailsImpl principal) {
+        log.debug("[x] Received request from user: {}\n{}", notificationRequest, principal);
 
         Notification.UserDetails userDetails = Notification.UserDetails.builder()
-                .id(notificationRequest.getUserId())
+                .id(principal.getId())
                 .name(notificationRequest.getName())
-                .username(notificationRequest.getUsername())
+                .username(principal.getUsername())
                 .build();
 
         service.notify(notificationRequest.getSubjectId(), userDetails, notificationRequest.getType());
     }
 
     @GetMapping("/users/{id}")
-    List<NotificationDto> getNotifications(@PathVariable Long id, Pageable pageable, @CookieValue("SESSION") String session, Authentication authentication) {
-        log.debug("[x] Received request with session: {}", session);
-        log.debug("[x] Received request with authentication: {}", authentication);
+    List<NotificationDto> getNotifications(@PathVariable Long id, Pageable pageable,
+                                           @AuthenticationPrincipal UserDetailsImpl principal) {
+        log.debug("[x] Received request with principal: {}", principal);
 
         List<NotificationDto> notifications = service.findAllByUserId(id, pageable);
 
@@ -57,10 +54,12 @@ public class NotificationController {
     }
 
     @PutMapping("/users/{id}")
-    NotificationDto updateNotificationToRead(@PathVariable Long id, @RequestBody NotificationDto notificationDto, ServerRequest request) {
-        log.debug("[x] Received request: {}", request);
+    NotificationDto updateNotificationToRead(@PathVariable Long id,
+                                             @RequestBody NotificationDto notificationDto,
+                                             @AuthenticationPrincipal UserDetailsImpl principal) {
+        log.debug("[x] Received request with principal: {}", principal);
 
-        validateNotificationUpdate(notificationDto, id);
+        validateNotificationUpdate(notificationDto, principal.getId());
 
         return service.updateNotificationToRead(notificationDto);
     }

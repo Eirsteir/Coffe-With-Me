@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>com.eirsteir</groupId>
-	<artifactId>coffee-with-me</artifactId>
+	<artifactId>coffeewithme</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<packaging>pom</packaging>
 	<name>Coffee With Me</name>
@@ -11,6 +11,8 @@
 	<modules>
 		<module>api</module>
 		<module>notification-api</module>
+		<module>auth</module>
+		<module>commons</module>
 	</modules>
 
 </project>
