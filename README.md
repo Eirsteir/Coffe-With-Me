@@ -1,4 +1,7 @@
 # Coffee With Me 
+*This application was developed for learning purposes 
+and some architectural decisions could and probably should otherwise 
+have been taken differently.*  
 
 # Table of Contents
 1. [Application](#application)
