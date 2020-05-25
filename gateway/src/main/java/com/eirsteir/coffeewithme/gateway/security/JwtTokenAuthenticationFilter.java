@@ -1,4 +1,4 @@
-package com.eirsteir.coffeewithme.social.security;
+package com.eirsteir.coffeewithme.gateway.security;
 
 import com.eirsteir.coffeewithme.commons.security.JwtConfig;
 import com.eirsteir.coffeewithme.commons.security.UserDetailsImpl;
@@ -41,6 +41,7 @@ public class JwtTokenAuthenticationFilter extends OncePerRequestFilter {
                     .parseClaimsJws(token)
                     .getBody();
 
+            // Probably need to get Id from here?
             String id = claims.getSubject();
             if (id != null) {
                 @SuppressWarnings("unchecked")
