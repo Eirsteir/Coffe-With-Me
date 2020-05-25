@@ -10,7 +10,7 @@
 
 	<modules>
 		<module>eureka-server</module>
-		<module>api</module>
+		<module>social-service</module>
 		<module>notification-api</module>
 		<module>auth</module>
 		<module>commons</module>
