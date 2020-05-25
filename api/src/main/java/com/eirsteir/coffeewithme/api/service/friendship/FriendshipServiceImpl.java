@@ -5,7 +5,6 @@ import com.eirsteir.coffeewithme.api.domain.friendship.FriendshipId;
 import com.eirsteir.coffeewithme.api.domain.friendship.FriendshipStatus;
 import com.eirsteir.coffeewithme.api.domain.user.User;
 import com.eirsteir.coffeewithme.api.dto.FriendshipDto;
-import com.eirsteir.coffeewithme.api.dto.UserDto;
 import com.eirsteir.coffeewithme.api.exception.CWMException;
 import com.eirsteir.coffeewithme.api.exception.EntityType;
 import com.eirsteir.coffeewithme.api.exception.ExceptionType;
@@ -13,6 +12,7 @@ import com.eirsteir.coffeewithme.api.repository.FriendshipRepository;
 import com.eirsteir.coffeewithme.api.repository.UserRepository;
 import com.eirsteir.coffeewithme.api.service.user.UserService;
 import com.eirsteir.coffeewithme.api.web.request.FriendRequest;
+import com.eirsteir.coffeewithme.commons.dto.UserDetails;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,28 +41,28 @@ public class FriendshipServiceImpl implements FriendshipService {
     private ModelMapper modelMapper;
 
     @Override
-    public List<UserDto> getFriends(UserDto userDto) {
-        return getAllFriendshipsWithStatus(userDto, FriendshipStatus.ACCEPTED);
+    public List<UserDetails> getFriends(UserDetails userDetails) {
+        return getAllFriendshipsWithStatus(userDetails, FriendshipStatus.ACCEPTED);
     }
 
     @Override
-    public List<UserDto> getAllFriendshipsWithStatus(UserDto userDto, FriendshipStatus status) {
-        User user = userService.findUserById(userDto.getId());
+    public List<UserDetails> getAllFriendshipsWithStatus(UserDetails userDetails, FriendshipStatus status) {
+        User user = userService.findUserById(userDetails.getId());
         List<User> friends = findFriends(user.getId(), status);
 
         return convertUserListToDto(friends);
     }
 
     @Override
-    public List<UserDto> getFriendsOfWithStatus(UserDto userDto, FriendshipStatus status) {
-        User user = userService.findUserById(userDto.getId());
+    public List<UserDetails> getFriendsOfWithStatus(UserDetails userDetails, FriendshipStatus status) {
+        User user = userService.findUserById(userDetails.getId());
 
         return convertUserListToDto(userRepository.findFriendsOfWithStatus(user.getId(), status));
     }
 
-    private List<UserDto> convertUserListToDto(List<User> users) {
+    private List<UserDetails> convertUserListToDto(List<User> users) {
         return users.stream()
-                .map(user -> modelMapper.map(user, UserDto.class))
+                .map(user -> modelMapper.map(user, UserDetails.class))
                 .collect(Collectors.toList());
     }
 

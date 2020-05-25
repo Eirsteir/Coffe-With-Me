@@ -1,7 +1,5 @@
 package com.eirsteir.coffeewithme.authservice.domain;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
@@ -10,9 +8,7 @@ import javax.persistence.*;
 import java.io.Serializable;
 
 @Data
-@Builder
 @Accessors(chain = true)
-@AllArgsConstructor
 @NoArgsConstructor
 @Entity
 public class Role implements Serializable {
@@ -25,5 +21,9 @@ public class Role implements Serializable {
 
   @Column(unique = true)
   private RoleType type;
+
+  public Role(RoleType type) {
+    this.type = type;
+  }
 
 }

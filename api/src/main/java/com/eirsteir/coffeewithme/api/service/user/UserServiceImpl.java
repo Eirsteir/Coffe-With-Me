@@ -2,12 +2,11 @@ package com.eirsteir.coffeewithme.api.service.user;
 
 import com.eirsteir.coffeewithme.api.domain.friendship.FriendshipStatus;
 import com.eirsteir.coffeewithme.api.domain.user.User;
-import com.eirsteir.coffeewithme.api.dto.UserDto;
 import com.eirsteir.coffeewithme.api.exception.CWMException;
 import com.eirsteir.coffeewithme.api.exception.ExceptionType;
 import com.eirsteir.coffeewithme.api.repository.UserRepository;
 import com.eirsteir.coffeewithme.api.service.friendship.FriendshipService;
-import com.eirsteir.coffeewithme.api.web.request.UserRegistrationRequest;
+import com.eirsteir.coffeewithme.commons.dto.UserDetails;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,29 +39,45 @@ public class UserServiceImpl implements UserService {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
+//    @Override
+//    public UserDto registerUser(UserRegistrationRequest userRegistrationRequest) {
+//        Optional<User> user = userRepository.findByEmail(userRegistrationRequest.getEmail());
+//
+//        if (user.isPresent())
+//            throw CWMException.getException(
+//                    USER, ExceptionType.DUPLICATE_ENTITY, userRegistrationRequest.getEmail());
+//
+//        User userModel = modelMapper.map(userRegistrationRequest, User.class);
+//        userModel.setPassword(passwordEncoder.encode(userRegistrationRequest.getPassword()));
+//
+//        User signedUpUserModel = userRepository.save(userModel);
+//        log.info("[x] Registered user: {}", signedUpUserModel);
+//
+//        return modelMapper.map(signedUpUserModel, UserDto.class);
+//    }
+
     @Override
-    public UserDto registerUser(UserRegistrationRequest userRegistrationRequest) {
-        Optional<User> user = userRepository.findByEmail(userRegistrationRequest.getEmail());
+    public UserDetails registerUser(UserDetails userDetails) {
+        Optional<User> user = userRepository.findByEmail(userDetails.getEmail());
 
         if (user.isPresent())
             throw CWMException.getException(
-                    USER, ExceptionType.DUPLICATE_ENTITY, userRegistrationRequest.getEmail());
+                    USER, ExceptionType.DUPLICATE_ENTITY, userDetails.getEmail());
 
-        User userModel = modelMapper.map(userRegistrationRequest, User.class);
-        userModel.setPassword(passwordEncoder.encode(userRegistrationRequest.getPassword()));
+        User userModel = modelMapper.map(userDetails, User.class);
 
         User signedUpUserModel = userRepository.save(userModel);
         log.info("[x] Registered user: {}", signedUpUserModel);
 
-        return modelMapper.map(signedUpUserModel, UserDto.class);
+        return modelMapper.map(signedUpUserModel, UserDetails.class);
     }
 
     @Override
-    public UserDto findUserByEmail(String email) {
+    public UserDetails findUserByEmail(String email) {
         User userModel = userRepository.findByEmail(email)
                         .orElseThrow(() -> CWMException.getException(USER, ENTITY_NOT_FOUND, email));
 
-        return modelMapper.map(userModel, UserDto.class);
+        return modelMapper.map(userModel, UserDetails.class);
     }
 
     @Override
@@ -72,16 +87,16 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserDto findUserByIdWithIsFriend(Long id, User currentUser) {
+    public UserDetails findUserByIdWithIsFriend(Long id, User currentUser) {
         User user = findUserById(id);
-        UserDto userDto = modelMapper.map(user, UserDto.class);
+        UserDetails userDetails = modelMapper.map(user, UserDetails.class);
         
         if (areFriends(currentUser, user))
-            userDto.setIsFriend(true);
+            userDetails.setIsFriend(true);
         else
-            userDto.setIsFriend(false);
+            userDetails.setIsFriend(false);
 
-        return userDto;
+        return userDetails;
     }
 
     private boolean areFriends(User currentUser, User user) {
@@ -89,22 +104,22 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<UserDto> searchUsers(Specification<User> spec) {
+    public List<UserDetails> searchUsers(Specification<User> spec) {
         return userRepository.findAll(spec)
                 .stream()
-                .map(user -> modelMapper.map(user, UserDto.class))
+                .map(user -> modelMapper.map(user, UserDetails.class))
                 .collect(Collectors.toList());
     }
 
     @Override
-    public UserDto updateProfile(UserDto userDto) {
-        User userModel = userRepository.findByEmail(userDto.getEmail())
-                .orElseThrow(() -> CWMException.getException(USER, ENTITY_NOT_FOUND, userDto.getEmail()));
+    public UserDetails updateProfile(UserDetails userDetails) {
+        User userModel = userRepository.findByEmail(userDetails.getEmail())
+                .orElseThrow(() -> CWMException.getException(USER, ENTITY_NOT_FOUND, userDetails.getEmail()));
 
-        userModel.setUsername(userDto.getUsername());
+        userModel.setUsername(userDetails.getUsername());
         log.info("[x] Updated user profile: {}", userModel);
 
-        return modelMapper.map(userRepository.save(userModel), UserDto.class);
+        return modelMapper.map(userRepository.save(userModel), UserDetails.class);
     }
 
 }

@@ -2,7 +2,7 @@ package com.eirsteir.coffeewithme.authservice.web.api;
 
 
 import com.eirsteir.coffeewithme.authservice.domain.Account;
-import com.eirsteir.coffeewithme.authservice.service.UserService;
+import com.eirsteir.coffeewithme.authservice.service.AccountService;
 import com.eirsteir.coffeewithme.authservice.web.request.UserRegistrationRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,15 +22,15 @@ import java.util.Optional;
 public class AuthController {
 
     @Autowired
-    private UserService userService;
+    private AccountService accountService;
 
     @PostMapping("/register")
     ResponseEntity<Object> register(@RequestBody @Valid UserRegistrationRequest userRegistrationRequest) {
 
-        Optional<Account> account = userService.registerUser(userRegistrationRequest);
+        Optional<Account> account = accountService.registerUser(userRegistrationRequest);
 
         if (account.isPresent()) {
-            userService.dispatch(account.get());
+            accountService.dispatch(account.get());
             return ResponseEntity.created(URI.create("/api/me")).build();
         }
 

@@ -7,7 +7,7 @@ import org.springframework.stereotype.Service;
 import java.util.Optional;
 
 @Service
-public interface UserService {
+public interface AccountService {
 
     Optional<Account> registerUser(UserRegistrationRequest registrationRequest);
 

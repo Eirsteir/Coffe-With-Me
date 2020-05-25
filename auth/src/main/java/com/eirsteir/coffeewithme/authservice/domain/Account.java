@@ -25,6 +25,8 @@ public class Account {
 
     private String username;
 
+    private String name;
+
     private String password;
 
     @ManyToMany(fetch = FetchType.EAGER)

@@ -35,6 +35,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                       .authorizeRequests()
                       .antMatchers(BASE_URL).permitAll()
                       .antMatchers(HttpMethod.POST, jwtConfig.getUri()).permitAll()
+                      .antMatchers(HttpMethod.POST, "/users").permitAll()
                       .antMatchers(BASE_URL + "/actuator/**").hasRole("ADMIN")
                       .antMatchers(BASE_URL + "/swagger-ui").permitAll()
                       .antMatchers("/console/**").permitAll() // remove in prod

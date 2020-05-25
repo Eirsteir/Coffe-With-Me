@@ -1,9 +1,9 @@
 package com.eirsteir.coffeewithme.api.service.friendship;
 
+import com.eirsteir.coffeewithme.commons.dto.UserDetails;
 import com.eirsteir.coffeewithme.api.domain.friendship.FriendshipStatus;
 import com.eirsteir.coffeewithme.api.domain.user.User;
 import com.eirsteir.coffeewithme.api.dto.FriendshipDto;
-import com.eirsteir.coffeewithme.api.dto.UserDto;
 import com.eirsteir.coffeewithme.api.web.request.FriendRequest;
 
 import java.util.List;
@@ -18,9 +18,9 @@ public interface FriendshipService {
 
     FriendshipDto updateFriendship(FriendshipDto friendshipDto);
 
-    List<UserDto> getFriends(UserDto user);
+    List<UserDetails> getFriends(UserDetails user);
 
-    List<UserDto> getAllFriendshipsWithStatus(UserDto user, FriendshipStatus status);
+    List<UserDetails> getAllFriendshipsWithStatus(UserDetails user, FriendshipStatus status);
 
-    List<UserDto> getFriendsOfWithStatus(UserDto userDto, FriendshipStatus status);
+    List<UserDetails> getFriendsOfWithStatus(UserDetails userDetails, FriendshipStatus status);
 }

@@ -1,5 +1,6 @@
 package com.eirsteir.coffeewithme.authservice.security;
 
+import com.eirsteir.coffeewithme.authservice.service.UserDetailsServiceImpl;
 import com.eirsteir.coffeewithme.commons.security.JwtConfig;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -31,8 +32,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
             .and()
                 .addFilter(new JwtUsernameAndPasswordAuthenticationFilter(authenticationManager(), jwtconfig))
             .authorizeRequests()
-                .antMatchers(HttpMethod.POST, jwtconfig.getUri()).permitAll()
-                .antMatchers(HttpMethod.POST, jwtconfig.getUri() + "/register").permitAll()
+                .antMatchers(HttpMethod.POST, jwtconfig.getUri() + "/**").permitAll()
                 .anyRequest().authenticated();
     }
 

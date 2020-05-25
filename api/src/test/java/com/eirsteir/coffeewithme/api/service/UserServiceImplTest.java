@@ -3,12 +3,12 @@ package com.eirsteir.coffeewithme.api.service;
 import com.eirsteir.coffeewithme.api.config.ModelMapperConfig;
 import com.eirsteir.coffeewithme.api.domain.friendship.FriendshipStatus;
 import com.eirsteir.coffeewithme.api.domain.user.User;
-import com.eirsteir.coffeewithme.api.dto.UserDto;
 import com.eirsteir.coffeewithme.api.exception.CWMException;
 import com.eirsteir.coffeewithme.api.repository.UserRepository;
 import com.eirsteir.coffeewithme.api.service.friendship.FriendshipService;
 import com.eirsteir.coffeewithme.api.service.user.UserService;
 import com.eirsteir.coffeewithme.api.service.user.UserServiceImpl;
+import com.eirsteir.coffeewithme.commons.dto.UserDetails;
 import com.eirsteir.coffeewithme.testconfig.MessageTemplateUtilTestConfig;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -70,7 +70,7 @@ class UserServiceImplTest {
     private FriendshipService friendshipService;
 
     private User user;
-    private UserDto userDto;
+    private UserDetails userDetails;
 
     @BeforeEach
     public void setUp() {
@@ -80,7 +80,7 @@ class UserServiceImplTest {
                 .mobileNumber(MOBILE_NUMBER_ALEX)
                 .build();
 
-        userDto = UserDto.builder()
+        userDetails = UserDetails.builder()
                 .email(EMAIL_ALEX)
                 .name(NAME_ALEX)
                 .mobileNumber(MOBILE_NUMBER_ALEX)
@@ -95,9 +95,9 @@ class UserServiceImplTest {
 
     @Test
     void testFindUserByEmailWhenFoundReturnsUserDto() {
-        UserDto foundUserDto = userService.findUserByEmail(EMAIL_ALEX);
+        UserDetails foundUserDetails = userService.findUserByEmail(EMAIL_ALEX);
 
-        assertThat(foundUserDto.getEmail()).isEqualTo(EMAIL_ALEX);
+        assertThat(foundUserDetails.getEmail()).isEqualTo(EMAIL_ALEX);
     }
 
 
@@ -117,27 +117,27 @@ class UserServiceImplTest {
         when(userRepository.findAll(Mockito.any(Specification.class)))
                 .thenReturn(Collections.singletonList(user));
 
-        List<UserDto> results = userService.searchUsers(spec);
+        List<UserDetails> results = userService.searchUsers(spec);
 
         assertThat(results).hasSize(1);
-        assertThat(userDto).isIn(results);
+        assertThat(userDetails).isIn(results);
     }
 
     @Test
     void testUpdateProfileUserReturnsUpdatedUserDyo() {
-        UserDto updateProfileRequestDto = UserDto.builder()
+        UserDetails updateProfileRequestDto = UserDetails.builder()
                 .username(USERNAME_ALEX)
                 .email(EMAIL_ALEX)
                 .build();
 
-        UserDto updatedUserDto = userService.updateProfile(updateProfileRequestDto);
+        UserDetails updatedUserDetails = userService.updateProfile(updateProfileRequestDto);
 
-        assertThat(updatedUserDto.getUsername()).isEqualTo(USERNAME_ALEX);
+        assertThat(updatedUserDetails.getUsername()).isEqualTo(USERNAME_ALEX);
     }
 
     @Test
     void testUpdateProfileWhenUserNotFound() {
-        UserDto updateProfileRequestDto = UserDto.builder()
+        UserDetails updateProfileRequestDto = UserDetails.builder()
                 .email("not.found@email.com")
                 .username(USERNAME_ALEX)
                 .build();
@@ -156,9 +156,9 @@ class UserServiceImplTest {
         when(userRepository.findById(friend.getId()))
                 .thenReturn(Optional.of(friend));
 
-        UserDto userDtoWithFriend = userService.findUserByIdWithIsFriend(friend.getId(), user);
+        UserDetails userDetailsWithFriend = userService.findUserByIdWithIsFriend(friend.getId(), user);
 
-        assertThat(userDtoWithFriend.getIsFriend()).isTrue();
+        assertThat(userDetailsWithFriend.getIsFriend()).isTrue();
     }
 
     @Test
@@ -171,8 +171,8 @@ class UserServiceImplTest {
         when(userRepository.findById(friend.getId()))
                 .thenReturn(Optional.of(friend));
 
-        UserDto userDtoWithFriend = userService.findUserByIdWithIsFriend(friend.getId(), user);
+        UserDetails userDetailsWithFriend = userService.findUserByIdWithIsFriend(friend.getId(), user);
 
-        assertThat(userDtoWithFriend.getIsFriend()).isFalse();
+        assertThat(userDetailsWithFriend.getIsFriend()).isFalse();
     }
 }

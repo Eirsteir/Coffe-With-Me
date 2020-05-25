@@ -1,6 +1,6 @@
 package com.eirsteir.coffeewithme.api.web.api.friendship;
 
-import com.eirsteir.coffeewithme.api.dto.UserDto;
+import com.eirsteir.coffeewithme.commons.dto.UserDetails;
 import com.eirsteir.coffeewithme.api.service.friendship.FriendshipService;
 import com.eirsteir.coffeewithme.api.service.user.UserService;
 import lombok.extern.slf4j.Slf4j;
@@ -36,13 +36,13 @@ public class FriendshipController {
 
     @GetMapping("/{id}/friends")
     @ResponseBody
-    Collection<UserDto> getFriends(@PathVariable Long id) {
-        UserDto userDto = modelMapper.map(userService.findUserById(id), UserDto.class);
-        List<UserDto> friends = friendshipService.getFriends(userDto);
+    Collection<UserDetails> getFriends(@PathVariable Long id) {
+        UserDetails userDetails = modelMapper.map(userService.findUserById(id), UserDetails.class);
+        List<UserDetails> friends = friendshipService.getFriends(userDetails);
 
         if (friends.isEmpty())
             throw new ResponseStatusException(
-                    HttpStatus.NO_CONTENT, "User with email - " +  userDto.getEmail() + " has no friends");
+                    HttpStatus.NO_CONTENT, "User with email - " +  userDetails.getEmail() + " has no friends");
 
         return friends;
     }

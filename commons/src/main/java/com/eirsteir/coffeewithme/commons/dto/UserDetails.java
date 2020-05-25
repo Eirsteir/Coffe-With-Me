@@ -1,6 +1,9 @@
-package com.eirsteir.coffeewithme.api.dto;
+package com.eirsteir.coffeewithme.commons.dto;
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
 
 @Data
@@ -8,7 +11,7 @@ import lombok.experimental.Accessors;
 @Accessors(chain = true)
 @NoArgsConstructor
 @AllArgsConstructor
-public class UserDto {
+public class UserDetails {
 
     private Long id;
     private String email;

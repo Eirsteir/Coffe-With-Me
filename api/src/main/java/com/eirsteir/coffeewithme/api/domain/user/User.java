@@ -30,7 +30,6 @@ public class User extends CreatedUpdatedDateTimeBaseModel implements Serializabl
     private static final long serialVersionUID = 3966996285633364335L;
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
     @Column(unique = true)
