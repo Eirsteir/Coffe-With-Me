@@ -4,7 +4,7 @@ package com.eirsteir.coffeewithme.authservice.config;
 import io.netty.channel.ChannelOption;
 import io.netty.handler.timeout.ReadTimeoutHandler;
 import io.netty.handler.timeout.WriteTimeoutHandler;
-import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cloud.client.loadbalancer.LoadBalanced;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.client.reactive.ReactorClientHttpConnector;
@@ -17,14 +17,10 @@ import java.util.concurrent.TimeUnit;
 @Configuration
 public class WebClientConfig {
 
-    private final String API_URL;
-
-
-    public WebClientConfig(@Value("${api.url}") String url) {
-        API_URL = url;
-    }
+    private final String SOCIAL_SERVICE_URL = "http://social-service";
 
     @Bean
+    @LoadBalanced
     public WebClient webClient() {
         TcpClient tcpClient = TcpClient
                 .create()
@@ -36,7 +32,7 @@ public class WebClientConfig {
 
         return WebClient.builder()
                 .clientConnector(new ReactorClientHttpConnector(HttpClient.from(tcpClient)))
-                .baseUrl(API_URL)
+                .baseUrl(SOCIAL_SERVICE_URL)
                 .build();
     }
 
