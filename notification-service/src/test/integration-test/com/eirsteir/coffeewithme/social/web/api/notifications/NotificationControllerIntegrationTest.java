@@ -2,12 +2,12 @@ package com.eirsteir.coffeewithme.social.web.api.notifications;
 
 
 import com.eirsteir.coffeewithme.SetupTestDataLoader;
-import com.eirsteir.coffeewithme.notificationapi.NotificationApiApplication;
-import com.eirsteir.coffeewithme.notificationapi.config.ModelMapperConfig;
-import com.eirsteir.coffeewithme.notificationapi.domain.Notification;
-import com.eirsteir.coffeewithme.notificationapi.dto.NotificationDto;
-import com.eirsteir.coffeewithme.notificationapi.repository.NotificationRepository;
-import com.eirsteir.coffeewithme.notificationapi.testutil.JSONUtils;
+import com.eirsteir.coffeewithme.notification.NotificationServiceApplication;
+import com.eirsteir.coffeewithme.notification.config.ModelMapperConfig;
+import com.eirsteir.coffeewithme.notification.domain.Notification;
+import com.eirsteir.coffeewithme.notification.dto.NotificationDto;
+import com.eirsteir.coffeewithme.notification.repository.NotificationRepository;
+import com.eirsteir.coffeewithme.notification.testutil.JSONUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -32,7 +32,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @ExtendWith(SpringExtension.class)
 @Import({ModelMapperConfig.class, SetupTestDataLoader.class})
-@SpringBootTest(classes = NotificationApiApplication.class, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@SpringBootTest(classes = NotificationServiceApplication.class, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 class NotificationControllerIntegrationTest {
 
     public static final long DEFAULT_USER_ID = 1L;

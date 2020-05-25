@@ -1,8 +1,8 @@
 package com.eirsteir.coffeewithme;
 
-import com.eirsteir.coffeewithme.notificationapi.domain.Notification;
-import com.eirsteir.coffeewithme.notificationapi.domain.NotificationType;
-import com.eirsteir.coffeewithme.notificationapi.repository.NotificationRepository;
+import com.eirsteir.coffeewithme.notification.domain.Notification;
+import com.eirsteir.coffeewithme.notification.domain.NotificationType;
+import com.eirsteir.coffeewithme.notification.repository.NotificationRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationListener;
