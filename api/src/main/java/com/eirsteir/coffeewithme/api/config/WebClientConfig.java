@@ -15,12 +15,12 @@ import reactor.netty.tcp.TcpClient;
 import java.util.concurrent.TimeUnit;
 
 @Configuration
-public class SpringConfig {
+public class WebClientConfig {
 
     private final String NOTIFICATIONS_API_URI;
 
 
-    public SpringConfig(@Value("${notification-api.url}") String notificationApiUri) {
+    public WebClientConfig(@Value("${notification-api.url}") String notificationApiUri) {
         NOTIFICATIONS_API_URI = notificationApiUri;
     }
 

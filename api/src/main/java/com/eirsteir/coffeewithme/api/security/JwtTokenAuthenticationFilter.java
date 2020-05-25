@@ -1,6 +1,7 @@
 package com.eirsteir.coffeewithme.api.security;
 
 import com.eirsteir.coffeewithme.commons.security.JwtConfig;
+import com.eirsteir.coffeewithme.commons.security.UserDetailsImpl;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import lombok.AllArgsConstructor;
@@ -41,12 +42,17 @@ public class JwtTokenAuthenticationFilter extends OncePerRequestFilter {
                     .getBody();
 
             // Probably need to get Id from here?
-            String username = claims.getSubject();
-            if (username != null) {
+            String id = claims.getSubject();
+            if (id != null) {
                 @SuppressWarnings("unchecked")
                 List<String> authorities = (List<String>) claims.get("authorities");
+                UserDetailsImpl principal = UserDetailsImpl.builder()
+                        .id(Long.parseLong(id))
+                        .email((String) claims.get("email"))
+                        .username((String) claims.get("username"))
+                        .build();
                 UsernamePasswordAuthenticationToken auth =  new UsernamePasswordAuthenticationToken(
-                        username, null, authorities.stream().map(SimpleGrantedAuthority::new).collect(Collectors.toList()));
+                        principal, null, authorities.stream().map(SimpleGrantedAuthority::new).collect(Collectors.toList()));
 
                 log.info("[x] Authenticating user: {}", auth);
                 SecurityContextHolder.getContext().setAuthentication(auth);

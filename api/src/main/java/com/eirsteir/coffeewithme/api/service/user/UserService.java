@@ -18,5 +18,6 @@ public interface UserService {
 
     List<UserDetails> searchUsers(Specification<User> spec);
 
-    UserDetails findUserByIdWithIsFriend(Long id, User currentUser);
+    UserDetails findUserByIdWithIsFriend(Long id, Long viewerId);
+
 }

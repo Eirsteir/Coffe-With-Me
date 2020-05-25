@@ -18,8 +18,6 @@ import javax.servlet.http.HttpServletResponse;
 @EnableWebSecurity
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
-  private final String BASE_URL = "/api";
-
   @Autowired
   private JwtConfig jwtConfig;
 
@@ -33,11 +31,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                   .and()
                       .addFilterAfter(new JwtTokenAuthenticationFilter(jwtConfig), UsernamePasswordAuthenticationFilter.class)
                       .authorizeRequests()
-                      .antMatchers(BASE_URL).permitAll()
                       .antMatchers(HttpMethod.POST, jwtConfig.getUri()).permitAll()
                       .antMatchers(HttpMethod.POST, "/users").permitAll()
-                      .antMatchers(BASE_URL + "/actuator/**").hasRole("ADMIN")
-                      .antMatchers(BASE_URL + "/swagger-ui").permitAll()
+                      .antMatchers( "/actuator/**").hasRole("ADMIN")
+                      .antMatchers("/swagger-ui").permitAll()
                       .antMatchers("/console/**").permitAll() // remove in prod
                       .anyRequest().authenticated()
                   .and()

@@ -11,7 +11,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.domain.Specification;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -35,26 +34,6 @@ public class UserServiceImpl implements UserService {
     
     @Autowired
     private ModelMapper modelMapper;
-
-    @Autowired
-    private PasswordEncoder passwordEncoder;
-
-//    @Override
-//    public UserDto registerUser(UserRegistrationRequest userRegistrationRequest) {
-//        Optional<User> user = userRepository.findByEmail(userRegistrationRequest.getEmail());
-//
-//        if (user.isPresent())
-//            throw CWMException.getException(
-//                    USER, ExceptionType.DUPLICATE_ENTITY, userRegistrationRequest.getEmail());
-//
-//        User userModel = modelMapper.map(userRegistrationRequest, User.class);
-//        userModel.setPassword(passwordEncoder.encode(userRegistrationRequest.getPassword()));
-//
-//        User signedUpUserModel = userRepository.save(userModel);
-//        log.info("[x] Registered user: {}", signedUpUserModel);
-//
-//        return modelMapper.map(signedUpUserModel, UserDto.class);
-//    }
 
     @Override
     public UserDetails registerUser(UserDetails userDetails) {
@@ -87,11 +66,12 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserDetails findUserByIdWithIsFriend(Long id, User currentUser) {
+    public UserDetails findUserByIdWithIsFriend(Long id, Long viewerId) {
         User user = findUserById(id);
+        User viewer = findUserById(id);
         UserDetails userDetails = modelMapper.map(user, UserDetails.class);
         
-        if (areFriends(currentUser, user))
+        if (areFriends(viewer, user))
             userDetails.setIsFriend(true);
         else
             userDetails.setIsFriend(false);

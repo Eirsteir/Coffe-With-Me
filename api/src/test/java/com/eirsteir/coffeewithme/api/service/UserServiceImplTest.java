@@ -156,7 +156,7 @@ class UserServiceImplTest {
         when(userRepository.findById(friend.getId()))
                 .thenReturn(Optional.of(friend));
 
-        UserDetails userDetailsWithFriend = userService.findUserByIdWithIsFriend(friend.getId(), user);
+        UserDetails userDetailsWithFriend = userService.findUserByIdWithIsFriend(friend.getId(), user.getId());
 
         assertThat(userDetailsWithFriend.getIsFriend()).isTrue();
     }
@@ -171,7 +171,7 @@ class UserServiceImplTest {
         when(userRepository.findById(friend.getId()))
                 .thenReturn(Optional.of(friend));
 
-        UserDetails userDetailsWithFriend = userService.findUserByIdWithIsFriend(friend.getId(), user);
+        UserDetails userDetailsWithFriend = userService.findUserByIdWithIsFriend(friend.getId(), user.getId());
 
         assertThat(userDetailsWithFriend.getIsFriend()).isFalse();
     }
