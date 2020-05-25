@@ -18,7 +18,7 @@ import java.util.Collection;
 public class Account {
 
     @Id @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long cwmId;
+    private Long id;
 
     @Column(unique = true)
     private String email;

@@ -31,7 +31,7 @@ public class AuthController {
 
         if (account.isPresent()) {
             accountService.dispatch(account.get());
-            return ResponseEntity.created(URI.create("/api/me")).build();
+            return ResponseEntity.created(URI.create("/api/me")).body(account.get());
         }
 
         return ResponseEntity.badRequest().build();

@@ -68,7 +68,7 @@ public class JwtUsernameAndPasswordAuthenticationFilter extends UsernamePassword
 
         long now = System.currentTimeMillis();
         String token = Jwts.builder()
-                .setSubject(principal.getCwmId().toString())
+                .setSubject(principal.getId().toString())
                 .claim("email", principal.getEmail())
                 .claim("username", principal.getUsername())
                 .claim("authorities", auth.getAuthorities().stream()

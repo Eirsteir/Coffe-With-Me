@@ -48,7 +48,7 @@ public class UserDetailsServiceImpl implements UserDetailsService, AccountServic
                 .orElseThrow(() -> new UsernameNotFoundException("[x] Email: " + email + " not found"));
 
         return UserDetailsImpl.builder()
-                .cwmId(account.getCwmId())
+                .id(account.getId())
                 .email(account.getEmail())
                 .password(account.getPassword())
                 .roles(getAuthorities(account))
@@ -106,7 +106,7 @@ public class UserDetailsServiceImpl implements UserDetailsService, AccountServic
     }
 
     private UserDetails createUserDetails(Account account) {
-        return UserDetails.builder().id(account.getCwmId())
+        return UserDetails.builder().id(account.getId())
                 .email(account.getEmail())
                 .username(account.getUsername())
                 .name(account.getName())
