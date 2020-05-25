@@ -12,7 +12,7 @@
 		<module>eureka-server</module>
 		<module>social-service</module>
 		<module>notification-service</module>
-		<module>auth</module>
+		<module>auth-service</module>
 		<module>commons</module>
 	</modules>
 
