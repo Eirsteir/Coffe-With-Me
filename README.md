@@ -21,6 +21,7 @@ The client can be run with npm by entering the snippet below:
 ```
 npm start
 ```
+It is then available at `http://localhost:3000`
 
 ### Running the server locally
 In order to run the server locally you will first need to build it. 
