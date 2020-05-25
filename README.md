@@ -72,7 +72,7 @@ Some of the important api endpoints are as follows:
 Docker-compose file is currently not maintained
 
 ## Application Structure
-The application is build as several microservices with an API Gateway to proxy incoming requests
+The application is built as several microservices with an API Gateway to proxy incoming requests
 to the appropriate service using Spring Cloud Netflix Zuul and Eureka Server Registration and Discovery.
 
 
