@@ -9,6 +9,7 @@
 	<name>Coffee With Me</name>
 
 	<modules>
+		<module>eureka-server</module>
 		<module>api</module>
 		<module>notification-api</module>
 		<module>auth</module>
