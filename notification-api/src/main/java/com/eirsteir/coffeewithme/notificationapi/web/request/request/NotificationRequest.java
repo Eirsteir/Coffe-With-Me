@@ -1,4 +1,4 @@
-package com.eirsteir.coffeewithme.notificationapi.web.api.request;
+package com.eirsteir.coffeewithme.notificationapi.web.request.request;
 
 import com.eirsteir.coffeewithme.notificationapi.domain.NotificationType;
 import lombok.Getter;

@@ -1,19 +1,28 @@
 package com.eirsteir.coffeewithme.api.web.api.friendship;
 
-import com.eirsteir.coffeewithme.commons.dto.UserDetails;
+import com.eirsteir.coffeewithme.api.domain.notification.NotificationType;
+import com.eirsteir.coffeewithme.api.domain.user.User;
+import com.eirsteir.coffeewithme.api.dto.FriendshipDto;
 import com.eirsteir.coffeewithme.api.service.friendship.FriendshipService;
 import com.eirsteir.coffeewithme.api.service.user.UserService;
+import com.eirsteir.coffeewithme.api.web.request.FriendRequest;
+import com.eirsteir.coffeewithme.api.web.request.NotificationRequest;
+import com.eirsteir.coffeewithme.commons.dto.UserDetails;
+import com.eirsteir.coffeewithme.commons.security.UserDetailsImpl;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.MediaType;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.server.ResponseStatusException;
+import reactor.core.publisher.Mono;
 
+import java.nio.charset.StandardCharsets;
 import java.util.Collection;
 import java.util.List;
 
@@ -47,46 +56,47 @@ public class FriendshipController {
         return friends;
     }
 
-//    @PostMapping("/friends")
-//    @ResponseStatus(HttpStatus.CREATED)
-//    FriendshipDto addFriend(@RequestParam("to_friend") Long toFriend,
-//                                @AuthenticationPrincipal Principal principal) {
-//
-//        User currentUser = principal.getUser();
-//        if (currentUser.getId().equals(toFriend))
-//            throw new ResponseStatusException(
-//                    HttpStatus.BAD_REQUEST, "Cannot send friend requests to yourself");
-//
-//        FriendshipDto friendshipDto = friendshipService.registerFriendship(FriendRequest.builder()
-//                                                                                   .requesterId(currentUser.getId())
-//                                                                                   .addresseeId(toFriend)
-//                                                                                   .build());
-//        NotificationRequest notificationRequest = NotificationRequest.builder()
-//                .subjectId(toFriend)
-//                .type(NotificationType.FRIENDSHIP_REQUESTED)
-//                .userId(currentUser.getId())
-//                .name(currentUser.getName())
-//                .username(currentUser.getUsername())
-//                .build();
-//
-//        String response = webClient.post()
-//                .uri("/notifications")
-//                .body(BodyInserters.fromPublisher(Mono.just(notificationRequest), NotificationRequest.class))
-//                .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
-//                .acceptCharset(StandardCharsets.UTF_8)
-//                .exchange()
-//                .block()
-//                .bodyToMono(String.class)
-//                .block();
-//
-//         log.debug("[x] Received response from notification api: {}", response);
-//
-////        notificationService.notify(friendshipDto.getAddresseeId(),
-////                                   principal.getUser(),
-////                                   NotificationType.FRIENDSHIP_REQUESTED);
-//
-//        return friendshipDto;
-//    }
+    @PostMapping("/friends")
+    @ResponseStatus(HttpStatus.CREATED)
+    FriendshipDto addFriend(@RequestParam("to_friend") Long toFriend,
+                            @AuthenticationPrincipal UserDetailsImpl principal) {
+
+        User currentUser = userService.findUserById(principal.getId());
+        if (currentUser.getId().equals(toFriend))
+            throw new ResponseStatusException(
+                    HttpStatus.BAD_REQUEST, "Cannot send friend requests to yourself");
+
+        FriendshipDto friendshipDto = friendshipService.registerFriendship(FriendRequest.builder()
+                                                                                   .requesterId(currentUser.getId())
+                                                                                   .addresseeId(toFriend)
+                                                                                   .build());
+
+        NotificationRequest notificationRequest = NotificationRequest.builder()
+                .subjectId(toFriend)
+                .type(NotificationType.FRIENDSHIP_REQUESTED)
+                .userId(currentUser.getId())
+                .name(currentUser.getName())
+                .username(currentUser.getUsername())
+                .build();
+
+        String response = webClient.post()
+                .uri("/notifications")
+                .body(BodyInserters.fromPublisher(Mono.just(notificationRequest), NotificationRequest.class))
+                .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+                .acceptCharset(StandardCharsets.UTF_8)
+                .exchange()
+                .block()
+                .bodyToMono(String.class)
+                .block();
+
+         log.debug("[x] Received response from notification api: {}", response);
+
+//        notificationService.notify(friendshipDto.getAddresseeId(),
+//                                   principal.getUser(),
+//                                   NotificationType.FRIENDSHIP_REQUESTED);
+
+        return friendshipDto;
+    }
 
 //    @PutMapping("/friends")
 //    FriendshipDto updateFriendship(@RequestBody @Valid FriendshipDto friendshipDto,

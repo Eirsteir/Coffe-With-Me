@@ -4,18 +4,16 @@ package com.eirsteir.coffeewithme.notificationapi.web.api;
 import com.eirsteir.coffeewithme.notificationapi.domain.Notification;
 import com.eirsteir.coffeewithme.notificationapi.dto.NotificationDto;
 import com.eirsteir.coffeewithme.notificationapi.service.NotificationService;
-import com.eirsteir.coffeewithme.notificationapi.web.api.request.NotificationRequest;
+import com.eirsteir.coffeewithme.notificationapi.web.request.request.NotificationRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.function.ServerRequest;
 
-import java.security.Principal;
 import java.util.List;
 
 @Slf4j

@@ -1,4 +1,4 @@
-package com.eirsteir.coffeewithme.api.security;
+package com.eirsteir.coffeewithme.notificationapi.security;
 
 import com.eirsteir.coffeewithme.commons.security.JwtConfig;
 import com.eirsteir.coffeewithme.commons.security.UserDetailsImpl;

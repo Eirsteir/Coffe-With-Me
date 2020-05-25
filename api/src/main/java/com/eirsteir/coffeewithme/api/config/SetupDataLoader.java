@@ -33,7 +33,7 @@ public class SetupDataLoader implements ApplicationListener<ContextRefreshedEven
     }
 
     User adminUser = User.builder()
-            .id(1L)
+            .id(5L)
             .name("Admin")
             .username("admin123")
             .email("admin@test.com")
@@ -52,7 +52,7 @@ public class SetupDataLoader implements ApplicationListener<ContextRefreshedEven
     log.info("[x] Preloading " + userRepository.save(auditUser));
 
     User basicUser = User.builder()
-            .id(3L)
+            .id(6L)
             .name("User")
             .username("user01")
             .email("user@test.com")

@@ -94,6 +94,7 @@ public class FriendshipServiceImpl implements FriendshipService {
                                             friendRequest.getAddresseeId().toString());
 
         Friendship friendship = requester.addFriend(addressee, FriendshipStatus.REQUESTED);
+        log.info("[x] Registered friendship: {}", friendship);
         return modelMapper.map(friendship, FriendshipDto.class);
     }
 
