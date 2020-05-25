@@ -3,6 +3,7 @@
 and some architectural decisions could and probably should otherwise 
 have been taken differently.*  
 
+
 # Table of Contents
 1. [Application](#application)
 2. [Running the application](#running-the-application)
