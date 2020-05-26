@@ -51,7 +51,7 @@ public class AccountServiceImpl implements AccountService {
 
         ResultWithEvents<Account> accountWithEvents = Account.createAccount(account);
         domainEventPublisher.publish(Account.class, account.getId(), accountWithEvents.events);
-        
+
         return Optional.of(account);
     }
 
