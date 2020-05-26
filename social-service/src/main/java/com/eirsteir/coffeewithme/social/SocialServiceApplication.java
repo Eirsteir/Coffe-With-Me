@@ -10,8 +10,8 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import java.sql.SQLException;
 
 @EnableEurekaClient
-@SpringBootApplication
 @EnableJpaRepositories(basePackages = "com.eirsteir.coffeewithme.social.repository")
+@SpringBootApplication
 public class SocialServiceApplication {
 
     public static void main(String[] args) {
