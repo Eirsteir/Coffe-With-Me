@@ -14,7 +14,7 @@ RUN ./mvnw install -DskipTests
 RUN mkdir -p target/dependency && (cd target/dependency; jar -xf ../*.jar)
 
 # ${PORT}
-EXPOSE 9000
+EXPOSE 8080
 
 FROM adoptopenjdk/openjdk11:alpine-jre
 VOLUME /tmp
@@ -22,4 +22,4 @@ ARG DEPENDENCY=app/target/dependency
 COPY --from=build ${DEPENDENCY}/BOOT-INF/lib /app/lib
 COPY --from=build ${DEPENDENCY}/META-INF /app/META-INF
 COPY --from=build ${DEPENDENCY}/BOOT-INF/classes /app
-ENTRYPOINT ["java", "-cp","app:app/lib/*","com.eirsteir.coffeewithme.notification.NotificationServiceApplication"]
+ENTRYPOINT ["java", "-cp","app:app/lib/*","com.eirsteir.coffeewithme.gateway.GatewayApplication"]
