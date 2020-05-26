@@ -17,7 +17,7 @@ services:
       - zookeeper
     environment:
       KAFKA_LISTENERS: LC://kafka:29092,LX://kafka:9092
-      KAFKA_ADVERTISED_LISTENERS: LC://kafka:29092,LX://${DOCKER_HOST_IP:-localhost}:9092
+      KAFKA_ADVERTISED_LISTENERS: LC://kafka:29092,LX://${DOCKER_HOST_IP:-localhost}:9092  # watch out for DOCKER_HOST_IP
       KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: LC:PLAINTEXT,LX:PLAINTEXT
       KAFKA_INTER_BROKER_LISTENER_NAME: LC
       KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
@@ -28,8 +28,11 @@ services:
     image: eventuateio/eventuate-mysql
     ports:
       - 3306:3306
+    expose:
+      - 3306
     environment:
-      - MYSQL_ROOT_PASSWORD=rootpassword
+      - MYSQL_DATABASE=coffeewithme
+      - MYSQL_ROOT_PASSWORD=password
       - MYSQL_USER=mysqluser
       - MYSQL_PASSWORD=mysqlpw
 
@@ -42,14 +45,14 @@ services:
       - kafka
       - zookeeper
     environment:
-      SPRING_DATASOURCE_URL: jdbc:mysql://mysql/eventuate
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql/coffeewithme?useSSL=false
       SPRING_DATASOURCE_USERNAME: mysqluser
       SPRING_DATASOURCE_PASSWORD: mysqlpw
       SPRING_DATASOURCE_DRIVER_CLASS_NAME: com.mysql.jdbc.Driver
       EVENTUATELOCAL_KAFKA_BOOTSTRAP_SERVERS: kafka:29092
       EVENTUATELOCAL_ZOOKEEPER_CONNECTION_STRING: zookeeper:2181
       EVENTUATELOCAL_CDC_DB_USER_NAME: root
-      EVENTUATELOCAL_CDC_DB_PASSWORD: rootpassword
+      EVENTUATELOCAL_CDC_DB_PASSWORD: password
       EVENTUATELOCAL_CDC_READER_NAME: MySqlReader
       EVENTUATELOCAL_CDC_OFFSET_STORE_KEY: MySqlBinlog
       EVENTUATELOCAL_CDC_MYSQL_BINLOG_CLIENT_UNIQUE_ID: 1234567890

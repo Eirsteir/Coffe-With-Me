@@ -35,6 +35,11 @@
 
     <dependencies>
         <dependency>
+            <groupId>com.eirsteir.coffeewithme</groupId>
+            <artifactId>commons</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter</artifactId>
         </dependency>
@@ -69,10 +74,6 @@
             <optional>true</optional>
         </dependency>
         <dependency>
-            <groupId>com.h2database</groupId>
-            <artifactId>h2</artifactId>
-        </dependency>
-        <dependency>
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>
             <version>28.2-android</version>
@@ -102,11 +103,8 @@
             <artifactId>reactor-spring</artifactId>
             <version>1.0.1.RELEASE</version>
         </dependency>
-        <dependency>
-            <groupId>com.eirsteir.coffeewithme</groupId>
-            <artifactId>commons</artifactId>
-            <version>${project.version}</version>
-        </dependency>
+
+
 
         <dependency>
             <groupId>io.eventuate.messaging.kafka</groupId>
@@ -127,6 +125,11 @@
             <groupId>io.eventuate.tram.core</groupId>
             <artifactId>eventuate-tram-spring-optimistic-locking</artifactId>
             <version>${eventuate-tram.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>mysql</groupId>
+            <artifactId>mysql-connector-java</artifactId>
+            <version>5.1.36</version>
         </dependency>
 
         <dependency>
