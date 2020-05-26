@@ -17,7 +17,7 @@ public class UserDetails {
     private String email;
     private String username;
     private String name;
-    private String mobileNumber;
-    private Boolean isFriend;
+    private String mobileNumber; // TODO: 26.05.2020 remove
+    private Boolean isFriend; // TODO: 26.05.2020 probably not necessary here
 
 }

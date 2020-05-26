@@ -20,6 +20,7 @@
 
     <properties>
         <java.version>11</java.version>
+        <eventuate-tram.version>0.24.0.RELEASE</eventuate-tram.version>
     </properties>
 
     <dependencies>
@@ -31,6 +32,11 @@
             <groupId>org.springframework.security</groupId>
             <artifactId>spring-security-core</artifactId>
         </dependency>
+        <dependency>
+            <groupId>io.eventuate.tram.core</groupId>
+            <artifactId>eventuate-tram-spring-events</artifactId>
+            <version>${eventuate-tram.version}</version>
+        </dependency>
 
         <dependency>
             <groupId>org.projectlombok</groupId>
@@ -38,5 +44,18 @@
             <optional>true</optional>
         </dependency>
     </dependencies>
+
+    <repositories>
+        <repository>
+            <id>eventuate-tram-release</id>
+            <url>https://dl.bintray.com/eventuateio-oss/eventuate-maven-release</url>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+        </repository>
+    </repositories>
 
 </project>

@@ -32,6 +32,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                       .addFilterAfter(new JwtTokenAuthenticationFilter(jwtConfig), UsernamePasswordAuthenticationFilter.class)
                       .authorizeRequests()
                       .antMatchers(HttpMethod.POST, jwtConfig.getUri()).permitAll()
+                      .antMatchers(HttpMethod.POST, jwtConfig.getUri() + "/register").permitAll()
                       .antMatchers(HttpMethod.POST, "/users").permitAll() // TODO: 25.05.2020 remove these
                       .antMatchers(HttpMethod.POST, "/notifications").permitAll()
                       .antMatchers( "/actuator/**").hasRole("ADMIN")

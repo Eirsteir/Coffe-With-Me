@@ -13,18 +13,40 @@ have been taken differently.*
 4. [Technologies](#technologies)
 
 ## Application
-Something about the system
+Keywords:
+- Microservices
+- Saga Pattern
+- Event-driven
+- Spring
+- React.js
+
+The application consists of the following components:
+- Client: Frontend
+- Eureka Server:
+- API Gateway:  
+- Auth Service: 
+- Social Service: 
+- Notification Service: 
 
 ## Running the application 
 To run the application, run eureka server and gateway first, then the three services.
 
+The system requires that Apache Kafka, Zookeeper, MySQL and Eventuate CDC Service
+are up and running, so launch these first with docker-compose:
+
+```
+docker-compose up --build 
+``` 
+ 
+ This will also launch PHPMyAdmin at `http://localhost:8181`
+ 
 ### Running the client locally
 The client can be run with npm by entering the snippet below:
 
 ```
 npm start
 ```
-It is then available at `http://localhost:3000`
+The application is then available at `http://localhost:3000`
 
 ### Running the server locally
 In order to run the server locally you will first need to build it. 
@@ -58,6 +80,7 @@ Then you can use the snippet below to run the application:
 mvn spring-boot:run
 ```
 
+#### IDEA
 You can follow any/all of the above commands, or simply use the run configuration provided by your favorite IDE and
 run/debug the application from there for development purposes.
 
@@ -65,27 +88,33 @@ Once the application is running, the services can be accessed over the following
 
 http://localhost:8080/api/
 
-Some of the important api endpoints are as follows:
+Some of the important API endpoints are as follows:
 
 - http://localhost:8080/api/auth (HTTP:POST)
+- http://localhost:8080/api/auth/register (HTTP:POST)
 - http://localhost:8080/api/social/user/{id} (HTTP:GET)
 - http://localhost:8080/api/social/friends (HTTP:GET,POST,PUT)
+- http://localhost:8080/api/social/friends?to_friend (HTTP:POST)
 - http://localhost:8080/api/notifications (HTTP:GET,POST,PUT)
 
 ### Running the application in Docker
-Docker-compose file is currently not maintained
+Only Apache Kafka, Zookeeper, MySQL, Eventuate CDC Service and PHPMyAdmin are currently 
+available through Docker.
 
 ## Application Structure
 The application is built as several microservices with an API Gateway to proxy incoming requests
 to the appropriate service using Spring Cloud Netflix Zuul and Eureka Server Registration and Discovery.
-
+They communicate internally with the help of choreography-based sagas for distributed data management
+with messaging through Apache Kafka.  
 
 ## Technologies
 The following libraries, among others, were used during the development of this application:
 
 - **Spring Boot** - Server side framework
 - **Docker** - Containerizing framework
-- **H2 Database Engine** - In memory H2 database 
+- **MySQL** - RDBMS
+- **Apache Kafka**  - Distributed streaming platform
+- **Eventuate Tram** - Framework for distributed data management  
 - **Spring Cloud Netflix Zuul** - JVM based router and server side load balancer
 - **Spring Cloud Netflix Eureka** - Client side service discovery
 - **JWT** - Authentication mechanism for REST APIs

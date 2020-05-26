@@ -27,14 +27,11 @@ public class AuthController {
     @PostMapping("/register")
     ResponseEntity<Object> register(@RequestBody @Valid UserRegistrationRequest userRegistrationRequest) {
 
-        Optional<Account> account = accountService.registerUser(userRegistrationRequest);
+        Optional<Account> account = accountService.registerAccount(userRegistrationRequest);
 
-        if (account.isPresent()) {
-            accountService.dispatch(account.get());
-            return ResponseEntity.created(URI.create("/api/me")).body(account.get());
-        }
-
-        return ResponseEntity.badRequest().build();
+        return account.<ResponseEntity<Object>>map(value -> ResponseEntity.created(URI.create("/api/me"))
+                .body(value)).orElseGet(() -> ResponseEntity.badRequest()
+                .build());
     }
 
 }
