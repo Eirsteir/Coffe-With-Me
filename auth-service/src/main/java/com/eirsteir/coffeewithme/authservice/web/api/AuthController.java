@@ -25,11 +25,10 @@ public class AuthController {
     private AccountService accountService;
 
 
-
     @PostMapping("/register")
     ResponseEntity<Object> register(@RequestBody @Valid UserRegistrationRequest userRegistrationRequest) {
 
-        Optional<Account> account = accountService.registerUser(userRegistrationRequest);
+        Optional<Account> account = accountService.registerAccount(userRegistrationRequest);
 
         if (account.isPresent()) {
             accountService.dispatch(account.get());

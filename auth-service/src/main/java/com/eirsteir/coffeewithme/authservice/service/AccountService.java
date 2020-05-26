@@ -9,7 +9,7 @@ import java.util.Optional;
 @Service
 public interface AccountService {
 
-    Optional<Account> registerUser(UserRegistrationRequest registrationRequest);
+    Optional<Account> registerAccount(UserRegistrationRequest registrationRequest);
 
     void dispatch(Account account);
 }
