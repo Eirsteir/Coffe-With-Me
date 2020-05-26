@@ -66,14 +66,6 @@ public class AccountServiceImpl implements AccountService {
                 .build();
     }
 
-    @Override
-    public void dispatch(Account account) {
-        log.debug("[x] Dispatching account: {}", account);
-
-        UserDetails userDetails = createUserDetails(account);
-
-    }
-
     private UserDetails createUserDetails(Account account) {
         return UserDetails.builder().id(account.getId())
                 .email(account.getEmail())

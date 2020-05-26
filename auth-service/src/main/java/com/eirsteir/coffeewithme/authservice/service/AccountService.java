@@ -11,5 +11,4 @@ public interface AccountService {
 
     Optional<Account> registerAccount(UserRegistrationRequest registrationRequest);
 
-    void dispatch(Account account);
 }
