@@ -32,7 +32,7 @@ public class UserController {
 
         return userService.findUserByIdWithIsFriend(id, principal.getId());
     }
-    
+
     @GetMapping
     List<UserDetails> search(@RequestParam String search) {
         Node rootNode = new RSQLParser().parse(search);
