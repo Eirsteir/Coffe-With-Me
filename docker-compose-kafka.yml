@@ -1,0 +1,18 @@
+version: '3.7'
+
+services:
+  zookeeper:
+    image: eventuateio/eventuate-zookeeper:$EVENTUATE_COMMON_VERSION
+    ports:
+      - 2181:2181
+
+  kafka:
+    image: eventuateio/eventuate-kafka:$EVENTUATE_KAFKA_VERSION
+    ports:
+      - 9092:9092
+    links:
+      - zookeeper
+    environment:
+#      - ADVERTISED_HOST_NAME=${DOCKER_HOST_IP}
+      - KAFKA_HEAP_OPTS=-Xmx320m -Xms320m
+      - ZOOKEEPER_SERVERS=zookeeper:2181
