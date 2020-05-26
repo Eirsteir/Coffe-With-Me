@@ -1,5 +1,6 @@
 package com.eirsteir.coffeewithme.social.web.api.friendship;
 
+import com.eirsteir.coffeewithme.commons.dto.UserDetails;
 import com.eirsteir.coffeewithme.social.config.ModelMapperConfig;
 import com.eirsteir.coffeewithme.social.domain.friendship.FriendshipStatus;
 import com.eirsteir.coffeewithme.social.domain.user.User;
@@ -9,7 +10,6 @@ import com.eirsteir.coffeewithme.social.security.SecurityConfig;
 import com.eirsteir.coffeewithme.social.service.friendship.FriendshipService;
 import com.eirsteir.coffeewithme.social.service.user.UserService;
 import com.eirsteir.coffeewithme.social.web.request.FriendRequest;
-import com.eirsteir.coffeewithme.commons.dto.UserDetails;
 import com.eirsteir.coffeewithme.testconfig.MessageTemplateUtilTestConfig;
 import com.eirsteir.coffeewithme.util.JSONUtils;
 import org.junit.jupiter.api.BeforeEach;
@@ -28,7 +28,6 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.web.reactive.function.client.WebClient;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -67,9 +66,6 @@ class FriendshipControllerTest {
 
     @MockBean
     private UserService userService;
-
-    @MockBean
-    private WebClient webClient;
 
     @BeforeEach
     void setUp() {
