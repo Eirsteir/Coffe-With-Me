@@ -32,14 +32,7 @@ public class UserController {
 
         return userService.findUserByIdWithIsFriend(id, principal.getId());
     }
-
-    @PostMapping
-    @ResponseBody
-    @ResponseStatus(HttpStatus.CREATED)
-    UserDetails registerUser(@RequestBody UserDetails userDetails) {
-        return userService.registerUser(userDetails);
-    }
-
+    
     @GetMapping
     List<UserDetails> search(@RequestParam String search) {
         Node rootNode = new RSQLParser().parse(search);
