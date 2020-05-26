@@ -9,12 +9,12 @@
 	<name>Coffee With Me</name>
 
 	<modules>
+		<module>commons</module>
 		<module>gateway</module>
 		<module>eureka-server</module>
 		<module>social-service</module>
 		<module>notification-service</module>
 		<module>auth-service</module>
-		<module>commons</module>
 	</modules>
 
 </project>

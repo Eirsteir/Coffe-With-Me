@@ -8,9 +8,12 @@
         <version>2.3.0.RELEASE</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
+
     <groupId>com.eirsteir.coffeewithme</groupId>
     <artifactId>gateway</artifactId>
     <version>0.0.1-SNAPSHOT</version>
+    <packaging>jar</packaging>
+
     <name>Gateway</name>
     <description>API Gateway for the Coffee-With-Me application</description>
 

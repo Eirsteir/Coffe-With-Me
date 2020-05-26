@@ -65,7 +65,6 @@ mvn install -DskipTests
 To run the Spring Boot app from a terminal you can you the java -jar command. 
 The executable jar files can then be run individually with
 ```
-java -jar commons\target\commons-0.0.1-SNAPSHOT.jar
 java -jar gateway\target\gateway-0.0.1-SNAPSHOT.jar
 java -jar eureka-server\target\eureka-server-0.0.1-SNAPSHOT.jar
 java -jar social-service\target\social-service-0.0.1-SNAPSHOT.jar
@@ -96,10 +95,6 @@ Some of the important API endpoints are as follows:
 - http://localhost:8080/api/social/friends (HTTP:GET,POST,PUT)
 - http://localhost:8080/api/social/friends?to_friend (HTTP:POST)
 - http://localhost:8080/api/notifications (HTTP:GET,POST,PUT)
-
-### Running the application in Docker
-Only Apache Kafka, Zookeeper, MySQL, Eventuate CDC Service and PHPMyAdmin are currently 
-available through Docker.
 
 ## Application Structure
 The application is built as several microservices with an API Gateway to proxy incoming requests
