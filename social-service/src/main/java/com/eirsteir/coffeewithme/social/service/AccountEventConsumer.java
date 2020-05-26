@@ -26,7 +26,7 @@ public class AccountEventConsumer {
 
     public DomainEventHandlers domainEventHandlers() {
         return DomainEventHandlersBuilder
-                .forAggregateType("com.eirsteir.coffeewithme.authservice.domain.account")
+                .forAggregateType("com.eirsteir.coffeewithme.authservice.domain.Account")
                 .onEvent(AccountCreatedEvent.class, this::handleAccountCreatedEventHandler)
                 .build();
     }
@@ -39,20 +39,24 @@ public class AccountEventConsumer {
 
         log.info("[x] Handling event: {}", accountCreatedEvent);
 
-        if (possibleUser.isPresent()) {
-            log.info("[x] User already exists: {}", accountId);
+        if (possibleUser.isEmpty()) {
+            User user = User.builder()
+                    .id(accountId)
+                    .build();
+            userRepository.save(user);
+
+            UserCreatedEvent userCreatedEvent = new UserCreatedEvent(accountId);
             domainEventPublisher.publish(User.class,
-                                         accountId,
-                                         Collections.singletonList(new UserAlreadyExistsEvent(accountId)));
+                                         user.getId(),
+                                         Collections.singletonList(userCreatedEvent));
             return;
         }
 
         User user = possibleUser.get();
-
-        UserCreatedEvent userCreatedEvent = new UserCreatedEvent(accountId);
+        log.info("[x] User already exists: {}", accountId);
         domainEventPublisher.publish(User.class,
-                                     user.getId(),
-                                     Collections.singletonList(userCreatedEvent));
+                                     accountId,
+                                     Collections.singletonList(new UserAlreadyExistsEvent(accountId)));
     }
 
 }

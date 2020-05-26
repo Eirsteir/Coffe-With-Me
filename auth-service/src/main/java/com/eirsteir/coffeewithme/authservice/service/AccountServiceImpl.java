@@ -51,6 +51,7 @@ public class AccountServiceImpl implements AccountService {
 
         ResultWithEvents<Account> accountWithEvents = Account.createAccount(account);
         domainEventPublisher.publish(Account.class, account.getId(), accountWithEvents.events);
+        log.info("[x] Publishing {} to {}", Account.class, accountWithEvents);
 
         return Optional.of(account);
     }
