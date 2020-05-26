@@ -1,6 +1,96 @@
 version: '3.7'
 
 services:
+  eureka-server:
+    build:
+      context: ./eureka-server
+      dockerfile: Dockerfile
+    image: com.eirsteir/coffeewithme-eureka-server:0.0.1-SNAPSHOT
+    restart: on-failure
+    ports:
+      - 8761:8761
+
+  gateway:
+    build:
+      context: ./gateway
+      dockerfile: Dockerfile
+    image: com.eirsteir/coffeewithme-gateway:0.0.1-SNAPSHOT
+    restart: on-failure
+    ports:
+      - 8080:8080
+
+  auth-service:
+    build:
+      context: ./auth-service
+      dockerfile: Dockerfile
+    image: com.eirsteir/coffeewithme-auth-service:0.0.1-SNAPSHOT
+    restart: on-failure
+    ports:
+      - 9100:9100
+    depends_on:
+      - eureka-server
+      - gateway
+      - mysql
+      - kafka
+      - zookeeper
+      - cdcservice
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql/coffeewithme
+      SPRING_DATASOURCE_USERNAME: mysqluser
+      SPRING_DATASOURCE_PASSWORD: mysqlpw
+      SPRING_DATASOURCE_DRIVER_CLASS_NAME: com.mysql.jdbc.Driver
+      EVENTUATELOCAL_KAFKA_BOOTSTRAP_SERVERS: kafka:29092
+      EVENTUATELOCAL_ZOOKEEPER_CONNECTION_STRING: zookeeper:2181
+      JAVA_OPTS: -Xmx64m
+
+  social-service:
+    build:
+      context: ./social-service
+      dockerfile: Dockerfile
+    image: com.eirsteir/coffeewithme-social-service:0.0.1-SNAPSHOT
+    restart: on-failure
+    ports:
+      - 8200:8200
+    depends_on:
+      - eureka-server
+      - gateway
+      - mysql
+      - kafka
+      - zookeeper
+      - cdcservice
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql/coffeewithme
+      SPRING_DATASOURCE_USERNAME: mysqluser
+      SPRING_DATASOURCE_PASSWORD: mysqlpw
+      SPRING_DATASOURCE_DRIVER_CLASS_NAME: com.mysql.jdbc.Driver
+      EVENTUATELOCAL_KAFKA_BOOTSTRAP_SERVERS: kafka:29092
+      EVENTUATELOCAL_ZOOKEEPER_CONNECTION_STRING: zookeeper:2181
+      JAVA_OPTS: -Xmx64m
+
+  notification-service:
+    build:
+      context: ./notification-service
+      dockerfile: Dockerfile
+    image: com.eirsteir/coffeewithme-notification-service:0.0.1-SNAPSHOT
+    restart: on-failure
+    ports:
+      - 9000:9000
+    depends_on:
+      - eureka-server
+      - gateway
+      - mysql
+      - kafka
+      - zookeeper
+      - cdcservice
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql/coffeewithme
+      SPRING_DATASOURCE_USERNAME: mysqluser
+      SPRING_DATASOURCE_PASSWORD: mysqlpw
+      SPRING_DATASOURCE_DRIVER_CLASS_NAME: com.mysql.jdbc.Driver
+      EVENTUATELOCAL_KAFKA_BOOTSTRAP_SERVERS: kafka:29092
+      EVENTUATELOCAL_ZOOKEEPER_CONNECTION_STRING: zookeeper:2181
+      JAVA_OPTS: -Xmx64m
+
   zookeeper:
     image: confluentinc/cp-zookeeper:5.2.4
     ports:
@@ -26,6 +116,7 @@ services:
 
   mysql:
     image: eventuateio/eventuate-mysql
+    restart: always
     ports:
       - 3306:3306
     expose:
