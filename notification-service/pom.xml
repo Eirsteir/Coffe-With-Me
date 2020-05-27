@@ -22,6 +22,7 @@
         <java.version>11</java.version>
         <modelmapper.version>2.3.0</modelmapper.version>
         <spring-cloud.version>Hoxton.SR4</spring-cloud.version>
+        <eventuate-tram.version>0.24.0.RELEASE</eventuate-tram.version>
     </properties>
 
     <dependencyManagement>
@@ -92,6 +93,22 @@
             <artifactId>modelmapper</artifactId>
             <version>${modelmapper.version}</version>
         </dependency>
+
+        <dependency>
+            <groupId>io.eventuate.tram.core</groupId>
+            <artifactId>eventuate-tram-spring-jdbc-kafka</artifactId>
+            <version>${eventuate-tram.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>io.eventuate.tram.core</groupId>
+            <artifactId>eventuate-tram-spring-events</artifactId>
+            <version>${eventuate-tram.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>io.eventuate.tram.core</groupId>
+            <artifactId>eventuate-tram-spring-optimistic-locking</artifactId>
+            <version>${eventuate-tram.version}</version>
+        </dependency>
         <dependency>
             <groupId>mysql</groupId>
             <artifactId>mysql-connector-java</artifactId>
@@ -110,6 +127,29 @@
             </exclusions>
         </dependency>
     </dependencies>
+
+    <repositories>
+        <repository>
+            <id>eventuate-tram-rc</id>
+            <url>https://dl.bintray.com/eventuateio-oss/eventuate-maven-rc</url>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+        </repository>
+        <repository>
+            <id>eventuate-tram-release</id>
+            <url>https://dl.bintray.com/eventuateio-oss/eventuate-maven-release</url>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+        </repository>
+    </repositories>
 
     <build>
         <resources>
