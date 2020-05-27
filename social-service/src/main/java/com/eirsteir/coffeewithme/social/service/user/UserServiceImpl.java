@@ -1,12 +1,13 @@
 package com.eirsteir.coffeewithme.social.service.user;
 
+import com.eirsteir.coffeewithme.commons.domain.UserDetails;
+import com.eirsteir.coffeewithme.commons.dto.UserDetailsDto;
 import com.eirsteir.coffeewithme.social.domain.friendship.FriendshipStatus;
 import com.eirsteir.coffeewithme.social.domain.user.User;
 import com.eirsteir.coffeewithme.social.exception.CWMException;
 import com.eirsteir.coffeewithme.social.exception.ExceptionType;
 import com.eirsteir.coffeewithme.social.repository.UserRepository;
 import com.eirsteir.coffeewithme.social.service.friendship.FriendshipService;
-import com.eirsteir.coffeewithme.commons.dto.UserDetailsDto;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,27 +37,27 @@ public class UserServiceImpl implements UserService {
     private ModelMapper modelMapper;
 
     @Override
-    public UserDetailsDto registerUser(UserDetailsDto UserDetailsDto) {
-        Optional<User> user = userRepository.findByEmail(UserDetailsDto.getEmail());
+    public UserDetailsDto registerUser(UserDetailsDto userDetailsDto) {
+        Optional<User> user = userRepository.findByEmail(userDetailsDto.getEmail());
 
         if (user.isPresent())
             throw CWMException.getException(
-                    USER, ExceptionType.DUPLICATE_ENTITY, userDetails.getEmail());
+                    USER, ExceptionType.DUPLICATE_ENTITY, userDetailsDto.getEmail());
 
-        User userModel = modelMapper.map(userDetails, User.class);
+        User userModel = modelMapper.map(userDetailsDto, User.class);
 
         User signedUpUserModel = userRepository.save(userModel);
         log.info("[x] Registered user: {}", signedUpUserModel);
 
-        return modelMapper.map(signedUpUserModel, UserDetails.class);
+        return modelMapper.map(signedUpUserModel, UserDetailsDto.class);
     }
 
     @Override
-    public UserDetails findUserByEmail(String email) {
+    public UserDetailsDto findUserByEmail(String email) {
         User userModel = userRepository.findByEmail(email)
                         .orElseThrow(() -> CWMException.getException(USER, ENTITY_NOT_FOUND, email));
 
-        return modelMapper.map(userModel, UserDetails.class);
+        return modelMapper.map(userModel, UserDetailsDto.class);
     }
 
     @Override
@@ -66,10 +67,10 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserDetails findUserByIdWithIsFriend(Long id, Long viewerId) {
+    public UserDetailsDto findUserByIdWithIsFriend(Long id, Long viewerId) {
         User user = findUserById(id);
         User viewer = findUserById(id);
-        UserDetails userDetails = modelMapper.map(user, UserDetails.class);
+        UserDetailsDto userDetails = modelMapper.map(user, UserDetailsDto.class);
         
         if (areFriends(viewer, user))
             userDetails.setIsFriend(true);
@@ -79,27 +80,36 @@ public class UserServiceImpl implements UserService {
         return userDetails;
     }
 
+//    @Override
+//    public UserDetails getUserDetails(User user) {
+//        return UserDetails.builder()
+//                .id(user.getId())
+//                .name(user.getName())
+//                .username(user.getUsername())
+//                .build();
+//    }
+
     private boolean areFriends(User currentUser, User user) {
         return friendshipService.findFriends(currentUser.getId(), FriendshipStatus.ACCEPTED).contains(user);
     }
 
     @Override
-    public List<UserDetails> searchUsers(Specification<User> spec) {
+    public List<UserDetailsDto> searchUsers(Specification<User> spec) {
         return userRepository.findAll(spec)
                 .stream()
-                .map(user -> modelMapper.map(user, UserDetails.class))
+                .map(user -> modelMapper.map(user, UserDetailsDto.class))
                 .collect(Collectors.toList());
     }
 
     @Override
-    public UserDetails updateProfile(UserDetails userDetails) {
-        User userModel = userRepository.findByEmail(userDetails.getEmail())
-                .orElseThrow(() -> CWMException.getException(USER, ENTITY_NOT_FOUND, userDetails.getEmail()));
+    public UserDetailsDto updateProfile(UserDetailsDto UserDetailsDto) {
+        User userModel = userRepository.findByEmail(UserDetailsDto.getEmail())
+                .orElseThrow(() -> CWMException.getException(USER, ENTITY_NOT_FOUND, UserDetailsDto.getEmail()));
 
-        userModel.setUsername(userDetails.getUsername());
+        userModel.setUsername(UserDetailsDto.getUsername());
         log.info("[x] Updated user profile: {}", userModel);
 
-        return modelMapper.map(userRepository.save(userModel), UserDetails.class);
+        return modelMapper.map(userRepository.save(userModel), UserDetailsDto.class);
     }
 
 }

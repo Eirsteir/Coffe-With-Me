@@ -1,5 +1,6 @@
 package com.eirsteir.coffeewithme.social.service.friendship;
 
+import com.eirsteir.coffeewithme.commons.domain.UserDetails;
 import com.eirsteir.coffeewithme.social.domain.friendship.Friendship;
 import com.eirsteir.coffeewithme.social.domain.friendship.FriendshipId;
 import com.eirsteir.coffeewithme.social.domain.friendship.FriendshipStatus;
@@ -106,6 +107,7 @@ public class FriendshipServiceImpl implements FriendshipService {
         Friendship friendship = requester.addFriend(addressee, FriendshipStatus.REQUESTED);
         log.info("[x] Registered friendship: {}", friendship);
 
+        UserDetails user = userService.getUserDetails(friendship.getRequester());
         publish(Friendship.createFriendRequest(friendship));
 
         return modelMapper.map(friendship, FriendshipDto.class);
@@ -165,8 +167,8 @@ public class FriendshipServiceImpl implements FriendshipService {
         Friendship updatedFriendship = friendshipRepository.save(friendshipToUpdate);
 
         if (updatedFriendship.getStatus() == FriendshipStatus.ACCEPTED) {
-            UserDetailsDto requester = userService.getUserDetails(updatedFriendship.getRequester());
-            publish(Friendship.createFriendRequestAccepted(friendshipToUpdate, requester));
+            UserDetailsDto addressee = userService.getUserDetails(updatedFriendship.getAddressee());
+            publish(Friendship.createFriendRequestAccepted(friendshipToUpdate, addressee));
         }
 
 
