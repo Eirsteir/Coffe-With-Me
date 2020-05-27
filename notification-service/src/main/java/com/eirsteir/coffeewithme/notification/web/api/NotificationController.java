@@ -2,10 +2,8 @@ package com.eirsteir.coffeewithme.notification.web.api;
 
 
 import com.eirsteir.coffeewithme.commons.security.UserDetailsImpl;
-import com.eirsteir.coffeewithme.notification.domain.Notification;
 import com.eirsteir.coffeewithme.notification.dto.NotificationDto;
 import com.eirsteir.coffeewithme.notification.service.NotificationService;
-import com.eirsteir.coffeewithme.notification.web.request.NotificationRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
@@ -22,29 +20,14 @@ import java.util.List;
 public class NotificationController {
 
     @Autowired
-    private NotificationService service;
-
-    @PostMapping
-    @ResponseStatus(HttpStatus.CREATED)
-    void notify(@RequestBody NotificationRequest notificationRequest,
-                @AuthenticationPrincipal UserDetailsImpl principal) {
-        log.debug("[x] Received request from user: {}\n{}", notificationRequest, principal);
-
-        Notification.UserDetails userDetails = Notification.UserDetails.builder()
-                .id(principal.getId())
-                .name(notificationRequest.getName())
-                .username(principal.getUsername())
-                .build();
-
-        service.notify(notificationRequest.getSubjectId(), userDetails, notificationRequest.getType());
-    }
+    private NotificationService notificationService;
 
     @GetMapping("/users/{id}")
     List<NotificationDto> getNotifications(@PathVariable Long id, Pageable pageable,
                                            @AuthenticationPrincipal UserDetailsImpl principal) {
         log.debug("[x] Received request with principal: {}", principal);
 
-        List<NotificationDto> notifications = service.findAllByUserId(id, pageable);
+        List<NotificationDto> notifications = notificationService.findAllByUserId(id, pageable);
 
         if (notifications.isEmpty())
             throw new ResponseStatusException(
@@ -61,7 +44,7 @@ public class NotificationController {
 
         validateNotificationUpdate(notificationDto, principal.getId());
 
-        return service.updateNotificationToRead(notificationDto);
+        return notificationService.updateNotificationToRead(notificationDto);
     }
 
     private void validateNotificationUpdate(NotificationDto notificationDto, Long userId) {

@@ -42,8 +42,11 @@ public class AccountEventConsumer {
         if (possibleUser.isEmpty()) {
             User user = User.builder()
                     .id(accountId)
+                    .email(accountCreatedEvent.getEmail())
+                    .name(accountCreatedEvent.getName())
                     .build();
-            userRepository.save(user);
+            User registeredUser = userRepository.save(user);
+            log.info("[x] Registered user: {}", registeredUser);
 
             UserCreatedEvent userCreatedEvent = new UserCreatedEvent(accountId);
             domainEventPublisher.publish(User.class,
@@ -52,7 +55,6 @@ public class AccountEventConsumer {
             return;
         }
 
-        User user = possibleUser.get();
         log.info("[x] User already exists: {}", accountId);
         domainEventPublisher.publish(User.class,
                                      accountId,

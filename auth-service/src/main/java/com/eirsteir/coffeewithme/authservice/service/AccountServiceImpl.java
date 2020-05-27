@@ -5,7 +5,6 @@ import com.eirsteir.coffeewithme.authservice.domain.Role;
 import com.eirsteir.coffeewithme.authservice.domain.RoleType;
 import com.eirsteir.coffeewithme.authservice.repository.AccountRepository;
 import com.eirsteir.coffeewithme.authservice.web.request.UserRegistrationRequest;
-import com.eirsteir.coffeewithme.commons.dto.UserDetails;
 import io.eventuate.tram.events.publisher.DomainEventPublisher;
 import io.eventuate.tram.events.publisher.ResultWithEvents;
 import lombok.extern.slf4j.Slf4j;
@@ -32,7 +31,6 @@ public class AccountServiceImpl implements AccountService {
     @Autowired
     private BCryptPasswordEncoder encoder;
 
-
     public AccountServiceImpl(DomainEventPublisher domainEventPublisher, AccountRepository accountRepository) {
         this.domainEventPublisher = domainEventPublisher;
         this.accountRepository = accountRepository;
@@ -46,7 +44,9 @@ public class AccountServiceImpl implements AccountService {
         if (user.isPresent())
             return Optional.empty();
 
-        Account account = accountRepository.save(createAccount(registrationRequest));
+        Account account1 = createAccount(registrationRequest);
+        log.debug("[x] Created account {}", account1);
+        Account account = accountRepository.save(account1);
         log.info("[x] Registered account: {}", account);
 
         ResultWithEvents<Account> accountWithEvents = Account.createAccount(account);
@@ -60,17 +60,10 @@ public class AccountServiceImpl implements AccountService {
         Role basicRole = roleService.getOrCreateRole(RoleType.ROLE_USER);
         return Account.builder()
                 .email(registrationRequest.getEmail())
-                .username(registrationRequest.getUsername())
+                .name(registrationRequest.getName())
                 .roles(Collections.singletonList(basicRole))
                 .password(encoder.encode(registrationRequest.getPassword()))
                 .build();
     }
 
-    private UserDetails createUserDetails(Account account) {
-        return UserDetails.builder().id(account.getId())
-                .email(account.getEmail())
-                .username(account.getUsername())
-                .name(account.getName())
-                .build();
-    }
 }

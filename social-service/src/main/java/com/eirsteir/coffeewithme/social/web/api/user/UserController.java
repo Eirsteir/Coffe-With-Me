@@ -4,7 +4,7 @@ package com.eirsteir.coffeewithme.social.web.api.user;
 import com.eirsteir.coffeewithme.social.domain.user.User;
 import com.eirsteir.coffeewithme.social.repository.rsql.RqslVisitorImpl;
 import com.eirsteir.coffeewithme.social.service.user.UserService;
-import com.eirsteir.coffeewithme.commons.dto.UserDetails;
+import com.eirsteir.coffeewithme.commons.dto.UserDetailsDto;
 import com.eirsteir.coffeewithme.commons.security.UserDetailsImpl;
 import cz.jirutka.rsql.parser.RSQLParser;
 import cz.jirutka.rsql.parser.ast.Node;
@@ -28,16 +28,16 @@ public class UserController {
 
     @GetMapping("/{id}")
     @ResponseBody
-    UserDetails user(@PathVariable Long id, @AuthenticationPrincipal UserDetailsImpl principal) {
+    UserDetailsDto user(@PathVariable Long id, @AuthenticationPrincipal UserDetailsImpl principal) {
 
         return userService.findUserByIdWithIsFriend(id, principal.getId());
     }
 
     @GetMapping
-    List<UserDetails> search(@RequestParam String search) {
+    List<UserDetailsDto> search(@RequestParam String search) {
         Node rootNode = new RSQLParser().parse(search);
         Specification<User> spec = rootNode.accept(new RqslVisitorImpl<>());
-        List<UserDetails> results = userService.searchUsers(spec);
+        List<UserDetailsDto> results = userService.searchUsers(spec);
 
         if (results.isEmpty())
             throw new ResponseStatusException(

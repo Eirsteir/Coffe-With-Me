@@ -26,8 +26,6 @@ public class Account {
     @Column(unique = true)
     private String email;
 
-    private String username;
-
     private String name;
 
     private String password;
@@ -36,9 +34,10 @@ public class Account {
     @JoinTable(name = "account_roles", joinColumns = @JoinColumn(name = "account_id", referencedColumnName = "id"), inverseJoinColumns = @JoinColumn(name = "role_id", referencedColumnName = "id"))
     private Collection<Role> roles;
 
-    // TODO: 26.05.2020 use UserDetails?
     public static ResultWithEvents<Account> createAccount(Account account) {
-        AccountCreatedEvent accountCreatedEvent = new AccountCreatedEvent(account.getId());
+        AccountCreatedEvent accountCreatedEvent = new AccountCreatedEvent(account.getId(),
+                                                                          account.getEmail(),
+                                                                          account.getName());
         return new ResultWithEvents<>(account, Collections.singletonList(accountCreatedEvent));
     }
 }

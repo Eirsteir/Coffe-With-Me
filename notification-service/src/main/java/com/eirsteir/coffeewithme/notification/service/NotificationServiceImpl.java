@@ -2,7 +2,6 @@ package com.eirsteir.coffeewithme.notification.service;
 
 
 import com.eirsteir.coffeewithme.notification.domain.Notification;
-import com.eirsteir.coffeewithme.notification.domain.NotificationType;
 import com.eirsteir.coffeewithme.notification.dto.NotificationDto;
 import com.eirsteir.coffeewithme.notification.exception.CWMException;
 import com.eirsteir.coffeewithme.notification.repository.NotificationRepository;
@@ -10,7 +9,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
-import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -25,44 +23,10 @@ import static com.eirsteir.coffeewithme.notification.exception.ExceptionType.ENT
 public class NotificationServiceImpl implements NotificationService {
 
     @Autowired
-    private SimpMessagingTemplate template;
-
-    @Autowired
     private ModelMapper modelMapper;
 
     @Autowired
     private NotificationRepository notificationRepository;
-
-    @Override
-    public void notify(Long subjectId, Notification.UserDetails currentUser, NotificationType type) {
-        Notification notificationToSend = registerNotification(subjectId, currentUser, type);
-
-        NotificationDto notificationDto = modelMapper.map(notificationToSend, NotificationDto.class);
-        log.debug("[x] Sending notification to user with id - {}: {}", subjectId, notificationDto);
-
-        sendToUser(notificationDto);
-    }
-
-    private void sendToUser(NotificationDto notificationDto) {
-        template.convertAndSendToUser(
-                notificationDto.getUser().getId().toString(),
-                "/queue/notifications",
-                notificationDto
-        );
-    }
-
-    private Notification registerNotification(Long subjectId, Notification.UserDetails currentUser, NotificationType type) {
-        Notification notification = Notification.builder()
-                .subjectId(subjectId)
-                .user(currentUser)
-                .type(type)
-                .build();
-
-        Notification registeredNotification = notificationRepository.save(notification);
-        log.debug("[x] Registered notification: {}", registeredNotification);
-
-        return registeredNotification;
-    }
 
     @Override
     public NotificationDto updateNotificationToRead(NotificationDto notificationDto) {

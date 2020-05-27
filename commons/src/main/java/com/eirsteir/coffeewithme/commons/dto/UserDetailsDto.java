@@ -11,7 +11,7 @@ import lombok.experimental.Accessors;
 @Accessors(chain = true)
 @NoArgsConstructor
 @AllArgsConstructor
-public class UserDetails {
+public class UserDetailsDto {
 
     private Long id;
     private String email;
