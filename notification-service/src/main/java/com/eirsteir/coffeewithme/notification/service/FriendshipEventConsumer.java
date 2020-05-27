@@ -1,5 +1,6 @@
 package com.eirsteir.coffeewithme.notification.service;
 
+import com.eirsteir.coffeewithme.commons.domain.AbstractFriendshipEvent;
 import com.eirsteir.coffeewithme.commons.domain.FriendRequestAcceptedEvent;
 import com.eirsteir.coffeewithme.commons.domain.FriendRequestEvent;
 import com.eirsteir.coffeewithme.commons.domain.NotificationType;
@@ -40,26 +41,40 @@ public class FriendshipEventConsumer {
 
     private void handleFriendRequestEvent(DomainEventEnvelope<FriendRequestEvent> domainEventEnvelope) {
         FriendRequestEvent friendRequestEvent = domainEventEnvelope.getEvent();
-        Long subjectId = friendRequestEvent.getSubjectId();
-        Notification.UserDetails userDetails = modelMapper.map(friendRequestEvent.getUser(), 
-                                                               Notification.UserDetails.class);
-
-        Notification notification = Notification.builder()
-                .subjectId(subjectId)
-                .user(userDetails)
-                .type(NotificationType.FRIEND_REQUEST)
-                .build();
+        Notification notification = createNotification(friendRequestEvent);
 
         notificationRepository.save(notification);
+        log.info("[x] Registered notification: {}", notification);
+
         convertAndSendToUser(notification);
     }
 
     private void handleFriendRequestAcceptedEvent(
             DomainEventEnvelope<FriendRequestAcceptedEvent> domainEventEnvelope) {
+        FriendRequestAcceptedEvent friendRequestEvent = domainEventEnvelope.getEvent();
+        Notification notification = createNotification(friendRequestEvent);
 
+        notificationRepository.save(notification);
+        log.info("[x] Registered notification: {}", notification);
+
+        convertAndSendToUser(notification);
+    }
+
+    private Notification createNotification(AbstractFriendshipEvent friendshipEvent) {
+        Long subjectId = friendshipEvent.getSubjectId();
+        Notification.UserDetails userDetails = modelMapper.map(friendshipEvent.getUser(),
+                                                               Notification.UserDetails.class);
+
+        return Notification.builder()
+                .subjectId(subjectId)
+                .user(userDetails)
+                .type(NotificationType.FRIEND_REQUEST)
+                .build();
     }
 
     private void convertAndSendToUser(Notification notification) {
+        log.info("[x] Sending notification: {}", notification);
+
         NotificationDto notificationDto = modelMapper.map(notification, NotificationDto.class);
         template.convertAndSendToUser(
                 notification.getSubjectId().toString(),
