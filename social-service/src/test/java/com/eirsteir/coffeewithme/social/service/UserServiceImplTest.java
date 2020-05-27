@@ -1,15 +1,14 @@
 package com.eirsteir.coffeewithme.social.service;
 
+import com.eirsteir.coffeewithme.commons.dto.UserDetailsDto;
+import com.eirsteir.coffeewithme.commons.exception.CWMException;
 import com.eirsteir.coffeewithme.social.config.ModelMapperConfig;
 import com.eirsteir.coffeewithme.social.domain.friendship.FriendshipStatus;
 import com.eirsteir.coffeewithme.social.domain.user.User;
-import com.eirsteir.coffeewithme.social.exception.CWMException;
 import com.eirsteir.coffeewithme.social.repository.UserRepository;
 import com.eirsteir.coffeewithme.social.service.friendship.FriendshipService;
 import com.eirsteir.coffeewithme.social.service.user.UserService;
 import com.eirsteir.coffeewithme.social.service.user.UserServiceImpl;
-import com.eirsteir.coffeewithme.commons.dto.UserDetailsDto;
-import com.eirsteir.coffeewithme.testconfig.MessageTemplateUtilTestConfig;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -36,7 +35,7 @@ import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.mockito.Mockito.when;
 
 
-@Import({MessageTemplateUtilTestConfig.class, ModelMapperConfig.class})
+@Import({ ModelMapperConfig.class})
 @TestPropertySource("classpath:exception.properties")
 @ExtendWith(SpringExtension.class)
 class UserServiceImplTest {

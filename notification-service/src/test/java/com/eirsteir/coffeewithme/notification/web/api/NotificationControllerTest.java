@@ -11,7 +11,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 
 
-@Import({MessageTemplateUtilTestConfig.class, ModelMapperConfig.class})
+@Import({ ModelMapperConfig.class})
 @TestPropertySource("classpath:exception.properties")
 @WebMvcTest(NotificationController.class)
 @ExtendWith(SpringExtension.class)

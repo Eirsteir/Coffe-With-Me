@@ -2,10 +2,11 @@ package com.eirsteir.coffeewithme.social.service.user;
 
 import com.eirsteir.coffeewithme.commons.domain.UserDetails;
 import com.eirsteir.coffeewithme.commons.dto.UserDetailsDto;
+import com.eirsteir.coffeewithme.commons.exception.CWMException;
+import com.eirsteir.coffeewithme.commons.exception.EntityType;
+import com.eirsteir.coffeewithme.commons.exception.ExceptionType;
 import com.eirsteir.coffeewithme.social.domain.friendship.FriendshipStatus;
 import com.eirsteir.coffeewithme.social.domain.user.User;
-import com.eirsteir.coffeewithme.social.exception.CWMException;
-import com.eirsteir.coffeewithme.social.exception.ExceptionType;
 import com.eirsteir.coffeewithme.social.repository.UserRepository;
 import com.eirsteir.coffeewithme.social.service.friendship.FriendshipService;
 import lombok.extern.slf4j.Slf4j;
@@ -19,8 +20,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import static com.eirsteir.coffeewithme.social.exception.EntityType.USER;
-import static com.eirsteir.coffeewithme.social.exception.ExceptionType.ENTITY_NOT_FOUND;
 
 @Slf4j
 @Service
@@ -42,7 +41,7 @@ public class UserServiceImpl implements UserService {
 
         if (user.isPresent())
             throw CWMException.getException(
-                    USER, ExceptionType.DUPLICATE_ENTITY, userDetailsDto.getEmail());
+                    EntityType.USER, ExceptionType.DUPLICATE_ENTITY, userDetailsDto.getEmail());
 
         User userModel = modelMapper.map(userDetailsDto, User.class);
 
@@ -55,7 +54,8 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserDetailsDto findUserByEmail(String email) {
         User userModel = userRepository.findByEmail(email)
-                        .orElseThrow(() -> CWMException.getException(USER, ENTITY_NOT_FOUND, email));
+                        .orElseThrow(() -> CWMException.getException(
+                                EntityType.USER, ExceptionType.ENTITY_NOT_FOUND, email));
 
         return modelMapper.map(userModel, UserDetailsDto.class);
     }
@@ -63,7 +63,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public User findUserById(Long id) {
         return userRepository.findById(id)
-                        .orElseThrow(() -> CWMException.getException(USER, ENTITY_NOT_FOUND, id.toString()));
+                        .orElseThrow(() -> CWMException.getException(EntityType.USER, ExceptionType.ENTITY_NOT_FOUND, id.toString()));
     }
 
     @Override
@@ -95,7 +95,8 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserDetailsDto updateProfile(UserDetailsDto UserDetailsDto) {
         User userModel = userRepository.findByEmail(UserDetailsDto.getEmail())
-                .orElseThrow(() -> CWMException.getException(USER, ENTITY_NOT_FOUND, UserDetailsDto.getEmail()));
+                .orElseThrow(() -> CWMException.getException(
+                        EntityType.USER, ExceptionType.ENTITY_NOT_FOUND, UserDetailsDto.getEmail()));
 
         userModel.setUsername(UserDetailsDto.getUsername());
         log.info("[x] Updated user profile: {}", userModel);
