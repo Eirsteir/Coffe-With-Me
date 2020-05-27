@@ -6,6 +6,7 @@
     <groupId>com.eirsteir.coffeewithme</groupId>
     <artifactId>eureka-server</artifactId>
     <version>0.0.1-SNAPSHOT</version>
+    <packaging>jar</packaging>
 
     <name>eureka-server</name>
     <description>Eureka Service Registry for the Coffee-With-Me application</description>

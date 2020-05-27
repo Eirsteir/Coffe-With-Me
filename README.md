@@ -31,14 +31,21 @@ The application consists of the following components:
 ## Running the application 
 To run the application, run eureka server and gateway first, then the three services.
 
-The system requires that Apache Kafka, Zookeeper, MySQL and Eventuate CDC Service
-are up and running, so launch these first with docker-compose:
+The easiest approach is to build the services first:
+ 
+ ```
+mvn clean install -DskipTests
+```
+
+And then launch them with docker-compose:
 
 ```
 docker-compose up --build 
 ``` 
+
+The application will be available at `http://localhost:3000`.
  
- This will also launch PHPMyAdmin at `http://localhost:8181`
+This will also launch PHPMyAdmin at `http://localhost:8181`
  
 ### Running the client locally
 The client can be run with npm by entering the snippet below:
@@ -54,7 +61,7 @@ To build and package a Spring Boot app into a single executable Jar file with Ma
 You will need to run it from the root project folder which contains the pom.xml file.
 
 ```
-maven package -DskipTests
+mvn package -DskipTests
 ```
 or you can use
 
@@ -65,7 +72,6 @@ mvn install -DskipTests
 To run the Spring Boot app from a terminal you can you the java -jar command. 
 The executable jar files can then be run individually with
 ```
-java -jar commons\target\commons-0.0.1-SNAPSHOT.jar
 java -jar gateway\target\gateway-0.0.1-SNAPSHOT.jar
 java -jar eureka-server\target\eureka-server-0.0.1-SNAPSHOT.jar
 java -jar social-service\target\social-service-0.0.1-SNAPSHOT.jar
@@ -96,10 +102,6 @@ Some of the important API endpoints are as follows:
 - http://localhost:8080/api/social/friends (HTTP:GET,POST,PUT)
 - http://localhost:8080/api/social/friends?to_friend (HTTP:POST)
 - http://localhost:8080/api/notifications (HTTP:GET,POST,PUT)
-
-### Running the application in Docker
-Only Apache Kafka, Zookeeper, MySQL, Eventuate CDC Service and PHPMyAdmin are currently 
-available through Docker.
 
 ## Application Structure
 The application is built as several microservices with an API Gateway to proxy incoming requests

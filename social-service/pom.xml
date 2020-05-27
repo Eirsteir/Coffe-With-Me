@@ -6,6 +6,7 @@
     <groupId>com.eirsteir.coffeewithme</groupId>
     <artifactId>social-service</artifactId>
     <version>0.0.1-SNAPSHOT</version>
+    <packaging>jar</packaging>
 
     <name>Social Service API</name>
     <description>Social Service API for the Coffee-With-Me application</description>
@@ -196,6 +197,7 @@
                     </dependency>
                 </dependencies>
             </plugin>
+
         </plugins>
     </build>
 
