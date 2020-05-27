@@ -4,5 +4,7 @@ public enum EntityType {
 
     USER,
     NOTIFICATION,
+    ACCOUNT,
     FRIENDSHIP
+
 }
