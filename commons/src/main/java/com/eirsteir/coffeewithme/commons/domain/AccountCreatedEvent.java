@@ -10,5 +10,7 @@ import lombok.NoArgsConstructor;
 public class AccountCreatedEvent implements AccountEvent {
 
     private Long accountId;
+    private String email;
+    private String name;
 
 }

@@ -26,8 +26,6 @@ public class Account {
     @Column(unique = true)
     private String email;
 
-    private String username;
-
     private String name;
 
     private String password;
@@ -38,7 +36,9 @@ public class Account {
 
     // TODO: 26.05.2020 use UserDetails?
     public static ResultWithEvents<Account> createAccount(Account account) {
-        AccountCreatedEvent accountCreatedEvent = new AccountCreatedEvent(account.getId());
+        AccountCreatedEvent accountCreatedEvent = new AccountCreatedEvent(account.getId(),
+                                                                          account.getEmail(),
+                                                                          account.getName());
         return new ResultWithEvents<>(account, Collections.singletonList(accountCreatedEvent));
     }
 }

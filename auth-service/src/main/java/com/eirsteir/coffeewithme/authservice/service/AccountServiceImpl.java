@@ -61,7 +61,6 @@ public class AccountServiceImpl implements AccountService {
         return Account.builder()
                 .email(registrationRequest.getEmail())
                 .name(registrationRequest.getName())
-                .username(registrationRequest.getUsername())
                 .roles(Collections.singletonList(basicRole))
                 .password(encoder.encode(registrationRequest.getPassword()))
                 .build();
