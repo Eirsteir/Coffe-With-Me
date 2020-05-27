@@ -1,9 +1,11 @@
 package com.eirsteir.coffeewithme.notification.service;
 
 
+import com.eirsteir.coffeewithme.commons.exception.CWMException;
+import com.eirsteir.coffeewithme.commons.exception.EntityType;
+import com.eirsteir.coffeewithme.commons.exception.ExceptionType;
 import com.eirsteir.coffeewithme.notification.domain.Notification;
 import com.eirsteir.coffeewithme.notification.dto.NotificationDto;
-import com.eirsteir.coffeewithme.notification.exception.CWMException;
 import com.eirsteir.coffeewithme.notification.repository.NotificationRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
@@ -14,8 +16,6 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static com.eirsteir.coffeewithme.notification.exception.EntityType.NOTIFICATION;
-import static com.eirsteir.coffeewithme.notification.exception.ExceptionType.ENTITY_NOT_FOUND;
 
 
 @Slf4j
@@ -31,8 +31,8 @@ public class NotificationServiceImpl implements NotificationService {
     @Override
     public NotificationDto updateNotificationToRead(NotificationDto notificationDto) {
         Notification notificationToUpdate = notificationRepository.findById(notificationDto.getNotificationId())
-                .orElseThrow(() -> CWMException.getException(NOTIFICATION,
-                                                             ENTITY_NOT_FOUND,
+                .orElseThrow(() -> CWMException.getException(EntityType.NOTIFICATION,
+                                                             ExceptionType.ENTITY_NOT_FOUND,
                                                              notificationDto.getNotificationId().toString()));
 
         notificationToUpdate.setSeen(true);
