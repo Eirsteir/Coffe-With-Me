@@ -43,7 +43,8 @@ public class AccountEventConsumer {
             User user = User.builder()
                     .id(accountId)
                     .build();
-            userRepository.save(user);
+            User registeredUser = userRepository.save(user);
+            log.info("[x] Registered user: {}", registeredUser);
 
             UserCreatedEvent userCreatedEvent = new UserCreatedEvent(accountId);
             domainEventPublisher.publish(User.class,

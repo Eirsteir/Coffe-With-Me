@@ -5,7 +5,7 @@ import com.eirsteir.coffeewithme.authservice.domain.Role;
 import com.eirsteir.coffeewithme.authservice.domain.RoleType;
 import com.eirsteir.coffeewithme.authservice.repository.AccountRepository;
 import com.eirsteir.coffeewithme.authservice.web.request.UserRegistrationRequest;
-import com.eirsteir.coffeewithme.commons.dto.UserDetails;
+import com.eirsteir.coffeewithme.commons.domain.UserDetails;
 import io.eventuate.tram.events.publisher.DomainEventPublisher;
 import io.eventuate.tram.events.publisher.ResultWithEvents;
 import lombok.extern.slf4j.Slf4j;
@@ -66,8 +66,8 @@ public class AccountServiceImpl implements AccountService {
     }
 
     private UserDetails createUserDetails(Account account) {
-        return UserDetails.builder().id(account.getId())
-                .email(account.getEmail())
+        return UserDetails.builder()
+                .id(account.getId())
                 .username(account.getUsername())
                 .name(account.getName())
                 .build();

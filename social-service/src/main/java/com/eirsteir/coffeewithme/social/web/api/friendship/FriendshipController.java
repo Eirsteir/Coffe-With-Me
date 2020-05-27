@@ -51,6 +51,7 @@ public class FriendshipController {
     @ResponseStatus(HttpStatus.CREATED)
     FriendshipDto addFriend(@RequestParam("to_friend") Long toFriend,
                             @AuthenticationPrincipal UserDetailsImpl principal) {
+        log.debug("[x] Request to /friends?to_friend={}", toFriend);
 
         User currentUser = userService.findUserById(principal.getId());
         if (currentUser.getId().equals(toFriend))
@@ -60,7 +61,7 @@ public class FriendshipController {
         return friendshipService.registerFriendship(FriendRequest.builder()
                                                             .requesterId(currentUser.getId())
                                                             .addresseeId(toFriend)
-                                                           .build());
+                                                            .build());
     }
 
     @PutMapping("/friends")
