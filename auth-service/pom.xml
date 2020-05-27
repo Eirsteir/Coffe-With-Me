@@ -6,7 +6,7 @@
     <artifactId>auth-service</artifactId>
     <version>0.0.1-SNAPSHOT</version>
 
-    <name>auth-service</name>
+    <name>Auth Service</name>
     <description>Authentication service for the Coffee-With-Me application</description>
 
     <parent>

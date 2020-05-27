@@ -4,7 +4,10 @@ import com.eirsteir.coffeewithme.authservice.domain.Account;
 import com.eirsteir.coffeewithme.authservice.domain.Role;
 import com.eirsteir.coffeewithme.authservice.domain.RoleType;
 import com.eirsteir.coffeewithme.authservice.repository.AccountRepository;
-import com.eirsteir.coffeewithme.authservice.web.request.UserRegistrationRequest;
+import com.eirsteir.coffeewithme.authservice.web.request.RegistrationRequest;
+import com.eirsteir.coffeewithme.commons.exception.CWMException;
+import com.eirsteir.coffeewithme.commons.exception.EntityType;
+import com.eirsteir.coffeewithme.commons.exception.ExceptionType;
 import io.eventuate.tram.events.publisher.DomainEventPublisher;
 import io.eventuate.tram.events.publisher.ResultWithEvents;
 import lombok.extern.slf4j.Slf4j;
@@ -36,13 +39,13 @@ public class AccountServiceImpl implements AccountService {
         this.accountRepository = accountRepository;
     }
 
-    // TODO: 24.05.2020 throw exception?
     @Override
-    public Optional<Account> registerAccount(UserRegistrationRequest registrationRequest) {
+    public Account registerAccount(RegistrationRequest registrationRequest) {
         Optional<Account> user = accountRepository.findByEmail(registrationRequest.getEmail());
 
         if (user.isPresent())
-            return Optional.empty();
+            throw CWMException.getException(
+                    EntityType.ACCOUNT, ExceptionType.DUPLICATE_ENTITY, user.get().getId().toString());
 
         Account account1 = createAccount(registrationRequest);
         log.debug("[x] Created account {}", account1);
@@ -53,10 +56,10 @@ public class AccountServiceImpl implements AccountService {
         domainEventPublisher.publish(Account.class, account.getId(), accountWithEvents.events);
         log.info("[x] Publishing {} to {}", Account.class, accountWithEvents);
 
-        return Optional.of(account);
+        return account;
     }
 
-    private Account createAccount(UserRegistrationRequest registrationRequest) {
+    private Account createAccount(RegistrationRequest registrationRequest) {
         Role basicRole = roleService.getOrCreateRole(RoleType.ROLE_USER);
         return Account.builder()
                 .email(registrationRequest.getEmail())

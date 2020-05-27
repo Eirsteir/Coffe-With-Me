@@ -1,12 +1,11 @@
 package com.eirsteir.coffeewithme.notification.service;
 
 import com.eirsteir.coffeewithme.commons.domain.NotificationType;
+import com.eirsteir.coffeewithme.commons.exception.CWMException;
 import com.eirsteir.coffeewithme.notification.config.ModelMapperConfig;
 import com.eirsteir.coffeewithme.notification.domain.Notification;
 import com.eirsteir.coffeewithme.notification.dto.NotificationDto;
-import com.eirsteir.coffeewithme.notification.exception.CWMException;
 import com.eirsteir.coffeewithme.notification.repository.NotificationRepository;
-import com.eirsteir.coffeewithme.notification.testconfig.MessageTemplateUtilTestConfig;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -19,7 +18,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Import;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.util.Arrays;
@@ -30,8 +28,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.mockito.Mockito.when;
 
-@Import({MessageTemplateUtilTestConfig.class, ModelMapperConfig.class})
-@TestPropertySource("classpath:exception.properties")
+@Import({ ModelMapperConfig.class})
 @ExtendWith(SpringExtension.class)
 class NotificationServiceImplTest {
 

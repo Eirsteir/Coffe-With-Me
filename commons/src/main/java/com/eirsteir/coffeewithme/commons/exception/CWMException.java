@@ -1,4 +1,4 @@
-package com.eirsteir.coffeewithme.notification.exception;
+package com.eirsteir.coffeewithme.commons.exception;
 
 import org.springframework.stereotype.Component;
 
@@ -22,11 +22,19 @@ public class CWMException {
         }
     }
 
+    public static class InvalidStatusChangeException extends RuntimeException {
+        public InvalidStatusChangeException(String message) {
+            super(message);
+        }
+    }
+
     private static RuntimeException getException(ExceptionType exceptionType, String messageTemplate, String... args) {
         if (ExceptionType.ENTITY_NOT_FOUND.equals(exceptionType))
             return new EntityNotFoundException(MessageTemplateUtil.format(messageTemplate, args));
         else if (ExceptionType.DUPLICATE_ENTITY.equals(exceptionType))
             return new DuplicateEntityException(MessageTemplateUtil.format(messageTemplate, args));
+        else if (ExceptionType.INVALID_STATUS_CHANGE.equals(exceptionType))
+            return new InvalidStatusChangeException(MessageTemplateUtil.format(messageTemplate, args));
 
         return new RuntimeException(MessageTemplateUtil.format(messageTemplate, args));
     }
