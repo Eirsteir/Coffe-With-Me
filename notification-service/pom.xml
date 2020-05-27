@@ -8,7 +8,7 @@
     <version>0.0.1-SNAPSHOT</version>
     <packaging>jar</packaging>
 
-    <name>Notification Service API</name>
+    <name>Notification Service</name>
     <description>Notification Service API for the Coffee-With-Me application</description>
 
     <parent>
