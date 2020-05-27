@@ -1,23 +1,23 @@
 package com.eirsteir.coffeewithme.social.service.user;
 
 import com.eirsteir.coffeewithme.social.domain.user.User;
-import com.eirsteir.coffeewithme.commons.dto.UserDetails;
+import com.eirsteir.coffeewithme.commons.dto.UserDetailsDto;
 import org.springframework.data.jpa.domain.Specification;
 
 import java.util.List;
 
 public interface UserService {
 
-    UserDetails registerUser(UserDetails userDetails);
+    UserDetailsDto registerUser(UserDetailsDto UserDetailsDto);
 
-    UserDetails findUserByEmail(String email);
+    UserDetailsDto findUserByEmail(String email);
 
-    UserDetails updateProfile(UserDetails userDetails);
+    UserDetailsDto updateProfile(UserDetailsDto UserDetailsDto);
 
     User findUserById(Long id);
 
-    List<UserDetails> searchUsers(Specification<User> spec);
+    List<UserDetailsDto> searchUsers(Specification<User> spec);
 
-    UserDetails findUserByIdWithIsFriend(Long id, Long viewerId);
+    UserDetailsDto findUserByIdWithIsFriend(Long id, Long viewerId);
 
 }

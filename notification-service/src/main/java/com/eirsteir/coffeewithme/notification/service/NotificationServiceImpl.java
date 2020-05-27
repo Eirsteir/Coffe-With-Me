@@ -2,7 +2,7 @@ package com.eirsteir.coffeewithme.notification.service;
 
 
 import com.eirsteir.coffeewithme.notification.domain.Notification;
-import com.eirsteir.coffeewithme.notification.domain.NotificationType;
+import com.eirsteir.coffeewithme.commons.domain.NotificationType;
 import com.eirsteir.coffeewithme.notification.dto.NotificationDto;
 import com.eirsteir.coffeewithme.notification.exception.CWMException;
 import com.eirsteir.coffeewithme.notification.repository.NotificationRepository;

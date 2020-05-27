@@ -1,6 +1,6 @@
 package com.eirsteir.coffeewithme.notification.web.request;
 
-import com.eirsteir.coffeewithme.notification.domain.NotificationType;
+import com.eirsteir.coffeewithme.commons.domain.NotificationType;
 import lombok.Getter;
 
 @Getter

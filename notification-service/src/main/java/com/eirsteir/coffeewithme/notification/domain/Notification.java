@@ -1,5 +1,6 @@
 package com.eirsteir.coffeewithme.notification.domain;
 
+import com.eirsteir.coffeewithme.commons.domain.NotificationType;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 import lombok.experimental.Accessors;

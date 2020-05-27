@@ -1,7 +1,7 @@
 package com.eirsteir.coffeewithme.social.dto;
 
 import com.eirsteir.coffeewithme.social.domain.notification.NotificationType;
-import com.eirsteir.coffeewithme.commons.dto.UserDetails;
+import com.eirsteir.coffeewithme.commons.dto.UserDetailsDto;
 import lombok.*;
 import lombok.experimental.Accessors;
 
@@ -19,7 +19,7 @@ public class NotificationDto {
 
     private Long id;
     private Date timestamp;
-    private UserDetails user;
+    private UserDetailsDto user;
     private Boolean seen;
     private NotificationType type;
 

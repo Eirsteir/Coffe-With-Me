@@ -1,6 +1,6 @@
 package com.eirsteir.coffeewithme.social.web.api.friendship;
 
-import com.eirsteir.coffeewithme.commons.dto.UserDetails;
+import com.eirsteir.coffeewithme.commons.dto.UserDetailsDto;
 import com.eirsteir.coffeewithme.commons.security.UserDetailsImpl;
 import com.eirsteir.coffeewithme.social.domain.friendship.FriendshipStatus;
 import com.eirsteir.coffeewithme.social.domain.user.User;
@@ -36,13 +36,13 @@ public class FriendshipController {
 
     @GetMapping("/{id}/friends")
     @ResponseBody
-    Collection<UserDetails> getFriends(@PathVariable Long id) {
-        UserDetails userDetails = modelMapper.map(userService.findUserById(id), UserDetails.class);
-        List<UserDetails> friends = friendshipService.getFriends(userDetails);
+    Collection<UserDetailsDto> getFriends(@PathVariable Long id) {
+        UserDetailsDto UserDetailsDto = modelMapper.map(userService.findUserById(id), UserDetailsDto.class);
+        List<UserDetailsDto> friends = friendshipService.getFriends(UserDetailsDto);
 
         if (friends.isEmpty())
             throw new ResponseStatusException(
-                    HttpStatus.NO_CONTENT, "User with email - " +  userDetails.getEmail() + " has no friends");
+                    HttpStatus.NO_CONTENT, "User with email - " +  UserDetailsDto.getEmail() + " has no friends");
 
         return friends;
     }
@@ -84,9 +84,9 @@ public class FriendshipController {
     }
 
     @GetMapping("/friends/requests")
-    List<UserDetails> getFriendRequests(@AuthenticationPrincipal UserDetailsImpl principal) {
-        UserDetails userDto = modelMapper.map(principal, UserDetails.class);
-        List<UserDetails> friendRequests = friendshipService.getFriendsOfWithStatus(userDto,
+    List<UserDetailsDto> getFriendRequests(@AuthenticationPrincipal UserDetailsImpl principal) {
+        UserDetailsDto userDto = modelMapper.map(principal, UserDetailsDto.class);
+        List<UserDetailsDto> friendRequests = friendshipService.getFriendsOfWithStatus(userDto,
                                                                                 FriendshipStatus.REQUESTED);
 
         if (friendRequests.isEmpty())

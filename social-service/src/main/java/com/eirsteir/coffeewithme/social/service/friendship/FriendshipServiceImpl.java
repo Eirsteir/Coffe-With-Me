@@ -12,7 +12,9 @@ import com.eirsteir.coffeewithme.social.repository.FriendshipRepository;
 import com.eirsteir.coffeewithme.social.repository.UserRepository;
 import com.eirsteir.coffeewithme.social.service.user.UserService;
 import com.eirsteir.coffeewithme.social.web.request.FriendRequest;
-import com.eirsteir.coffeewithme.commons.dto.UserDetails;
+import com.eirsteir.coffeewithme.commons.dto.UserDetailsDto;
+import io.eventuate.tram.events.publisher.DomainEventPublisher;
+import io.eventuate.tram.events.publisher.ResultWithEvents;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,6 +30,8 @@ import java.util.stream.Stream;
 @Transactional
 public class FriendshipServiceImpl implements FriendshipService {
 
+    private DomainEventPublisher domainEventPublisher;
+
     @Autowired
     private UserService userService;
 
@@ -40,29 +44,35 @@ public class FriendshipServiceImpl implements FriendshipService {
     @Autowired
     private ModelMapper modelMapper;
 
-    @Override
-    public List<UserDetails> getFriends(UserDetails userDetails) {
-        return getAllFriendshipsWithStatus(userDetails, FriendshipStatus.ACCEPTED);
+    public FriendshipServiceImpl(DomainEventPublisher domainEventPublisher,
+                                 FriendshipRepository friendshipRepository) {
+        this.domainEventPublisher = domainEventPublisher;
+        this.friendshipRepository = friendshipRepository;
     }
 
     @Override
-    public List<UserDetails> getAllFriendshipsWithStatus(UserDetails userDetails, FriendshipStatus status) {
-        User user = userService.findUserById(userDetails.getId());
+    public List<UserDetailsDto> getFriends(UserDetailsDto UserDetailsDto) {
+        return getAllFriendshipsWithStatus(UserDetailsDto, FriendshipStatus.ACCEPTED);
+    }
+
+    @Override
+    public List<UserDetailsDto> getAllFriendshipsWithStatus(UserDetailsDto UserDetailsDto, FriendshipStatus status) {
+        User user = userService.findUserById(UserDetailsDto.getId());
         List<User> friends = findFriends(user.getId(), status);
 
         return convertUserListToDto(friends);
     }
 
     @Override
-    public List<UserDetails> getFriendsOfWithStatus(UserDetails userDetails, FriendshipStatus status) {
-        User user = userService.findUserById(userDetails.getId());
+    public List<UserDetailsDto> getFriendsOfWithStatus(UserDetailsDto UserDetailsDto, FriendshipStatus status) {
+        User user = userService.findUserById(UserDetailsDto.getId());
 
         return convertUserListToDto(userRepository.findFriendsOfWithStatus(user.getId(), status));
     }
 
-    private List<UserDetails> convertUserListToDto(List<User> users) {
+    private List<UserDetailsDto> convertUserListToDto(List<User> users) {
         return users.stream()
-                .map(user -> modelMapper.map(user, UserDetails.class))
+                .map(user -> modelMapper.map(user, UserDetailsDto.class))
                 .collect(Collectors.toList());
     }
 
@@ -95,6 +105,9 @@ public class FriendshipServiceImpl implements FriendshipService {
 
         Friendship friendship = requester.addFriend(addressee, FriendshipStatus.REQUESTED);
         log.info("[x] Registered friendship: {}", friendship);
+
+        publish(Friendship.createFriendRequest(friendship));
+
         return modelMapper.map(friendship, FriendshipDto.class);
     }
 
@@ -151,8 +164,20 @@ public class FriendshipServiceImpl implements FriendshipService {
         friendshipToUpdate.setStatus(friendshipDto.getStatus());
         Friendship updatedFriendship = friendshipRepository.save(friendshipToUpdate);
 
+        if (updatedFriendship.getStatus() == FriendshipStatus.ACCEPTED) {
+            UserDetailsDto requester = userService.getUserDetails(updatedFriendship.getRequester());
+            publish(Friendship.createFriendRequestAccepted(friendshipToUpdate, requester));
+        }
+
+
+
         log.info("[x] Friendship was updated to {}: {}", friendshipDto.getStatus(), friendshipToUpdate);
         return modelMapper.map(updatedFriendship, FriendshipDto.class);
+    }
+
+    private void publish(ResultWithEvents<Friendship>  friendshipWithEvents) {
+        log.info("[x] Publishing {} to {}", friendshipWithEvents, Friendship.class);
+        domainEventPublisher.publish(Friendship.class, friendshipWithEvents, friendshipWithEvents.events);
     }
 
 }

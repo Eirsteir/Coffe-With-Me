@@ -1,12 +1,20 @@
 package com.eirsteir.coffeewithme.social.domain.friendship;
 
+import com.eirsteir.coffeewithme.commons.domain.FriendRequestAcceptedEvent;
+import com.eirsteir.coffeewithme.commons.domain.FriendRequestEvent;
+import com.eirsteir.coffeewithme.commons.domain.UserDetails;
 import com.eirsteir.coffeewithme.social.domain.user.User;
-import lombok.*;
+import io.eventuate.tram.events.publisher.ResultWithEvents;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
+import java.util.Collections;
 import java.util.Date;
 
 @Data
@@ -43,6 +51,17 @@ public class Friendship {
     @UpdateTimestamp
     private Date updatedDateTime;
 
+    public static ResultWithEvents<Friendship> createFriendRequest(Friendship friendship, UserDetails user) {
+
+        FriendRequestEvent friendRequestEvent = new FriendRequestEvent(user);
+        return new ResultWithEvents<>(friendship, Collections.singletonList(friendRequestEvent));
+    }
+
+    public static ResultWithEvents<Friendship> createFriendRequestAccepted(Friendship friendship, UserDetails user) {
+
+        FriendRequestAcceptedEvent friendRequestAcceptedEvent = new FriendRequestAcceptedEvent(user);
+        return new ResultWithEvents<>(friendship, Collections.singletonList(friendRequestAcceptedEvent));
+    }
 
     public static class FriendshipBuilder {
         private FriendshipId id = new FriendshipId();

@@ -6,7 +6,7 @@ import com.eirsteir.coffeewithme.social.exception.CWMException;
 import com.eirsteir.coffeewithme.social.exception.ExceptionType;
 import com.eirsteir.coffeewithme.social.repository.UserRepository;
 import com.eirsteir.coffeewithme.social.service.friendship.FriendshipService;
-import com.eirsteir.coffeewithme.commons.dto.UserDetails;
+import com.eirsteir.coffeewithme.commons.dto.UserDetailsDto;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,8 +36,8 @@ public class UserServiceImpl implements UserService {
     private ModelMapper modelMapper;
 
     @Override
-    public UserDetails registerUser(UserDetails userDetails) {
-        Optional<User> user = userRepository.findByEmail(userDetails.getEmail());
+    public UserDetailsDto registerUser(UserDetailsDto UserDetailsDto) {
+        Optional<User> user = userRepository.findByEmail(UserDetailsDto.getEmail());
 
         if (user.isPresent())
             throw CWMException.getException(

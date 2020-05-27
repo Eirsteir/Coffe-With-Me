@@ -1,4 +1,4 @@
-package com.eirsteir.coffeewithme.social.domain.notification;
+package com.eirsteir.coffeewithme.commons.domain;
 
 public enum NotificationType {
 

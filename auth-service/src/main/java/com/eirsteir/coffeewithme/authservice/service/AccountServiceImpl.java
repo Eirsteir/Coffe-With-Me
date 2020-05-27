@@ -32,7 +32,6 @@ public class AccountServiceImpl implements AccountService {
     @Autowired
     private BCryptPasswordEncoder encoder;
 
-
     public AccountServiceImpl(DomainEventPublisher domainEventPublisher, AccountRepository accountRepository) {
         this.domainEventPublisher = domainEventPublisher;
         this.accountRepository = accountRepository;
