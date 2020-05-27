@@ -10,7 +10,6 @@ import lombok.experimental.Accessors;
 import org.hibernate.annotations.Cascade;
 
 import javax.persistence.*;
-import java.io.Serializable;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
@@ -25,9 +24,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-public class User extends CreatedUpdatedDateTimeBaseModel implements Serializable {
-
-    private static final long serialVersionUID = 3966996285633364335L;
+public class User extends CreatedUpdatedDateTimeBaseModel {
 
     @Id
     private Long id;
@@ -36,9 +33,6 @@ public class User extends CreatedUpdatedDateTimeBaseModel implements Serializabl
     private String email;
 
     private String username;
-
-    @ToString.Exclude
-    private String password;
 
     private String name;
 
@@ -89,7 +83,6 @@ public class User extends CreatedUpdatedDateTimeBaseModel implements Serializabl
         this.friendsOf.add(friendship);
     }
 
-    // TODO: 12.05.2020 how should this be used?
     public void removeFriendship(Friendship friendship) {
         friends.remove(friendship);
         friendship.getAddressee().friendsOf.remove(friendship);
