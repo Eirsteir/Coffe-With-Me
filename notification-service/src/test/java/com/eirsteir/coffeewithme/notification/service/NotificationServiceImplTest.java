@@ -1,8 +1,8 @@
 package com.eirsteir.coffeewithme.notification.service;
 
+import com.eirsteir.coffeewithme.commons.domain.NotificationType;
 import com.eirsteir.coffeewithme.notification.config.ModelMapperConfig;
 import com.eirsteir.coffeewithme.notification.domain.Notification;
-import com.eirsteir.coffeewithme.commons.domain.NotificationType;
 import com.eirsteir.coffeewithme.notification.dto.NotificationDto;
 import com.eirsteir.coffeewithme.notification.exception.CWMException;
 import com.eirsteir.coffeewithme.notification.repository.NotificationRepository;
@@ -19,7 +19,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Import;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
@@ -29,7 +28,7 @@ import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.when;
 
 @Import({MessageTemplateUtilTestConfig.class, ModelMapperConfig.class})
 @TestPropertySource("classpath:exception.properties")
@@ -47,9 +46,6 @@ class NotificationServiceImplTest {
 
     @MockBean
     private NotificationRepository notificationRepository;
-
-    @MockBean
-    private SimpMessagingTemplate template;
 
     @Autowired
     private ModelMapper modelMapper;
@@ -79,36 +75,6 @@ class NotificationServiceImplTest {
                 .build();
     }
 
-    @Test
-    void testNotifyRequestedRegistersAndNotifiesUser() {
-        when(notificationRepository.save(Mockito.any(Notification.class)))
-                .thenReturn(friendRequestNotification);
-
-        service.notify(TO_USER_ID, currentUser, NotificationType.FRIEND_REQUEST);
-
-        NotificationDto expectedNotificationDto = modelMapper.map(friendRequestNotification, NotificationDto.class);
-
-        verify(template, times(1))
-                .convertAndSendToUser(friendRequestNotification.getUser().getId().toString(),
-                                      "/queue/notifications",
-                                      expectedNotificationDto);
-    }
-
-    @Test
-    void testNotifyAccepted_thenRegisterAndNotifyUser() {
-        friendRequestNotification.setType(NotificationType.FRIENDSHIP_ACCEPTED);
-
-        when(notificationRepository.save(Mockito.any(Notification.class)))
-                .thenReturn(friendRequestNotification);
-        NotificationDto expectedNotificationDto = modelMapper.map(friendRequestNotification, NotificationDto.class);
-
-        service.notify(CURRENT_USER_ID, currentUser, NotificationType.FRIENDSHIP_ACCEPTED);
-
-        verify(template, times(1))
-                .convertAndSendToUser(friendRequestNotification.getUser().getId().toString(),
-                                      "/queue/notifications",
-                                      expectedNotificationDto);
-    }
 
     @Test
     void testFindAllByUserWhenUserHasNotifications_thenReturnListOfNotificationDto() {
