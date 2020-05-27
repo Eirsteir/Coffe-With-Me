@@ -12,6 +12,7 @@ import lombok.ToString;
 @AllArgsConstructor
 public abstract class AbstractFriendshipEvent  implements FriendshipEvent {
 
+    private Long subjectId;
     private UserDetails user;
 
 }

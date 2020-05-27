@@ -74,7 +74,7 @@ class NotificationServiceImplTest {
         friendRequestNotification = Notification.builder()
                 .notificationId(1L)
                 .subjectId(TO_USER_ID)
-                .type(NotificationType.FRIENDSHIP_REQUESTED)
+                .type(NotificationType.FRIEND_REQUEST)
                 .user(currentUser)
                 .build();
     }
@@ -84,7 +84,7 @@ class NotificationServiceImplTest {
         when(notificationRepository.save(Mockito.any(Notification.class)))
                 .thenReturn(friendRequestNotification);
 
-        service.notify(TO_USER_ID, currentUser, NotificationType.FRIENDSHIP_REQUESTED);
+        service.notify(TO_USER_ID, currentUser, NotificationType.FRIEND_REQUEST);
 
         NotificationDto expectedNotificationDto = modelMapper.map(friendRequestNotification, NotificationDto.class);
 

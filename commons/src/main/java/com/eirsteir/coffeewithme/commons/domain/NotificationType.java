@@ -2,7 +2,7 @@ package com.eirsteir.coffeewithme.commons.domain;
 
 public enum NotificationType {
 
-    FRIENDSHIP_REQUESTED,
+    FRIEND_REQUEST,
     FRIENDSHIP_ACCEPTED
 
 }

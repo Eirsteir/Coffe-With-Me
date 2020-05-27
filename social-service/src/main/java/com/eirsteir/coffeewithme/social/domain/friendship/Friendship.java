@@ -53,13 +53,14 @@ public class Friendship {
 
     public static ResultWithEvents<Friendship> createFriendRequest(Friendship friendship, UserDetails user) {
 
-        FriendRequestEvent friendRequestEvent = new FriendRequestEvent(user);
+        FriendRequestEvent friendRequestEvent = new FriendRequestEvent(friendship.getAddressee().getId(), user);
         return new ResultWithEvents<>(friendship, Collections.singletonList(friendRequestEvent));
     }
 
     public static ResultWithEvents<Friendship> createFriendRequestAccepted(Friendship friendship, UserDetails user) {
 
-        FriendRequestAcceptedEvent friendRequestAcceptedEvent = new FriendRequestAcceptedEvent(user);
+        FriendRequestAcceptedEvent friendRequestAcceptedEvent = new FriendRequestAcceptedEvent(
+                friendship.getRequester().getId(), user);
         return new ResultWithEvents<>(friendship, Collections.singletonList(friendRequestAcceptedEvent));
     }
 

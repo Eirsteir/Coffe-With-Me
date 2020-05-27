@@ -5,8 +5,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class FriendRequestEvent extends AbstractFriendshipEvent {
 
-    public FriendRequestEvent(UserDetails user) {
-        super(user);
+    public FriendRequestEvent(Long subjectId, UserDetails user) {
+        super(subjectId, user);
     }
 
 }
