@@ -80,15 +80,6 @@ public class UserServiceImpl implements UserService {
         return userDetails;
     }
 
-//    @Override
-//    public UserDetails getUserDetails(User user) {
-//        return UserDetails.builder()
-//                .id(user.getId())
-//                .name(user.getName())
-//                .username(user.getUsername())
-//                .build();
-//    }
-
     private boolean areFriends(User currentUser, User user) {
         return friendshipService.findFriends(currentUser.getId(), FriendshipStatus.ACCEPTED).contains(user);
     }
@@ -110,6 +101,15 @@ public class UserServiceImpl implements UserService {
         log.info("[x] Updated user profile: {}", userModel);
 
         return modelMapper.map(userRepository.save(userModel), UserDetailsDto.class);
+    }
+
+    @Override
+    public UserDetails getUserDetails(User user) {
+        return UserDetails.builder()
+                .id(user.getId())
+                .name(user.getName())
+                .username(user.getUsername())
+                .build();
     }
 
 }

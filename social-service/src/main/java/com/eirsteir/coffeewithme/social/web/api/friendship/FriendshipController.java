@@ -67,14 +67,7 @@ public class FriendshipController {
     FriendshipDto updateFriendship(@RequestBody @Valid FriendshipDto friendshipDto,
                                    @AuthenticationPrincipal UserDetailsImpl principal) {
         validateFriendshipDto(friendshipDto, principal);
-        FriendshipDto updatedFriendshipDto = friendshipService.updateFriendship(friendshipDto);
-
-//        if (updatedFriendshipDto.getStatus() == FriendshipStatus.ACCEPTED)
-//            notificationService.notify(principal.getUser().getId(),
-//                                       principal.getUser(),
-//                                       NotificationType.FRIENDSHIP_ACCEPTED);
-
-        return  updatedFriendshipDto;
+        return friendshipService.updateFriendship(friendshipDto);
     }
 
     @DeleteMapping("/friends")

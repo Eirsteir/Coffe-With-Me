@@ -108,7 +108,7 @@ public class FriendshipServiceImpl implements FriendshipService {
         log.info("[x] Registered friendship: {}", friendship);
 
         UserDetails user = userService.getUserDetails(friendship.getRequester());
-        publish(Friendship.createFriendRequest(friendship));
+        publish(Friendship.createFriendRequest(friendship, user));
 
         return modelMapper.map(friendship, FriendshipDto.class);
     }
@@ -167,7 +167,7 @@ public class FriendshipServiceImpl implements FriendshipService {
         Friendship updatedFriendship = friendshipRepository.save(friendshipToUpdate);
 
         if (updatedFriendship.getStatus() == FriendshipStatus.ACCEPTED) {
-            UserDetailsDto addressee = userService.getUserDetails(updatedFriendship.getAddressee());
+            UserDetails addressee = userService.getUserDetails(updatedFriendship.getAddressee());
             publish(Friendship.createFriendRequestAccepted(friendshipToUpdate, addressee));
         }
 

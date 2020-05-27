@@ -15,6 +15,7 @@ import com.eirsteir.coffeewithme.social.service.user.UserService;
 import com.eirsteir.coffeewithme.social.web.request.FriendRequest;
 import com.eirsteir.coffeewithme.commons.dto.UserDetailsDto;
 import com.eirsteir.coffeewithme.testconfig.MessageTemplateUtilTestConfig;
+import io.eventuate.tram.events.publisher.DomainEventPublisher;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -70,12 +71,19 @@ class FriendshipServiceImplTest {
     @MockBean
     private UserService userService;
 
+
+
     @TestConfiguration
     static class FriendshipServiceImplTestContextConfiguration {
+        @MockBean
+        private DomainEventPublisher domainEventPublisher;
+
+        @MockBean
+        private FriendshipRepository friendshipRepository;
 
         @Bean
         public FriendshipService friendshipService() {
-            return new FriendshipServiceImpl();
+            return new FriendshipServiceImpl(domainEventPublisher, friendshipRepository);
         }
     }
 
