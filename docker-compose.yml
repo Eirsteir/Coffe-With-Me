@@ -13,9 +13,9 @@ services:
       - /app/node_modules
       - ./client:/app
 
-  eureka-server:
+  discovery:
     build:
-      context: ./eureka-server
+      context: ./discovery
       dockerfile: Dockerfile
     restart: on-failure
     expose:
@@ -31,7 +31,7 @@ services:
     ports:
       - 8080:8080
     environment:
-      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eureka-server:8761/eureka
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://discovery:8761/eureka
 
   auth-service:
     build:
@@ -41,14 +41,14 @@ services:
     ports:
       - 9100:9100
     depends_on:
-      - eureka-server
+      - discovery
       - gateway
       - mysql
       - kafka
       - zookeeper
       - cdcservice
     environment:
-      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eureka-server:8761/eureka
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://discovery:8761/eureka
       SPRING_DATASOURCE_URL: jdbc:mysql://mysql/coffeewithme
       SPRING_DATASOURCE_USERNAME: mysqluser
       SPRING_DATASOURCE_PASSWORD: mysqlpw
@@ -65,14 +65,14 @@ services:
     ports:
       - 8200:8200
     depends_on:
-      - eureka-server
+      - discovery
       - gateway
       - mysql
       - kafka
       - zookeeper
       - cdcservice
     environment:
-      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eureka-server:8761/eureka
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://discovery:8761/eureka
       SPRING_DATASOURCE_URL: jdbc:mysql://mysql/coffeewithme
       SPRING_DATASOURCE_USERNAME: mysqluser
       SPRING_DATASOURCE_PASSWORD: mysqlpw
@@ -89,14 +89,14 @@ services:
     ports:
       - 9000:9000
     depends_on:
-      - eureka-server
+      - discovery
       - gateway
       - mysql
       - kafka
       - zookeeper
       - cdcservice
     environment:
-      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eureka-server:8761/eureka
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://discovery:8761/eureka
       SPRING_DATASOURCE_URL: jdbc:mysql://mysql/coffeewithme
       SPRING_DATASOURCE_USERNAME: mysqluser
       SPRING_DATASOURCE_PASSWORD: mysqlpw

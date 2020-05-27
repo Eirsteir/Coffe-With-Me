@@ -2,7 +2,7 @@ package com.eirsteir.coffeewithme.authservice.web.api;
 
 
 import com.eirsteir.coffeewithme.authservice.service.AccountService;
-import com.eirsteir.coffeewithme.authservice.web.request.UserRegistrationRequest;
+import com.eirsteir.coffeewithme.authservice.web.request.RegistrationRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -20,8 +20,8 @@ public class AuthController {
 
     @PostMapping("/register")
     @ResponseStatus(HttpStatus.CREATED)
-    void register(@RequestBody @Valid UserRegistrationRequest userRegistrationRequest) {
-        accountService.registerAccount(userRegistrationRequest);
+    void register(@RequestBody @Valid RegistrationRequest registrationRequest) {
+        accountService.registerAccount(registrationRequest);
     }
 
 }

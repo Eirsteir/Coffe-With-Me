@@ -4,7 +4,7 @@ import com.eirsteir.coffeewithme.authservice.domain.Account;
 import com.eirsteir.coffeewithme.authservice.domain.Role;
 import com.eirsteir.coffeewithme.authservice.domain.RoleType;
 import com.eirsteir.coffeewithme.authservice.repository.AccountRepository;
-import com.eirsteir.coffeewithme.authservice.web.request.UserRegistrationRequest;
+import com.eirsteir.coffeewithme.authservice.web.request.RegistrationRequest;
 import com.eirsteir.coffeewithme.commons.exception.CWMException;
 import com.eirsteir.coffeewithme.commons.exception.EntityType;
 import com.eirsteir.coffeewithme.commons.exception.ExceptionType;
@@ -40,7 +40,7 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
-    public Account registerAccount(UserRegistrationRequest registrationRequest) {
+    public Account registerAccount(RegistrationRequest registrationRequest) {
         Optional<Account> user = accountRepository.findByEmail(registrationRequest.getEmail());
 
         if (user.isPresent())
@@ -59,7 +59,7 @@ public class AccountServiceImpl implements AccountService {
         return account;
     }
 
-    private Account createAccount(UserRegistrationRequest registrationRequest) {
+    private Account createAccount(RegistrationRequest registrationRequest) {
         Role basicRole = roleService.getOrCreateRole(RoleType.ROLE_USER);
         return Account.builder()
                 .email(registrationRequest.getEmail())
