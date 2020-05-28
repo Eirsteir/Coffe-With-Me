@@ -17,7 +17,7 @@ import javax.validation.constraints.NotBlank;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class UpdateProfileRequest {
 
-    @NotBlank(message = "Username is required")
+    @NotBlank(message = "Nickname is required")
     private String nickname;
 
 }

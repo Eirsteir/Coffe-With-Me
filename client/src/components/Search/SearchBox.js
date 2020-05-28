@@ -89,7 +89,7 @@ class SearchBox extends React.Component {
         this.toggleLoading();
 
         fetch(`/api/users?search=name=='*${encodeURIComponent(this.state.searchValue)}*',
-                    username=='*${encodeURIComponent(this.state.searchValue)}*'`, {
+                    nickname=='*${encodeURIComponent(this.state.searchValue)}*'`, {
             method: "GET",
             headers: { "Content-Type": "application/json" ,
                 Authorization: token
