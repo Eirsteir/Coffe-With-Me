@@ -49,7 +49,7 @@ public class JwtTokenAuthenticationFilter extends OncePerRequestFilter {
                 UserDetailsImpl principal = UserDetailsImpl.builder()
                         .id(Long.parseLong(id))
                         .email((String) claims.get("email"))
-                        .nickname((String) claims.get("username"))
+                        .nickname((String) claims.get("nickname"))
                         .build();
 
                 UsernamePasswordAuthenticationToken auth =  new UsernamePasswordAuthenticationToken(

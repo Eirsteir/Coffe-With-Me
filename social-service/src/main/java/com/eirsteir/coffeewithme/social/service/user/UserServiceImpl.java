@@ -109,7 +109,7 @@ public class UserServiceImpl implements UserService {
         return UserDetails.builder()
                 .id(user.getId())
                 .name(user.getName())
-                .username(user.getUsername())
+                .nickname(user.getUsername())
                 .build();
     }
 
