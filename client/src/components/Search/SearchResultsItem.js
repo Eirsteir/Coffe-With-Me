@@ -39,7 +39,7 @@ const SearchResultsItem = ({ userId, user, isAuthenticated }) => {
                         letterSpacing: 1
                     }}
                 >
-                    {user.username == null ? user.name  : user.username}
+                    {user.nickname == null ? user.name  : user.nickname}
                 </Link>
             </div>
         </div>

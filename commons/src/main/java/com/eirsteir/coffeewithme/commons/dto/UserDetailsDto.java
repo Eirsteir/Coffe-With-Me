@@ -15,9 +15,8 @@ public class UserDetailsDto {
 
     private Long id;
     private String email;
-    private String username;
+    private String nickname;
     private String name;
-    private String mobileNumber; // TODO: 26.05.2020 remove
-    private Boolean isFriend; // TODO: 26.05.2020 probably not necessary here
+    private Boolean isFriend;
 
 }

@@ -18,10 +18,10 @@ public class SetupTestDataLoader implements ApplicationListener<ContextRefreshed
 
     private static final String REQUESTER_EMAIL = "requester@test.com";
     private static final String ADDRESSEE_EMAIL = "addressee@test.com";
-    private static final String REQUESTER_USERNAME = "requester";
-    private static final String ADDRESSEE_USERNAME = "addressee";
+    private static final String REQUESTER_NICKNAME = "requester";
+    private static final String ADDRESSEE_NICKNAME = "addressee";
     public static final String OTHER_USER_EMAIL = "other-user@test.com";
-    public static final String OTHER_USER_USERNAME = "other-user";
+    public static final String OTHER_USER_NICKNAME = "other-user";
     public static final String JOHN_EMAIL = "john@doe.com";
     public static final String TOM_EMAIL = "tom@doe.com";
 
@@ -39,28 +39,28 @@ public class SetupTestDataLoader implements ApplicationListener<ContextRefreshed
 
         User defaultUser = User.builder()
                 .email("user")
-                .username("default")
+                .nickname("default")
                 .build();
 
         User requester = User.builder()
                 .email(REQUESTER_EMAIL)
-                .username(REQUESTER_USERNAME)
+                .nickname(REQUESTER_NICKNAME)
                 .build();
 
         User addressee = User.builder()
                 .email(ADDRESSEE_EMAIL)
-                .username(ADDRESSEE_USERNAME)
+                .nickname(ADDRESSEE_NICKNAME)
                 .build();
 
         User otherUser = User.builder()
                 .email(OTHER_USER_EMAIL)
-                .username(OTHER_USER_USERNAME)
+                .nickname(OTHER_USER_NICKNAME)
                 .build();
 
         User userJohn = User.builder()
                 .name("John Doe")
                 .email(JOHN_EMAIL)
-                .username("johndoe")
+                .nickname("johndoe")
                 .build();
 
         User userTom = User.builder()

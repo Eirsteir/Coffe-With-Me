@@ -43,7 +43,7 @@ public class Notification {
     public static class UserDetails {
         private Long id;
         private String name;
-        private String username;
+        private String nickname;
     }
 
 }

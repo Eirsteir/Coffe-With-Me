@@ -103,7 +103,7 @@ class FriendRequestItem extends React.Component {
                     }}
                 >
                 
-                    {friend.username == null ? friend.name  : friend.username}
+                    {friend.nickname == null ? friend.name  : friend.nickname}
                 
                 </Link>
     

@@ -46,8 +46,8 @@ import static org.mockito.Mockito.when;
 @ExtendWith(SpringExtension.class)
 class FriendshipServiceImplTest {
 
-    private static final String REQUESTER_USERNAME = "requester";
-    private static final String ADDRESSEE_USERNAME = "addressee";
+    private static final String REQUESTER_NICKNAME = "requester";
+    private static final String ADDRESSEE_NICKNAME = "addressee";
 
     private Friendship friendshipRequested;
     private FriendshipId friendshipId;
@@ -90,12 +90,12 @@ class FriendshipServiceImplTest {
     void setUp() {
         requester = User.builder()
                 .id(1L)
-               .username(REQUESTER_USERNAME)
+               .nickname(REQUESTER_NICKNAME)
                .build();
 
         addressee = User.builder()
                 .id(2L)
-               .username(ADDRESSEE_USERNAME)
+               .nickname(ADDRESSEE_NICKNAME)
                .build();
 
         friendshipId = FriendshipId.builder()

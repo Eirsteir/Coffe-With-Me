@@ -13,7 +13,7 @@ const FriendItem = ({ userId, friend, isAuthenticated }) => {
             }}
         >
 
-            {friend.username == null ? friend.name  : friend.username}
+            {friend.nickname == null ? friend.name  : friend.nickname}
 
             <div>
                 <Link 

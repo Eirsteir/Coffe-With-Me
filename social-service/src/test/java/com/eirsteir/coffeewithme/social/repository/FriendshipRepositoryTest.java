@@ -20,8 +20,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 @DataJpaTest
 @ExtendWith(SpringExtension.class)
 class FriendshipRepositoryTest {
-    private static final String REQUESTER_USERNAME = "requester";
-    private static final String ADDRESSEE_USERNAME = "addressee";
+    private static final String REQUESTER_NICKNAME = "requester";
+    private static final String ADDRESSEE_NICKNAME = "addressee";
 
     private FriendshipId friendshipId;
     private User requester;
@@ -36,11 +36,11 @@ class FriendshipRepositoryTest {
     @BeforeEach
     void setUp() {
         requester = entityManager.persistFlushFind(User.builder()
-                .username(REQUESTER_USERNAME)
+                .nickname(REQUESTER_NICKNAME)
                 .build());
 
         addressee = entityManager.persistFlushFind(User.builder()
-                .username(ADDRESSEE_USERNAME)
+                .nickname(ADDRESSEE_NICKNAME)
                 .build());
 
         entityManager.persistAndFlush(Friendship.builder()

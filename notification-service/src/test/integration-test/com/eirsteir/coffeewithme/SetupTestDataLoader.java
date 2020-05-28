@@ -20,9 +20,9 @@ public class SetupTestDataLoader implements ApplicationListener<ContextRefreshed
     public static final long REQUESTER_ID = 2L;
     public static final long ADDRESSEE_ID = 3L;
     public static final long OTHER_USER_ID = 4L;
-    private static final String REQUESTER_USERNAME = "requester";
-    private static final String ADDRESSEE_USERNAME = "addressee";
-    public static final String OTHER_USER_USERNAME = "other-user";
+    private static final String REQUESTER_NICKNAME = "requester";
+    private static final String ADDRESSEE_NICKNAME = "addressee";
+    public static final String OTHER_USER_NICKNAME = "other-user";
 
     private boolean alreadySetup = false;
 
@@ -39,19 +39,19 @@ public class SetupTestDataLoader implements ApplicationListener<ContextRefreshed
         Notification.UserDetails requester = Notification.UserDetails.builder()
                 .id(REQUESTER_ID)
                 .name("Requester")
-                .username(REQUESTER_USERNAME)
+                .nickname(REQUESTER_NICKNAME)
                 .build();
 
         Notification.UserDetails addressee = Notification.UserDetails.builder()
                 .id(ADDRESSEE_ID)
                 .name("Addressee")
-                .username(ADDRESSEE_USERNAME)
+                .nickname(ADDRESSEE_NICKNAME)
                 .build();
 
         Notification.UserDetails otherUser = Notification.UserDetails.builder()
                 .id(OTHER_USER_ID)
                 .name("Other User")
-                .username(OTHER_USER_USERNAME)
+                .nickname(OTHER_USER_NICKNAME)
                 .build();
 
         Notification notification = Notification.builder()

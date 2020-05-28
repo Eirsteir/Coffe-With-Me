@@ -41,9 +41,8 @@ import static org.mockito.Mockito.when;
 class UserServiceImplTest {
 
     public static final String EMAIL_ALEX = "alex@email.com";
-    public static final String USERNAME_ALEX = "alex";
+    public static final String NICKNAME_ALEX = "alex";
     public static final String NAME_ALEX = "Alex";
-    public static final String MOBILE_NUMBER_ALEX = "12345678";
 
     @TestConfiguration
     static class UserServiceImplTestContextConfiguration {
@@ -69,20 +68,18 @@ class UserServiceImplTest {
     private FriendshipService friendshipService;
 
     private User user;
-    private UserDetailsDto UserDetailsDto;
+    private UserDetailsDto userDetailsDto;
 
     @BeforeEach
     public void setUp() {
         user = User.builder()
                 .email(EMAIL_ALEX)
                 .name(NAME_ALEX)
-                .mobileNumber(MOBILE_NUMBER_ALEX)
                 .build();
 
-        UserDetailsDto = UserDetailsDto.builder()
+        userDetailsDto = UserDetailsDto.builder()
                 .email(EMAIL_ALEX)
                 .name(NAME_ALEX)
-                .mobileNumber(MOBILE_NUMBER_ALEX)
                 .build();
 
          when(userRepository.findByEmail(EMAIL_ALEX))
@@ -119,26 +116,26 @@ class UserServiceImplTest {
         List<UserDetailsDto> results = userService.searchUsers(spec);
 
         assertThat(results).hasSize(1);
-        assertThat(UserDetailsDto).isIn(results);
+        assertThat(userDetailsDto).isIn(results);
     }
 
     @Test
     void testUpdateProfileUserReturnsUpdatedUserDyo() {
-        UserDetailsDto updateProfileRequestDto = UserDetailsDto.builder()
-                .username(USERNAME_ALEX)
+        UserDetailsDto updateProfileRequestDto = userDetailsDto.builder()
+                .nickname(NICKNAME_ALEX)
                 .email(EMAIL_ALEX)
                 .build();
 
         UserDetailsDto updatedUserDetails = userService.updateProfile(updateProfileRequestDto);
 
-        assertThat(updatedUserDetails.getUsername()).isEqualTo(USERNAME_ALEX);
+        assertThat(updatedUserDetails.getNickname()).isEqualTo(NICKNAME_ALEX);
     }
 
     @Test
     void testUpdateProfileWhenUserNotFound() {
-        UserDetailsDto updateProfileRequestDto = UserDetailsDto.builder()
+        UserDetailsDto updateProfileRequestDto = userDetailsDto.builder()
                 .email("not.found@email.com")
-                .username(USERNAME_ALEX)
+                .nickname(NICKNAME_ALEX)
                 .build();
         assertThatExceptionOfType(CWMException.EntityNotFoundException.class)
                 .isThrownBy(() -> userService.updateProfile(updateProfileRequestDto))
