@@ -36,7 +36,7 @@ class MyProfilePage extends React.Component {
                         </Typography>
                     </Grid>
 
-                    { user.username && (
+                    { user.nickname && (
                         <Grid item>
                             <Typography
                                 variant="subtitle1"
@@ -44,7 +44,7 @@ class MyProfilePage extends React.Component {
                                     color: "#fff",
                                 }}
                             >
-                                {user.username}
+                                {user.nickname}
                             </Typography>
                         </Grid>
                     )}

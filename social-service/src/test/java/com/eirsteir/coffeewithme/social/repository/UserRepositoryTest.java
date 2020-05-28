@@ -28,10 +28,10 @@ class UserRepositoryTest {
     private static final String EMAIL_ALEX = "alex@mail.com";
     private static final String REQUESTER_EMAIL = "requester@test.com";
     private static final String ADDRESSEE_EMAIL = "addressee@test.com";
-    private static final String REQUESTER_USERNAME = "requester";
-    private static final String ADDRESSEE_USERNAME = "addressee";
+    private static final String REQUESTER_NICKNAME = "requester";
+    private static final String ADDRESSEE_NICKNAME = "addressee";
     private static final String OTHER_USER_EMAIL = "other-user@test.com";
-    private static final String OTHER_USER_USERNAME = "other-user";
+    private static final String OTHER_USER_NICKNAME = "other-user";
 
     @Autowired
     private TestEntityManager entityManager;
@@ -56,7 +56,7 @@ class UserRepositoryTest {
     @BeforeEach
     void setUp() {
         user = User.builder()
-                .username(USER_NAME_ALEX)
+                .nickname(USER_NAME_ALEX)
                 .email(EMAIL_ALEX)
                 .name("Alex")
                 .mobileNumber("12345678")
@@ -64,17 +64,17 @@ class UserRepositoryTest {
 
         requester = entityManager.persistFlushFind(User.builder()
                                                                 .email(REQUESTER_EMAIL)
-                                                                .username(REQUESTER_USERNAME)
+                                                                .nickname(REQUESTER_NICKNAME)
                                                                 .build());
 
         addressee = entityManager.persistFlushFind(User.builder()
                                                                 .email(ADDRESSEE_EMAIL)
-                                                                .username(ADDRESSEE_USERNAME)
+                                                                .nickname(ADDRESSEE_NICKNAME)
                                                                 .build());
 
         otherUser = entityManager.persistFlushFind(User.builder()
                                                                 .email(OTHER_USER_EMAIL)
-                                                                .username(OTHER_USER_USERNAME)
+                                                                .nickname(OTHER_USER_NICKNAME)
                                                                 .build());
 
         requester.addFriend(addressee, FriendshipStatus.ACCEPTED);

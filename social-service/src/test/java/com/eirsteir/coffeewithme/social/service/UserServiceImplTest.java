@@ -41,7 +41,7 @@ import static org.mockito.Mockito.when;
 class UserServiceImplTest {
 
     public static final String EMAIL_ALEX = "alex@email.com";
-    public static final String USERNAME_ALEX = "alex";
+    public static final String NICKNAME_ALEX = "alex";
     public static final String NAME_ALEX = "Alex";
     public static final String MOBILE_NUMBER_ALEX = "12345678";
 
@@ -125,20 +125,20 @@ class UserServiceImplTest {
     @Test
     void testUpdateProfileUserReturnsUpdatedUserDyo() {
         UserDetailsDto updateProfileRequestDto = UserDetailsDto.builder()
-                .username(USERNAME_ALEX)
+                .nickname(NICKNAME_ALEX)
                 .email(EMAIL_ALEX)
                 .build();
 
         UserDetailsDto updatedUserDetails = userService.updateProfile(updateProfileRequestDto);
 
-        assertThat(updatedUserDetails.getUsername()).isEqualTo(USERNAME_ALEX);
+        assertThat(updatedUserDetails.getUsername()).isEqualTo(NICKNAME_ALEX);
     }
 
     @Test
     void testUpdateProfileWhenUserNotFound() {
         UserDetailsDto updateProfileRequestDto = UserDetailsDto.builder()
                 .email("not.found@email.com")
-                .username(USERNAME_ALEX)
+                .nickname(NICKNAME_ALEX)
                 .build();
         assertThatExceptionOfType(CWMException.EntityNotFoundException.class)
                 .isThrownBy(() -> userService.updateProfile(updateProfileRequestDto))
