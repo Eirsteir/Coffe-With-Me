@@ -23,9 +23,6 @@ public class RegistrationRequest {
     @NotBlank(message = "Email is required")
     private String email;
 
-    @NotBlank(message = "Username is required")
-    private String username;
-
     @ValidPassword
     private String password;
 
