@@ -8,7 +8,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Component;
@@ -34,30 +33,27 @@ public class SetupDataLoader implements ApplicationListener<ContextRefreshedEven
     }
 
     User adminUser = User.builder()
-            .id(5L)
+            .id(1000L)
             .name("Admin")
-            .username("admin123")
+            .nickname("admin123")
             .email("admin@test.com")
-            .password(encoder.encode("admin"))
             .build();
 
     log.info("[x] Preloading " + userRepository.save(adminUser));
 
     User auditUser = User.builder()
-            .id(2L)
+            .id(1001L)
             .name("Audit")
-            .username("audit21")
+            .nickname("audit21")
             .email("audit@test.com")
-            .password(encoder.encode("audit"))
             .build();
     log.info("[x] Preloading " + userRepository.save(auditUser));
 
     User basicUser = User.builder()
-            .id(6L)
+            .id(1002L)
             .name("User")
-            .username("user01")
+            .nickname("user01")
             .email("user@test.com")
-            .password(encoder.encode("password"))
             .build();
 
     basicUser.addFriend(adminUser, FriendshipStatus.ACCEPTED);

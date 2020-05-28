@@ -1,16 +1,18 @@
 package com.eirsteir.coffeewithme.commons.domain;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Getter
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class AccountCreatedEvent implements AccountEvent {
+public class UserDetails {
 
-    private Long accountId;
-    private String email;
+    private Long id;
     private String name;
+    private String nickname;
 
 }

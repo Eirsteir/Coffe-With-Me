@@ -22,7 +22,7 @@ Keywords:
 
 The application consists of the following components:
 - Client: Frontend
-- Eureka Server:
+- Discovery Server:
 - API Gateway:  
 - Auth Service: 
 - Social Service: 
@@ -73,7 +73,7 @@ To run the Spring Boot app from a terminal you can you the java -jar command.
 The executable jar files can then be run individually with
 ```
 java -jar gateway\target\gateway-0.0.1-SNAPSHOT.jar
-java -jar eureka-server\target\eureka-server-0.0.1-SNAPSHOT.jar
+java -jar eureka-server\target\discovery-0.0.1-SNAPSHOT.jar
 java -jar social-service\target\social-service-0.0.1-SNAPSHOT.jar
 java -jar notification-service\target\notification-service-0.0.1-SNAPSHOT.jar
 java -jar auth-service\target\auth-service-0.0.1-SNAPSHOT.jar

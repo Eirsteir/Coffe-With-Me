@@ -29,6 +29,8 @@ public class JwtTokenAuthenticationFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws ServletException, IOException {
         String header = request.getHeader(jwtConfig.getHeader());
+        log.debug("[x] Filtering Jwt from request header: {}", header);
+
         if (header == null || !header.startsWith(jwtConfig.getPrefix())) {
             chain.doFilter(request, response);
             return;
@@ -41,7 +43,6 @@ public class JwtTokenAuthenticationFilter extends OncePerRequestFilter {
                     .parseClaimsJws(token)
                     .getBody();
 
-            // Probably need to get Id from here?
             String id = claims.getSubject();
             if (id != null) {
                 @SuppressWarnings("unchecked")
@@ -49,7 +50,7 @@ public class JwtTokenAuthenticationFilter extends OncePerRequestFilter {
                 UserDetailsImpl principal = UserDetailsImpl.builder()
                         .id(Long.parseLong(id))
                         .email((String) claims.get("email"))
-                        .username((String) claims.get("username"))
+                        .nickname((String) claims.get("nickname"))
                         .build();
 
                 UsernamePasswordAuthenticationToken auth =  new UsernamePasswordAuthenticationToken(

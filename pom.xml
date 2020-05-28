@@ -11,7 +11,7 @@
 	<modules>
 		<module>commons</module>
 		<module>gateway</module>
-		<module>eureka-server</module>
+		<module>discovery</module>
 		<module>social-service</module>
 		<module>notification-service</module>
 		<module>auth-service</module>

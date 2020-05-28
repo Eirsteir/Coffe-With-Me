@@ -1,4 +1,4 @@
-package com.eirsteir.coffeewithme.social.exception;
+package com.eirsteir.coffeewithme.commons.exception;
 
 import lombok.Getter;
 import org.springframework.http.HttpStatus;

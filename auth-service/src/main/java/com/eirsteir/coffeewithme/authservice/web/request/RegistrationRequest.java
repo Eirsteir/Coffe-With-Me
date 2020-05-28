@@ -17,14 +17,11 @@ import javax.validation.constraints.NotBlank;
 @ToString
 @Accessors(chain = true)
 @NoArgsConstructor
-public class UserRegistrationRequest {
+public class RegistrationRequest {
 
     @Email(message = "Must be a well formed email")
     @NotBlank(message = "Email is required")
     private String email;
-
-    @NotBlank(message = "Username is required")
-    private String username;
 
     @ValidPassword
     private String password;

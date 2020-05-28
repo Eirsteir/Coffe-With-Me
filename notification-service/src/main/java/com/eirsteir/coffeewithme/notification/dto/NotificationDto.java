@@ -1,7 +1,7 @@
 package com.eirsteir.coffeewithme.notification.dto;
 
 import com.eirsteir.coffeewithme.notification.domain.Notification;
-import com.eirsteir.coffeewithme.notification.domain.NotificationType;
+import com.eirsteir.coffeewithme.commons.domain.NotificationType;
 import lombok.*;
 import lombok.experimental.Accessors;
 

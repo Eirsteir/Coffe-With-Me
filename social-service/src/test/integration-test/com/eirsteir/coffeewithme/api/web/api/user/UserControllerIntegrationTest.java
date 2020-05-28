@@ -110,9 +110,9 @@ class UserControllerIntegrationTest {
 
     @Test
     @WithUserDetails(userDetailsServiceBeanName = "userDetailsService")
-    void testSearchByNameOrUsername_thenReturnMatchingUsers() throws Exception {
+    void testSearchByNameOrNickname_thenReturnMatchingUsers() throws Exception {
 
-        mvc.perform(get("/users?search=name==john,username==johndoe")
+        mvc.perform(get("/users?search=name==john,nickname==johndoe")
                             .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", hasSize(1)))
@@ -121,9 +121,9 @@ class UserControllerIntegrationTest {
 
     @Test
     @WithUserDetails(userDetailsServiceBeanName = "userDetailsService")
-    void testSearchByNameAndUsername_thenReturnMatchingUsers() throws Exception {
+    void testSearchByNameAndNickname_thenReturnMatchingUsers() throws Exception {
 
-        mvc.perform(get("/users?search=name=='John Doe';username==johndoe")
+        mvc.perform(get("/users?search=name=='John Doe';nickname==johndoe")
                             .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", hasSize(1)))

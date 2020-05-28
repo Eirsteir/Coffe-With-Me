@@ -1,4 +1,4 @@
-package com.eirsteir.coffeewithme.social.exception;
+package com.eirsteir.coffeewithme.commons.exception;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.support.DefaultMessageSourceResolvable;

@@ -9,7 +9,8 @@ public class JwtConfig {
     @Value("${security.jwt.uri:/auth}")
     private String Uri;
 
-    @Value("${security.jwt.header:Authorization}")
+    // Tomcat converts all headers to lowercase
+    @Value("${security.jwt.header:authorization}")
     private String header;
 
     @Value("${security.jwt.prefix:Bearer }")

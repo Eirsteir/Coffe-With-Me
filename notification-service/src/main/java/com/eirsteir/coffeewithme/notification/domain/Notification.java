@@ -1,5 +1,6 @@
 package com.eirsteir.coffeewithme.notification.domain;
 
+import com.eirsteir.coffeewithme.commons.domain.NotificationType;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 import lombok.experimental.Accessors;
@@ -42,7 +43,7 @@ public class Notification {
     public static class UserDetails {
         private Long id;
         private String name;
-        private String username;
+        private String nickname;
     }
 
 }

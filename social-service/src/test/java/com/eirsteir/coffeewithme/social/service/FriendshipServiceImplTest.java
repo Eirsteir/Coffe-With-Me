@@ -1,20 +1,20 @@
 package com.eirsteir.coffeewithme.social.service;
 
+import com.eirsteir.coffeewithme.commons.dto.UserDetailsDto;
+import com.eirsteir.coffeewithme.commons.exception.CWMException;
 import com.eirsteir.coffeewithme.social.config.ModelMapperConfig;
 import com.eirsteir.coffeewithme.social.domain.friendship.Friendship;
 import com.eirsteir.coffeewithme.social.domain.friendship.FriendshipId;
 import com.eirsteir.coffeewithme.social.domain.friendship.FriendshipStatus;
 import com.eirsteir.coffeewithme.social.domain.user.User;
 import com.eirsteir.coffeewithme.social.dto.FriendshipDto;
-import com.eirsteir.coffeewithme.social.exception.CWMException;
 import com.eirsteir.coffeewithme.social.repository.FriendshipRepository;
 import com.eirsteir.coffeewithme.social.repository.UserRepository;
 import com.eirsteir.coffeewithme.social.service.friendship.FriendshipService;
 import com.eirsteir.coffeewithme.social.service.friendship.FriendshipServiceImpl;
 import com.eirsteir.coffeewithme.social.service.user.UserService;
 import com.eirsteir.coffeewithme.social.web.request.FriendRequest;
-import com.eirsteir.coffeewithme.commons.dto.UserDetails;
-import com.eirsteir.coffeewithme.testconfig.MessageTemplateUtilTestConfig;
+import io.eventuate.tram.events.publisher.DomainEventPublisher;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -41,13 +41,13 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.mockito.Mockito.when;
 
-@Import({MessageTemplateUtilTestConfig.class, ModelMapperConfig.class})
+@Import({ ModelMapperConfig.class})
 @TestPropertySource("classpath:exception.properties")
 @ExtendWith(SpringExtension.class)
 class FriendshipServiceImplTest {
 
-    private static final String REQUESTER_USERNAME = "requester";
-    private static final String ADDRESSEE_USERNAME = "addressee";
+    private static final String REQUESTER_NICKNAME = "requester";
+    private static final String ADDRESSEE_NICKNAME = "addressee";
 
     private Friendship friendshipRequested;
     private FriendshipId friendshipId;
@@ -70,12 +70,19 @@ class FriendshipServiceImplTest {
     @MockBean
     private UserService userService;
 
+
+
     @TestConfiguration
     static class FriendshipServiceImplTestContextConfiguration {
+        @MockBean
+        private DomainEventPublisher domainEventPublisher;
+
+        @MockBean
+        private FriendshipRepository friendshipRepository;
 
         @Bean
         public FriendshipService friendshipService() {
-            return new FriendshipServiceImpl();
+            return new FriendshipServiceImpl(domainEventPublisher, friendshipRepository);
         }
     }
 
@@ -83,12 +90,12 @@ class FriendshipServiceImplTest {
     void setUp() {
         requester = User.builder()
                 .id(1L)
-               .username(REQUESTER_USERNAME)
+               .nickname(REQUESTER_NICKNAME)
                .build();
 
         addressee = User.builder()
                 .id(2L)
-               .username(ADDRESSEE_USERNAME)
+               .nickname(ADDRESSEE_NICKNAME)
                .build();
 
         friendshipId = FriendshipId.builder()
@@ -284,7 +291,7 @@ class FriendshipServiceImplTest {
         when(userService.findUserById(requester.getId()))
                 .thenThrow(CWMException.EntityNotFoundException.class);
 
-        UserDetails requesterDto = modelMapper.map(requester, UserDetails.class);
+        UserDetailsDto requesterDto = modelMapper.map(requester, UserDetailsDto.class);
 
         assertThatExceptionOfType(CWMException.EntityNotFoundException.class)
                 .isThrownBy(() -> friendshipService.getFriends(requesterDto));
@@ -305,9 +312,9 @@ class FriendshipServiceImplTest {
         when(userRepository.findFriendsOfWithStatus(requester.getId(), ACCEPTED))
                 .thenReturn(List.of(newFriendAccepted));
 
-        UserDetails requesterDto = modelMapper.map(requester, UserDetails.class);
-        List<UserDetails> friendsFound = friendshipService.getFriends(requesterDto);
-        UserDetails firstFriendDto = modelMapper.map(friendshipRequested.getAddressee(), UserDetails.class);
+        UserDetailsDto requesterDto = modelMapper.map(requester, UserDetailsDto.class);
+        List<UserDetailsDto> friendsFound = friendshipService.getFriends(requesterDto);
+        UserDetailsDto firstFriendDto = modelMapper.map(friendshipRequested.getAddressee(), UserDetailsDto.class);
 
         assertThat(friendsFound).hasSize(2);
         assertThat(friendsFound).contains(firstFriendDto);
@@ -324,8 +331,8 @@ class FriendshipServiceImplTest {
         when(userRepository.findFriendsOfWithStatus(requester.getId(), ACCEPTED))
                 .thenReturn(new ArrayList<>());
 
-        UserDetails requesterDto = modelMapper.map(requester, UserDetails.class);
-        List<UserDetails> friendsFound = friendshipService.getFriends(requesterDto);
+        UserDetailsDto requesterDto = modelMapper.map(requester, UserDetailsDto.class);
+        List<UserDetailsDto> friendsFound = friendshipService.getFriends(requesterDto);
 
         assertThat(friendsFound).isEmpty();
     }
@@ -345,9 +352,9 @@ class FriendshipServiceImplTest {
         when(userRepository.findFriendsOfWithStatus(requester.getId(), REQUESTED))
                 .thenReturn(List.of(newFriend));
 
-        UserDetails requesterDto = modelMapper.map(requester, UserDetails.class);
-        List<UserDetails> friendRequests = friendshipService.getAllFriendshipsWithStatus(requesterDto, REQUESTED);
-        UserDetails firstFriendDto = modelMapper.map(friendshipRequested.getAddressee(), UserDetails.class);
+        UserDetailsDto requesterDto = modelMapper.map(requester, UserDetailsDto.class);
+        List<UserDetailsDto> friendRequests = friendshipService.getAllFriendshipsWithStatus(requesterDto, REQUESTED);
+        UserDetailsDto firstFriendDto = modelMapper.map(friendshipRequested.getAddressee(), UserDetailsDto.class);
 
         assertThat(friendRequests).hasSize(2);
         assertThat(friendRequests).contains(firstFriendDto);
