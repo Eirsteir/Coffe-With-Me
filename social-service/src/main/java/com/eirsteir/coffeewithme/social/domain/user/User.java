@@ -1,7 +1,6 @@
 package com.eirsteir.coffeewithme.social.domain.user;
 
 
-import com.eirsteir.coffeewithme.social.domain.Campus;
 import com.eirsteir.coffeewithme.social.domain.CreatedUpdatedDateTimeBaseModel;
 import com.eirsteir.coffeewithme.social.domain.University;
 import com.eirsteir.coffeewithme.social.domain.friendship.Friendship;

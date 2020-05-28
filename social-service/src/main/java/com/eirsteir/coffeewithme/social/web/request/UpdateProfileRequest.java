@@ -19,8 +19,9 @@ public class UpdateProfileRequest {
 
     @NotBlank(message = "Nickname is required")
     private String nickname;
+
+    @NotBlank(message = "University id is required")
     private Long universityId;
-    private Long campusId;
 
     @NotBlank(message = "University id is required")
     private Long universityId;
