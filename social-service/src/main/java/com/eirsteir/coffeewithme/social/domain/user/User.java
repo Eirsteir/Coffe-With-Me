@@ -1,6 +1,7 @@
 package com.eirsteir.coffeewithme.social.domain.user;
 
 
+import com.eirsteir.coffeewithme.social.domain.Campus;
 import com.eirsteir.coffeewithme.social.domain.CreatedUpdatedDateTimeBaseModel;
 import com.eirsteir.coffeewithme.social.domain.friendship.Friendship;
 import com.eirsteir.coffeewithme.social.domain.friendship.FriendshipStatus;
@@ -39,6 +40,9 @@ public class User extends CreatedUpdatedDateTimeBaseModel {
     private String mobileNumber;
 
     private Date lastLogin;
+
+    @OneToOne
+    private Campus campus;
 
     @JsonIgnore
     @Builder.Default

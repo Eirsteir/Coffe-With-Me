@@ -13,10 +13,10 @@ public class University {
   @Id
   @GeneratedValue(strategy = GenerationType.AUTO)
   private Long id;
-  
+
   private String name;
 
-  @OneToMany
+  @OneToMany(mappedBy = "university")
   private List<Campus> campuses;
 
 }

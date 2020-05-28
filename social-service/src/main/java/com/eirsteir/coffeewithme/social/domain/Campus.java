@@ -16,6 +16,7 @@ public class Campus {
   private String name;
 
   @ManyToOne
+  @JoinColumn(name = "university_id")
   private University university;
 
 }
