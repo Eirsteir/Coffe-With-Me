@@ -5,10 +5,12 @@ import com.eirsteir.coffeewithme.commons.dto.UserDetailsDto;
 import com.eirsteir.coffeewithme.commons.exception.CWMException;
 import com.eirsteir.coffeewithme.commons.exception.EntityType;
 import com.eirsteir.coffeewithme.commons.exception.ExceptionType;
+import com.eirsteir.coffeewithme.commons.security.UserDetailsImpl;
 import com.eirsteir.coffeewithme.social.domain.friendship.FriendshipStatus;
 import com.eirsteir.coffeewithme.social.domain.user.User;
 import com.eirsteir.coffeewithme.social.repository.UserRepository;
 import com.eirsteir.coffeewithme.social.service.friendship.FriendshipService;
+import com.eirsteir.coffeewithme.social.web.request.UpdateProfileRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,22 +36,6 @@ public class UserServiceImpl implements UserService {
     
     @Autowired
     private ModelMapper modelMapper;
-
-    @Override
-    public UserDetailsDto registerUser(UserDetailsDto userDetailsDto) {
-        Optional<User> user = userRepository.findByEmail(userDetailsDto.getEmail());
-
-        if (user.isPresent())
-            throw CWMException.getException(
-                    EntityType.USER, ExceptionType.DUPLICATE_ENTITY, userDetailsDto.getEmail());
-
-        User userModel = modelMapper.map(userDetailsDto, User.class);
-
-        User signedUpUserModel = userRepository.save(userModel);
-        log.info("[x] Registered user: {}", signedUpUserModel);
-
-        return modelMapper.map(signedUpUserModel, UserDetailsDto.class);
-    }
 
     @Override
     public UserDetailsDto findUserByEmail(String email) {
@@ -93,15 +79,17 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserDetailsDto updateProfile(UserDetailsDto UserDetailsDto) {
-        User userModel = userRepository.findByEmail(UserDetailsDto.getEmail())
-                .orElseThrow(() -> CWMException.getException(
-                        EntityType.USER, ExceptionType.ENTITY_NOT_FOUND, UserDetailsDto.getEmail()));
+    public UserDetailsDto updateProfile(UpdateProfileRequest updateProfileRequest, UserDetailsImpl currentUser) {
+        User userToUpdate = userRepository.findById(currentUser.getId())
+                .orElseThrow(() -> CWMException.getException(EntityType.USER,
+                                                             ExceptionType.ENTITY_NOT_FOUND,
+                                                             currentUser.getId().toString()));
 
-        userModel.setNickname(UserDetailsDto.getNickname());
-        log.info("[x] Updated user profile: {}", userModel);
+        userToUpdate.setNickname(updateProfileRequest.getNickname())
+                .set;
+        log.info("[x] Updated user profile: {}", userToUpdate);
 
-        return modelMapper.map(userRepository.save(userModel), UserDetailsDto.class);
+        return modelMapper.map(userRepository.save(userToUpdate), UserDetailsDto.class);
     }
 
     @Override
