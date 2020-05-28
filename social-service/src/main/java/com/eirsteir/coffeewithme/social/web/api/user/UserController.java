@@ -38,7 +38,7 @@ public class UserController {
     @PutMapping
     UserDetailsDto update(@Valid @RequestBody UpdateProfileRequest updateProfileRequest,
                           @AuthenticationPrincipal UserDetailsImpl principal) {
-        userService.updateProfile(updateProfileRequest);
+        return userService.updateProfile(updateProfileRequest, principal);
     }
 
     @GetMapping
