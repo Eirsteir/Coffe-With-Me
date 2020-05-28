@@ -98,7 +98,7 @@ public class UserServiceImpl implements UserService {
                 .orElseThrow(() -> CWMException.getException(
                         EntityType.USER, ExceptionType.ENTITY_NOT_FOUND, UserDetailsDto.getEmail()));
 
-        userModel.setNickname(UserDetailsDto.getUsername());
+        userModel.setNickname(UserDetailsDto.getNickname());
         log.info("[x] Updated user profile: {}", userModel);
 
         return modelMapper.map(userRepository.save(userModel), UserDetailsDto.class);
