@@ -5,6 +5,7 @@ import com.eirsteir.coffeewithme.social.domain.university.Campus;
 import lombok.*;
 import lombok.experimental.Accessors;
 
+import java.time.LocalTime;
 import java.util.List;
 
 @Getter
@@ -16,7 +17,7 @@ import java.util.List;
 @AllArgsConstructor
 public class CoffeeBreakDto {
 
-    private Long scheduledToInMinutes;
+    private LocalTime scheduledTo;
     private UserDetails requester;
     private List<UserDetails> addressees;
     private Campus campus;
