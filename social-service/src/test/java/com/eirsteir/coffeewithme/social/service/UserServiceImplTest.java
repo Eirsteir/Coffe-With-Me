@@ -2,6 +2,7 @@ package com.eirsteir.coffeewithme.social.service;
 
 import com.eirsteir.coffeewithme.commons.dto.UserDetailsDto;
 import com.eirsteir.coffeewithme.commons.exception.CWMException;
+import com.eirsteir.coffeewithme.commons.security.UserDetailsImpl;
 import com.eirsteir.coffeewithme.social.config.ModelMapperConfig;
 import com.eirsteir.coffeewithme.social.domain.friendship.FriendshipStatus;
 import com.eirsteir.coffeewithme.social.domain.user.User;
@@ -9,6 +10,7 @@ import com.eirsteir.coffeewithme.social.repository.UserRepository;
 import com.eirsteir.coffeewithme.social.service.friendship.FriendshipService;
 import com.eirsteir.coffeewithme.social.service.user.UserService;
 import com.eirsteir.coffeewithme.social.service.user.UserServiceImpl;
+import com.eirsteir.coffeewithme.social.web.request.UpdateProfileRequest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -43,6 +45,7 @@ class UserServiceImplTest {
     public static final String EMAIL_ALEX = "alex@email.com";
     public static final String NICKNAME_ALEX = "alex";
     public static final String NAME_ALEX = "Alex";
+    private UserDetailsImpl userDetails;
 
     @TestConfiguration
     static class UserServiceImplTestContextConfiguration {
@@ -80,6 +83,10 @@ class UserServiceImplTest {
         userDetailsDto = UserDetailsDto.builder()
                 .email(EMAIL_ALEX)
                 .name(NAME_ALEX)
+                .build();
+
+        userDetails = UserDetailsImpl.builder()
+                .id(1L)
                 .build();
 
          when(userRepository.findByEmail(EMAIL_ALEX))
@@ -121,25 +128,11 @@ class UserServiceImplTest {
 
     @Test
     void testUpdateProfileUserReturnsUpdatedUserDyo() {
-        UserDetailsDto updateProfileRequestDto = userDetailsDto.builder()
-                .nickname(NICKNAME_ALEX)
-                .email(EMAIL_ALEX)
-                .build();
+        UpdateProfileRequest updateProfileRequestDto = new UpdateProfileRequest(NICKNAME_ALEX, 1L);
 
-        UserDetailsDto updatedUserDetails = userService.updateProfile(updateProfileRequestDto);
+        UserDetailsDto updatedUserDetails = userService.updateProfile(updateProfileRequestDto, userDetails);
 
         assertThat(updatedUserDetails.getNickname()).isEqualTo(NICKNAME_ALEX);
-    }
-
-    @Test
-    void testUpdateProfileWhenUserNotFound() {
-        UserDetailsDto updateProfileRequestDto = userDetailsDto.builder()
-                .email("not.found@email.com")
-                .nickname(NICKNAME_ALEX)
-                .build();
-        assertThatExceptionOfType(CWMException.EntityNotFoundException.class)
-                .isThrownBy(() -> userService.updateProfile(updateProfileRequestDto))
-                .withMessage("Requested user with email - not.found@email.com does not exist");
     }
 
     @Test
