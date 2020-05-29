@@ -1,5 +1,6 @@
 package com.eirsteir.coffeewithme.social.service.coffeebreak;
 
+import com.eirsteir.coffeewithme.commons.security.UserDetailsImpl;
 import com.eirsteir.coffeewithme.social.domain.coffeebreak.CoffeeBreak;
 import com.eirsteir.coffeewithme.social.domain.university.Campus;
 import com.eirsteir.coffeewithme.social.domain.user.User;
@@ -39,8 +40,9 @@ public class CoffeeBreakServiceImpl implements CoffeeBreakService {
     private ModelMapper modelMapper;
 
     @Override
-    public CoffeeBreakDto registerCoffeeBreak(CoffeeBreakRequest coffeeBreakRequest) {
-        CoffeeBreak coffeeBreak = coffeeBreakRepository.save(createCoffeeBreak(coffeeBreakRequest));
+    public CoffeeBreakDto registerCoffeeBreak(CoffeeBreakRequest coffeeBreakRequest, UserDetailsImpl currentUser) {
+        CoffeeBreak coffeeBreak = createCoffeeBreak(coffeeBreakRequest, currentUser.getId());
+        coffeeBreak = coffeeBreakRepository.save(coffeeBreak);
 
         // TODO: 29.05.2020 notify addressees
         log.info("[x] Registered coffee break: {}", coffeeBreak);
@@ -48,8 +50,8 @@ public class CoffeeBreakServiceImpl implements CoffeeBreakService {
         return modelMapper.map(coffeeBreak, CoffeeBreakDto.class);
     }
 
-    private CoffeeBreak createCoffeeBreak(CoffeeBreakRequest coffeeBreakRequest) {
-        User requester = userService.findUserById(coffeeBreakRequest.getRequesterId());
+    private CoffeeBreak createCoffeeBreak(CoffeeBreakRequest coffeeBreakRequest, Long currentUserId) {
+        User requester = userService.findUserById(currentUserId);
         Set<User> addresses = friendshipService.findFriendsAtUniversity(requester);
         Campus campus = campusRepository.findById(coffeeBreakRequest.getCampusId()).orElse(null);
         LocalTime scheduledTo = getScheduledToFromNow(coffeeBreakRequest.getScheduledToInMinutes());

@@ -2,6 +2,7 @@ package com.eirsteir.coffeewithme.social.service.coffeebreak;
 
 import com.eirsteir.coffeewithme.commons.domain.UserDetails;
 import com.eirsteir.coffeewithme.commons.exception.CWMException;
+import com.eirsteir.coffeewithme.commons.security.UserDetailsImpl;
 import com.eirsteir.coffeewithme.social.config.ModelMapperConfig;
 import com.eirsteir.coffeewithme.social.domain.coffeebreak.CoffeeBreak;
 import com.eirsteir.coffeewithme.social.domain.university.Campus;
@@ -41,7 +42,8 @@ class CoffeeBreakServiceImplTest {
     public static final Set<Long> ADDRESSEE_IDS = Set.of(2L, 3L);
     public static final long CAMPUS_ID = 10L;
 
-    private User requester;
+    private UserDetailsImpl currentUserDetails;
+    private User currentUser;
     private Set<User> addressees;
     private UserDetails requesterUserDetails;
     private Set<UserDetails> addresseesUserDetails;
@@ -74,7 +76,10 @@ class CoffeeBreakServiceImplTest {
 
     @BeforeEach
     void setUp() {
-        requester = User.builder().id(REQUESTER_ID).build();
+        currentUserDetails = new UserDetailsImpl();
+        currentUserDetails.setId(REQUESTER_ID);
+
+        currentUser = User.builder().id(currentUserDetails.getId()).build();
         addressees = ADDRESSEE_IDS.stream()
                 .map(id -> User.builder().id(id).build())
                 .collect(Collectors.toSet());
@@ -85,16 +90,17 @@ class CoffeeBreakServiceImplTest {
 
         campus = new Campus();
         campus.setId(10L);
+
         coffeeBreak = CoffeeBreak.builder()
-                .requester(requester)
+                .requester(currentUser)
                 .addressees(addressees)
                 .campus(campus)
                 .scheduledTo(LocalTime.now())
                 .build();
 
         when(userService.findUserById(REQUESTER_ID))
-                .thenReturn(requester);
-        when(friendshipService.findFriendsAtUniversity(requester))
+                .thenReturn(currentUser);
+        when(friendshipService.findFriendsAtUniversity(currentUser))
                 .thenReturn(addressees);
         when(campusRepository.findById(CAMPUS_ID))
                 .thenReturn(Optional.ofNullable(campus));
@@ -105,11 +111,10 @@ class CoffeeBreakServiceImplTest {
     @Test
     void testRegisterCoffeeBreakWhenValid_thenReturnRegisteredCoffeeBreakAddressedToFriendsAtSameUniversity() {
         CoffeeBreakRequest request = CoffeeBreakRequest.builder()
-                .requesterId(REQUESTER_ID)
                 .campusId(campus.getId())
                 .build();
 
-        CoffeeBreakDto savedCoffeeBreakDto = coffeeBreakService.registerCoffeeBreak(request);
+        CoffeeBreakDto savedCoffeeBreakDto = coffeeBreakService.registerCoffeeBreak(request, currentUserDetails);
 
         assertThat(savedCoffeeBreakDto.getRequester()).isEqualTo(requesterUserDetails);
         assertThat(savedCoffeeBreakDto.getAddressees()).isEqualTo(addresseesUserDetails);
@@ -121,11 +126,10 @@ class CoffeeBreakServiceImplTest {
                 .thenThrow(CWMException.EntityNotFoundException.class);
 
         CoffeeBreakRequest request = CoffeeBreakRequest.builder()
-                .requesterId(REQUESTER_ID)
                 .build();
 
         assertThatExceptionOfType(CWMException.EntityNotFoundException.class)
-                .isThrownBy(() -> coffeeBreakService.registerCoffeeBreak(request));
+                .isThrownBy(() -> coffeeBreakService.registerCoffeeBreak(request, currentUserDetails));
     }
 
     @Test
@@ -134,11 +138,10 @@ class CoffeeBreakServiceImplTest {
                 .thenReturn(Optional.empty());
 
         CoffeeBreakRequest request = CoffeeBreakRequest.builder()
-                .requesterId(REQUESTER_ID)
                 .build();
         coffeeBreak.setCampus(null);
 
-        CoffeeBreakDto savedCoffeeBreakDto = coffeeBreakService.registerCoffeeBreak(request);
+        CoffeeBreakDto savedCoffeeBreakDto = coffeeBreakService.registerCoffeeBreak(request, currentUserDetails);
 
         assertThat(savedCoffeeBreakDto.getCampus()).isNull();
     }
@@ -146,11 +149,10 @@ class CoffeeBreakServiceImplTest {
     @Test
     void testRegisterCoffeeBreakWhenScheduledToIsNotSet_thenSetToNow() {
         CoffeeBreakRequest request = CoffeeBreakRequest.builder()
-                .requesterId(REQUESTER_ID)
                 .campusId(campus.getId())
                 .build();
 
-        CoffeeBreakDto savedCoffeeBreakDto = coffeeBreakService.registerCoffeeBreak(request);
+        CoffeeBreakDto savedCoffeeBreakDto = coffeeBreakService.registerCoffeeBreak(request, currentUserDetails);
         LocalTime now = LocalTime.now();
 
         assertThat(savedCoffeeBreakDto.getScheduledTo()).isBefore(now);
@@ -162,12 +164,11 @@ class CoffeeBreakServiceImplTest {
         coffeeBreak.setScheduledTo(in5MinutesFromNow);
 
         CoffeeBreakRequest request = CoffeeBreakRequest.builder()
-                .requesterId(REQUESTER_ID)
                 .scheduledToInMinutes(5L)
                 .campusId(campus.getId())
                 .build();
 
-        CoffeeBreakDto savedCoffeeBreakDto = coffeeBreakService.registerCoffeeBreak(request);
+        CoffeeBreakDto savedCoffeeBreakDto = coffeeBreakService.registerCoffeeBreak(request, currentUserDetails);
 
         assertThat(savedCoffeeBreakDto.getScheduledTo()).isEqualToIgnoringSeconds(in5MinutesFromNow);
     }
