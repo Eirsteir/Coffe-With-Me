@@ -58,14 +58,14 @@ public class SetupDataLoader implements ApplicationListener<ContextRefreshedEven
     account.setRoles(Arrays.asList(adminRole, readerRole, writerRole));
     account.setPassword(encoder.encode("admin"));
 
-    log.info("[x] Preloading " + accountRepository.save(account));
+    log.info("[x] Preloading {}", accountRepository.save(account));
 
     account = new Account();
     account.setEmail("user@test.com");
     account.setRoles(Collections.singletonList(basicRole));
     account.setPassword(encoder.encode("password"));
 
-    log.info("[x] Preloading " + accountRepository.save(account));
+    log.info("[x] Preloading {}", accountRepository.save(account));
 
     alreadySetup = true;
   }

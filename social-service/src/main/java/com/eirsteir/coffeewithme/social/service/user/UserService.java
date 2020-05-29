@@ -22,4 +22,5 @@ public interface UserService {
     UserDetailsDto findUserByIdWithIsFriend(Long id, Long viewerId);
 
     UserDetails getUserDetails(User user);
+
 }

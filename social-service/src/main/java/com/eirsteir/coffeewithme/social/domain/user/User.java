@@ -2,9 +2,9 @@ package com.eirsteir.coffeewithme.social.domain.user;
 
 
 import com.eirsteir.coffeewithme.social.domain.CreatedUpdatedDateTimeBaseModel;
-import com.eirsteir.coffeewithme.social.domain.University;
 import com.eirsteir.coffeewithme.social.domain.friendship.Friendship;
 import com.eirsteir.coffeewithme.social.domain.friendship.FriendshipStatus;
+import com.eirsteir.coffeewithme.social.domain.university.University;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 import lombok.experimental.Accessors;

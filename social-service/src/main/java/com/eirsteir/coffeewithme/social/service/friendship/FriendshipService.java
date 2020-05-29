@@ -7,10 +7,13 @@ import com.eirsteir.coffeewithme.social.dto.FriendshipDto;
 import com.eirsteir.coffeewithme.social.web.request.FriendRequest;
 
 import java.util.List;
+import java.util.Set;
 
 public interface FriendshipService {
 
     List<User> findFriends(Long id, FriendshipStatus status);
+
+    Set<User> findFriendsAtUniversity(User user);
 
     FriendshipDto registerFriendship(FriendRequest friendRequest);
 
