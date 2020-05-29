@@ -40,8 +40,7 @@ public class CoffeeBreakServiceImpl implements CoffeeBreakService {
 
     @Override
     public CoffeeBreakDto registerCoffeeBreak(CoffeeBreakRequest coffeeBreakRequest) {
-        CoffeeBreak coffeeBreak = createCoffeeBreak(coffeeBreakRequest);
-        coffeeBreak = coffeeBreakRepository.save(coffeeBreak);
+        CoffeeBreak coffeeBreak = coffeeBreakRepository.save(createCoffeeBreak(coffeeBreakRequest));
 
         // TODO: 29.05.2020 notify addressees
         log.info("[x] Registered coffee break: {}", coffeeBreak);

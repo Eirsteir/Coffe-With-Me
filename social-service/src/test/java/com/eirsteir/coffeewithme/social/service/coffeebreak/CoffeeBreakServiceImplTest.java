@@ -1,8 +1,10 @@
 package com.eirsteir.coffeewithme.social.service.coffeebreak;
 
 import com.eirsteir.coffeewithme.commons.domain.UserDetails;
+import com.eirsteir.coffeewithme.commons.exception.CWMException;
 import com.eirsteir.coffeewithme.social.config.ModelMapperConfig;
 import com.eirsteir.coffeewithme.social.domain.coffeebreak.CoffeeBreak;
+import com.eirsteir.coffeewithme.social.domain.university.Campus;
 import com.eirsteir.coffeewithme.social.domain.user.User;
 import com.eirsteir.coffeewithme.social.dto.CoffeeBreakDto;
 import com.eirsteir.coffeewithme.social.repository.CampusRepository;
@@ -27,6 +29,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import static org.assertj.core.api.AssertionsForClassTypes.assertThatExceptionOfType;
 import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
 import static org.mockito.Mockito.when;
 
@@ -43,6 +46,7 @@ class CoffeeBreakServiceImplTest {
     private Set<User> addressees;
     private UserDetails requesterUserDetails;
     private Set<UserDetails> addresseesUserDetails;
+    private Campus campus;
     private CoffeeBreak coffeeBreak;
 
     @Autowired
@@ -83,9 +87,12 @@ class CoffeeBreakServiceImplTest {
                 .map(id -> UserDetails.builder().id(id).build())
                 .collect(Collectors.toSet());
 
+        campus = new Campus();
+        campus.setId(10L);
         coffeeBreak = CoffeeBreak.builder()
                 .requester(requester)
                 .addressees(addressees)
+                .campus(campus)
                 .scheduledTo(LocalTime.now())
                 .build();
     }
@@ -115,11 +122,15 @@ class CoffeeBreakServiceImplTest {
 
     @Test
     void testRegisterCoffeeBreakWhenRequesterNotFound_thenThrowException() {
+        when(userService.findUserById(REQUESTER_ID))
+                .thenThrow(CWMException.EntityNotFoundException.class);
 
-    }
+        CoffeeBreakRequest request = CoffeeBreakRequest.builder()
+                .requesterId(REQUESTER_ID)
+                .build();
 
-    @Test
-    void testRegisterCoffeeBreakWhenOneAddresseeNotFound_thenThrowException() {
+        assertThatExceptionOfType(CWMException.EntityNotFoundException.class)
+                .isThrownBy(() -> coffeeBreakService.registerCoffeeBreak(request));
     }
 
     @Test
