@@ -24,7 +24,7 @@ public class CoffeeBreakController {
     private CoffeeBreakService coffeeBreakService;
 
     @PostMapping
-    CoffeeBreakDto registerCoffeeBreak(@RequestBody @Valid CoffeeBreakRequest coffeeBreakRequest,
+    CoffeeBreakDto registerCoffeeBreak(@Valid @RequestBody CoffeeBreakRequest coffeeBreakRequest,
                                @AuthenticationPrincipal UserDetailsImpl principal) {
 
         return coffeeBreakService.registerCoffeeBreak(coffeeBreakRequest, principal);
