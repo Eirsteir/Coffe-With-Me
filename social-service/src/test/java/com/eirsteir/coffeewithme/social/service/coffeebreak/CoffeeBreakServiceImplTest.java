@@ -16,7 +16,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mockito;
-import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -64,9 +63,6 @@ class CoffeeBreakServiceImplTest {
     @MockBean
     private CampusRepository campusRepository;
 
-    @Autowired
-    private ModelMapper modelMapper;
-
     @TestConfiguration
     static class CoffeeBreakServiceImplTestContextConfiguration {
 
@@ -95,29 +91,28 @@ class CoffeeBreakServiceImplTest {
                 .campus(campus)
                 .scheduledTo(LocalTime.now())
                 .build();
-    }
 
-    @Test
-    void testRegisterCoffeeBreakWhenValid_thenReturnRegisteredCoffeeBreakAddressedToFriendsAtSameUniversity() {
         when(userService.findUserById(REQUESTER_ID))
                 .thenReturn(requester);
         when(friendshipService.findFriendsAtUniversity(requester))
                 .thenReturn(addressees);
         when(campusRepository.findById(CAMPUS_ID))
-                .thenReturn(Optional.empty());
+                .thenReturn(Optional.ofNullable(campus));
         when(coffeeBreakRepository.save(Mockito.any(CoffeeBreak.class)))
-                .thenReturn(coffeeBreak);
+                .thenAnswer(i -> i.getArgument(0, CoffeeBreak.class));
+    }
 
+    @Test
+    void testRegisterCoffeeBreakWhenValid_thenReturnRegisteredCoffeeBreakAddressedToFriendsAtSameUniversity() {
         CoffeeBreakRequest request = CoffeeBreakRequest.builder()
                 .requesterId(REQUESTER_ID)
+                .campusId(campus.getId())
                 .build();
 
         CoffeeBreakDto savedCoffeeBreakDto = coffeeBreakService.registerCoffeeBreak(request);
-        LocalTime now = LocalTime.now();
 
         assertThat(savedCoffeeBreakDto.getRequester()).isEqualTo(requesterUserDetails);
         assertThat(savedCoffeeBreakDto.getAddressees()).isEqualTo(addresseesUserDetails);
-        assertThat(savedCoffeeBreakDto.getScheduledTo()).isBefore(now);
     }
 
     @Test
@@ -135,13 +130,45 @@ class CoffeeBreakServiceImplTest {
 
     @Test
     void testRegisterCoffeeBreakWhenCampusIsNull_thenRegisterWithCampusIsNull() {
+        when(campusRepository.findById(CAMPUS_ID))
+                .thenReturn(Optional.empty());
+
+        CoffeeBreakRequest request = CoffeeBreakRequest.builder()
+                .requesterId(REQUESTER_ID)
+                .build();
+        coffeeBreak.setCampus(null);
+
+        CoffeeBreakDto savedCoffeeBreakDto = coffeeBreakService.registerCoffeeBreak(request);
+
+        assertThat(savedCoffeeBreakDto.getCampus()).isNull();
     }
 
     @Test
     void testRegisterCoffeeBreakWhenScheduledToIsNotSet_thenSetToNow() {
+        CoffeeBreakRequest request = CoffeeBreakRequest.builder()
+                .requesterId(REQUESTER_ID)
+                .campusId(campus.getId())
+                .build();
+
+        CoffeeBreakDto savedCoffeeBreakDto = coffeeBreakService.registerCoffeeBreak(request);
+        LocalTime now = LocalTime.now();
+
+        assertThat(savedCoffeeBreakDto.getScheduledTo()).isBefore(now);
     }
 
     @Test
     void testRegisterCoffeeBreakWhenScheduledToIsIn30Minutes_thenSetTo30MinutesFromNow() {
+        LocalTime in5MinutesFromNow = LocalTime.now().plusMinutes(5);
+        coffeeBreak.setScheduledTo(in5MinutesFromNow);
+
+        CoffeeBreakRequest request = CoffeeBreakRequest.builder()
+                .requesterId(REQUESTER_ID)
+                .scheduledToInMinutes(5L)
+                .campusId(campus.getId())
+                .build();
+
+        CoffeeBreakDto savedCoffeeBreakDto = coffeeBreakService.registerCoffeeBreak(request);
+
+        assertThat(savedCoffeeBreakDto.getScheduledTo()).isEqualToIgnoringSeconds(in5MinutesFromNow);
     }
 }
