@@ -1,8 +1,11 @@
 package com.eirsteir.coffeewithme.social.config;
 
 
+import com.eirsteir.coffeewithme.social.domain.Campus;
+import com.eirsteir.coffeewithme.social.domain.University;
 import com.eirsteir.coffeewithme.social.domain.friendship.FriendshipStatus;
 import com.eirsteir.coffeewithme.social.domain.user.User;
+import com.eirsteir.coffeewithme.social.repository.UniversityRepository;
 import com.eirsteir.coffeewithme.social.repository.UserRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +26,9 @@ public class SetupDataLoader implements ApplicationListener<ContextRefreshedEven
   private UserRepository userRepository;
 
   @Autowired
+  private UniversityRepository universityRepository;
+
+  @Autowired
   private BCryptPasswordEncoder encoder;
 
   @Override
@@ -32,6 +38,15 @@ public class SetupDataLoader implements ApplicationListener<ContextRefreshedEven
       return;
     }
 
+    University ntnu = new University();
+    ntnu.setName("NTNU");
+
+    Campus campusGløshaugen = new Campus();
+    campusGløshaugen.setName("Gløshaugen");
+    ntnu.addCampus(campusGløshaugen);
+
+    log.info("[x] Preloading {}", universityRepository.save(ntnu));
+
     User adminUser = User.builder()
             .id(1000L)
             .name("Admin")
@@ -39,7 +54,8 @@ public class SetupDataLoader implements ApplicationListener<ContextRefreshedEven
             .email("admin@test.com")
             .build();
 
-    log.info("[x] Preloading " + userRepository.save(adminUser));
+    adminUser.setUniversity(ntnu);
+    log.info("[x] Preloading {}", userRepository.save(adminUser));
 
     User auditUser = User.builder()
             .id(1001L)
@@ -47,7 +63,8 @@ public class SetupDataLoader implements ApplicationListener<ContextRefreshedEven
             .nickname("audit21")
             .email("audit@test.com")
             .build();
-    log.info("[x] Preloading " + userRepository.save(auditUser));
+    auditUser.setUniversity(ntnu);
+    log.info("[x] Preloading {}", userRepository.save(auditUser));
 
     User basicUser = User.builder()
             .id(1002L)
@@ -58,7 +75,8 @@ public class SetupDataLoader implements ApplicationListener<ContextRefreshedEven
 
     basicUser.addFriend(adminUser, FriendshipStatus.ACCEPTED);
     basicUser.addFriend(auditUser, FriendshipStatus.REQUESTED);
-    log.info("[x] Preloading " + userRepository.save(basicUser));
+    basicUser.setUniversity(ntnu);
+    log.info("[x] Preloading {}", userRepository.save(basicUser));
 
     alreadySetup = true;
   }

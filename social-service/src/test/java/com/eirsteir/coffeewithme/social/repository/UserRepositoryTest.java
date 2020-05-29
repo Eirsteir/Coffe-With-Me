@@ -59,7 +59,6 @@ class UserRepositoryTest {
                 .nickname(USER_NAME_ALEX)
                 .email(EMAIL_ALEX)
                 .name("Alex")
-                .mobileNumber("12345678")
                 .build();
 
         requester = entityManager.persistFlushFind(User.builder()
