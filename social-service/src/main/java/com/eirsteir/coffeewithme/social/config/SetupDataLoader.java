@@ -49,7 +49,7 @@ public class SetupDataLoader implements ApplicationListener<ContextRefreshedEven
     log.info("[x] Preloading {}", universityRepository.save(ntnu));
 
     User adminUser = User.builder()
-            .id(1000L)
+            .id(5L)
             .name("Admin")
             .nickname("admin123")
             .email("admin@test.com")
@@ -59,7 +59,7 @@ public class SetupDataLoader implements ApplicationListener<ContextRefreshedEven
     log.info("[x] Preloading {}", userRepository.save(adminUser));
 
     User auditUser = User.builder()
-            .id(1001L)
+            .id(7L)
             .name("Audit")
             .nickname("audit21")
             .email("audit@test.com")
@@ -68,7 +68,7 @@ public class SetupDataLoader implements ApplicationListener<ContextRefreshedEven
     log.info("[x] Preloading {}", userRepository.save(auditUser));
 
     User basicUser = User.builder()
-            .id(1002L)
+            .id(6L)
             .name("User")
             .nickname("user01")
             .email("user@test.com")

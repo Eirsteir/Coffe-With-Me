@@ -8,6 +8,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 import javax.servlet.http.HttpServletRequest;
+import java.io.IOException;
+import java.util.stream.Collectors;
 
 import static org.springframework.cloud.netflix.zuul.filters.support.FilterConstants.PRE_TYPE;
 
@@ -36,8 +38,22 @@ public class ZuulLoggingFilter extends ZuulFilter {
     @Override
     public Object run() throws ZuulException {
         HttpServletRequest request = RequestContext.getCurrentContext().getRequest();
-        log.info("[x] Request: {}\n request uri: {}", request.getMethod(), request.getRequestURI());
+        log.info("[x] Request: {}, URI: {}", request.getMethod(), request.getRequestURI());
+        log.info("[x] Body: {}", tryToGetRequestBody(request));
+        return null;
+    }
+
+    private String tryToGetRequestBody(HttpServletRequest request) {
+        try {
+            return getRequestBody(request);
+        } catch (IOException e) {
+            log.warn("[x] Failed to get request body");
+        }
 
         return null;
+    }
+
+    private String getRequestBody(HttpServletRequest request) throws IOException {
+        return request.getReader().lines().collect(Collectors.joining(System.lineSeparator()));
     }
 }
