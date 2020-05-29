@@ -1,4 +1,4 @@
-package com.eirsteir.coffeewithme.commons.domain;
+package com.eirsteir.coffeewithme.commons.domain.account;
 
 import io.eventuate.tram.events.common.DomainEvent;
 

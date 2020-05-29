@@ -1,5 +1,6 @@
-package com.eirsteir.coffeewithme.commons.domain;
+package com.eirsteir.coffeewithme.commons.domain.account;
 
+import com.eirsteir.coffeewithme.commons.domain.user.UserEvent;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

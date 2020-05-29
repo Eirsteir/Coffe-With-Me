@@ -2,7 +2,6 @@ package com.eirsteir.coffeewithme.social.web.api.coffeebreak;
 
 
 import com.eirsteir.coffeewithme.commons.security.UserDetailsImpl;
-import com.eirsteir.coffeewithme.social.dto.CoffeeBreakDto;
 import com.eirsteir.coffeewithme.social.service.coffeebreak.CoffeeBreakService;
 import com.eirsteir.coffeewithme.social.web.request.CoffeeBreakRequest;
 import lombok.extern.slf4j.Slf4j;
@@ -24,8 +23,8 @@ public class CoffeeBreakController {
     private CoffeeBreakService coffeeBreakService;
 
     @PostMapping
-    CoffeeBreakDto registerCoffeeBreak(@Valid @RequestBody CoffeeBreakRequest coffeeBreakRequest,
-                               @AuthenticationPrincipal UserDetailsImpl principal) {
+    CoffeeBreakDetails registerCoffeeBreak(@Valid @RequestBody CoffeeBreakRequest coffeeBreakRequest,
+                                           @AuthenticationPrincipal UserDetailsImpl principal) {
 
         return coffeeBreakService.registerCoffeeBreak(coffeeBreakRequest, principal);
     }

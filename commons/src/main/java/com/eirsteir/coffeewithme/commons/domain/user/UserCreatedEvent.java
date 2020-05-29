@@ -1,6 +1,7 @@
-package com.eirsteir.coffeewithme.commons.domain;
+package com.eirsteir.coffeewithme.commons.domain.user;
 
 
+import com.eirsteir.coffeewithme.commons.domain.account.AbstractUserAccountEvent;
 import lombok.NoArgsConstructor;
 
 @NoArgsConstructor

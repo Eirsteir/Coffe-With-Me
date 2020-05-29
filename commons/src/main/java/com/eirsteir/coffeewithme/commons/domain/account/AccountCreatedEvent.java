@@ -1,4 +1,4 @@
-package com.eirsteir.coffeewithme.commons.domain;
+package com.eirsteir.coffeewithme.commons.domain.account;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

@@ -16,7 +16,6 @@ public abstract class EventConsumer {
     @Autowired
     private NotificationRepository notificationRepository;
 
-
     @Autowired
     private SimpMessagingTemplate template;
 
