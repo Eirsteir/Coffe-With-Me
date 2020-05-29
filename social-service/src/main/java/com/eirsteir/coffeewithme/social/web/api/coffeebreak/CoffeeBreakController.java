@@ -1,6 +1,7 @@
 package com.eirsteir.coffeewithme.social.web.api.coffeebreak;
 
 
+import com.eirsteir.coffeewithme.commons.domain.coffeebreak.CoffeeBreakDetails;
 import com.eirsteir.coffeewithme.commons.security.UserDetailsImpl;
 import com.eirsteir.coffeewithme.social.service.coffeebreak.CoffeeBreakService;
 import com.eirsteir.coffeewithme.social.web.request.CoffeeBreakRequest;

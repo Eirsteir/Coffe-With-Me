@@ -1,6 +1,6 @@
 package com.eirsteir.coffeewithme.social.service.user;
 
-import com.eirsteir.coffeewithme.commons.domain.UserDetails;
+import com.eirsteir.coffeewithme.commons.domain.user.UserDetails;
 import com.eirsteir.coffeewithme.commons.dto.UserDetailsDto;
 import com.eirsteir.coffeewithme.commons.exception.CWMException;
 import com.eirsteir.coffeewithme.commons.exception.EntityType;
