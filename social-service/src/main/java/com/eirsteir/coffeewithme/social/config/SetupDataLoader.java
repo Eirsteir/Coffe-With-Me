@@ -44,6 +44,10 @@ public class SetupDataLoader implements ApplicationListener<ContextRefreshedEven
     Campus campusGløshaugen = new Campus();
     campusGløshaugen.setName("Gløshaugen");
     ntnu.addCampus(campusGløshaugen);
+    
+    Campus campusKalvskinnet = new Campus();
+    campusKalvskinnet.setName("Kalvskinnet");
+    ntnu.addCampus(campusKalvskinnet);
 
     log.info("[x] Preloading {}", universityRepository.save(ntnu));
 
