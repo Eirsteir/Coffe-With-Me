@@ -1,6 +1,6 @@
 package com.eirsteir.coffeewithme.notification.service;
 
-import com.eirsteir.coffeewithme.commons.domain.NotificationType;
+import com.eirsteir.coffeewithme.commons.domain.notification.NotificationType;
 import com.eirsteir.coffeewithme.commons.exception.CWMException;
 import com.eirsteir.coffeewithme.notification.config.ModelMapperConfig;
 import com.eirsteir.coffeewithme.notification.domain.Notification;
