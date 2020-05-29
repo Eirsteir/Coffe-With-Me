@@ -1,6 +1,7 @@
 package com.eirsteir.coffeewithme.social.repository;
 
 import com.eirsteir.coffeewithme.social.domain.friendship.FriendshipStatus;
+import com.eirsteir.coffeewithme.social.domain.university.University;
 import com.eirsteir.coffeewithme.social.domain.user.User;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -14,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 @Repository
 public interface UserRepository extends JpaRepository<User, Long>, JpaSpecificationExecutor<User> {
@@ -40,5 +42,23 @@ public interface UserRepository extends JpaRepository<User, Long>, JpaSpecificat
             "WHERE user.id = :userId " +
             "AND friendship.status = :status")
     List<User> findFriendsOfWithStatus(Long userId, FriendshipStatus status);
+
+    @Query("SELECT friend " +
+            "FROM User friend " +
+            "JOIN Friendship friendship ON friendship.id.addressee.id = friend.id " +
+            "JOIN User user ON user.id = friendship.id.requester.id " +
+            "WHERE user.id = :userId " +
+            "AND friendship.status = :status " +
+            "AND user.university = :university")
+    Set<User> findFriendsFromWithStatusAndUniversity(Long userId, FriendshipStatus status, University university);
+
+    @Query("SELECT friend " +
+            "FROM User friend " +
+            "JOIN Friendship friendship ON friendship.id.requester.id = friend.id " +
+            "JOIN User user ON user.id = friendship.id.addressee.id " +
+            "WHERE user.id = :userId " +
+            "AND friendship.status = :status " +
+            "AND user.university = :university")
+    Set<User> findFriendsOfWithStatusAndUniversity(Long userId, FriendshipStatus status, University university);
 
 }

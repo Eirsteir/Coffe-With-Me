@@ -1,6 +1,7 @@
-package com.eirsteir.coffeewithme.social.domain;
+package com.eirsteir.coffeewithme.social.domain.university;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import lombok.ToString;
 
@@ -19,6 +20,7 @@ public class Campus {
   @ManyToOne
   @JoinColumn(name = "university_id")
   @ToString.Exclude
+  @JsonIgnore
   private University university;
 
 }

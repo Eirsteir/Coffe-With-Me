@@ -1,6 +1,5 @@
 package com.eirsteir.coffeewithme.commons.exception;
 
-import com.eirsteir.coffeewithme.commons.config.PropertiesConfig;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 

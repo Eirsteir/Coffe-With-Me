@@ -1,4 +1,4 @@
-package com.eirsteir.coffeewithme.social.domain;
+package com.eirsteir.coffeewithme.social.domain.university;
 
 
 import lombok.Data;

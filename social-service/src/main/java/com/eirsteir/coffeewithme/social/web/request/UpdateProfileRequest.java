@@ -21,7 +21,5 @@ public class UpdateProfileRequest {
     @NotBlank(message = "University id is required")
     private Long universityId;
 
-    @NotBlank(message = "University id is required")
-    private Long universityId;
 
 }

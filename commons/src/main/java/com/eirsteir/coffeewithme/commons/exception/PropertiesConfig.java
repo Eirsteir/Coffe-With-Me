@@ -1,4 +1,4 @@
-package com.eirsteir.coffeewithme.commons.config;
+package com.eirsteir.coffeewithme.commons.exception;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.PropertySource;

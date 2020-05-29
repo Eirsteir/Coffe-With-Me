@@ -22,7 +22,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -79,14 +81,27 @@ public class FriendshipServiceImpl implements FriendshipService {
 
     @Override
     public List<User> findFriends(Long id, FriendshipStatus status) {
-        Stream<User> friendsDtoStream = userRepository.findFriendsFromWithStatus(id, status)
-                .stream();
+        List<User> friendsDtoStream = userRepository.findFriendsFromWithStatus(id, status);
+        List<User> friendsOfDtoStream = userRepository.findFriendsOfWithStatus(id, status);
 
-        Stream<User> friendsOfDtoStream = userRepository.findFriendsOfWithStatus(id, status)
-                .stream();
-
-        return Stream.concat(friendsDtoStream, friendsOfDtoStream)
+        return concatFriendsCollections(friendsDtoStream, friendsOfDtoStream)
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public Set<User> findFriendsAtUniversity(User user) {
+        Set<User> friends = userRepository.findFriendsFromWithStatusAndUniversity(user.getId(),
+                                                                                  FriendshipStatus.ACCEPTED,
+                                                                                  user.getUniversity());
+        Set<User> friendsOf = userRepository.findFriendsOfWithStatusAndUniversity(user.getId(),
+                                                                                  FriendshipStatus.ACCEPTED,
+                                                                                  user.getUniversity());
+        return concatFriendsCollections(friends, friendsOf)
+                .collect(Collectors.toSet());
+    }
+
+    private Stream<User> concatFriendsCollections(Collection<User> friends, Collection<User> friendsOf) {
+        return Stream.concat(friends.stream(), friends.stream());
     }
 
     @Override
