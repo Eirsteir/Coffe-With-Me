@@ -17,7 +17,7 @@ import javax.validation.constraints.Positive;
 public class CoffeeBreakRequest {
 
     @Max(value = 60 * 2, message = "Coffee break cannot be scheduled to start in more than 2 hours")
-    @Positive(message = "scheduledToInMinutes must be a positive number")
+    @Positive(message = "Must be a positive number")
     private Long scheduledToInMinutes;
     private Long campusId;
 
