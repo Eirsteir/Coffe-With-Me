@@ -37,8 +37,6 @@ public class User extends CreatedUpdatedDateTimeBaseModel {
 
     private String name;
 
-    private String mobileNumber;
-
     private Date lastLogin;
 
     @OneToOne
