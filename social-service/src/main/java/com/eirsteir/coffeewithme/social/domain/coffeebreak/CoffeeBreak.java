@@ -8,6 +8,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 import javax.persistence.*;
+import java.time.LocalTime;
 import java.util.Set;
 
 @Data
@@ -19,6 +20,8 @@ public class CoffeeBreak extends CreatedUpdatedDateTimeBaseModel {
   @GeneratedValue(strategy = GenerationType.AUTO)
   private Long id;
 
+  private LocalTime scheduledTo;
+
   @ManyToOne
   private User requester;
 
@@ -27,5 +30,5 @@ public class CoffeeBreak extends CreatedUpdatedDateTimeBaseModel {
 
   @ManyToOne
   private Campus campus;
-  
+
 }
