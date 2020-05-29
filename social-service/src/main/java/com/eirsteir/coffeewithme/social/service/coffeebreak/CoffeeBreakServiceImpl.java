@@ -6,6 +6,7 @@ import com.eirsteir.coffeewithme.social.domain.user.User;
 import com.eirsteir.coffeewithme.social.dto.CoffeeBreakDto;
 import com.eirsteir.coffeewithme.social.repository.CampusRepository;
 import com.eirsteir.coffeewithme.social.repository.CoffeeBreakRepository;
+import com.eirsteir.coffeewithme.social.service.friendship.FriendshipService;
 import com.eirsteir.coffeewithme.social.service.user.UserService;
 import com.eirsteir.coffeewithme.social.web.request.CoffeeBreakRequest;
 import lombok.extern.slf4j.Slf4j;
@@ -26,6 +27,9 @@ public class CoffeeBreakServiceImpl implements CoffeeBreakService {
     private CoffeeBreakRepository coffeeBreakRepository;
 
     @Autowired
+    private FriendshipService friendshipService;
+
+    @Autowired
     private UserService userService;
 
     @Autowired
@@ -38,14 +42,16 @@ public class CoffeeBreakServiceImpl implements CoffeeBreakService {
     public CoffeeBreakDto registerCoffeeBreak(CoffeeBreakRequest coffeeBreakRequest) {
         CoffeeBreak coffeeBreak = createCoffeeBreak(coffeeBreakRequest);
         coffeeBreak = coffeeBreakRepository.save(coffeeBreak);
+
         // TODO: 29.05.2020 notify addressees
+        log.info("[x] Registered coffee break: {}", coffeeBreak);
 
         return modelMapper.map(coffeeBreak, CoffeeBreakDto.class);
     }
 
     private CoffeeBreak createCoffeeBreak(CoffeeBreakRequest coffeeBreakRequest) {
         User requester = userService.findUserById(coffeeBreakRequest.getRequesterId());
-        Set<User> addresses = userService.findAllByIds(coffeeBreakRequest.getAddresseeIds());
+        Set<User> addresses = friendshipService.findFriendsAtUniversity(requester);
         Campus campus = campusRepository.findById(coffeeBreakRequest.getCampusId()).orElse(null);
         LocalTime scheduledTo = getScheduledToFromNow(coffeeBreakRequest.getScheduledToInMinutes());
 

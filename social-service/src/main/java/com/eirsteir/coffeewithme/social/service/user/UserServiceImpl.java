@@ -22,7 +22,6 @@ import org.springframework.stereotype.Service;
 import javax.transaction.Transactional;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 
@@ -107,13 +106,6 @@ public class UserServiceImpl implements UserService {
                 .name(user.getName())
                 .nickname(user.getNickname())
                 .build();
-    }
-
-    @Override
-    public Set<User> findAllByIds(Set<Long> userIds) {
-        return userIds.stream()
-                .map(this::findUserById)
-                .collect(Collectors.toList());
     }
 
 }

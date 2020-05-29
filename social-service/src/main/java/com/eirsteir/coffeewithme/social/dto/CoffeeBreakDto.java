@@ -6,7 +6,7 @@ import lombok.*;
 import lombok.experimental.Accessors;
 
 import java.time.LocalTime;
-import java.util.List;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -19,7 +19,7 @@ public class CoffeeBreakDto {
 
     private LocalTime scheduledTo;
     private UserDetails requester;
-    private List<UserDetails> addressees;
+    private Set<UserDetails> addressees;
     private Campus campus;
 
 }
