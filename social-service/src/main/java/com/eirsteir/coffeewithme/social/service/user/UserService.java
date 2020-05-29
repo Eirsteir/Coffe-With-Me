@@ -8,6 +8,7 @@ import com.eirsteir.coffeewithme.social.web.request.UpdateProfileRequest;
 import org.springframework.data.jpa.domain.Specification;
 
 import java.util.List;
+import java.util.Set;
 
 public interface UserService {
 
@@ -22,4 +23,7 @@ public interface UserService {
     UserDetailsDto findUserByIdWithIsFriend(Long id, Long viewerId);
 
     UserDetails getUserDetails(User user);
+
+    Set<User> findAllByIds(Set<Long> userIds);
+
 }

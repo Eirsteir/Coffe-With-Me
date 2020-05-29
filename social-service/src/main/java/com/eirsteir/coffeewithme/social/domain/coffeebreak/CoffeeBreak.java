@@ -4,14 +4,16 @@ package com.eirsteir.coffeewithme.social.domain.coffeebreak;
 import com.eirsteir.coffeewithme.social.domain.CreatedUpdatedDateTimeBaseModel;
 import com.eirsteir.coffeewithme.social.domain.university.Campus;
 import com.eirsteir.coffeewithme.social.domain.user.User;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+import lombok.*;
 
 import javax.persistence.*;
 import java.time.LocalTime;
 import java.util.Set;
 
 @Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 @EqualsAndHashCode(callSuper = false)
 @Entity
 public class CoffeeBreak extends CreatedUpdatedDateTimeBaseModel {

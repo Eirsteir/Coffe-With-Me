@@ -5,7 +5,8 @@ import lombok.experimental.Accessors;
 
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
-import java.util.List;
+import javax.validation.constraints.Positive;
+import java.util.Set;
 
 
 @Getter
@@ -23,8 +24,9 @@ public class CoffeeBreakRequest {
 
     @NotEmpty(message = "Must be a valid list of ids")
     @NotNull(message = "Must not be null")
-    private List<Long> addresseeIds;
+    private Set<Long> addresseeIds;
 
+    @Positive(message = "Must be a positive number")
     private Long scheduledToInMinutes; // TODO: 29.05.2020 default to now
     private Long campusId;
 
