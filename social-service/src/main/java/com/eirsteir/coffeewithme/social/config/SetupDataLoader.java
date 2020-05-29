@@ -1,8 +1,8 @@
 package com.eirsteir.coffeewithme.social.config;
 
 
-import com.eirsteir.coffeewithme.social.domain.Campus;
-import com.eirsteir.coffeewithme.social.domain.University;
+import com.eirsteir.coffeewithme.social.domain.university.Campus;
+import com.eirsteir.coffeewithme.social.domain.university.University;
 import com.eirsteir.coffeewithme.social.domain.friendship.FriendshipStatus;
 import com.eirsteir.coffeewithme.social.domain.user.User;
 import com.eirsteir.coffeewithme.social.repository.UniversityRepository;
@@ -27,9 +27,6 @@ public class SetupDataLoader implements ApplicationListener<ContextRefreshedEven
 
   @Autowired
   private UniversityRepository universityRepository;
-
-  @Autowired
-  private BCryptPasswordEncoder encoder;
 
   @Override
   @Transactional
