@@ -2,6 +2,7 @@ package com.eirsteir.coffeewithme.social.domain;
 
 
 import lombok.Data;
+import lombok.ToString;
 
 import javax.persistence.*;
 
@@ -17,6 +18,7 @@ public class Campus {
 
   @ManyToOne
   @JoinColumn(name = "university_id")
+  @ToString.Exclude
   private University university;
 
 }
