@@ -58,7 +58,7 @@ public class JwtUsernameAndPasswordAuthenticationFilter extends UsernamePassword
 
     @Override
     protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response,
-                                            FilterChain chain, Authentication auth) {
+                                            FilterChain chain, Authentication auth) throws IOException {
 
         log.debug("[x] Authentication principal: {}", auth.getPrincipal());
 
@@ -77,6 +77,11 @@ public class JwtUsernameAndPasswordAuthenticationFilter extends UsernamePassword
                 .compact();
 
         response.addHeader(jwtConfig.getHeader(), jwtConfig.getPrefix() + token);
+        response.setContentType("application/json");
+        response.setCharacterEncoding("UTF-8");
+        response.getWriter().write(
+                "{\"" + jwtConfig.getHeader() + "\":\"" + jwtConfig.getPrefix() + token + "\"}"
+        );
     }
 
 }
