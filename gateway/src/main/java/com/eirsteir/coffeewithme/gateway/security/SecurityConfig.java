@@ -31,14 +31,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                   .and()
                       .addFilterAfter(new JwtTokenAuthenticationFilter(jwtConfig), UsernamePasswordAuthenticationFilter.class)
                       .authorizeRequests()
+                      .antMatchers(HttpMethod.OPTIONS, jwtConfig.getUri()).permitAll()
                       .antMatchers(HttpMethod.POST, jwtConfig.getUri()).permitAll()
-                      .antMatchers(HttpMethod.POST, jwtConfig.getUri() + "/register").permitAll()
                       .antMatchers( "/actuator/**").hasRole("ADMIN")
                       .antMatchers("/console/**").hasRole("ADMIN")
                       .antMatchers("/swagger-ui").permitAll()
-                      .anyRequest().authenticated()
-                  .and()
-                      .headers().frameOptions().disable();
+                      .anyRequest().authenticated();
   }
 
   @Bean
