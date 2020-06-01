@@ -31,3 +31,9 @@ build/
 
 ### VS Code ###
 .vscode/
+
+auth-service/src/main/resources/env.properties
+
+gateway/src/main/resources/env.properties
+
+social-service/src/main/resources/env.properties

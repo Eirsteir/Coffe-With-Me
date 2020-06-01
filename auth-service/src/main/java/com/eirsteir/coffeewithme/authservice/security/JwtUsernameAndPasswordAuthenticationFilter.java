@@ -26,14 +26,11 @@ public class JwtUsernameAndPasswordAuthenticationFilter extends UsernamePassword
 
     private AuthenticationManager authManager;
 
-    private final JwtUtils jwtUtils;
-
     private final JwtConfig jwtConfig;
 
     public JwtUsernameAndPasswordAuthenticationFilter(AuthenticationManager authManager,
                                                       JwtConfig jwtConfig) {
         this.authManager = authManager;
-        this.jwtUtils = jwtUtils;
         this.jwtConfig = jwtConfig;
 
         this.setRequiresAuthenticationRequestMatcher(new AntPathRequestMatcher(jwtConfig.getUri() + "/login", "POST"));
