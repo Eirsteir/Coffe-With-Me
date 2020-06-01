@@ -1,6 +1,6 @@
 package com.eirsteir.coffeewithme.social.service.friendship;
 
-import com.eirsteir.coffeewithme.commons.domain.UserDetails;
+import com.eirsteir.coffeewithme.commons.domain.user.UserDetails;
 import com.eirsteir.coffeewithme.commons.dto.UserDetailsDto;
 import com.eirsteir.coffeewithme.commons.exception.CWMException;
 import com.eirsteir.coffeewithme.commons.exception.EntityType;
@@ -183,7 +183,9 @@ public class FriendshipServiceImpl implements FriendshipService {
 
         if (updatedFriendship.getStatus() == FriendshipStatus.ACCEPTED) {
             UserDetails addressee = userService.getUserDetails(updatedFriendship.getAddressee());
-            publish(Friendship.createFriendRequestAccepted(friendshipToUpdate, addressee));
+            ResultWithEvents<Friendship> friendshipWithEvents = Friendship.createFriendRequestAccepted(
+                    friendshipToUpdate, addressee);
+            publish(friendshipWithEvents);
         }
 
 

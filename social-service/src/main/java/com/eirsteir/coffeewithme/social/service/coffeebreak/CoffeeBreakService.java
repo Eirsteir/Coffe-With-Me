@@ -1,11 +1,11 @@
 package com.eirsteir.coffeewithme.social.service.coffeebreak;
 
+import com.eirsteir.coffeewithme.commons.domain.coffeebreak.CoffeeBreakDetails;
 import com.eirsteir.coffeewithme.commons.security.UserDetailsImpl;
-import com.eirsteir.coffeewithme.social.dto.CoffeeBreakDto;
 import com.eirsteir.coffeewithme.social.web.request.CoffeeBreakRequest;
 
 public interface CoffeeBreakService {
 
-  CoffeeBreakDto registerCoffeeBreak(CoffeeBreakRequest coffeeBreakDto, UserDetailsImpl principal);
+  CoffeeBreakDetails registerCoffeeBreak(CoffeeBreakRequest coffeeBreakDto, UserDetailsImpl principal);
 
 }

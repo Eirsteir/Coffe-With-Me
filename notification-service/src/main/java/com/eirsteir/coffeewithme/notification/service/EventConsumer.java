@@ -1,7 +1,7 @@
 package com.eirsteir.coffeewithme.notification.service;
 
-import com.eirsteir.coffeewithme.commons.domain.AbstractEntityNotificationEvent;
-import com.eirsteir.coffeewithme.commons.domain.NotificationType;
+import com.eirsteir.coffeewithme.commons.domain.notification.AbstractEntityNotificationEvent;
+import com.eirsteir.coffeewithme.commons.domain.notification.NotificationType;
 import com.eirsteir.coffeewithme.notification.domain.Notification;
 import com.eirsteir.coffeewithme.notification.dto.NotificationDto;
 import com.eirsteir.coffeewithme.notification.repository.NotificationRepository;
@@ -15,7 +15,6 @@ public abstract class EventConsumer {
 
     @Autowired
     private NotificationRepository notificationRepository;
-
 
     @Autowired
     private SimpMessagingTemplate template;

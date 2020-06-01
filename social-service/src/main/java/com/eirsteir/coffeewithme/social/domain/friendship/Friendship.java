@@ -1,8 +1,8 @@
 package com.eirsteir.coffeewithme.social.domain.friendship;
 
-import com.eirsteir.coffeewithme.commons.domain.FriendRequestAcceptedEvent;
-import com.eirsteir.coffeewithme.commons.domain.FriendRequestEvent;
-import com.eirsteir.coffeewithme.commons.domain.UserDetails;
+import com.eirsteir.coffeewithme.commons.domain.friendship.FriendRequestAcceptedEvent;
+import com.eirsteir.coffeewithme.commons.domain.friendship.FriendRequestEvent;
+import com.eirsteir.coffeewithme.commons.domain.user.UserDetails;
 import com.eirsteir.coffeewithme.social.domain.user.User;
 import io.eventuate.tram.events.publisher.ResultWithEvents;
 import lombok.AllArgsConstructor;

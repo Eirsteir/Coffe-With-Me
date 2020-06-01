@@ -1,8 +1,8 @@
 package com.eirsteir.coffeewithme.social.service;
 
-import com.eirsteir.coffeewithme.commons.domain.AccountCreatedEvent;
-import com.eirsteir.coffeewithme.commons.domain.UserAlreadyExistsEvent;
-import com.eirsteir.coffeewithme.commons.domain.UserCreatedEvent;
+import com.eirsteir.coffeewithme.commons.domain.account.AccountCreatedEvent;
+import com.eirsteir.coffeewithme.commons.domain.user.UserAlreadyExistsEvent;
+import com.eirsteir.coffeewithme.commons.domain.user.UserCreatedEvent;
 import com.eirsteir.coffeewithme.social.domain.user.User;
 import com.eirsteir.coffeewithme.social.repository.UserRepository;
 import io.eventuate.tram.events.publisher.DomainEventPublisher;
