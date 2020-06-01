@@ -24,11 +24,4 @@ public class JwtUtils {
                 .compact();
     }
 
-    public static String getResponseBody(JwtConfig jwtConfig, String token) {
-        return "{\"access_token\":\"" + jwtConfig.getPrefix() + token + "\"," +
-                "\"token_type\": \"bearer\"," +
-                "\"expires_in\": \"" + jwtConfig.getExpiration() + "\"," +
-                "}";
-    }
-
 }
