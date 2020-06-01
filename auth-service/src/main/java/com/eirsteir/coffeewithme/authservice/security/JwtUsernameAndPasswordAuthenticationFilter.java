@@ -75,5 +75,4 @@ public class JwtUsernameAndPasswordAuthenticationFilter extends UsernamePassword
         response.getWriter().write(token);
     }
 
-
 }
