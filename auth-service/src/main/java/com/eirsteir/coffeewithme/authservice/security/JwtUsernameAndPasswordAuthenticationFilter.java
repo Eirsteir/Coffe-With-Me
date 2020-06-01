@@ -26,18 +26,14 @@ public class JwtUsernameAndPasswordAuthenticationFilter extends UsernamePassword
 
     private AuthenticationManager authManager;
 
-    private final JwtUtils jwtUtils;
-
     private final JwtConfig jwtConfig;
 
     public JwtUsernameAndPasswordAuthenticationFilter(AuthenticationManager authManager,
-                                                      JwtUtils jwtUtils,
                                                       JwtConfig jwtConfig) {
         this.authManager = authManager;
-        this.jwtUtils = jwtUtils;
         this.jwtConfig = jwtConfig;
 
-        this.setRequiresAuthenticationRequestMatcher(new AntPathRequestMatcher(jwtConfig.getUri(), "POST"));
+        this.setRequiresAuthenticationRequestMatcher(new AntPathRequestMatcher(jwtConfig.getUri() + "/login", "POST"));
     }
 
     @Override
@@ -71,12 +67,12 @@ public class JwtUsernameAndPasswordAuthenticationFilter extends UsernamePassword
 
         UserDetailsImpl principal = (UserDetailsImpl) auth.getPrincipal();
 
-        String token = jwtUtils.createJwtToken(auth, principal);
+        String token = JwtUtils.createJwtToken(jwtConfig, auth, principal);
 
         response.addHeader(jwtConfig.getHeader(), jwtConfig.getPrefix() + token);
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
-        response.getWriter().write(JwtUtils.getResponseBody(token));
+        response.getWriter().write(JwtUtils.getResponseBody(jwtConfig, token));
     }
 
 

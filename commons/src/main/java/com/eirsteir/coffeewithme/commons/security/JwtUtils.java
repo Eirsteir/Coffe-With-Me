@@ -10,13 +10,7 @@ import java.util.stream.Collectors;
 
 public class JwtUtils {
 
-    private static JwtConfig jwtConfig;
-
-    public JwtUtils(JwtConfig jwtConfig) {
-        JwtUtils.jwtConfig = jwtConfig;
-    }
-
-    public String createJwtToken(Authentication auth, UserDetailsImpl principal) {
+    public static String createJwtToken(JwtConfig jwtConfig, Authentication auth, UserDetailsImpl principal) {
         long now = System.currentTimeMillis();
         return Jwts.builder()
                 .setSubject(principal.getId().toString())
@@ -30,7 +24,7 @@ public class JwtUtils {
                 .compact();
     }
 
-    public static String getResponseBody(String token) {
+    public static String getResponseBody(JwtConfig jwtConfig, String token) {
         return "{\"access_token\":\"" + jwtConfig.getPrefix() + token + "\"," +
                 "\"token_type\": \"bearer\"," +
                 "\"expires_in\": \"" + jwtConfig.getExpiration() + "\"," +
