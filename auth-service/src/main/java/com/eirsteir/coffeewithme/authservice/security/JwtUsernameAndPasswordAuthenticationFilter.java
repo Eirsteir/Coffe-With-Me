@@ -2,16 +2,14 @@ package com.eirsteir.coffeewithme.authservice.security;
 
 import com.eirsteir.coffeewithme.authservice.domain.Account;
 import com.eirsteir.coffeewithme.commons.security.JwtConfig;
+import com.eirsteir.coffeewithme.commons.security.JwtUtils;
 import com.eirsteir.coffeewithme.commons.security.UserDetailsImpl;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.web.cors.CorsUtils;
@@ -21,8 +19,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.Collections;
-import java.util.Date;
-import java.util.stream.Collectors;
 
 
 @Slf4j
@@ -30,10 +26,15 @@ public class JwtUsernameAndPasswordAuthenticationFilter extends UsernamePassword
 
     private AuthenticationManager authManager;
 
+    private final JwtUtils jwtUtils;
+
     private final JwtConfig jwtConfig;
 
-    public JwtUsernameAndPasswordAuthenticationFilter(AuthenticationManager authManager, JwtConfig jwtConfig) {
+    public JwtUsernameAndPasswordAuthenticationFilter(AuthenticationManager authManager,
+                                                      JwtUtils jwtUtils,
+                                                      JwtConfig jwtConfig) {
         this.authManager = authManager;
+        this.jwtUtils = jwtUtils;
         this.jwtConfig = jwtConfig;
 
         this.setRequiresAuthenticationRequestMatcher(new AntPathRequestMatcher(jwtConfig.getUri(), "POST"));
@@ -70,24 +71,13 @@ public class JwtUsernameAndPasswordAuthenticationFilter extends UsernamePassword
 
         UserDetailsImpl principal = (UserDetailsImpl) auth.getPrincipal();
 
-        long now = System.currentTimeMillis();
-        String token = Jwts.builder()
-                .setSubject(principal.getId().toString())
-                .claim("email", principal.getEmail())
-                .claim("nickname", principal.getNickname())
-                .claim("authorities", auth.getAuthorities().stream()
-                    .map(GrantedAuthority::getAuthority).collect(Collectors.toList()))
-                .setIssuedAt(new Date(now))
-                .setExpiration(new Date(now + jwtConfig.getExpiration() * 1000))
-                .signWith(SignatureAlgorithm.HS512, jwtConfig.getSecret().getBytes())
-                .compact();
+        String token = jwtUtils.createJwtToken(auth, principal);
 
         response.addHeader(jwtConfig.getHeader(), jwtConfig.getPrefix() + token);
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
-        response.getWriter().write(
-                "{\"" + jwtConfig.getHeader() + "\":\"" + jwtConfig.getPrefix() + token + "\"}"
-        );
+        response.getWriter().write(JwtUtils.getResponseBody(token));
     }
+
 
 }

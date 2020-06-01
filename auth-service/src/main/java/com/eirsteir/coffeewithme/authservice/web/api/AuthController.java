@@ -18,6 +18,7 @@ public class AuthController {
     @Autowired
     private AccountService accountService;
 
+    @CrossOrigin(origins = "*") // lock down on deployment
     @PostMapping("/register")
     @ResponseStatus(HttpStatus.CREATED)
     void register(@RequestBody @Valid RegistrationRequest registrationRequest) {
