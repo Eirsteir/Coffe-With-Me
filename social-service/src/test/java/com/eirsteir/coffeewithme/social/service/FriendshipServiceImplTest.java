@@ -70,14 +70,12 @@ class FriendshipServiceImplTest {
     @MockBean
     private UserService userService;
 
-
-
     @TestConfiguration
     static class FriendshipServiceImplTestContextConfiguration {
         @MockBean
         private DomainEventPublisher domainEventPublisher;
 
-        @MockBean
+        @Autowired
         private FriendshipRepository friendshipRepository;
 
         @Bean
@@ -359,4 +357,5 @@ class FriendshipServiceImplTest {
         assertThat(friendRequests).hasSize(2);
         assertThat(friendRequests).contains(firstFriendDto);
     }
+
 }

@@ -26,4 +26,7 @@ public interface FriendshipService {
     List<UserDetailsDto> getAllFriendshipsWithStatus(UserDetailsDto user, FriendshipStatus status);
 
     List<UserDetailsDto> getFriendsOfWithStatus(UserDetailsDto UserDetailsDto, FriendshipStatus status);
+
+    Integer getFriendsCount(Long userId);
+
 }

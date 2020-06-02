@@ -4,6 +4,7 @@ import com.eirsteir.coffeewithme.authservice.service.UserDetailsServiceImpl;
 import com.eirsteir.coffeewithme.commons.security.JwtConfig;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -21,6 +22,7 @@ import javax.servlet.http.HttpServletResponse;
 
 
 @EnableWebSecurity
+@PropertySource("classpath:env.properties")
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Autowired

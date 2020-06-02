@@ -1,23 +1,21 @@
-package com.eirsteir.coffeewithme.commons.dto;
+package com.eirsteir.coffeewithme.social.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import lombok.experimental.Accessors;
 
-@Data
+@Getter
+@Setter
+@ToString
 @Builder
 @Accessors(chain = true)
 @NoArgsConstructor
 @AllArgsConstructor
-public class UserDetailsDto {
+public class UserProfile {
 
     private Long id;
     private String email;
     private String nickname;
     private String name;
-    private Boolean isFriend;
     private Integer friendsCount;
 
 }

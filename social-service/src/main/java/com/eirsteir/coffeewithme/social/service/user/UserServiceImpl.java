@@ -6,8 +6,8 @@ import com.eirsteir.coffeewithme.commons.exception.CWMException;
 import com.eirsteir.coffeewithme.commons.exception.EntityType;
 import com.eirsteir.coffeewithme.commons.exception.ExceptionType;
 import com.eirsteir.coffeewithme.commons.security.UserDetailsImpl;
-import com.eirsteir.coffeewithme.social.domain.university.University;
 import com.eirsteir.coffeewithme.social.domain.friendship.FriendshipStatus;
+import com.eirsteir.coffeewithme.social.domain.university.University;
 import com.eirsteir.coffeewithme.social.domain.user.User;
 import com.eirsteir.coffeewithme.social.repository.UniversityRepository;
 import com.eirsteir.coffeewithme.social.repository.UserRepository;
@@ -58,21 +58,24 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserDetailsDto findUserByIdWithIsFriend(Long id, Long viewerId) {
+    public UserDetailsDto findUserByIdWithIsFriend(Long id, Long currentUserId) {
         User user = findUserById(id);
-        User viewer = findUserById(id);
+        User currentUser = findUserById(id);
         UserDetailsDto userDetails = modelMapper.map(user, UserDetailsDto.class);
-        
-        if (areFriends(viewer, user))
-            userDetails.setIsFriend(true);
-        else
-            userDetails.setIsFriend(false);
+        this.addFriendshipPropertiesTo(userDetails, user, currentUser);
 
         return userDetails;
     }
 
-    private boolean areFriends(User currentUser, User user) {
-        return friendshipService.findFriends(currentUser.getId(), FriendshipStatus.ACCEPTED).contains(user);
+    private void addFriendshipPropertiesTo(UserDetailsDto userDetails, User user, User currentUser) {
+        List<User> friends = friendshipService.findFriends(user.getId(), FriendshipStatus.ACCEPTED);
+
+        if (friends.contains(currentUser))
+            userDetails.setIsFriend(true);
+        else
+            userDetails.setIsFriend(false);
+
+        userDetails.setFriendsCount(friends.size());
     }
 
     @Override
