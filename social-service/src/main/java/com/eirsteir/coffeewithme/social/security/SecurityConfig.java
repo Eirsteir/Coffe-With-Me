@@ -4,8 +4,8 @@ import com.eirsteir.coffeewithme.commons.security.JwtConfig;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -15,6 +15,7 @@ import javax.servlet.http.HttpServletResponse;
 
 @Configuration
 @EnableWebSecurity
+@PropertySource("classpath:env.properties")
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
   @Autowired
@@ -23,29 +24,18 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
   @Override
   protected void configure(HttpSecurity http) throws Exception {
           http
-                  .csrf().disable()
-                  .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-                  .and()
+                    .cors()
+                .and()
+                    .csrf().disable()
+                    .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                .and()
                       .exceptionHandling().authenticationEntryPoint((req, res, e) -> res.sendError(HttpServletResponse.SC_UNAUTHORIZED))
-                  .and()
+                .and()
                       .addFilterAfter(new JwtTokenAuthenticationFilter(jwtConfig), UsernamePasswordAuthenticationFilter.class)
                       .authorizeRequests()
                       .antMatchers( "/actuator/**").hasRole("ADMIN")
                       .antMatchers("/swagger-ui").permitAll()
-                      .anyRequest().authenticated()
-                  .and()
-                      .headers().frameOptions().disable();
-  }
-
-  @Override
-  public void configure(WebSecurity web) {
-    web.ignoring().antMatchers(
-      "/resources/**", "/static/**", "/css/**", "/js/**", "/images/**",
-      "/resources/static/**", "/css/**", "/js/**", "/img/**", "/fonts/**",
-      "/images/**", "/scss/**", "/vendor/**", "/favicon.ico", "/auth/**", "/favicon.png",
-      "/v2/api-docs", "/configuration/ui", "/configuration/security", "/swagger-ui.html",
-      "/webjars/**", "/swagger-resources/**", "/api/swagge‌​r-ui.html/**", "/actuator",
-      "/actuator/**", "/*.bundle.*");
+                      .anyRequest().authenticated();
   }
 
   @Bean

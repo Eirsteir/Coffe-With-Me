@@ -40,7 +40,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
             .and()
                 .addFilter(new JwtUsernameAndPasswordAuthenticationFilter(authenticationManager(), jwtconfig))
             .authorizeRequests()
-                .antMatchers(HttpMethod.OPTIONS, jwtconfig.getUri() + "/**").permitAll()
                 .antMatchers(HttpMethod.POST, jwtconfig.getUri() + "/**").permitAll()
                 .anyRequest().authenticated();
     }
@@ -48,19 +47,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
         auth.userDetailsService(userDetailsService()).passwordEncoder(passwordEncoder());
-    }
-
-    @Bean
-    public CorsFilter corsFilter() {
-        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        CorsConfiguration config = new CorsConfiguration();
-        config.setAllowCredentials(true);
-        config.addAllowedOrigin("*");  // TODO: lock down before deploying
-        config.addAllowedHeader("*");
-        config.addExposedHeader(HttpHeaders.AUTHORIZATION);
-        config.addAllowedMethod("*");
-        source.registerCorsConfiguration("/**", config);
-        return new CorsFilter(source);
     }
 
     @Bean
