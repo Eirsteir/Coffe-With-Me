@@ -2,6 +2,7 @@ package com.eirsteir.coffeewithme.social.web.api.user;
 
 
 import com.eirsteir.coffeewithme.social.domain.user.User;
+import com.eirsteir.coffeewithme.social.dto.UserProfile;
 import com.eirsteir.coffeewithme.social.repository.rsql.RqslVisitorImpl;
 import com.eirsteir.coffeewithme.social.service.user.UserService;
 import com.eirsteir.coffeewithme.commons.dto.UserDetailsDto;
@@ -36,8 +37,8 @@ public class UserController {
     }
 
     @PutMapping
-    UserDetailsDto update(@Valid @RequestBody UpdateProfileRequest updateProfileRequest,
-                          @AuthenticationPrincipal UserDetailsImpl principal) {
+    UserProfile update(@Valid @RequestBody UpdateProfileRequest updateProfileRequest,
+                       @AuthenticationPrincipal UserDetailsImpl principal) {
         return userService.updateProfile(updateProfileRequest, principal);
     }
 

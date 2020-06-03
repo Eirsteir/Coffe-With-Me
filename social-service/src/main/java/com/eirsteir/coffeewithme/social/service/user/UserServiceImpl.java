@@ -9,6 +9,7 @@ import com.eirsteir.coffeewithme.commons.security.UserDetailsImpl;
 import com.eirsteir.coffeewithme.social.domain.friendship.FriendshipStatus;
 import com.eirsteir.coffeewithme.social.domain.university.University;
 import com.eirsteir.coffeewithme.social.domain.user.User;
+import com.eirsteir.coffeewithme.social.dto.UserProfile;
 import com.eirsteir.coffeewithme.social.repository.UniversityRepository;
 import com.eirsteir.coffeewithme.social.repository.UserRepository;
 import com.eirsteir.coffeewithme.social.service.friendship.FriendshipService;
@@ -87,7 +88,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserDetailsDto updateProfile(UpdateProfileRequest updateProfileRequest, UserDetailsImpl currentUser) {
+    public UserProfile updateProfile(UpdateProfileRequest updateProfileRequest, UserDetailsImpl currentUser) {
         User userToUpdate = userRepository.findById(currentUser.getId())
                 .orElseThrow(() -> CWMException.getException(EntityType.USER,
                                                              ExceptionType.ENTITY_NOT_FOUND,
@@ -99,7 +100,7 @@ public class UserServiceImpl implements UserService {
         userToUpdate.setNickname(updateProfileRequest.getNickname());
         log.info("[x] Updated user profile: {}", userToUpdate);
 
-        return modelMapper.map(userRepository.save(userToUpdate), UserDetailsDto.class);
+        return modelMapper.map(userRepository.save(userToUpdate), UserProfile.class);
     }
 
     @Override
