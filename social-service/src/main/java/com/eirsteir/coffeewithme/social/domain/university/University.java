@@ -1,7 +1,10 @@
 package com.eirsteir.coffeewithme.social.domain.university;
 
 
+import com.eirsteir.coffeewithme.social.domain.user.User;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
+import lombok.ToString;
 import org.hibernate.annotations.Cascade;
 
 import javax.persistence.*;
@@ -17,6 +20,12 @@ public class University {
   private Long id;
 
   private String name;
+
+  @OneToMany(fetch = FetchType.LAZY,
+              mappedBy = "university")
+  @ToString.Exclude
+  @JsonIgnore
+  private List<User> attendees;
 
   @OneToMany(fetch = FetchType.EAGER,
           mappedBy = "university",

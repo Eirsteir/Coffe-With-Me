@@ -39,7 +39,8 @@ public class User extends CreatedUpdatedDateTimeBaseModel {
 
     private Date lastLogin;
 
-    @OneToOne
+    @ManyToOne
+    @JoinColumn(name = "university_id")
     private University university;
 
     @JsonIgnore
