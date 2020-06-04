@@ -4,14 +4,14 @@ import com.eirsteir.coffeewithme.commons.security.UserDetailsImpl;
 import com.eirsteir.coffeewithme.social.dto.UserProfile;
 import com.eirsteir.coffeewithme.social.service.friendship.FriendshipService;
 import com.eirsteir.coffeewithme.social.service.user.UserService;
+import com.eirsteir.coffeewithme.social.web.request.UpdateProfileRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import javax.validation.Valid;
 
 @Slf4j
 @RestController
@@ -37,4 +37,9 @@ public class ProfileController {
         return profile;
     }
 
+    @PutMapping
+    UserProfile update(@Valid @RequestBody UpdateProfileRequest updateProfileRequest,
+                       @AuthenticationPrincipal UserDetailsImpl principal) {
+        return userService.updateProfile(updateProfileRequest, principal);
+    }
 }
