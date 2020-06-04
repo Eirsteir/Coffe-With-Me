@@ -6,6 +6,7 @@ import com.eirsteir.coffeewithme.commons.security.UserDetailsImpl;
 import com.eirsteir.coffeewithme.social.config.ModelMapperConfig;
 import com.eirsteir.coffeewithme.social.domain.friendship.FriendshipStatus;
 import com.eirsteir.coffeewithme.social.domain.user.User;
+import com.eirsteir.coffeewithme.social.dto.UserProfile;
 import com.eirsteir.coffeewithme.social.repository.UserRepository;
 import com.eirsteir.coffeewithme.social.service.friendship.FriendshipService;
 import com.eirsteir.coffeewithme.social.service.user.UserService;
@@ -130,9 +131,9 @@ class UserServiceImplTest {
     void testUpdateProfileUserReturnsUpdatedUserDyo() {
         UpdateProfileRequest updateProfileRequestDto = new UpdateProfileRequest(NICKNAME_ALEX, 1L);
 
-        UserDetailsDto updatedUserDetails = userService.updateProfile(updateProfileRequestDto, userDetails);
+        UserProfile updatedProfile = userService.updateProfile(updateProfileRequestDto, userDetails);
 
-        assertThat(updatedUserDetails.getNickname()).isEqualTo(NICKNAME_ALEX);
+        assertThat(updatedProfile.getNickname()).isEqualTo(NICKNAME_ALEX);
     }
 
     @Test

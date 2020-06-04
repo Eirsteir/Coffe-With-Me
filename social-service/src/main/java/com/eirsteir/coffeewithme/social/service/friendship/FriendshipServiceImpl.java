@@ -73,6 +73,11 @@ public class FriendshipServiceImpl implements FriendshipService {
         return convertUserListToDto(userRepository.findFriendsOfWithStatus(user.getId(), status));
     }
 
+    @Override
+    public Integer getFriendsCount(Long userId) {
+        return friendshipRepository.countByUserId(userId);
+    }
+
     private List<UserDetailsDto> convertUserListToDto(List<User> users) {
         return users.stream()
                 .map(user -> modelMapper.map(user, UserDetailsDto.class))

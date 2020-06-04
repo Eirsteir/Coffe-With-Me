@@ -14,13 +14,14 @@ public class JwtUtils {
         long now = System.currentTimeMillis();
         return Jwts.builder()
                 .setSubject(principal.getId().toString())
-                .claim("email", principal.getEmail())
-                .claim("nickname", principal.getNickname())
+                .claim("user_id", principal.getId().toString())
+                .claim("email", principal.getEmail()) // TODO: 02.06.2020 remove?
+                .claim("nickname", principal.getNickname()) // TODO: 02.06.2020 remove?
                 .claim("authorities", auth.getAuthorities().stream()
                         .map(GrantedAuthority::getAuthority).collect(Collectors.toList()))
                 .setIssuedAt(new Date(now))
                 .setExpiration(new Date(now + jwtConfig.getExpiration() * 1000))
-                .signWith(SignatureAlgorithm.HS512, jwtConfig.getSecret().getBytes())
+                .signWith(SignatureAlgorithm.HS256, jwtConfig.getSecret().getBytes())
                 .compact();
     }
 
