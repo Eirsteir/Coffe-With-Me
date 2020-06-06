@@ -61,4 +61,5 @@ public interface UserRepository extends JpaRepository<User, Long>, JpaSpecificat
             "AND user.university = :university")
     Set<User> findFriendsOfWithStatusAndUniversity(Long userId, FriendshipStatus status, University university);
 
+    // TODO: 06.06.2020 query returning a user profile with friends count
 }

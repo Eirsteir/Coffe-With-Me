@@ -65,6 +65,20 @@ public class FriendshipServiceImpl implements FriendshipService {
 
         return convertUserListToDto(friends);
     }
+    @Override
+    public List<User> findFriends(Long id, FriendshipStatus status) {
+        List<User> friendsDtoStream = userRepository.findFriendsFromWithStatus(id, status);
+        List<User> friendsOfDtoStream = userRepository.findFriendsOfWithStatus(id, status);
+
+        return concatFriendsCollections(friendsDtoStream, friendsOfDtoStream)
+                .collect(Collectors.toList());
+    }
+
+    private List<UserDetailsDto> convertUserListToDto(List<User> users) {
+        return users.stream()
+                .map(user -> modelMapper.map(user, UserDetailsDto.class))
+                .collect(Collectors.toList());
+    }
 
     @Override
     public List<UserDetailsDto> getFriendsOfWithStatus(UserDetailsDto UserDetailsDto, FriendshipStatus status) {
@@ -76,21 +90,6 @@ public class FriendshipServiceImpl implements FriendshipService {
     @Override
     public Integer getFriendsCount(Long userId) {
         return friendshipRepository.countByUserId(userId);
-    }
-
-    private List<UserDetailsDto> convertUserListToDto(List<User> users) {
-        return users.stream()
-                .map(user -> modelMapper.map(user, UserDetailsDto.class))
-                .collect(Collectors.toList());
-    }
-
-    @Override
-    public List<User> findFriends(Long id, FriendshipStatus status) {
-        List<User> friendsDtoStream = userRepository.findFriendsFromWithStatus(id, status);
-        List<User> friendsOfDtoStream = userRepository.findFriendsOfWithStatus(id, status);
-
-        return concatFriendsCollections(friendsDtoStream, friendsOfDtoStream)
-                .collect(Collectors.toList());
     }
 
     @Override

@@ -34,10 +34,10 @@ public class FriendshipController {
     @Autowired
     private ModelMapper modelMapper;
 
-    @GetMapping("/{id}/friends")
+    @GetMapping("/friends")
     @ResponseBody
-    Collection<UserDetailsDto> getFriends(@PathVariable Long id) {
-        UserDetailsDto UserDetailsDto = modelMapper.map(userService.findUserById(id), UserDetailsDto.class);
+    Collection<UserDetailsDto> getFriends(@AuthenticationPrincipal UserDetailsImpl principal) {
+        UserDetailsDto UserDetailsDto = modelMapper.map(userService.findUserById(principal.getId()), UserDetailsDto.class);
         List<UserDetailsDto> friends = friendshipService.getFriends(UserDetailsDto);
 
         if (friends.isEmpty())
