@@ -63,6 +63,7 @@ public class User extends CreatedUpdatedDateTimeBaseModel {
         if (this.friends == null)
             this.friends = new LinkedList<>();
 
+        this.friends.add(friendship);
         return friendship;
     }
 
