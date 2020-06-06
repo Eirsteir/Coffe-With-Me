@@ -40,6 +40,10 @@ public class ProfileController {
     @PutMapping
     UserProfile update(@Valid @RequestBody UpdateProfileRequest updateProfileRequest,
                        @AuthenticationPrincipal UserDetailsImpl principal) {
-        return userService.updateProfile(updateProfileRequest, principal);
+        UserProfile profile = userService.updateProfile(updateProfileRequest, principal);
+        Integer friendsCount = friendshipService.getFriendsCount(profile.getId());
+        profile.setFriendsCount(friendsCount);
+
+        return profile;
     }
 }
