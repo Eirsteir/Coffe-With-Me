@@ -1,13 +1,13 @@
 package com.eirsteir.coffeewithme.social.service.coffeebreak;
 
-import com.eirsteir.coffeewithme.commons.domain.UserDetails;
+import com.eirsteir.coffeewithme.commons.domain.coffeebreak.CoffeeBreakDetails;
+import com.eirsteir.coffeewithme.commons.domain.user.UserDetails;
 import com.eirsteir.coffeewithme.commons.exception.CWMException;
 import com.eirsteir.coffeewithme.commons.security.UserDetailsImpl;
 import com.eirsteir.coffeewithme.social.config.ModelMapperConfig;
 import com.eirsteir.coffeewithme.social.domain.coffeebreak.CoffeeBreak;
 import com.eirsteir.coffeewithme.social.domain.university.Campus;
 import com.eirsteir.coffeewithme.social.domain.user.User;
-import com.eirsteir.coffeewithme.social.dto.CoffeeBreakDto;
 import com.eirsteir.coffeewithme.social.repository.CampusRepository;
 import com.eirsteir.coffeewithme.social.repository.CoffeeBreakRepository;
 import com.eirsteir.coffeewithme.social.service.friendship.FriendshipService;
@@ -114,10 +114,10 @@ class CoffeeBreakServiceImplTest {
                 .campusId(campus.getId())
                 .build();
 
-        CoffeeBreakDto savedCoffeeBreakDto = coffeeBreakService.registerCoffeeBreak(request, currentUserDetails);
+        CoffeeBreakDetails savedCoffeeBreakDetails = coffeeBreakService.registerCoffeeBreak(request, currentUserDetails);
 
-        assertThat(savedCoffeeBreakDto.getRequester()).isEqualTo(requesterUserDetails);
-        assertThat(savedCoffeeBreakDto.getAddressees()).isEqualTo(addresseesUserDetails);
+        assertThat(savedCoffeeBreakDetails.getRequester()).isEqualTo(requesterUserDetails);
+        assertThat(savedCoffeeBreakDetails.getAddressees()).isEqualTo(addresseesUserDetails);
     }
 
     @Test
@@ -141,9 +141,9 @@ class CoffeeBreakServiceImplTest {
                 .build();
         coffeeBreak.setCampus(null);
 
-        CoffeeBreakDto savedCoffeeBreakDto = coffeeBreakService.registerCoffeeBreak(request, currentUserDetails);
+        CoffeeBreakDetails savedCoffeeBreakDetails = coffeeBreakService.registerCoffeeBreak(request, currentUserDetails);
 
-        assertThat(savedCoffeeBreakDto.getCampus()).isNull();
+        assertThat(savedCoffeeBreakDetails.getCampus()).isNull();
     }
 
     @Test
@@ -152,10 +152,10 @@ class CoffeeBreakServiceImplTest {
                 .campusId(campus.getId())
                 .build();
 
-        CoffeeBreakDto savedCoffeeBreakDto = coffeeBreakService.registerCoffeeBreak(request, currentUserDetails);
+        CoffeeBreakDetails savedCoffeeBreakDetails = coffeeBreakService.registerCoffeeBreak(request, currentUserDetails);
         LocalTime now = LocalTime.now();
 
-        assertThat(savedCoffeeBreakDto.getScheduledTo()).isBefore(now);
+        assertThat(savedCoffeeBreakDetails.getScheduledTo()).isBefore(now);
     }
 
     @Test
@@ -168,8 +168,8 @@ class CoffeeBreakServiceImplTest {
                 .campusId(campus.getId())
                 .build();
 
-        CoffeeBreakDto savedCoffeeBreakDto = coffeeBreakService.registerCoffeeBreak(request, currentUserDetails);
+        CoffeeBreakDetails savedCoffeeBreakDetails = coffeeBreakService.registerCoffeeBreak(request, currentUserDetails);
 
-        assertThat(savedCoffeeBreakDto.getScheduledTo()).isEqualToIgnoringSeconds(in5MinutesFromNow);
+        assertThat(savedCoffeeBreakDetails.getScheduledTo()).isEqualToIgnoringSeconds(in5MinutesFromNow);
     }
 }

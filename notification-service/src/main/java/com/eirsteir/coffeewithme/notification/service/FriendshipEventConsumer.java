@@ -1,7 +1,7 @@
 package com.eirsteir.coffeewithme.notification.service;
 
-import com.eirsteir.coffeewithme.commons.domain.FriendRequestAcceptedEvent;
-import com.eirsteir.coffeewithme.commons.domain.FriendRequestEvent;
+import com.eirsteir.coffeewithme.commons.domain.friendship.FriendRequestAcceptedEvent;
+import com.eirsteir.coffeewithme.commons.domain.friendship.FriendRequestEvent;
 import io.eventuate.tram.events.subscriber.DomainEventEnvelope;
 import io.eventuate.tram.events.subscriber.DomainEventHandlers;
 import io.eventuate.tram.events.subscriber.DomainEventHandlersBuilder;

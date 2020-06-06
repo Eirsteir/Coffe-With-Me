@@ -17,6 +17,10 @@ public interface FriendshipRepository extends JpaRepository<Friendship, Friendsh
 
     Optional<Friendship> findByIdRequesterIdAndIdAddresseeId(Long requesterId, Long addresseeId);
 
+    @Query("SELECT count(f) from Friendship f where (f.id.requester.id = :userId or f.id.addressee.id = :userId) " +
+            "and f.status = com.eirsteir.coffeewithme.social.domain.friendship.FriendshipStatus.ACCEPTED")
+    Integer countByUserId(Long userId);
+
     // TODO: 09.05.2020 What about when addressee sends request back to original requester?
 
 }

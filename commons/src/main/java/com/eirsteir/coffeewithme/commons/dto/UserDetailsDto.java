@@ -18,5 +18,6 @@ public class UserDetailsDto {
     private String nickname;
     private String name;
     private Boolean isFriend;
+    private Integer friendsCount;
 
 }

@@ -1,15 +1,17 @@
 package com.eirsteir.coffeewithme.social.service.coffeebreak;
 
+import com.eirsteir.coffeewithme.commons.domain.coffeebreak.CoffeeBreakDetails;
 import com.eirsteir.coffeewithme.commons.security.UserDetailsImpl;
 import com.eirsteir.coffeewithme.social.domain.coffeebreak.CoffeeBreak;
 import com.eirsteir.coffeewithme.social.domain.university.Campus;
 import com.eirsteir.coffeewithme.social.domain.user.User;
-import com.eirsteir.coffeewithme.social.dto.CoffeeBreakDto;
 import com.eirsteir.coffeewithme.social.repository.CampusRepository;
 import com.eirsteir.coffeewithme.social.repository.CoffeeBreakRepository;
 import com.eirsteir.coffeewithme.social.service.friendship.FriendshipService;
 import com.eirsteir.coffeewithme.social.service.user.UserService;
 import com.eirsteir.coffeewithme.social.web.request.CoffeeBreakRequest;
+import io.eventuate.tram.events.publisher.DomainEventPublisher;
+import io.eventuate.tram.events.publisher.ResultWithEvents;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +25,9 @@ import java.util.Set;
 @Service
 @Transactional
 public class CoffeeBreakServiceImpl implements CoffeeBreakService {
+
+    @Autowired
+    private DomainEventPublisher domainEventPublisher;
 
     @Autowired
     private CoffeeBreakRepository coffeeBreakRepository;
@@ -40,14 +45,21 @@ public class CoffeeBreakServiceImpl implements CoffeeBreakService {
     private ModelMapper modelMapper;
 
     @Override
-    public CoffeeBreakDto registerCoffeeBreak(CoffeeBreakRequest coffeeBreakRequest, UserDetailsImpl currentUser) {
+    public CoffeeBreakDetails registerCoffeeBreak(CoffeeBreakRequest coffeeBreakRequest, UserDetailsImpl currentUser) {
         CoffeeBreak coffeeBreak = createCoffeeBreak(coffeeBreakRequest, currentUser.getId());
         coffeeBreak = coffeeBreakRepository.save(coffeeBreak);
-
-        // TODO: 29.05.2020 notify addressees
         log.info("[x] Registered coffee break: {}", coffeeBreak);
 
-        return modelMapper.map(coffeeBreak, CoffeeBreakDto.class);
+        // TODO: 29.05.2020 notify addressees
+        CoffeeBreakDetails coffeeBreakDetails = getCoffeeBreakDetails(coffeeBreak);
+        ResultWithEvents<CoffeeBreakDetails> coffeeBreakWithEvents = CoffeeBreak.createCoffeeBreak(coffeeBreakDetails);
+        publish(coffeeBreakWithEvents);
+
+        return modelMapper.map(coffeeBreak, CoffeeBreakDetails.class);
+    }
+
+    private CoffeeBreakDetails getCoffeeBreakDetails(CoffeeBreak coffeeBreak) {
+        return modelMapper.map(coffeeBreak, CoffeeBreakDetails.class);
     }
 
     private CoffeeBreak createCoffeeBreak(CoffeeBreakRequest coffeeBreakRequest, Long currentUserId) {
@@ -70,6 +82,12 @@ public class CoffeeBreakServiceImpl implements CoffeeBreakService {
             return now;
 
         return now.plusMinutes(scheduledToInMinutes);
+    }
+
+
+    private void publish(ResultWithEvents<CoffeeBreakDetails> coffeeBreakWithEvents) {
+        log.info("[x] Publishing {} to {}", coffeeBreakWithEvents, CoffeeBreak.class);
+        domainEventPublisher.publish(CoffeeBreak.class, coffeeBreakWithEvents, coffeeBreakWithEvents.events);
     }
 
 }

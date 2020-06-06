@@ -5,6 +5,8 @@ import lombok.*;
 import lombok.experimental.Accessors;
 
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Positive;
 
 @Getter
 @Setter
@@ -15,10 +17,11 @@ import javax.validation.constraints.NotBlank;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class UpdateProfileRequest {
 
-    @NotBlank(message = "Nickname is required")
+    @NotBlank(message = "Field is required")
     private String nickname;
 
-    @NotBlank(message = "University id is required")
+    @NotNull(message = "Field is required")
+    @Positive(message = "Must be a positive integer")
     private Long universityId;
 
 

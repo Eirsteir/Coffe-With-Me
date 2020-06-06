@@ -1,7 +1,7 @@
 package com.eirsteir.coffeewithme.authservice.domain;
 
 
-import com.eirsteir.coffeewithme.commons.domain.AccountCreatedEvent;
+import com.eirsteir.coffeewithme.commons.domain.account.AccountCreatedEvent;
 import io.eventuate.tram.events.publisher.ResultWithEvents;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

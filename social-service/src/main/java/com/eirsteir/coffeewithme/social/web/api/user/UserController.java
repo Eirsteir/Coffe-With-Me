@@ -1,12 +1,11 @@
 package com.eirsteir.coffeewithme.social.web.api.user;
 
 
+import com.eirsteir.coffeewithme.commons.dto.UserDetailsDto;
+import com.eirsteir.coffeewithme.commons.security.UserDetailsImpl;
 import com.eirsteir.coffeewithme.social.domain.user.User;
 import com.eirsteir.coffeewithme.social.repository.rsql.RqslVisitorImpl;
 import com.eirsteir.coffeewithme.social.service.user.UserService;
-import com.eirsteir.coffeewithme.commons.dto.UserDetailsDto;
-import com.eirsteir.coffeewithme.commons.security.UserDetailsImpl;
-import com.eirsteir.coffeewithme.social.web.request.UpdateProfileRequest;
 import cz.jirutka.rsql.parser.RSQLParser;
 import cz.jirutka.rsql.parser.ast.Node;
 import lombok.extern.slf4j.Slf4j;
@@ -17,7 +16,6 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
-import javax.validation.Valid;
 import java.util.List;
 
 @Slf4j
@@ -33,12 +31,6 @@ public class UserController {
     UserDetailsDto user(@PathVariable Long id, @AuthenticationPrincipal UserDetailsImpl principal) {
 
         return userService.findUserByIdWithIsFriend(id, principal.getId());
-    }
-
-    @PutMapping
-    UserDetailsDto update(@Valid @RequestBody UpdateProfileRequest updateProfileRequest,
-                          @AuthenticationPrincipal UserDetailsImpl principal) {
-        return userService.updateProfile(updateProfileRequest, principal);
     }
 
     @GetMapping
