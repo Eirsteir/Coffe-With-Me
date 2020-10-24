@@ -24,4 +24,5 @@ public interface UserService {
 
     UserDetails getUserDetails(User user);
 
+    List<User> findByIdIn(List<Long> friendsIds);
 }

@@ -5,6 +5,7 @@ import com.eirsteir.coffeewithme.commons.security.UserDetailsImpl;
 import com.eirsteir.coffeewithme.social.domain.coffeebreak.CoffeeBreak;
 import com.eirsteir.coffeewithme.social.domain.university.Campus;
 import com.eirsteir.coffeewithme.social.domain.user.User;
+import com.eirsteir.coffeewithme.social.dto.FriendshipDto;
 import com.eirsteir.coffeewithme.social.repository.CampusRepository;
 import com.eirsteir.coffeewithme.social.repository.CoffeeBreakRepository;
 import com.eirsteir.coffeewithme.social.service.friendship.FriendshipService;
@@ -19,7 +20,8 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.time.LocalTime;
-import java.util.Set;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -64,16 +66,31 @@ public class CoffeeBreakServiceImpl implements CoffeeBreakService {
 
     private CoffeeBreak createCoffeeBreak(CoffeeBreakRequest coffeeBreakRequest, Long currentUserId) {
         User requester = userService.findUserById(currentUserId);
-        Set<User> addresses = friendshipService.findFriendsAtUniversity(requester);
+        List<FriendshipDto> addressees = friendshipService.findFriendshipsAtUniversity(requester);
         Campus campus = campusRepository.findById(coffeeBreakRequest.getCampusId()).orElse(null);
         LocalTime scheduledTo = getScheduledToFromNow(coffeeBreakRequest.getScheduledToInMinutes());
+        List<User> addresseesAsUsers = getAddresseesAsUsersFrom(addressees, requester);
 
         return CoffeeBreak.builder()
                 .requester(requester)
-                .addressees(addresses)
+                .addressees(addresseesAsUsers)
                 .campus(campus)
                 .scheduledTo(scheduledTo)
                 .build();
+    }
+
+    private List<User> getAddresseesAsUsersFrom(List<FriendshipDto> addressees, User requester) {
+        List<Long> friendsIds = addressees.stream()
+                .map(friendshipDto -> {
+                    if (friendshipDto.getAddressee().getId()
+                            .equals(requester.getId()))
+                        return friendshipDto.getAddressee().getId();
+
+                    return friendshipDto.getRequester().getId();
+                })
+                .collect(Collectors.toList());
+
+        return userService.findByIdIn(friendsIds);
     }
 
     private LocalTime getScheduledToFromNow(Long scheduledToInMinutes) {

@@ -25,6 +25,7 @@ import org.springframework.context.annotation.Import;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.time.LocalTime;
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -44,9 +45,9 @@ class CoffeeBreakServiceImplTest {
 
     private UserDetailsImpl currentUserDetails;
     private User currentUser;
-    private Set<User> addressees;
+    private List<User> addressees;
     private UserDetails requesterUserDetails;
-    private Set<UserDetails> addresseesUserDetails;
+    private List<UserDetails> addresseesUserDetails;
     private Campus campus;
     private CoffeeBreak coffeeBreak;
 
@@ -82,11 +83,11 @@ class CoffeeBreakServiceImplTest {
         currentUser = User.builder().id(currentUserDetails.getId()).build();
         addressees = ADDRESSEE_IDS.stream()
                 .map(id -> User.builder().id(id).build())
-                .collect(Collectors.toSet());
+                .collect(Collectors.toList());
         requesterUserDetails = UserDetails.builder().id(REQUESTER_ID).build();
         addresseesUserDetails = ADDRESSEE_IDS.stream()
                 .map(id -> UserDetails.builder().id(id).build())
-                .collect(Collectors.toSet());
+                .collect(Collectors.toList());
 
         campus = new Campus();
         campus.setId(10L);
@@ -100,8 +101,9 @@ class CoffeeBreakServiceImplTest {
 
         when(userService.findUserById(REQUESTER_ID))
                 .thenReturn(currentUser);
-        when(friendshipService.findFriendsAtUniversity(currentUser))
-                .thenReturn(addressees);
+        // TODO: correct this
+//        when(friendshipService.findFriendshipsAtUniversity(currentUser))
+//                .thenReturn(addressees);
         when(campusRepository.findById(CAMPUS_ID))
                 .thenReturn(Optional.ofNullable(campus));
         when(coffeeBreakRepository.save(Mockito.any(CoffeeBreak.class)))

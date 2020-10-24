@@ -97,6 +97,15 @@ http://localhost:8080/api/
 Some of the important API endpoints are as follows:
 
 - http://localhost:8080/api/auth (HTTP:POST)
+- http://localhost:8080/api/auth/login (HTTP:POST)
+
+    Logs user in by receiving a JWT auth token. 
+    Required POST data: 
+    
+    {
+        "email": "email",
+        "password": "password"
+    } 
 - http://localhost:8080/api/auth/register (HTTP:POST)
 - http://localhost:8080/api/social/user/{id} (HTTP:GET)
 - http://localhost:8080/api/social/friends (HTTP:GET,POST,PUT)

@@ -11,7 +11,6 @@ import com.eirsteir.coffeewithme.social.domain.friendship.FriendshipStatus;
 import com.eirsteir.coffeewithme.social.domain.user.User;
 import com.eirsteir.coffeewithme.social.dto.FriendshipDto;
 import com.eirsteir.coffeewithme.social.repository.FriendshipRepository;
-import com.eirsteir.coffeewithme.social.repository.UserRepository;
 import com.eirsteir.coffeewithme.social.service.user.UserService;
 import com.eirsteir.coffeewithme.social.web.request.FriendRequest;
 import io.eventuate.tram.events.publisher.DomainEventPublisher;
@@ -22,11 +21,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
-import java.util.Collection;
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 @Slf4j
 @Service
@@ -42,9 +38,6 @@ public class FriendshipServiceImpl implements FriendshipService {
     private FriendshipRepository friendshipRepository;
 
     @Autowired
-    private UserRepository userRepository;
-
-    @Autowired
     private ModelMapper modelMapper;
 
     public FriendshipServiceImpl(DomainEventPublisher domainEventPublisher,
@@ -54,40 +47,28 @@ public class FriendshipServiceImpl implements FriendshipService {
     }
 
     @Override
-    public List<UserDetailsDto> getFriends(UserDetailsDto UserDetailsDto) {
+    public List<FriendshipDto> findFriendships(UserDetailsDto UserDetailsDto) {
         return getAllFriendshipsWithStatus(UserDetailsDto, FriendshipStatus.ACCEPTED);
     }
 
     @Override
-    public List<UserDetailsDto> getAllFriendshipsWithStatus(UserDetailsDto UserDetailsDto, FriendshipStatus status) {
-        User user = userService.findUserById(UserDetailsDto.getId());
-        List<User> friends = userRepository.findFriendsByUserIdAndStatus(user.getId(), status);
+    public List<FriendshipDto> getAllFriendshipsWithStatus(UserDetailsDto userDetailsDto, FriendshipStatus status) {
+        List<Friendship> friendships = friendshipRepository.findByUserAndStatus(userDetailsDto.getId(), status);
 
-        return friends.stream()
-                .map(friend -> modelMapper.map(friend, UserDetailsDto.class))
-                .collect(Collectors.toList());
+        return getFriendshipDtos(friendships);
     }
 
     @Override
-    public List<User> findFriends(Long id, FriendshipStatus status) {
-        List<User> friendsDtoStream = userRepository.findFriendsFromWithStatus(id, status);
-        List<User> friendsOfDtoStream = userRepository.findFriendsOfWithStatus(id, status);
+    public List<FriendshipDto> findFriendships(Long id, FriendshipStatus status) {
+        List<Friendship> friendships = friendshipRepository.findByUserAndStatus(id, status);
 
-        return concatFriendsCollections(friendsDtoStream, friendsOfDtoStream)
-                .collect(Collectors.toList());
+        return getFriendshipDtos(friendships);
     }
 
-    private List<UserDetailsDto> convertUserListToDto(List<User> users) {
-        return users.stream()
-                .map(user -> modelMapper.map(user, UserDetailsDto.class))
+    private List<FriendshipDto> getFriendshipDtos(List<Friendship> friendships) {
+        return friendships.stream()
+                .map(friendship -> modelMapper.map(friendship, FriendshipDto.class))
                 .collect(Collectors.toList());
-    }
-
-    @Override
-    public List<UserDetailsDto> getFriendsOfWithStatus(UserDetailsDto UserDetailsDto, FriendshipStatus status) {
-        User user = userService.findUserById(UserDetailsDto.getId());
-
-        return convertUserListToDto(userRepository.findFriendsOfWithStatus(user.getId(), status));
     }
 
     @Override
@@ -96,19 +77,11 @@ public class FriendshipServiceImpl implements FriendshipService {
     }
 
     @Override
-    public Set<User> findFriendsAtUniversity(User user) {
-        Set<User> friends = userRepository.findFriendsFromWithStatusAndUniversity(user.getId(),
-                                                                                  FriendshipStatus.ACCEPTED,
-                                                                                  user.getUniversity());
-        Set<User> friendsOf = userRepository.findFriendsOfWithStatusAndUniversity(user.getId(),
-                                                                                  FriendshipStatus.ACCEPTED,
-                                                                                  user.getUniversity());
-        return concatFriendsCollections(friends, friendsOf)
-                .collect(Collectors.toSet());
-    }
-
-    private Stream<User> concatFriendsCollections(Collection<User> friends, Collection<User> friendsOf) {
-        return Stream.concat(friends.stream(), friends.stream());
+    public List<FriendshipDto> findFriendshipsAtUniversity(User user) {
+        List<Friendship> friendships = friendshipRepository.findByUserAndStatusAndUniversity(user.getId(),
+                                                                                             FriendshipStatus.ACCEPTED,
+                                                                                             user.getUniversity());
+        return getFriendshipDtos(friendships);
     }
 
     @Override
@@ -142,11 +115,12 @@ public class FriendshipServiceImpl implements FriendshipService {
     @Override
     public void removeFriendship(FriendshipDto friendshipDto) {
         Friendship friendship = friendshipRepository.findByIdRequesterIdAndIdAddresseeId(
-                friendshipDto.getRequesterId(), friendshipDto.getAddresseeId())
+                friendshipDto.getRequester().getId(),
+                friendshipDto.getAddressee().getId())
                 .orElseThrow(() -> CWMException.getException(EntityType.FRIENDSHIP,
                                                              ExceptionType.ENTITY_NOT_FOUND,
-                                                             friendshipDto.getRequesterId().toString(),
-                                                             friendshipDto.getAddresseeId().toString()));
+                                                             friendshipDto.getRequester().getId().toString(),
+                                                             friendshipDto.getAddressee().getId().toString()));
 
         friendshipRepository.delete(friendship);
         log.info("[x] Removed friendship: {}", friendshipDto);
@@ -161,20 +135,20 @@ public class FriendshipServiceImpl implements FriendshipService {
 
         throw CWMException.getException(EntityType.FRIENDSHIP,
                                         ExceptionType.INVALID_STATUS_CHANGE,
-                                        friendshipDto.getRequesterId().toString(),
-                                        friendshipDto.getAddresseeId().toString());
+                                        friendshipDto.getRequester().getId().toString(),
+                                        friendshipDto.getAddressee().getId().toString());
     }
 
     private Friendship getFriendshipToUpdate(FriendshipDto friendshipDto) {
-        Long requesterId = friendshipDto.getRequesterId();
-        Long addresseeId = friendshipDto.getAddresseeId();
+        Long requesterId = friendshipDto.getRequester().getId();
+        Long addresseeId = friendshipDto.getAddressee().getId();
 
         return friendshipRepository.
                 findByIdRequesterIdAndIdAddresseeId(requesterId, addresseeId)
                     .orElseThrow(() -> CWMException.getException(EntityType.FRIENDSHIP,
                                                                  ExceptionType.ENTITY_NOT_FOUND,
-                                                                 friendshipDto.getRequesterId().toString(),
-                                                                 friendshipDto.getAddresseeId().toString()));
+                                                                 friendshipDto.getRequester().getId().toString(),
+                                                                 friendshipDto.getAddressee().getId().toString()));
     }
 
     private boolean isValidStatusChange(FriendshipStatus oldStatus, FriendshipStatus newStatus) {

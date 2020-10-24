@@ -7,13 +7,12 @@ import com.eirsteir.coffeewithme.social.dto.FriendshipDto;
 import com.eirsteir.coffeewithme.social.web.request.FriendRequest;
 
 import java.util.List;
-import java.util.Set;
 
 public interface FriendshipService {
 
-    List<User> findFriends(Long id, FriendshipStatus status);
+    List<FriendshipDto> findFriendships(Long id, FriendshipStatus status);
 
-    Set<User> findFriendsAtUniversity(User user);
+    List<FriendshipDto> findFriendshipsAtUniversity(User user);
 
     FriendshipDto registerFriendship(FriendRequest friendRequest);
 
@@ -21,11 +20,9 @@ public interface FriendshipService {
 
     FriendshipDto updateFriendship(FriendshipDto friendshipDto);
 
-    List<UserDetailsDto> getFriends(UserDetailsDto user);
+    List<FriendshipDto> findFriendships(UserDetailsDto user);
 
-    List<UserDetailsDto> getAllFriendshipsWithStatus(UserDetailsDto user, FriendshipStatus status);
-
-    List<UserDetailsDto> getFriendsOfWithStatus(UserDetailsDto UserDetailsDto, FriendshipStatus status);
+    List<FriendshipDto> getAllFriendshipsWithStatus(UserDetailsDto user, FriendshipStatus status);
 
     Integer getFriendsCount(Long userId);
 

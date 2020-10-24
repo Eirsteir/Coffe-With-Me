@@ -1,5 +1,6 @@
 package com.eirsteir.coffeewithme.social.web.api.friendship;
 
+import com.eirsteir.coffeewithme.commons.dto.UserDetailsDto;
 import com.eirsteir.coffeewithme.social.SocialServiceApplication;
 import com.eirsteir.coffeewithme.social.domain.friendship.Friendship;
 import com.eirsteir.coffeewithme.social.domain.friendship.FriendshipId;
@@ -29,8 +30,7 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasSize;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 
 @ActiveProfiles("test")
@@ -145,8 +145,8 @@ class FriendshipControllerIntegrationTest {
     @WithUserDetails(value = ADDRESSEE_EMAIL, userDetailsServiceBeanName = "userDetailsService")
     void testAcceptFriendshipNotBelongingToUserReturnsHttp400() throws Exception {
         FriendshipDto friendshipDto = FriendshipDto.builder()
-                .requesterId(requestedFriendship.getRequester().getId())
-                .addresseeId(requestedFriendship.getAddressee().getId())
+                .requester(modelMapper.map(requestedFriendship.getRequester(), UserDetailsDto.class))
+                .addressee(modelMapper.map(requestedFriendship.getAddressee(), UserDetailsDto.class))
                 .build();
 
         mvc.perform(put("/friends")

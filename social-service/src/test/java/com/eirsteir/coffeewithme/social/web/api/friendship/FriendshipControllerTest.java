@@ -29,7 +29,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.Collections;
 
 import static com.eirsteir.coffeewithme.social.domain.friendship.FriendshipStatus.ACCEPTED;
 import static com.eirsteir.coffeewithme.social.domain.friendship.FriendshipStatus.REQUESTED;
@@ -79,8 +79,8 @@ class FriendshipControllerTest {
                 .build();
 
         friendshipDto = FriendshipDto.builder()
-                .requesterId(REQUESTER_ID)
-                .addresseeId(ADDRESSEE_ID)
+                .requester(UserDetailsDto.builder().id(REQUESTER_ID).build())
+                .addressee(UserDetailsDto.builder().id(ADDRESSEE_ID).build())
                 .status(REQUESTED)
                 .build();
     }
@@ -145,7 +145,7 @@ class FriendshipControllerTest {
     void testGetFriendsWhenUserHasNoFriendships_thenReturnHttp204() throws Exception {
         when(userService.findUserById(requester.getId()))
                 .thenReturn(requester);
-        when(friendshipService.getFriends(Mockito.any(UserDetailsDto.class)))
+        when(friendshipService.findFriendships(Mockito.any(UserDetailsDto.class)))
                 .thenReturn(new ArrayList<>());
 
         mockMvc.perform(get("/{id}/friends", requester.getId())
@@ -168,14 +168,13 @@ class FriendshipControllerTest {
     void testGetFriendsWhenUserHasFriendships_thenReturnHttp200WithFriends() throws Exception {
         when(userService.findUserById(requester.getId()))
                 .thenReturn(requester);
-        when(friendshipService.getFriends(Mockito.any(UserDetailsDto.class)))
-                .thenReturn(Arrays.asList(
-                        UserDetailsDto.builder()
-                        .email(REQUESTER_EMAIL)
-                        .build(),
-                        UserDetailsDto.builder()
-                        .email(ADDRESSEE_EMAIL)
-                        .build()));
+        when(friendshipService.findFriendships(Mockito.any(UserDetailsDto.class)))
+                .thenReturn(Collections.singletonList(
+                        FriendshipDto.builder()
+                                .requester(UserDetailsDto.builder().id(REQUESTER_ID).build())
+                                .addressee(UserDetailsDto.builder().id(ADDRESSEE_ID).build())
+                                .build()
+                ));
 
         mockMvc.perform(get("/{id}/friends", requester.getId())
                                 .contentType(MediaType.APPLICATION_JSON))
@@ -188,14 +187,13 @@ class FriendshipControllerTest {
     void testGetFriendRequestsWhenUserHasFriendshipsWithStatusRequested_thenReturnHttp200WithFriends() throws Exception {
         when(userService.findUserById(requester.getId()))
                 .thenReturn(requester);
-        when(friendshipService.getFriendsOfWithStatus(Mockito.any(UserDetailsDto.class), eq(REQUESTED)))
-                .thenReturn(Arrays.asList(
-                        UserDetailsDto.builder()
-                        .email(REQUESTER_EMAIL)
-                        .build(),
-                        UserDetailsDto.builder()
-                        .email(ADDRESSEE_EMAIL)
-                        .build()));
+        when(friendshipService.findFriendships(Mockito.any(Long.class), eq(REQUESTED)))
+                .thenReturn(Collections.singletonList(
+                        FriendshipDto.builder()
+                                .requester(UserDetailsDto.builder().id(REQUESTER_ID).build())
+                                .addressee(UserDetailsDto.builder().id(ADDRESSEE_ID).build())
+                                .build()
+                ));
 
         mockMvc.perform(get("/friends/requests", requester.getId())
                                 .contentType(MediaType.APPLICATION_JSON))
@@ -208,7 +206,7 @@ class FriendshipControllerTest {
     void testGetFriendRequestsWhenUserHasNoFriendshipsWithStatusRequested_thenReturnHttp204() throws Exception {
         when(userService.findUserById(requester.getId()))
                 .thenReturn(requester);
-        when(friendshipService.getFriendsOfWithStatus(Mockito.any(UserDetailsDto.class), eq(REQUESTED)))
+        when(friendshipService.findFriendships(Mockito.any(Long.class), eq(REQUESTED)))
                 .thenReturn(new ArrayList<>());
 
         mockMvc.perform(get("/friends/requests", requester.getId())
@@ -233,8 +231,8 @@ class FriendshipControllerTest {
 
     @Test
     void testAcceptFriendshipWhenFriendshipDoesNotBelongToUser_thenReturnHttp400() throws Exception {
-        friendshipDto.setRequesterId(100L)
-                .setAddresseeId(101L);
+        friendshipDto.setRequester(UserDetailsDto.builder().id(100L).build())
+                .setAddressee(UserDetailsDto.builder().id(101L).build());
 
         mockMvc.perform(put("/friends")
                                 .contentType(MediaType.APPLICATION_JSON)

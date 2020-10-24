@@ -3,6 +3,7 @@ package com.eirsteir.coffeewithme.social.repository;
 import com.eirsteir.coffeewithme.social.domain.friendship.Friendship;
 import com.eirsteir.coffeewithme.social.domain.friendship.FriendshipId;
 import com.eirsteir.coffeewithme.social.domain.friendship.FriendshipStatus;
+import com.eirsteir.coffeewithme.social.domain.university.University;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
@@ -13,7 +14,14 @@ public interface FriendshipRepository extends JpaRepository<Friendship, Friendsh
 
 
     @Query("SELECT f from Friendship f where (f.id.requester.id = :userId or f.id.addressee.id = :userId) and f.status = :status")
-    List<Friendship> findByUserIdAndStatus(Long userId, FriendshipStatus status);
+    List<Friendship> findByUserAndStatus(Long userId, FriendshipStatus status);
+
+    @Query("SELECT f from Friendship f " +
+            "where (f.id.requester.id = :userId or f.id.addressee.id = :userId) " +
+            "and f.status = :status " +
+            "and f.id.requester.university = :university " +
+            "and f.id.addressee.university = :university")
+    List<Friendship> findByUserAndStatusAndUniversity(Long userId, FriendshipStatus status, University university);
 
     Optional<Friendship> findByIdRequesterIdAndIdAddresseeId(Long requesterId, Long addresseeId);
 

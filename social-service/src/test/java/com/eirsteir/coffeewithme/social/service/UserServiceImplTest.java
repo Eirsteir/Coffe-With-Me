@@ -141,8 +141,9 @@ class UserServiceImplTest {
         User friend = User.builder()
                 .id(100L)
                 .build();
-        when(friendshipService.findFriends(user.getId(), FriendshipStatus.ACCEPTED))
-                .thenReturn(Collections.singletonList(friend));
+        // TODO: correct this
+//        when(friendshipService.findFriendships(user.getId(), FriendshipStatus.ACCEPTED))
+//                .thenReturn(Collections.singletonList(friend));
         when(userRepository.findById(friend.getId()))
                 .thenReturn(Optional.of(friend));
 
@@ -156,7 +157,7 @@ class UserServiceImplTest {
         User friend = User.builder()
                 .id(100L)
                 .build();
-        when(friendshipService.findFriends(user.getId(), FriendshipStatus.ACCEPTED))
+        when(friendshipService.findFriendships(user.getId(), FriendshipStatus.ACCEPTED))
                 .thenReturn(new ArrayList<>());
         when(userRepository.findById(friend.getId()))
                 .thenReturn(Optional.of(friend));

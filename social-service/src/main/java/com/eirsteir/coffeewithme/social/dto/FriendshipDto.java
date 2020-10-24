@@ -1,5 +1,6 @@
 package com.eirsteir.coffeewithme.social.dto;
 
+import com.eirsteir.coffeewithme.commons.dto.UserDetailsDto;
 import com.eirsteir.coffeewithme.social.domain.friendship.FriendshipStatus;
 import lombok.*;
 import lombok.experimental.Accessors;
@@ -13,8 +14,8 @@ import lombok.experimental.Accessors;
 @AllArgsConstructor
 public class FriendshipDto {
 
-    private Long requesterId;
-    private Long addresseeId;
+    private UserDetailsDto requester;
+    private UserDetailsDto addressee;
     private FriendshipStatus status;
 
 }
