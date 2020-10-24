@@ -12,7 +12,7 @@ import lombok.*;
 import javax.persistence.*;
 import java.time.LocalTime;
 import java.util.Collections;
-import java.util.Set;
+import java.util.List;
 
 @Data
 @Builder
@@ -32,7 +32,7 @@ public class CoffeeBreak extends CreatedUpdatedDateTimeBaseModel {
   private User requester;
 
   @ManyToMany
-  private Set<User> addressees;
+  private List<User> addressees;
 
   @ManyToOne
   private Campus campus;

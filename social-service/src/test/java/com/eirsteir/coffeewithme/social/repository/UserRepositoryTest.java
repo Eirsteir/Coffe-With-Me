@@ -3,6 +3,7 @@ package com.eirsteir.coffeewithme.social.repository;
 import com.eirsteir.coffeewithme.social.domain.friendship.FriendshipStatus;
 import com.eirsteir.coffeewithme.social.domain.user.User;
 import com.eirsteir.coffeewithme.social.repository.rsql.RqslVisitorImpl;
+import com.eirsteir.coffeewithme.testconfig.EventuateTestConfig;
 import cz.jirutka.rsql.parser.RSQLParser;
 import cz.jirutka.rsql.parser.ast.Node;
 import org.junit.jupiter.api.BeforeEach;
@@ -11,7 +12,9 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
+import org.springframework.context.annotation.Import;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.util.List;
@@ -21,17 +24,31 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 
 @DataJpaTest
+@ActiveProfiles("test")
+@Import(EventuateTestConfig.class)
 @ExtendWith(SpringExtension.class)
 class UserRepositoryTest {
 
+    private final Long ALEX_ID = 1L;
     private final String USER_NAME_ALEX = "Alex";
     private static final String EMAIL_ALEX = "alex@mail.com";
+
+    private final Long REQUESTER_ID = 2L;
     private static final String REQUESTER_EMAIL = "requester@test.com";
+
+    private final Long ADDRESSEE_ID = 3L;
     private static final String ADDRESSEE_EMAIL = "addressee@test.com";
     private static final String REQUESTER_NICKNAME = "requester";
     private static final String ADDRESSEE_NICKNAME = "addressee";
+
+    private final Long OTHER_USER_ID = 4L;
     private static final String OTHER_USER_EMAIL = "other-user@test.com";
     private static final String OTHER_USER_NICKNAME = "other-user";
+
+    private final Long JOHN_ID = 5L;
+    private final Long TOM_ID = 6L;
+    private final Long PERCY_ID = 7L;
+
 
     @Autowired
     private TestEntityManager entityManager;
@@ -56,33 +73,38 @@ class UserRepositoryTest {
     @BeforeEach
     void setUp() {
         user = User.builder()
+                .id(ALEX_ID)
                 .nickname(USER_NAME_ALEX)
                 .email(EMAIL_ALEX)
                 .name("Alex")
                 .build();
 
         requester = entityManager.persistFlushFind(User.builder()
-                                                                .email(REQUESTER_EMAIL)
-                                                                .nickname(REQUESTER_NICKNAME)
-                                                                .build());
+                .id(REQUESTER_ID)
+                .email(REQUESTER_EMAIL)
+                .nickname(REQUESTER_NICKNAME)
+                .build());
 
         addressee = entityManager.persistFlushFind(User.builder()
-                                                                .email(ADDRESSEE_EMAIL)
-                                                                .nickname(ADDRESSEE_NICKNAME)
-                                                                .build());
+                .id(ADDRESSEE_ID)
+                .email(ADDRESSEE_EMAIL)
+                .nickname(ADDRESSEE_NICKNAME)
+                .build());
 
         otherUser = entityManager.persistFlushFind(User.builder()
-                                                                .email(OTHER_USER_EMAIL)
-                                                                .nickname(OTHER_USER_NICKNAME)
-                                                                .build());
+                .id(OTHER_USER_ID)
+                .email(OTHER_USER_EMAIL)
+                .nickname(OTHER_USER_NICKNAME)
+                .build());
 
         requester.addFriend(addressee, FriendshipStatus.ACCEPTED);
         requester.addFriend(otherUser, FriendshipStatus.REQUESTED);
 
         userJohn = entityManager.persistFlushFind(User.builder()
-                                                          .name("john doe")
-                                                          .email("john@doe.com")
-                                                          .build());
+                .id(JOHN_ID)
+                  .name("john doe")
+                  .email("john@doe.com")
+                  .build());
 
         userTom = entityManager.persistFlushFind(User.builder()
                                                          .name("tom doe")

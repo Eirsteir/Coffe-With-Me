@@ -6,9 +6,9 @@ import com.eirsteir.coffeewithme.commons.exception.CWMException;
 import com.eirsteir.coffeewithme.commons.exception.EntityType;
 import com.eirsteir.coffeewithme.commons.exception.ExceptionType;
 import com.eirsteir.coffeewithme.commons.security.UserDetailsImpl;
-import com.eirsteir.coffeewithme.social.domain.friendship.FriendshipStatus;
 import com.eirsteir.coffeewithme.social.domain.university.University;
 import com.eirsteir.coffeewithme.social.domain.user.User;
+import com.eirsteir.coffeewithme.social.dto.FriendshipDto;
 import com.eirsteir.coffeewithme.social.dto.UserProfile;
 import com.eirsteir.coffeewithme.social.repository.UniversityRepository;
 import com.eirsteir.coffeewithme.social.repository.UserRepository;
@@ -68,8 +68,11 @@ public class UserServiceImpl implements UserService {
         return userDetails;
     }
 
-    private void addFriendshipPropertiesTo(UserDetailsDto userDetails, User user, User currentUser) {
-        List<User> friends = friendshipService.findFriends(user.getId(), FriendshipStatus.ACCEPTED);
+    private void addFriendshipPropertiesTo(UserDetailsDto userDetails, User otherUser, User currentUser) {
+        UserDetailsDto otherUserDetails = modelMapper.map(otherUser, UserDetailsDto.class);
+        List<FriendshipDto> friendships = friendshipService.findFriendships(otherUserDetails);
+
+        List<User> friends = getFriendsFromExcludeCurrentUser(friendships, currentUser);
 
         if (friends.contains(currentUser))
             userDetails.setIsFriend(true);
@@ -77,6 +80,20 @@ public class UserServiceImpl implements UserService {
             userDetails.setIsFriend(false);
 
         userDetails.setFriendsCount(friends.size());
+    }
+
+    private List<User> getFriendsFromExcludeCurrentUser(List<FriendshipDto> friendships, User currentUser) {
+
+        List<Long> friendIds = friendships.stream()
+                .map(friendshipDto -> {
+                    if (friendshipDto.getRequester().getId()
+                            .equals(currentUser.getId()))
+                        return friendshipDto.getRequester().getId();
+                    return friendshipDto.getAddressee().getId();
+                })
+                .collect(Collectors.toList());
+
+        return userRepository.findAllById(friendIds);
     }
 
     @Override
@@ -110,6 +127,11 @@ public class UserServiceImpl implements UserService {
                 .name(user.getName())
                 .nickname(user.getNickname())
                 .build();
+    }
+
+    @Override
+    public List<User> findByIdIn(List<Long> friendsIds) {
+        return userRepository.findAllById(friendsIds);
     }
 
 }

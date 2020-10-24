@@ -53,16 +53,6 @@ public class User extends CreatedUpdatedDateTimeBaseModel {
     @Cascade({org.hibernate.annotations.CascadeType.SAVE_UPDATE})
     private List<Friendship> friends = new LinkedList<>();
 
-    @JsonIgnore
-    @ToString.Exclude
-    @Builder.Default
-    @OneToMany(fetch = FetchType.LAZY,
-            mappedBy = "id.addressee",
-            cascade = {CascadeType.PERSIST, CascadeType.MERGE},
-            orphanRemoval=true)
-    @Cascade({org.hibernate.annotations.CascadeType.SAVE_UPDATE})
-    private List<Friendship> friendsOf = new LinkedList<>();
-
     public Friendship addFriend(User friend, FriendshipStatus status) {
         Friendship friendship = Friendship.builder()
                 .requester(this)
@@ -74,20 +64,11 @@ public class User extends CreatedUpdatedDateTimeBaseModel {
             this.friends = new LinkedList<>();
 
         this.friends.add(friendship);
-        friend.addFriendOf(friendship);
-
         return friendship;
     }
 
-    private void addFriendOf(Friendship friendship) {
-        if (this.friendsOf == null)
-            this.friendsOf = new LinkedList<>();
-
-        this.friendsOf.add(friendship);
-    }
 
     public void removeFriendship(Friendship friendship) {
         friends.remove(friendship);
-        friendship.getAddressee().friendsOf.remove(friendship);
     }
 }

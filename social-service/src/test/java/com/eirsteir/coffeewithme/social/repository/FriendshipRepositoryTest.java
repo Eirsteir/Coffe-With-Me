@@ -4,12 +4,15 @@ import com.eirsteir.coffeewithme.social.domain.friendship.Friendship;
 import com.eirsteir.coffeewithme.social.domain.friendship.FriendshipId;
 import com.eirsteir.coffeewithme.social.domain.friendship.FriendshipStatus;
 import com.eirsteir.coffeewithme.social.domain.user.User;
+import com.eirsteir.coffeewithme.testconfig.EventuateTestConfig;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
+import org.springframework.context.annotation.Import;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.util.List;
@@ -18,6 +21,8 @@ import java.util.Optional;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @DataJpaTest
+@ActiveProfiles("test")
+@Import(EventuateTestConfig.class)
 @ExtendWith(SpringExtension.class)
 class FriendshipRepositoryTest {
     private static final String REQUESTER_NICKNAME = "requester";
@@ -53,7 +58,7 @@ class FriendshipRepositoryTest {
     @Test
     void testFindByIdRequesterOrIdAddresseeAndStatusWhenNoResults() {
         List<Friendship> friendsFound = friendshipRepository
-                .findByUserIdAndStatus(requester.getId(), FriendshipStatus.REQUESTED);
+                .findByUserAndStatus(requester.getId(), FriendshipStatus.REQUESTED);
 
         assertThat(friendsFound).isEmpty();
     }
@@ -69,7 +74,7 @@ class FriendshipRepositoryTest {
                                                    .build());
 
         List<Friendship> friendsFound = friendshipRepository
-                .findByUserIdAndStatus(requester.getId(), FriendshipStatus.ACCEPTED);
+                .findByUserAndStatus(requester.getId(), FriendshipStatus.ACCEPTED);
 
         assertThat(friendsFound).hasSize(2);
     }

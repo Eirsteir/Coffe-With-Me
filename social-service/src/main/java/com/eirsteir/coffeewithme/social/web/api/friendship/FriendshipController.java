@@ -34,17 +34,17 @@ public class FriendshipController {
     @Autowired
     private ModelMapper modelMapper;
 
-    @GetMapping("/{id}/friends")
+    @GetMapping("/friends")
     @ResponseBody
-    Collection<UserDetailsDto> getFriends(@PathVariable Long id) {
-        UserDetailsDto UserDetailsDto = modelMapper.map(userService.findUserById(id), UserDetailsDto.class);
-        List<UserDetailsDto> friends = friendshipService.getFriends(UserDetailsDto);
+    Collection<FriendshipDto> getFriends(@AuthenticationPrincipal UserDetailsImpl principal) {
+        UserDetailsDto UserDetailsDto = modelMapper.map(userService.findUserById(principal.getId()), UserDetailsDto.class);
+        List<FriendshipDto> friendships = friendshipService.findFriendships(UserDetailsDto);
 
-        if (friends.isEmpty())
+        if (friendships.isEmpty())
             throw new ResponseStatusException(
                     HttpStatus.NO_CONTENT, "User with email - " +  UserDetailsDto.getEmail() + " has no friends");
 
-        return friends;
+        return friendships;
     }
 
     @PostMapping("/friends")
@@ -78,9 +78,9 @@ public class FriendshipController {
     }
 
     @GetMapping("/friends/requests")
-    List<UserDetailsDto> getFriendRequests(@AuthenticationPrincipal UserDetailsImpl principal) {
+    List<FriendshipDto> getFriendRequests(@AuthenticationPrincipal UserDetailsImpl principal) {
         UserDetailsDto userDto = modelMapper.map(principal, UserDetailsDto.class);
-        List<UserDetailsDto> friendRequests = friendshipService.getFriendsOfWithStatus(userDto,
+        List<FriendshipDto> friendRequests = friendshipService.findFriendships(userDto.getId(),
                                                                                 FriendshipStatus.REQUESTED);
 
         if (friendRequests.isEmpty())
@@ -92,8 +92,8 @@ public class FriendshipController {
     }
 
     private void validateFriendshipDto(FriendshipDto friendshipDto, UserDetailsImpl principal) {
-        Long requesterId = friendshipDto.getRequesterId();
-        Long addresseeId = friendshipDto.getAddresseeId();
+        Long requesterId = friendshipDto.getRequester().getId();
+        Long addresseeId = friendshipDto.getAddressee().getId();
         Long principalId = principal.getId();
 
         if (addresseeId.equals(principalId))
