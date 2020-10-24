@@ -23,6 +23,7 @@
         <modelmapper.version>2.3.0</modelmapper.version>
         <spring-cloud.version>Hoxton.SR4</spring-cloud.version>
         <eventuate-tram.version>0.24.0.RELEASE</eventuate-tram.version>
+        <springfox.swagger.version>2.9.2</springfox.swagger.version>
     </properties>
 
     <dependencyManagement>
@@ -96,6 +97,22 @@
             <groupId>org.modelmapper</groupId>
             <artifactId>modelmapper</artifactId>
             <version>${modelmapper.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>io.springfox</groupId>
+            <artifactId>springfox-swagger2</artifactId>
+            <version>${springfox.swagger.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>io.springfox</groupId>
+            <artifactId>springfox-swagger-ui</artifactId>
+            <version>${springfox.swagger.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>io.springfox</groupId>
+            <artifactId>springfox-bean-validators</artifactId>
+            <version>${springfox.swagger.version}</version>
         </dependency>
 
         <dependency>

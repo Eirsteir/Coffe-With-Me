@@ -8,6 +8,7 @@ import org.springframework.context.annotation.PropertySource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -41,7 +42,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                   .authorizeRequests()
                   .antMatchers(HttpMethod.POST, jwtConfig.getUri() + "/**").permitAll()
                   .antMatchers( "/actuator/**").hasRole("ADMIN")
-                  .antMatchers("/swagger-ui").permitAll()
+                  .antMatchers("/docs/**").permitAll()
                   .anyRequest().authenticated();
   }
 
@@ -63,4 +64,14 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     return new JwtConfig();
   }
 
+
+  @Override
+  public void configure(WebSecurity web) throws Exception {
+    web.ignoring().antMatchers("/v2/api-docs",
+                               "/configuration/ui",
+                               "/swagger-resources/**",
+                               "/configuration/security",
+                               "/swagger-ui.html",
+                               "/webjars/**");
+  }
 }
