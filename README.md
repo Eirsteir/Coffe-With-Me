@@ -11,6 +11,7 @@ have been taken differently.*
     * [Running the application in Docker](#running-the-application-in-docker)
 4. [Application structure](#application-structure)
 4. [Technologies](#technologies)
+5. [API Documentation](#api-documentation)
 
 ## Application
 Keywords:
@@ -18,15 +19,15 @@ Keywords:
 - Saga Pattern
 - Event-driven
 - Spring
-- React.js
+- MySQL
 
 The application consists of the following components:
-- Client: Frontend
-- Discovery Server:
-- API Gateway:  
-- Auth Service: 
-- Social Service: 
-- Notification Service: 
+- Discovery Server
+- API Gateway  
+- Auth Service 
+- Social Service
+- Notification Service 
+- Documentation Service: API documentation
 
 ## Running the application 
 To run the application, run eureka server and gateway first, then the three services.
@@ -47,13 +48,6 @@ The application will be available at `http://localhost:3000`.
  
 This will also launch PHPMyAdmin at `http://localhost:8181`
  
-### Running the client locally
-The client can be run with npm by entering the snippet below:
-
-```
-npm start
-```
-The application is then available at `http://localhost:3000`
 
 ### Running the server locally
 In order to run the server locally you will first need to build it. 
@@ -90,13 +84,22 @@ mvn spring-boot:run
 You can follow any/all of the above commands, or simply use the run configuration provided by your favorite IDE and
 run/debug the application from there for development purposes.
 
+
+### Local development
+For local development it is recommended to start eventuate-tram, the message broker and RDBMS first by running
+
+```
+docker-compose -f docker-compose-dev.yml
+```
+
+And then starting the applications manually.
+
 Once the application is running, the services can be accessed over the following base-path:
 
 http://localhost:8080/api/
 
 Some of the important API endpoints are as follows:
 
-- http://localhost:8080/api/auth (HTTP:POST)
 - http://localhost:8080/api/auth/login (HTTP:POST)
 
     Logs user in by receiving a JWT auth token. 
@@ -107,11 +110,32 @@ Some of the important API endpoints are as follows:
         "password": "password"
     } 
 - http://localhost:8080/api/auth/register (HTTP:POST)
+    
+    Register a new user.
+
 - http://localhost:8080/api/social/user/{id} (HTTP:GET)
-- http://localhost:8080/api/social/friends (HTTP:GET,POST,PUT)
-- http://localhost:8080/api/social/friends?to_friend (HTTP:POST)
+
+    Retrieve the user with the given id.
+
+- http://localhost:8080/api/social/friends (HTTP:GET,PUT, DELETE)
+
+    List friendships belonging to the current user.
+    Update a friendship, for instance accept a friend request.
+    Delete a friendship.
+
+- http://localhost:8080/api/social/friends?to_friend={id} (HTTP:POST)
+
+    Send a friend request.
+
 - http://localhost:8080/api/notifications (HTTP:GET,POST,PUT)
 
+    List notifications belonging to the current user.
+
+- http://localhost:8080/api/docs/swagger-ui.html (HTTP:GET)
+
+    Swagger API documentation
+    
+  
 ## Application Structure
 The application is built as several microservices with an API Gateway to proxy incoming requests
 to the appropriate service using Spring Cloud Netflix Zuul and Eureka Server Registration and Discovery.
@@ -129,5 +153,6 @@ The following libraries, among others, were used during the development of this 
 - **Spring Cloud Netflix Zuul** - JVM based router and server side load balancer
 - **Spring Cloud Netflix Eureka** - Client side service discovery
 - **JWT** - Authentication mechanism for REST APIs
-- **React.js** - Library for building user interfaces
-- **Material UI** - UI design
+
+## API Documentation
+API documentation via Swagger can be found at http://localhost:8080/api/docs/swagger-ui.html
