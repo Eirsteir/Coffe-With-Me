@@ -29,6 +29,7 @@
         <rsql.parser.version>2.1.0</rsql.parser.version>
         <eventuate-messaging-kafka.version>0.9.0.RELEASE</eventuate-messaging-kafka.version>
         <eventuate-tram.version>0.24.0.RELEASE</eventuate-tram.version>
+        <springfox.swagger.version>2.9.2</springfox.swagger.version>
     </properties>
 
     <dependencyManagement>
@@ -97,6 +98,22 @@
             <groupId>cz.jirutka.rsql</groupId>
             <artifactId>rsql-parser</artifactId>
             <version>${rsql.parser.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>io.springfox</groupId>
+            <artifactId>springfox-swagger2</artifactId>
+            <version>${springfox.swagger.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>io.springfox</groupId>
+            <artifactId>springfox-swagger-ui</artifactId>
+            <version>${springfox.swagger.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>io.springfox</groupId>
+            <artifactId>springfox-bean-validators</artifactId>
+            <version>${springfox.swagger.version}</version>
         </dependency>
 
         <dependency>

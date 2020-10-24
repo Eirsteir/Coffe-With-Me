@@ -15,6 +15,7 @@
 		<module>social-service</module>
 		<module>notification-service</module>
 		<module>auth-service</module>
+		<module>documentation-service</module>
 	</modules>
 
 </project>
