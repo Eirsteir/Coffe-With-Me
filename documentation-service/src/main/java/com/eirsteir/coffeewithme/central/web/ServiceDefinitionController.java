@@ -12,11 +12,10 @@ public class ServiceDefinitionController {
 	
 	@Autowired
 	private ServiceDefinitionsContext definitionContext;
-	
+
 	@GetMapping("/service/{servicename}")
 	public String getServiceDefinition(@PathVariable("servicename") String serviceName){
 		
 		return definitionContext.getSwaggerDefinition(serviceName);
-		
 	}
 }

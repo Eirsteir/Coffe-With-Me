@@ -1,6 +1,9 @@
 server:
   port: 9093
-  
+
+spring:
+  application:
+    name: documentation-service
  
 eureka:
   instance:
@@ -10,8 +13,16 @@ eureka:
     register-with-eureka: true
     fetch-registry: true
     service-url:
-      defaultZone: http://localhost:8761/eureka/
-      
+      defaultZone: ${EUREKA_SERVER:http://localhost:8761/eureka}
+
 swagger: 
   config: 
     refreshrate: 5000
+
+ribbon:
+  eager-load:
+    enabled: true
+
+logging:
+  level:
+    web: DEBUG
