@@ -2,32 +2,34 @@ package com.eirsteir.coffeewithme.social.service.coffeebreak;
 
 import com.eirsteir.coffeewithme.commons.domain.coffeebreak.CoffeeBreakDetails;
 import com.eirsteir.coffeewithme.commons.domain.user.UserDetails;
+import com.eirsteir.coffeewithme.commons.dto.UserDetailsDto;
 import com.eirsteir.coffeewithme.commons.exception.CWMException;
 import com.eirsteir.coffeewithme.commons.security.UserDetailsImpl;
 import com.eirsteir.coffeewithme.social.config.ModelMapperConfig;
 import com.eirsteir.coffeewithme.social.domain.coffeebreak.CoffeeBreak;
 import com.eirsteir.coffeewithme.social.domain.university.Campus;
 import com.eirsteir.coffeewithme.social.domain.user.User;
+import com.eirsteir.coffeewithme.social.dto.FriendshipDto;
 import com.eirsteir.coffeewithme.social.repository.CampusRepository;
 import com.eirsteir.coffeewithme.social.repository.CoffeeBreakRepository;
 import com.eirsteir.coffeewithme.social.service.friendship.FriendshipService;
 import com.eirsteir.coffeewithme.social.service.user.UserService;
 import com.eirsteir.coffeewithme.social.web.request.CoffeeBreakRequest;
+import com.eirsteir.coffeewithme.testconfig.BaseUnitTestClass;
+import com.eirsteir.coffeewithme.testconfig.EventuateTestConfig;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Import;
+import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.time.LocalTime;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatExceptionOfType;
@@ -35,17 +37,19 @@ import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
 import static org.mockito.Mockito.when;
 
 
-@Import({ModelMapperConfig.class})
+@Import({ModelMapperConfig.class, BaseUnitTestClass.class, EventuateTestConfig.class})
 @ExtendWith(SpringExtension.class)
-class CoffeeBreakServiceImplTest {
+@ContextConfiguration(classes = {CoffeeBreakServiceImpl.class})
+class CoffeeBreakServiceImplTest extends BaseUnitTestClass {
 
     public static final long REQUESTER_ID = 1L;
-    public static final Set<Long> ADDRESSEE_IDS = Set.of(2L, 3L);
+    public static final List<Long> ADDRESSEE_IDS = List.of(2L, 3L);
     public static final long CAMPUS_ID = 10L;
 
     private UserDetailsImpl currentUserDetails;
     private User currentUser;
     private List<User> addressees;
+    private List<FriendshipDto> friendships;
     private UserDetails requesterUserDetails;
     private List<UserDetails> addresseesUserDetails;
     private Campus campus;
@@ -66,21 +70,18 @@ class CoffeeBreakServiceImplTest {
     @MockBean
     private CampusRepository campusRepository;
 
-    @TestConfiguration
-    static class CoffeeBreakServiceImplTestContextConfiguration {
-
-        @Bean
-        public CoffeeBreakService coffeeBreakService() {
-            return new CoffeeBreakServiceImpl();
-        }
-    }
-
     @BeforeEach
     void setUp() {
         currentUserDetails = new UserDetailsImpl();
         currentUserDetails.setId(REQUESTER_ID);
 
         currentUser = User.builder().id(currentUserDetails.getId()).build();
+        friendships = ADDRESSEE_IDS.stream()
+                .map(id -> FriendshipDto.builder()
+                        .requester(UserDetailsDto.builder().id(REQUESTER_ID).build())
+                        .addressee(UserDetailsDto.builder().id(id).build())
+                        .build())
+                .collect(Collectors.toList());
         addressees = ADDRESSEE_IDS.stream()
                 .map(id -> User.builder().id(id).build())
                 .collect(Collectors.toList());
@@ -101,9 +102,10 @@ class CoffeeBreakServiceImplTest {
 
         when(userService.findUserById(REQUESTER_ID))
                 .thenReturn(currentUser);
-        // TODO: correct this
-//        when(friendshipService.findFriendshipsAtUniversity(currentUser))
-//                .thenReturn(addressees);
+        when(userService.findByIdIn(ADDRESSEE_IDS))
+                .thenReturn(addressees);
+        when(friendshipService.findFriendshipsAtUniversity(currentUser))
+                .thenReturn(friendships);
         when(campusRepository.findById(CAMPUS_ID))
                 .thenReturn(Optional.ofNullable(campus));
         when(coffeeBreakRepository.save(Mockito.any(CoffeeBreak.class)))
@@ -118,8 +120,8 @@ class CoffeeBreakServiceImplTest {
 
         CoffeeBreakDetails savedCoffeeBreakDetails = coffeeBreakService.registerCoffeeBreak(request, currentUserDetails);
 
-        assertThat(savedCoffeeBreakDetails.getRequester()).isEqualTo(requesterUserDetails);
-        assertThat(savedCoffeeBreakDetails.getAddressees()).isEqualTo(addresseesUserDetails);
+        assertThat(savedCoffeeBreakDetails.getRequester()).isIn(requesterUserDetails);
+        assertThat(savedCoffeeBreakDetails.getAddressees()).contains(addresseesUserDetails.get(0), addresseesUserDetails.get(1));
     }
 
     @Test

@@ -27,8 +27,8 @@ class UserTest {
 
     @Test
     void testAddFriend() {
-        User addressee = user.getFriends().get(0).getAddressee();
-        FriendshipStatus status = user.getFriends().get(0).getStatus();
+        User addressee = user.getFriendships().get(0).getAddressee();
+        FriendshipStatus status = user.getFriendships().get(0).getStatus();
 
         assertThat(friend).isEqualTo(addressee);
         assertThat(status).isEqualTo(FriendshipStatus.REQUESTED);
@@ -36,7 +36,7 @@ class UserTest {
 
     @Test
     void testRemoveFriendship() {
-        Friendship friendship = user.getFriends().get(0);
+        Friendship friendship = user.getFriendships().get(0);
         user.removeFriendship(friendship);
 
         assertThat(user.getFriends()).isEmpty();

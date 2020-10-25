@@ -1,13 +1,11 @@
 package com.eirsteir.coffeewithme.commons.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import lombok.experimental.Accessors;
 
 @Data
 @Builder
+@EqualsAndHashCode
 @Accessors(chain = true)
 @NoArgsConstructor
 @AllArgsConstructor

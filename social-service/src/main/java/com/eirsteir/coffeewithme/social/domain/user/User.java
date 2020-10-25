@@ -14,6 +14,9 @@ import javax.persistence.*;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.function.Function;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 
 @Getter
@@ -67,6 +70,28 @@ public class User extends CreatedUpdatedDateTimeBaseModel {
         return friendship;
     }
 
+    public List<Friendship> getFriendships() {
+        return friends;
+    }
+
+    public List<User> getFriends() {
+        return friends.stream()
+                .filter(getFriendshipPredicate(FriendshipStatus.ACCEPTED))
+                .map(getFriendshipUserFunction())
+                .collect(Collectors.toList());
+    }
+
+    private static Predicate<Friendship> getFriendshipPredicate(FriendshipStatus status) {
+        return friendship -> friendship.getStatus() == status;
+    }
+
+    private Function<Friendship, User> getFriendshipUserFunction() {
+        return friendship -> {
+            if (friendship.getAddressee().getId().equals(this.id))
+                return friendship.getRequester();
+            return friendship.getAddressee();
+        };
+    }
 
     public void removeFriendship(Friendship friendship) {
         friends.remove(friendship);

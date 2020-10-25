@@ -11,7 +11,8 @@ import com.eirsteir.coffeewithme.social.domain.friendship.FriendshipStatus;
 import com.eirsteir.coffeewithme.social.domain.user.User;
 import com.eirsteir.coffeewithme.social.dto.FriendshipDto;
 import com.eirsteir.coffeewithme.social.repository.FriendshipRepository;
-import com.eirsteir.coffeewithme.social.service.user.UserService;
+import com.eirsteir.coffeewithme.social.repository.UserRepository;
+import com.eirsteir.coffeewithme.social.util.UserServiceUtils;
 import com.eirsteir.coffeewithme.social.web.request.FriendRequest;
 import io.eventuate.tram.events.publisher.DomainEventPublisher;
 import io.eventuate.tram.events.publisher.ResultWithEvents;
@@ -31,35 +32,36 @@ public class FriendshipServiceImpl implements FriendshipService {
 
     private DomainEventPublisher domainEventPublisher;
 
-    @Autowired
-    private UserService userService;
+    private UserRepository userRepository;
 
-    @Autowired
     private FriendshipRepository friendshipRepository;
 
     @Autowired
     private ModelMapper modelMapper;
 
+    @Autowired
     public FriendshipServiceImpl(DomainEventPublisher domainEventPublisher,
-                                 FriendshipRepository friendshipRepository) {
+                                 FriendshipRepository friendshipRepository,
+                                 UserRepository userRepository) {
         this.domainEventPublisher = domainEventPublisher;
         this.friendshipRepository = friendshipRepository;
+        this.userRepository = userRepository;
     }
 
     @Override
-    public List<FriendshipDto> findFriendships(UserDetailsDto UserDetailsDto) {
-        return getAllFriendshipsWithStatus(UserDetailsDto, FriendshipStatus.ACCEPTED);
+    public List<FriendshipDto> findFriendshipsOf(UserDetailsDto UserDetailsDto) {
+        return findAllFriendshipsWithStatus(UserDetailsDto, FriendshipStatus.ACCEPTED);
     }
 
     @Override
-    public List<FriendshipDto> getAllFriendshipsWithStatus(UserDetailsDto userDetailsDto, FriendshipStatus status) {
+    public List<FriendshipDto> findAllFriendshipsWithStatus(UserDetailsDto userDetailsDto, FriendshipStatus status) {
         List<Friendship> friendships = friendshipRepository.findByUserAndStatus(userDetailsDto.getId(), status);
 
         return getFriendshipDtos(friendships);
     }
 
     @Override
-    public List<FriendshipDto> findFriendships(Long id, FriendshipStatus status) {
+    public List<FriendshipDto> findFriendshipsOf(Long id, FriendshipStatus status) {
         List<Friendship> friendships = friendshipRepository.findByUserAndStatus(id, status);
 
         return getFriendshipDtos(friendships);
@@ -86,8 +88,8 @@ public class FriendshipServiceImpl implements FriendshipService {
 
     @Override
     public FriendshipDto registerFriendship(FriendRequest friendRequest) {
-        User requester = modelMapper.map(userService.findUserById(friendRequest.getRequesterId()), User.class);
-        User addressee = modelMapper.map(userService.findUserById(friendRequest.getAddresseeId()), User.class);
+        User requester = modelMapper.map(userRepository.findById(friendRequest.getRequesterId()), User.class);
+        User addressee = modelMapper.map(userRepository.findById(friendRequest.getAddresseeId()), User.class);
         FriendshipId id = FriendshipId.builder()
                 .requester(requester)
                 .addressee(addressee)
@@ -102,13 +104,14 @@ public class FriendshipServiceImpl implements FriendshipService {
         Friendship friendship = requester.addFriend(addressee, FriendshipStatus.REQUESTED);
         log.info("[x] Registered friendship: {}", friendship);
 
-        UserDetails user = userService.getUserDetails(friendship.getRequester());
+        UserDetails user = UserServiceUtils.getUserDetailsFrom(friendship.getRequester());
         publish(Friendship.createFriendRequest(friendship, user));
 
         return modelMapper.map(friendship, FriendshipDto.class);
     }
 
-    private boolean friendshipExists(FriendshipId friendshipId) {
+    @Override
+    public boolean friendshipExists(FriendshipId friendshipId) {
         return friendshipRepository.existsById(friendshipId);
     }
 
@@ -128,7 +131,7 @@ public class FriendshipServiceImpl implements FriendshipService {
 
     @Override
     public FriendshipDto updateFriendship(FriendshipDto friendshipDto) {
-        Friendship friendshipToUpdate = getFriendshipToUpdate(friendshipDto);
+        Friendship friendshipToUpdate = findFriendship(friendshipDto);
 
         if (isValidStatusChange(friendshipToUpdate.getStatus(), friendshipDto.getStatus()))
             return updateFriendship(friendshipDto, friendshipToUpdate);
@@ -139,7 +142,7 @@ public class FriendshipServiceImpl implements FriendshipService {
                                         friendshipDto.getAddressee().getId().toString());
     }
 
-    private Friendship getFriendshipToUpdate(FriendshipDto friendshipDto) {
+    private Friendship findFriendship(FriendshipDto friendshipDto) {
         Long requesterId = friendshipDto.getRequester().getId();
         Long addresseeId = friendshipDto.getAddressee().getId();
 
@@ -163,7 +166,7 @@ public class FriendshipServiceImpl implements FriendshipService {
         Friendship updatedFriendship = friendshipRepository.save(friendshipToUpdate);
 
         if (updatedFriendship.getStatus() == FriendshipStatus.ACCEPTED) {
-            UserDetails addressee = userService.getUserDetails(updatedFriendship.getAddressee());
+            UserDetails addressee = UserServiceUtils.getUserDetailsFrom(updatedFriendship.getAddressee());
             ResultWithEvents<Friendship> friendshipWithEvents = Friendship.createFriendRequestAccepted(
                     friendshipToUpdate, addressee);
             publish(friendshipWithEvents);
