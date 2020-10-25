@@ -17,8 +17,6 @@ public interface UserService {
 
     User findUserById(Long id);
 
-    List<User> findFriendsOf(User user);
-
     List<UserDetailsDto> searchUsers(Specification<User> spec);
 
     UserDetailsDto findUserById(Long id, Long viewerId);
