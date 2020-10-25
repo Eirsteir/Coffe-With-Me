@@ -14,6 +14,7 @@ import com.eirsteir.coffeewithme.social.service.friendship.FriendshipServiceImpl
 import com.eirsteir.coffeewithme.social.service.user.UserService;
 import com.eirsteir.coffeewithme.social.web.request.FriendRequest;
 import com.eirsteir.coffeewithme.testconfig.BaseUnitTestClass;
+import com.eirsteir.coffeewithme.testconfig.EventuateTestConfig;
 import io.eventuate.tram.events.publisher.DomainEventPublisher;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -40,7 +41,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.mockito.Mockito.when;
 
-@Import({ModelMapperConfig.class, BaseUnitTestClass.class})
+@Import({ModelMapperConfig.class, BaseUnitTestClass.class, EventuateTestConfig.class})
 @ExtendWith(SpringExtension.class)
 class FriendshipServiceImplTest extends BaseUnitTestClass {
 
@@ -69,7 +70,7 @@ class FriendshipServiceImplTest extends BaseUnitTestClass {
 
     @TestConfiguration
     static class FriendshipServiceImplTestContextConfiguration {
-        @MockBean
+        @Autowired
         private DomainEventPublisher domainEventPublisher;
 
         @Autowired

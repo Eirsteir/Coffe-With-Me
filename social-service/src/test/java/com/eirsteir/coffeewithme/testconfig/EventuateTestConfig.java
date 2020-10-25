@@ -2,6 +2,7 @@ package com.eirsteir.coffeewithme.testconfig;
 
 import io.eventuate.tram.consumer.common.DuplicateMessageDetector;
 import io.eventuate.tram.events.common.DomainEventNameMapping;
+import io.eventuate.tram.events.publisher.DomainEventPublisher;
 import io.eventuate.tram.messaging.common.ChannelMapping;
 import io.eventuate.tram.messaging.consumer.MessageConsumer;
 import io.eventuate.tram.messaging.producer.MessageProducer;
@@ -25,6 +26,8 @@ public class EventuateTestConfig {
     private DomainEventNameMapping domainEventNameMapping;
     @MockBean
     private TramConsumerBaseCommonConfiguration tramConsumerBaseCommonConfiguration;
+    @MockBean
+    private DomainEventPublisher domainEventPublisher;
 
     @TestConfiguration
     static class FriendshipRepositoryTestConfiguration {

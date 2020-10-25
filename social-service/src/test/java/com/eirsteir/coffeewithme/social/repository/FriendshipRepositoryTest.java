@@ -1,7 +1,6 @@
 package com.eirsteir.coffeewithme.social.repository;
 
 import com.eirsteir.coffeewithme.social.domain.friendship.Friendship;
-import com.eirsteir.coffeewithme.social.domain.friendship.FriendshipId;
 import com.eirsteir.coffeewithme.social.domain.friendship.FriendshipStatus;
 import com.eirsteir.coffeewithme.social.domain.user.User;
 import com.eirsteir.coffeewithme.testconfig.EventuateTestConfig;
@@ -28,7 +27,6 @@ class FriendshipRepositoryTest {
     private static final String REQUESTER_NICKNAME = "requester";
     private static final String ADDRESSEE_NICKNAME = "addressee";
 
-    private FriendshipId friendshipId;
     private User requester;
     private User addressee;
 
