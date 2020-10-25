@@ -38,32 +38,38 @@ public class SetupTestDataLoader implements ApplicationListener<ContextRefreshed
         }
 
         User defaultUser = User.builder()
+                .id(1L)
                 .email("user")
                 .nickname("default")
                 .build();
 
         User requester = User.builder()
+                .id(2L)
                 .email(REQUESTER_EMAIL)
                 .nickname(REQUESTER_NICKNAME)
                 .build();
 
         User addressee = User.builder()
+                .id(3L)
                 .email(ADDRESSEE_EMAIL)
                 .nickname(ADDRESSEE_NICKNAME)
                 .build();
 
         User otherUser = User.builder()
+                .id(4L)
                 .email(OTHER_USER_EMAIL)
                 .nickname(OTHER_USER_NICKNAME)
                 .build();
 
         User userJohn = User.builder()
+                .id(5L)
                 .name("John Doe")
                 .email(JOHN_EMAIL)
                 .nickname("johndoe")
                 .build();
 
         User userTom = User.builder()
+                .id(6L)
                 .name("Tom Doe")
                 .email(TOM_EMAIL)
                 .build();
