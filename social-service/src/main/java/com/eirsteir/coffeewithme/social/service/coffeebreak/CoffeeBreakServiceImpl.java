@@ -28,7 +28,6 @@ import java.util.stream.Collectors;
 @Transactional
 public class CoffeeBreakServiceImpl implements CoffeeBreakService {
 
-    @Autowired
     private DomainEventPublisher domainEventPublisher;
 
     @Autowired
@@ -45,6 +44,12 @@ public class CoffeeBreakServiceImpl implements CoffeeBreakService {
 
     @Autowired
     private ModelMapper modelMapper;
+
+    public CoffeeBreakServiceImpl(DomainEventPublisher domainEventPublisher,
+                                 CoffeeBreakRepository coffeeBreakRepository) {
+        this.domainEventPublisher = domainEventPublisher;
+        this.coffeeBreakRepository = coffeeBreakRepository;
+    }
 
     @Override
     public CoffeeBreakDetails registerCoffeeBreak(CoffeeBreakRequest coffeeBreakRequest, UserDetailsImpl currentUser) {
@@ -84,9 +89,9 @@ public class CoffeeBreakServiceImpl implements CoffeeBreakService {
                 .map(friendshipDto -> {
                     if (friendshipDto.getAddressee().getId()
                             .equals(requester.getId()))
-                        return friendshipDto.getAddressee().getId();
+                        return friendshipDto.getRequester().getId();
 
-                    return friendshipDto.getRequester().getId();
+                    return friendshipDto.getAddressee().getId();
                 })
                 .collect(Collectors.toList());
 

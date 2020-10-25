@@ -40,8 +40,6 @@ public class FriendshipServiceImpl implements FriendshipService {
     @Autowired
     private ModelMapper modelMapper;
 
-
-
     public FriendshipServiceImpl(DomainEventPublisher domainEventPublisher,
                                  FriendshipRepository friendshipRepository) {
         this.domainEventPublisher = domainEventPublisher;

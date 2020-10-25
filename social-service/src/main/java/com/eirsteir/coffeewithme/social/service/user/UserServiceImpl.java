@@ -92,9 +92,10 @@ public class UserServiceImpl implements UserService {
                 || friendshipService.friendshipExists(friendshipIdFromOtherUser);
     }
 
-    private List<User> findFriendsOf(User currentUser) {
+    @Override
+    public List<User> findFriendsOf(User user) {
 
-        return userRepository.findFriendsWithStatus(currentUser.getId(),
+        return userRepository.findFriendsWithStatus(user.getId(),
                                                     FriendshipStatus.ACCEPTED);
     }
 

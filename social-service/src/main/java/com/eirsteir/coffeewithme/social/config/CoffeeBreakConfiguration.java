@@ -1,8 +1,10 @@
 package com.eirsteir.coffeewithme.social.config;
 
 
+import com.eirsteir.coffeewithme.social.repository.CoffeeBreakRepository;
 import com.eirsteir.coffeewithme.social.service.coffeebreak.CoffeeBreakService;
 import com.eirsteir.coffeewithme.social.service.coffeebreak.CoffeeBreakServiceImpl;
+import io.eventuate.tram.events.publisher.DomainEventPublisher;
 import io.eventuate.tram.spring.events.publisher.TramEventsPublisherConfiguration;
 import io.eventuate.tram.spring.events.subscriber.TramEventSubscriberConfiguration;
 import io.eventuate.tram.spring.jdbckafka.TramJdbcKafkaConfiguration;
@@ -20,8 +22,10 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
         TramEventSubscriberConfiguration.class})
 public class CoffeeBreakConfiguration {
 
+
     @Bean
-    public CoffeeBreakService coffeeBreakService() {
-        return new CoffeeBreakServiceImpl();
+    public CoffeeBreakService coffeeBreakService(DomainEventPublisher domainEventPublisher,
+                                                 CoffeeBreakRepository coffeeBreakRepository) {
+        return new CoffeeBreakServiceImpl(domainEventPublisher, coffeeBreakRepository);
     }
 }
