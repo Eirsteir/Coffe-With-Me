@@ -10,7 +10,7 @@ import java.util.List;
 
 public interface FriendshipService {
 
-    List<FriendshipDto> findFriendships(Long id, FriendshipStatus status);
+    List<FriendshipDto> findFriendshipsOf(Long id, FriendshipStatus status);
 
     List<FriendshipDto> findFriendshipsAtUniversity(User user);
 
@@ -20,9 +20,9 @@ public interface FriendshipService {
 
     FriendshipDto updateFriendship(FriendshipDto friendshipDto);
 
-    List<FriendshipDto> findFriendships(UserDetailsDto user);
+    List<FriendshipDto> findFriendshipsOf(UserDetailsDto user);
 
-    List<FriendshipDto> getAllFriendshipsWithStatus(UserDetailsDto user, FriendshipStatus status);
+    List<FriendshipDto> findAllFriendshipsWithStatus(UserDetailsDto user, FriendshipStatus status);
 
     Integer getFriendsCount(Long userId);
 

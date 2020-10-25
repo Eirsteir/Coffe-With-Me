@@ -70,7 +70,7 @@ public class UserServiceImpl implements UserService {
 
     private void addFriendshipPropertiesTo(UserDetailsDto userDetails, User otherUser, User currentUser) {
         UserDetailsDto otherUserDetails = modelMapper.map(otherUser, UserDetailsDto.class);
-        List<FriendshipDto> friendships = friendshipService.findFriendships(otherUserDetails);
+        List<FriendshipDto> friendships = friendshipService.findFriendshipsOf(otherUserDetails);
 
         List<User> friends = getFriendsFromExcludeCurrentUser(friendships, currentUser);
 

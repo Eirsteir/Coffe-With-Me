@@ -38,7 +38,7 @@ public class FriendshipController {
     @ResponseBody
     Collection<FriendshipDto> getFriends(@AuthenticationPrincipal UserDetailsImpl principal) {
         UserDetailsDto UserDetailsDto = modelMapper.map(userService.findUserById(principal.getId()), UserDetailsDto.class);
-        List<FriendshipDto> friendships = friendshipService.findFriendships(UserDetailsDto);
+        List<FriendshipDto> friendships = friendshipService.findFriendshipsOf(UserDetailsDto);
 
         if (friendships.isEmpty())
             throw new ResponseStatusException(
@@ -80,8 +80,8 @@ public class FriendshipController {
     @GetMapping("/friends/requests")
     List<FriendshipDto> getFriendRequests(@AuthenticationPrincipal UserDetailsImpl principal) {
         UserDetailsDto userDto = modelMapper.map(principal, UserDetailsDto.class);
-        List<FriendshipDto> friendRequests = friendshipService.findFriendships(userDto.getId(),
-                                                                                FriendshipStatus.REQUESTED);
+        List<FriendshipDto> friendRequests = friendshipService.findFriendshipsOf(userDto.getId(),
+                                                                                 FriendshipStatus.REQUESTED);
 
         if (friendRequests.isEmpty())
             throw new ResponseStatusException(

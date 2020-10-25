@@ -157,7 +157,7 @@ class UserServiceImplTest {
         User friend = User.builder()
                 .id(100L)
                 .build();
-        when(friendshipService.findFriendships(user.getId(), FriendshipStatus.ACCEPTED))
+        when(friendshipService.findFriendshipsOf(user.getId(), FriendshipStatus.ACCEPTED))
                 .thenReturn(new ArrayList<>());
         when(userRepository.findById(friend.getId()))
                 .thenReturn(Optional.of(friend));

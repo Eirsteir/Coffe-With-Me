@@ -49,19 +49,19 @@ public class FriendshipServiceImpl implements FriendshipService {
     }
 
     @Override
-    public List<FriendshipDto> findFriendships(UserDetailsDto UserDetailsDto) {
-        return getAllFriendshipsWithStatus(UserDetailsDto, FriendshipStatus.ACCEPTED);
+    public List<FriendshipDto> findFriendshipsOf(UserDetailsDto UserDetailsDto) {
+        return findAllFriendshipsWithStatus(UserDetailsDto, FriendshipStatus.ACCEPTED);
     }
 
     @Override
-    public List<FriendshipDto> getAllFriendshipsWithStatus(UserDetailsDto userDetailsDto, FriendshipStatus status) {
+    public List<FriendshipDto> findAllFriendshipsWithStatus(UserDetailsDto userDetailsDto, FriendshipStatus status) {
         List<Friendship> friendships = friendshipRepository.findByUserAndStatus(userDetailsDto.getId(), status);
 
         return getFriendshipDtos(friendships);
     }
 
     @Override
-    public List<FriendshipDto> findFriendships(Long id, FriendshipStatus status) {
+    public List<FriendshipDto> findFriendshipsOf(Long id, FriendshipStatus status) {
         List<Friendship> friendships = friendshipRepository.findByUserAndStatus(id, status);
 
         return getFriendshipDtos(friendships);
@@ -130,7 +130,7 @@ public class FriendshipServiceImpl implements FriendshipService {
 
     @Override
     public FriendshipDto updateFriendship(FriendshipDto friendshipDto) {
-        Friendship friendshipToUpdate = getFriendshipToUpdate(friendshipDto);
+        Friendship friendshipToUpdate = findFriendship(friendshipDto);
 
         if (isValidStatusChange(friendshipToUpdate.getStatus(), friendshipDto.getStatus()))
             return updateFriendship(friendshipDto, friendshipToUpdate);
@@ -141,7 +141,7 @@ public class FriendshipServiceImpl implements FriendshipService {
                                         friendshipDto.getAddressee().getId().toString());
     }
 
-    private Friendship getFriendshipToUpdate(FriendshipDto friendshipDto) {
+    private Friendship findFriendship(FriendshipDto friendshipDto) {
         Long requesterId = friendshipDto.getRequester().getId();
         Long addresseeId = friendshipDto.getAddressee().getId();
 
