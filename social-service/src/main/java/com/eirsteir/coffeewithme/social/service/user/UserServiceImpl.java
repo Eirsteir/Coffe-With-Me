@@ -5,8 +5,6 @@ import com.eirsteir.coffeewithme.commons.exception.CWMException;
 import com.eirsteir.coffeewithme.commons.exception.EntityType;
 import com.eirsteir.coffeewithme.commons.exception.ExceptionType;
 import com.eirsteir.coffeewithme.commons.security.UserDetailsImpl;
-import com.eirsteir.coffeewithme.social.domain.friendship.FriendshipId;
-import com.eirsteir.coffeewithme.social.domain.friendship.FriendshipStatus;
 import com.eirsteir.coffeewithme.social.domain.university.University;
 import com.eirsteir.coffeewithme.social.domain.user.User;
 import com.eirsteir.coffeewithme.social.dto.UserProfile;
