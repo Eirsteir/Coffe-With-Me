@@ -14,6 +14,7 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class CoffeeBreakConfiguration {
 
+
     @Bean
     public CoffeeBreakService coffeeBreakService(DomainEventPublisher domainEventPublisher,
                                                  CoffeeBreakRepository coffeeBreakRepository,
