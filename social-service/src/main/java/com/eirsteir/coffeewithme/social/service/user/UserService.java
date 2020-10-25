@@ -20,7 +20,7 @@ public interface UserService {
 
     List<UserDetailsDto> searchUsers(Specification<User> spec);
 
-    UserDetailsDto findUserByIdWithIsFriend(Long id, Long viewerId);
+    UserDetailsDto findUserById(Long id, Long viewerId);
 
     UserDetails getUserDetails(User user);
 

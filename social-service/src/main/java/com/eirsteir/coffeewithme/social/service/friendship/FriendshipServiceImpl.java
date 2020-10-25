@@ -110,7 +110,8 @@ public class FriendshipServiceImpl implements FriendshipService {
         return modelMapper.map(friendship, FriendshipDto.class);
     }
 
-    private boolean friendshipExists(FriendshipId friendshipId) {
+    @Override
+    public boolean friendshipExists(FriendshipId friendshipId) {
         return friendshipRepository.existsById(friendshipId);
     }
 

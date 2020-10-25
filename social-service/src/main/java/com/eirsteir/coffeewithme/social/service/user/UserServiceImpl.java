@@ -6,9 +6,10 @@ import com.eirsteir.coffeewithme.commons.exception.CWMException;
 import com.eirsteir.coffeewithme.commons.exception.EntityType;
 import com.eirsteir.coffeewithme.commons.exception.ExceptionType;
 import com.eirsteir.coffeewithme.commons.security.UserDetailsImpl;
+import com.eirsteir.coffeewithme.social.domain.friendship.FriendshipId;
+import com.eirsteir.coffeewithme.social.domain.friendship.FriendshipStatus;
 import com.eirsteir.coffeewithme.social.domain.university.University;
 import com.eirsteir.coffeewithme.social.domain.user.User;
-import com.eirsteir.coffeewithme.social.dto.FriendshipDto;
 import com.eirsteir.coffeewithme.social.dto.UserProfile;
 import com.eirsteir.coffeewithme.social.repository.UniversityRepository;
 import com.eirsteir.coffeewithme.social.repository.UserRepository;
@@ -39,7 +40,7 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     private FriendshipService friendshipService;
-    
+
     @Autowired
     private ModelMapper modelMapper;
 
@@ -59,43 +60,45 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserDetailsDto findUserByIdWithIsFriend(Long id, Long currentUserId) {
+    public UserDetailsDto findUserById(Long id, Long currentUserId) {
         User user = findUserById(id);
         User currentUser = findUserById(id);
         UserDetailsDto userDetails = modelMapper.map(user, UserDetailsDto.class);
-        this.addFriendshipPropertiesTo(userDetails, user, currentUser);
+        addFriendshipPropertiesTo(userDetails, user, currentUser);
 
         return userDetails;
     }
 
+    // TODO: write custom serializer class?
     private void addFriendshipPropertiesTo(UserDetailsDto userDetails, User otherUser, User currentUser) {
-        UserDetailsDto otherUserDetails = modelMapper.map(otherUser, UserDetailsDto.class);
-        List<FriendshipDto> friendships = friendshipService.findFriendshipsOf(otherUserDetails);
+        boolean areFriends = getAreFriends(otherUser, currentUser);
+        int friendshipCount = friendshipService.getFriendsCount(currentUser.getId());
 
-        List<User> friends = getFriendsFromExcludeCurrentUser(friendships, currentUser);
-
-        if (friends.contains(currentUser))
-            userDetails.setIsFriend(true);
-        else
-            userDetails.setIsFriend(false);
-
-        userDetails.setFriendsCount(friends.size());
+        userDetails.setIsFriend(areFriends);
+        userDetails.setFriendsCount(friendshipCount);
     }
 
-    private List<User> getFriendsFromExcludeCurrentUser(List<FriendshipDto> friendships, User currentUser) {
+    private boolean getAreFriends(User otherUser, User currentUser) {
+        FriendshipId friendshipIdFromCurrentUser = FriendshipId.builder()
+                .requester(currentUser)
+                .addressee(otherUser)
+                .build();
+        FriendshipId friendshipIdFromOtherUser = FriendshipId.builder()
+                .requester(otherUser)
+                .addressee(currentUser)
+                .build();
 
-        List<Long> friendIds = friendships.stream()
-                .map(friendshipDto -> {
-                    if (friendshipDto.getRequester().getId()
-                            .equals(currentUser.getId()))
-                        return friendshipDto.getRequester().getId();
-                    return friendshipDto.getAddressee().getId();
-                })
-                .collect(Collectors.toList());
-
-        return userRepository.findAllById(friendIds);
+        return friendshipService.friendshipExists(friendshipIdFromCurrentUser)
+                || friendshipService.friendshipExists(friendshipIdFromOtherUser);
     }
 
+    private List<User> findFriendsOf(User currentUser) {
+
+        return userRepository.findFriendsWithStatus(currentUser.getId(),
+                                                    FriendshipStatus.ACCEPTED);
+    }
+
+    // TODO: add friends properties
     @Override
     public List<UserDetailsDto> searchUsers(Specification<User> spec) {
         return userRepository.findAll(spec)

@@ -4,19 +4,23 @@ import com.eirsteir.coffeewithme.commons.dto.UserDetailsDto;
 import com.eirsteir.coffeewithme.commons.exception.CWMException;
 import com.eirsteir.coffeewithme.commons.security.UserDetailsImpl;
 import com.eirsteir.coffeewithme.social.config.ModelMapperConfig;
+import com.eirsteir.coffeewithme.social.domain.friendship.FriendshipId;
 import com.eirsteir.coffeewithme.social.domain.friendship.FriendshipStatus;
 import com.eirsteir.coffeewithme.social.domain.user.User;
 import com.eirsteir.coffeewithme.social.dto.UserProfile;
+import com.eirsteir.coffeewithme.social.repository.UniversityRepository;
 import com.eirsteir.coffeewithme.social.repository.UserRepository;
 import com.eirsteir.coffeewithme.social.service.friendship.FriendshipService;
 import com.eirsteir.coffeewithme.social.service.user.UserService;
 import com.eirsteir.coffeewithme.social.service.user.UserServiceImpl;
 import com.eirsteir.coffeewithme.social.web.request.UpdateProfileRequest;
+import com.eirsteir.coffeewithme.testconfig.BaseUnitTestClass;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.Mockito;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -25,7 +29,6 @@ import org.springframework.context.annotation.Import;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.util.ArrayList;
@@ -38,15 +41,32 @@ import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.mockito.Mockito.when;
 
 
-@Import({ ModelMapperConfig.class})
-@TestPropertySource("classpath:exception.properties")
+@Import({ModelMapperConfig.class, BaseUnitTestClass.class})
 @ExtendWith(SpringExtension.class)
-class UserServiceImplTest {
+class UserServiceImplTest extends BaseUnitTestClass {
 
     public static final String EMAIL_ALEX = "alex@email.com";
     public static final String NICKNAME_ALEX = "alex";
     public static final String NAME_ALEX = "Alex";
+
     private UserDetailsImpl userDetails;
+    private User user;
+    private UserDetailsDto userDetailsDto;
+
+    @Autowired
+    private UserService userService;
+
+    @Autowired
+    private ModelMapper modelMapper;
+
+    @MockBean
+    private UserRepository userRepository;
+
+    @MockBean
+    private FriendshipService friendshipService;
+
+    @MockBean
+    private UniversityRepository universityRepository;
 
     @TestConfiguration
     static class UserServiceImplTestContextConfiguration {
@@ -62,35 +82,24 @@ class UserServiceImplTest {
         }
     }
 
-    @Autowired
-    private UserService userService;
-
-    @MockBean
-    private UserRepository userRepository;
-
-    @MockBean
-    private FriendshipService friendshipService;
-
-    private User user;
-    private UserDetailsDto userDetailsDto;
-
     @BeforeEach
     public void setUp() {
         user = User.builder()
                 .email(EMAIL_ALEX)
                 .name(NAME_ALEX)
+                .nickname(NICKNAME_ALEX)
                 .build();
 
-        userDetailsDto = UserDetailsDto.builder()
-                .email(EMAIL_ALEX)
-                .name(NAME_ALEX)
-                .build();
+        userDetailsDto = modelMapper.map(user, UserDetailsDto.class);
 
         userDetails = UserDetailsImpl.builder()
                 .id(1L)
                 .build();
 
          when(userRepository.findByEmail(EMAIL_ALEX))
+                .thenReturn(Optional.of(user));
+
+        when(userRepository.findById(Mockito.anyLong()))
                 .thenReturn(Optional.of(user));
 
         when(userRepository.save(Mockito.any(User.class)))
@@ -108,8 +117,7 @@ class UserServiceImplTest {
     @Test
     void testFindUserByEmailNotFound() {
         assertThatExceptionOfType(CWMException.EntityNotFoundException.class)
-                .isThrownBy(() -> userService.findUserByEmail("not.found@email.com"))
-                .withMessage("Requested user with email - not.found@email.com does not exist");
+                .isThrownBy(() -> userService.findUserByEmail("not.found@email.com"));
     }
 
     @Mock
@@ -141,13 +149,11 @@ class UserServiceImplTest {
         User friend = User.builder()
                 .id(100L)
                 .build();
-        // TODO: correct this
-//        when(friendshipService.findFriendships(user.getId(), FriendshipStatus.ACCEPTED))
-//                .thenReturn(Collections.singletonList(friend));
-        when(userRepository.findById(friend.getId()))
-                .thenReturn(Optional.of(friend));
 
-        UserDetailsDto userDetailsWithFriend = userService.findUserByIdWithIsFriend(friend.getId(), user.getId());
+        when(friendshipService.friendshipExists(Mockito.any(FriendshipId.class)))
+                .thenReturn(true);
+
+        UserDetailsDto userDetailsWithFriend = userService.findUserById(friend.getId(), user.getId());
 
         assertThat(userDetailsWithFriend.getIsFriend()).isTrue();
     }
@@ -162,7 +168,7 @@ class UserServiceImplTest {
         when(userRepository.findById(friend.getId()))
                 .thenReturn(Optional.of(friend));
 
-        UserDetailsDto userDetailsWithFriend = userService.findUserByIdWithIsFriend(friend.getId(), user.getId());
+        UserDetailsDto userDetailsWithFriend = userService.findUserById(friend.getId(), user.getId());
 
         assertThat(userDetailsWithFriend.getIsFriend()).isFalse();
     }

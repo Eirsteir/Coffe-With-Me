@@ -1,6 +1,7 @@
 package com.eirsteir.coffeewithme.social.service.friendship;
 
 import com.eirsteir.coffeewithme.commons.dto.UserDetailsDto;
+import com.eirsteir.coffeewithme.social.domain.friendship.FriendshipId;
 import com.eirsteir.coffeewithme.social.domain.friendship.FriendshipStatus;
 import com.eirsteir.coffeewithme.social.domain.user.User;
 import com.eirsteir.coffeewithme.social.dto.FriendshipDto;
@@ -15,6 +16,8 @@ public interface FriendshipService {
     List<FriendshipDto> findFriendshipsAtUniversity(User user);
 
     FriendshipDto registerFriendship(FriendRequest friendRequest);
+
+    boolean friendshipExists(FriendshipId friendshipId);
 
     void removeFriendship(FriendshipDto friendshipDto);
 

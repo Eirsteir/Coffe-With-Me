@@ -30,7 +30,7 @@ public class UserController {
     @ResponseBody
     UserDetailsDto user(@PathVariable Long id, @AuthenticationPrincipal UserDetailsImpl principal) {
 
-        return userService.findUserByIdWithIsFriend(id, principal.getId());
+        return userService.findUserById(id, principal.getId());
     }
 
     @GetMapping
