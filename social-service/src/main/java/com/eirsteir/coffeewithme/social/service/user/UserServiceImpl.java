@@ -6,8 +6,6 @@ import com.eirsteir.coffeewithme.commons.exception.CWMException;
 import com.eirsteir.coffeewithme.commons.exception.EntityType;
 import com.eirsteir.coffeewithme.commons.exception.ExceptionType;
 import com.eirsteir.coffeewithme.commons.security.UserDetailsImpl;
-import com.eirsteir.coffeewithme.social.domain.friendship.FriendshipId;
-import com.eirsteir.coffeewithme.social.domain.friendship.FriendshipStatus;
 import com.eirsteir.coffeewithme.social.domain.university.University;
 import com.eirsteir.coffeewithme.social.domain.user.User;
 import com.eirsteir.coffeewithme.social.dto.UserProfile;
@@ -79,24 +77,12 @@ public class UserServiceImpl implements UserService {
     }
 
     private boolean getAreFriends(User otherUser, User currentUser) {
-        FriendshipId friendshipIdFromCurrentUser = FriendshipId.builder()
-                .requester(currentUser)
-                .addressee(otherUser)
-                .build();
-        FriendshipId friendshipIdFromOtherUser = FriendshipId.builder()
-                .requester(otherUser)
-                .addressee(currentUser)
-                .build();
-
-        return friendshipService.friendshipExists(friendshipIdFromCurrentUser)
-                || friendshipService.friendshipExists(friendshipIdFromOtherUser);
+        return currentUser.getFriends().contains(otherUser);
     }
 
     @Override
     public List<User> findFriendsOf(User user) {
-
-        return userRepository.findFriendsWithStatus(user.getId(),
-                                                    FriendshipStatus.ACCEPTED);
+        return user.getFriends();
     }
 
     // TODO: add friends properties

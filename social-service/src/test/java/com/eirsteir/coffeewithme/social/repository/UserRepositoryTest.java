@@ -45,10 +45,6 @@ class UserRepositoryTest {
     private static final String OTHER_USER_EMAIL = "other-user@test.com";
     private static final String OTHER_USER_NICKNAME = "other-user";
 
-    private final Long JOHN_ID = 5L;
-    private final Long TOM_ID = 6L;
-    private final Long PERCY_ID = 7L;
-
 
     @Autowired
     private TestEntityManager entityManager;
@@ -100,6 +96,7 @@ class UserRepositoryTest {
         requester.addFriend(addressee, FriendshipStatus.ACCEPTED);
         requester.addFriend(otherUser, FriendshipStatus.REQUESTED);
 
+        Long JOHN_ID = 1005L;
         userJohn = entityManager.persistFlushFind(User.builder()
                 .id(JOHN_ID)
                   .name("john doe")
@@ -107,60 +104,16 @@ class UserRepositoryTest {
                   .build());
 
         userTom = entityManager.persistFlushFind(User.builder()
+                                                         .id(1006L)
                                                          .name("tom doe")
                                                          .email("tom@doe.com")
                                                          .build());
 
         userPercy = entityManager.persistFlushFind(User.builder()
-                                                         .name("percy blackney")
-                                                         .email("percy@blackney.com")
-                                                         .build());
-    }
-
-    @Test
-    void testFindFriendsFromWithStatus_thenReturnFriend() {
-        List<User> friendsFound = userRepository.findFriendsWithStatus(requester.getId(), FriendshipStatus.ACCEPTED);
-
-        assertThat(addressee).isIn(friendsFound);
-        assertThat(otherUser).isNotIn(friendsFound);
-    }
-
-    @Test
-    void testFindFriendsFromWithStatusWhenRequested_thenReturnFriends() {
-        List<User> friendsFound = userRepository.findFriendsWithStatus(requester.getId(), FriendshipStatus.REQUESTED);
-
-        assertThat(otherUser).isIn(friendsFound);
-        assertThat(addressee).isNotIn(friendsFound);
-    }
-
-    @Test
-    void testFindFriendsFromWithStatusWhenUserHasNoFriends_thenReturnEmptyList() {
-        List<User> friendsFound = userRepository.findFriendsWithStatus(userJohn.getId(), FriendshipStatus.ACCEPTED);
-
-        assertThat(friendsFound).isEmpty();
-    }
-
-    @Test
-    void testFindFriendsOfWithStatusWhenUserIsFriendOfAndStatusIsRequested_thenReturnFriend() {
-        List<User> friendsFound = userRepository.findFriendsWithStatus(otherUser.getId(), FriendshipStatus.REQUESTED);
-
-        assertThat(requester).isIn(friendsFound);
-        assertThat(addressee).isNotIn(friendsFound);
-    }
-
-    @Test
-    void testFindFriendsOfWithStatusWhenUserIsFriendOfReturnsFriend_thenReturnFriends() {
-        List<User> friendsFound = userRepository.findFriendsWithStatus(addressee.getId(), FriendshipStatus.ACCEPTED);
-
-        assertThat(requester).isIn(friendsFound);
-        assertThat(otherUser).isNotIn(friendsFound);
-    }
-
-    @Test
-    void testFindFriendsOfWithStatusWhenUserHasNoFriends_thenReturnEmptyList() {
-        List<User> friendsFound = userRepository.findFriendsWithStatus(userJohn.getId(), FriendshipStatus.ACCEPTED);
-
-        assertThat(friendsFound).isEmpty();
+                                                           .id(1007L)
+                                                           .name("percy blackney")
+                                                           .email("percy@blackney.com")
+                                                           .build());
     }
 
     @Test

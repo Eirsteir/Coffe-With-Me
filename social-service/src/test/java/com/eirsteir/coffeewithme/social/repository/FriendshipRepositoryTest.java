@@ -39,10 +39,12 @@ class FriendshipRepositoryTest {
     @BeforeEach
     void setUp() {
         requester = entityManager.persistFlushFind(User.builder()
+                .id(1000L)
                 .nickname(REQUESTER_NICKNAME)
                 .build());
 
         addressee = entityManager.persistFlushFind(User.builder()
+                .id(1001L)
                 .nickname(ADDRESSEE_NICKNAME)
                 .build());
 
@@ -63,7 +65,7 @@ class FriendshipRepositoryTest {
 
     @Test
     void testFindAllByExampleOfRequesterWhenRequesterIsAddressee() {
-        User otherUser = entityManager.persistFlushFind(User.builder().build());
+        User otherUser = entityManager.persistFlushFind(User.builder().id(1003L).build());
 
         entityManager.persistAndFlush(Friendship.builder()
                                                    .requester(addressee)
