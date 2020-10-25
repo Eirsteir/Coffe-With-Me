@@ -22,13 +22,11 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Import;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.util.ArrayList;
@@ -43,6 +41,7 @@ import static org.mockito.Mockito.when;
 
 @Import({ModelMapperConfig.class, BaseUnitTestClass.class})
 @ExtendWith(SpringExtension.class)
+@ContextConfiguration(classes = {UserServiceImpl.class, BCryptPasswordEncoder.class})
 class UserServiceImplTest extends BaseUnitTestClass {
 
     public static final String EMAIL_ALEX = "alex@email.com";
@@ -67,20 +66,6 @@ class UserServiceImplTest extends BaseUnitTestClass {
 
     @MockBean
     private UniversityRepository universityRepository;
-
-    @TestConfiguration
-    static class UserServiceImplTestContextConfiguration {
-
-        @Bean
-        public UserService userService() {
-            return new UserServiceImpl();
-        }
-
-        @Bean
-        public PasswordEncoder passwordEncoder() {
-            return new BCryptPasswordEncoder();
-        }
-    }
 
     @BeforeEach
     public void setUp() {

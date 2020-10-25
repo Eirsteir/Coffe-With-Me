@@ -30,25 +30,28 @@ public class CoffeeBreakServiceImpl implements CoffeeBreakService {
 
     private DomainEventPublisher domainEventPublisher;
 
-    @Autowired
     private CoffeeBreakRepository coffeeBreakRepository;
 
-    @Autowired
     private FriendshipService friendshipService;
 
-    @Autowired
     private UserService userService;
 
-    @Autowired
     private CampusRepository campusRepository;
 
     @Autowired
     private ModelMapper modelMapper;
 
+    @Autowired
     public CoffeeBreakServiceImpl(DomainEventPublisher domainEventPublisher,
-                                 CoffeeBreakRepository coffeeBreakRepository) {
+                                 CoffeeBreakRepository coffeeBreakRepository,
+                                  FriendshipService friendshipService,
+                                  UserService userService,
+                                  CampusRepository campusRepository) {
         this.domainEventPublisher = domainEventPublisher;
         this.coffeeBreakRepository = coffeeBreakRepository;
+        this.friendshipService = friendshipService;
+        this.userService = userService;
+        this.campusRepository = campusRepository;
     }
 
     @Override

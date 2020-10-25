@@ -17,16 +17,14 @@ import com.eirsteir.coffeewithme.social.service.user.UserService;
 import com.eirsteir.coffeewithme.social.web.request.CoffeeBreakRequest;
 import com.eirsteir.coffeewithme.testconfig.BaseUnitTestClass;
 import com.eirsteir.coffeewithme.testconfig.EventuateTestConfig;
-import io.eventuate.tram.events.publisher.DomainEventPublisher;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Import;
+import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.time.LocalTime;
@@ -41,6 +39,7 @@ import static org.mockito.Mockito.when;
 
 @Import({ModelMapperConfig.class, BaseUnitTestClass.class, EventuateTestConfig.class})
 @ExtendWith(SpringExtension.class)
+@ContextConfiguration(classes = {CoffeeBreakServiceImpl.class})
 class CoffeeBreakServiceImplTest extends BaseUnitTestClass {
 
     public static final long REQUESTER_ID = 1L;
@@ -70,21 +69,6 @@ class CoffeeBreakServiceImplTest extends BaseUnitTestClass {
 
     @MockBean
     private CampusRepository campusRepository;
-
-    @TestConfiguration
-    static class CoffeeBreakServiceImplTestContextConfiguration {
-
-        @Autowired
-        private DomainEventPublisher domainEventPublisher;
-
-        @Autowired
-        private CoffeeBreakRepository coffeeBreakRepository;
-
-        @Bean
-        public CoffeeBreakService coffeeBreakService() {
-            return new CoffeeBreakServiceImpl(domainEventPublisher, coffeeBreakRepository);
-        }
-    }
 
     @BeforeEach
     void setUp() {

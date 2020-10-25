@@ -10,6 +10,7 @@ import io.eventuate.tram.spring.consumer.common.TramConsumerBaseCommonConfigurat
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Bean;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.web.servlet.handler.HandlerMappingIntrospector;
 
 @TestConfiguration
@@ -28,6 +29,10 @@ public class EventuateTestConfig {
     private TramConsumerBaseCommonConfiguration tramConsumerBaseCommonConfiguration;
     @MockBean
     private DomainEventPublisher domainEventPublisher;
+    @MockBean
+    private JdbcTemplate jdbcTemplate;
+    @MockBean
+    private org.springframework.transaction.support.TransactionTemplate transactionTemplate;
 
     @TestConfiguration
     static class FriendshipRepositoryTestConfiguration {

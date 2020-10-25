@@ -11,7 +11,8 @@ import com.eirsteir.coffeewithme.social.domain.friendship.FriendshipStatus;
 import com.eirsteir.coffeewithme.social.domain.user.User;
 import com.eirsteir.coffeewithme.social.dto.FriendshipDto;
 import com.eirsteir.coffeewithme.social.repository.FriendshipRepository;
-import com.eirsteir.coffeewithme.social.service.user.UserService;
+import com.eirsteir.coffeewithme.social.repository.UserRepository;
+import com.eirsteir.coffeewithme.social.util.UserServiceUtils;
 import com.eirsteir.coffeewithme.social.web.request.FriendRequest;
 import io.eventuate.tram.events.publisher.DomainEventPublisher;
 import io.eventuate.tram.events.publisher.ResultWithEvents;
@@ -31,19 +32,20 @@ public class FriendshipServiceImpl implements FriendshipService {
 
     private DomainEventPublisher domainEventPublisher;
 
-    @Autowired
-    private UserService userService;
+    private UserRepository userRepository;
 
-    @Autowired
     private FriendshipRepository friendshipRepository;
 
     @Autowired
     private ModelMapper modelMapper;
 
+    @Autowired
     public FriendshipServiceImpl(DomainEventPublisher domainEventPublisher,
-                                 FriendshipRepository friendshipRepository) {
+                                 FriendshipRepository friendshipRepository,
+                                 UserRepository userRepository) {
         this.domainEventPublisher = domainEventPublisher;
         this.friendshipRepository = friendshipRepository;
+        this.userRepository = userRepository;
     }
 
     @Override
@@ -86,8 +88,8 @@ public class FriendshipServiceImpl implements FriendshipService {
 
     @Override
     public FriendshipDto registerFriendship(FriendRequest friendRequest) {
-        User requester = modelMapper.map(userService.findUserById(friendRequest.getRequesterId()), User.class);
-        User addressee = modelMapper.map(userService.findUserById(friendRequest.getAddresseeId()), User.class);
+        User requester = modelMapper.map(userRepository.findById(friendRequest.getRequesterId()), User.class);
+        User addressee = modelMapper.map(userRepository.findById(friendRequest.getAddresseeId()), User.class);
         FriendshipId id = FriendshipId.builder()
                 .requester(requester)
                 .addressee(addressee)
@@ -102,7 +104,7 @@ public class FriendshipServiceImpl implements FriendshipService {
         Friendship friendship = requester.addFriend(addressee, FriendshipStatus.REQUESTED);
         log.info("[x] Registered friendship: {}", friendship);
 
-        UserDetails user = userService.getUserDetails(friendship.getRequester());
+        UserDetails user = UserServiceUtils.getUserDetailsFrom(friendship.getRequester());
         publish(Friendship.createFriendRequest(friendship, user));
 
         return modelMapper.map(friendship, FriendshipDto.class);
@@ -164,7 +166,7 @@ public class FriendshipServiceImpl implements FriendshipService {
         Friendship updatedFriendship = friendshipRepository.save(friendshipToUpdate);
 
         if (updatedFriendship.getStatus() == FriendshipStatus.ACCEPTED) {
-            UserDetails addressee = userService.getUserDetails(updatedFriendship.getAddressee());
+            UserDetails addressee = UserServiceUtils.getUserDetailsFrom(updatedFriendship.getAddressee());
             ResultWithEvents<Friendship> friendshipWithEvents = Friendship.createFriendRequestAccepted(
                     friendshipToUpdate, addressee);
             publish(friendshipWithEvents);

@@ -1,6 +1,5 @@
 package com.eirsteir.coffeewithme.social.service.user;
 
-import com.eirsteir.coffeewithme.commons.domain.user.UserDetails;
 import com.eirsteir.coffeewithme.commons.dto.UserDetailsDto;
 import com.eirsteir.coffeewithme.commons.exception.CWMException;
 import com.eirsteir.coffeewithme.commons.exception.EntityType;
@@ -80,11 +79,6 @@ public class UserServiceImpl implements UserService {
         return currentUser.getFriends().contains(otherUser);
     }
 
-    @Override
-    public List<User> findFriendsOf(User user) {
-        return user.getFriends();
-    }
-
     // TODO: add friends properties
     @Override
     public List<UserDetailsDto> searchUsers(Specification<User> spec) {
@@ -108,15 +102,6 @@ public class UserServiceImpl implements UserService {
         log.info("[x] Updated user profile: {}", userToUpdate);
 
         return modelMapper.map(userRepository.save(userToUpdate), UserProfile.class);
-    }
-
-    @Override
-    public UserDetails getUserDetails(User user) {
-        return UserDetails.builder()
-                .id(user.getId())
-                .name(user.getName())
-                .nickname(user.getNickname())
-                .build();
     }
 
     @Override
