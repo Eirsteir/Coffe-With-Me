@@ -1,4 +1,4 @@
-package com.eirsteir.coffeewithme.social.service.coffeebreak;
+package com.eirsteir.coffeewithme.social.service;
 
 import com.eirsteir.coffeewithme.commons.domain.coffeebreak.CoffeeBreakDetails;
 import com.eirsteir.coffeewithme.commons.domain.user.UserDetails;
@@ -12,6 +12,8 @@ import com.eirsteir.coffeewithme.social.domain.user.User;
 import com.eirsteir.coffeewithme.social.dto.FriendshipDto;
 import com.eirsteir.coffeewithme.social.repository.CampusRepository;
 import com.eirsteir.coffeewithme.social.repository.CoffeeBreakRepository;
+import com.eirsteir.coffeewithme.social.service.coffeebreak.CoffeeBreakService;
+import com.eirsteir.coffeewithme.social.service.coffeebreak.CoffeeBreakServiceImpl;
 import com.eirsteir.coffeewithme.social.service.friendship.FriendshipService;
 import com.eirsteir.coffeewithme.social.service.user.UserService;
 import com.eirsteir.coffeewithme.social.web.request.CoffeeBreakRequest;

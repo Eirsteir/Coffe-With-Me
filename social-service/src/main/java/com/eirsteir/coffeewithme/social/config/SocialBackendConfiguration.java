@@ -9,13 +9,12 @@ import org.springframework.context.annotation.Import;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
 @Configuration
-@EnableJpaRepositories
+@EnableJpaRepositories(basePackages = "com.eirsteir.coffeewithme.social.repository")
 @EnableAutoConfiguration
 @Import({FriendshipConfiguration.class,
         UserConfiguration.class,
         CoffeeBreakConfiguration.class,
         ModelMapperConfig.class,
-        SetupDataLoader.class,
         TramJdbcKafkaConfiguration.class,
         TramEventsPublisherConfiguration.class,
         TramEventSubscriberConfiguration.class})

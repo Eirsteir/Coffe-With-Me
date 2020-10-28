@@ -8,9 +8,9 @@ import com.eirsteir.coffeewithme.commons.security.UserDetailsImpl;
 import com.eirsteir.coffeewithme.social.domain.university.University;
 import com.eirsteir.coffeewithme.social.domain.user.User;
 import com.eirsteir.coffeewithme.social.dto.UserProfile;
+import com.eirsteir.coffeewithme.social.repository.FriendshipRepository;
 import com.eirsteir.coffeewithme.social.repository.UniversityRepository;
 import com.eirsteir.coffeewithme.social.repository.UserRepository;
-import com.eirsteir.coffeewithme.social.service.friendship.FriendshipService;
 import com.eirsteir.coffeewithme.social.web.request.UpdateProfileRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
@@ -29,23 +29,30 @@ import java.util.stream.Collectors;
 @Transactional
 public class UserServiceImpl implements UserService {
 
-    @Autowired
     private UserRepository userRepository;
 
-    @Autowired
     private UniversityRepository universityRepository;
 
-    @Autowired
-    private FriendshipService friendshipService;
+    private FriendshipRepository friendshipRepository;
+
+    private ModelMapper modelMapper;
 
     @Autowired
-    private ModelMapper modelMapper;
+    public UserServiceImpl(UserRepository userRepository,
+                           UniversityRepository universityRepository,
+                           FriendshipRepository friendshipRepository,
+                           ModelMapper modelMapper) {
+        this.userRepository = userRepository;
+        this.universityRepository = universityRepository;
+        this.friendshipRepository = friendshipRepository;
+        this.modelMapper = modelMapper;
+    }
 
     @Override
     public UserDetailsDto findUserByEmail(String email) {
         User userModel = userRepository.findByEmail(email)
-                        .orElseThrow(() -> CWMException.getException(
-                                EntityType.USER, ExceptionType.ENTITY_NOT_FOUND, email));
+                .orElseThrow(() -> CWMException.getException(
+                        EntityType.USER, ExceptionType.ENTITY_NOT_FOUND, email));
 
         return modelMapper.map(userModel, UserDetailsDto.class);
     }
@@ -66,10 +73,10 @@ public class UserServiceImpl implements UserService {
         return userDetails;
     }
 
-    // TODO: write custom serializer class?
+    // TODO: clearly separate this from retrieving other users
     private void includeFriendshipProperties(UserDetailsDto userDetails, User otherUser, User currentUser) {
         boolean areFriends = getAreFriends(otherUser, currentUser);
-        int friendshipCount = friendshipService.getFriendsCount(currentUser.getId());
+        int friendshipCount =  friendshipRepository.countByUserId(currentUser.getId());
 
         userDetails.setIsFriend(areFriends);
         userDetails.setFriendsCount(friendshipCount);

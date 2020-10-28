@@ -18,6 +18,9 @@ public class FriendshipConfiguration {
                                                FriendshipRepository friendshipRepository,
                                                UserService userService,
                                                ModelMapper modelMapper) {
-        return new FriendshipServiceImpl(domainEventPublisher, friendshipRepository, userService, modelMapper);
+        return new FriendshipServiceImpl(domainEventPublisher,
+                                         friendshipRepository,
+                                         userService,
+                                         modelMapper);
     }
 }
