@@ -4,7 +4,6 @@ import com.eirsteir.coffeewithme.commons.dto.UserDetailsDto;
 import com.eirsteir.coffeewithme.commons.exception.CWMException;
 import com.eirsteir.coffeewithme.commons.security.UserDetailsImpl;
 import com.eirsteir.coffeewithme.social.config.ModelMapperConfig;
-import com.eirsteir.coffeewithme.social.domain.friendship.FriendshipId;
 import com.eirsteir.coffeewithme.social.domain.friendship.FriendshipStatus;
 import com.eirsteir.coffeewithme.social.domain.user.User;
 import com.eirsteir.coffeewithme.social.dto.UserProfile;
@@ -70,6 +69,7 @@ class UserServiceImplTest extends BaseUnitTestClass {
     @BeforeEach
     public void setUp() {
         user = User.builder()
+                .id(1L)
                 .email(EMAIL_ALEX)
                 .name(NAME_ALEX)
                 .nickname(NICKNAME_ALEX)
@@ -133,11 +133,13 @@ class UserServiceImplTest extends BaseUnitTestClass {
     void testFindFriendsByIdWithCurrentUserWhenAreFriends_thenReturnIsFriendsTrue() {
         User friend = User.builder()
                 .id(100L)
+                .email("email")
                 .build();
+        when(userRepository.findById(Mockito.eq(friend.getId())))
+                .thenReturn(Optional.of(friend))
+                .thenReturn(Optional.of(user));
 
-        when(friendshipService.friendshipExists(Mockito.any(FriendshipId.class)))
-                .thenReturn(true);
-
+        user.addFriend(friend, FriendshipStatus.ACCEPTED);
         UserDetailsDto userDetailsWithFriend = userService.findUserById(friend.getId(), user.getId());
 
         assertThat(userDetailsWithFriend.getIsFriend()).isTrue();

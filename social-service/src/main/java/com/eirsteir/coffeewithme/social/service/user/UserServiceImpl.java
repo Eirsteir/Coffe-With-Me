@@ -50,8 +50,7 @@ public class UserServiceImpl implements UserService {
         return modelMapper.map(userModel, UserDetailsDto.class);
     }
 
-    // TODO: protected?
-   @Override
+    @Override
     public User findUserById(Long id) {
         return userRepository.findById(id)
                         .orElseThrow(() -> CWMException.getException(EntityType.USER, ExceptionType.ENTITY_NOT_FOUND, id.toString()));
@@ -62,13 +61,13 @@ public class UserServiceImpl implements UserService {
         User user = findUserById(id);
         User currentUser = findUserById(id);
         UserDetailsDto userDetails = modelMapper.map(user, UserDetailsDto.class);
-        addFriendshipPropertiesTo(userDetails, user, currentUser);
+        includeFriendshipProperties(userDetails, user, currentUser);
 
         return userDetails;
     }
 
     // TODO: write custom serializer class?
-    private void addFriendshipPropertiesTo(UserDetailsDto userDetails, User otherUser, User currentUser) {
+    private void includeFriendshipProperties(UserDetailsDto userDetails, User otherUser, User currentUser) {
         boolean areFriends = getAreFriends(otherUser, currentUser);
         int friendshipCount = friendshipService.getFriendsCount(currentUser.getId());
 
