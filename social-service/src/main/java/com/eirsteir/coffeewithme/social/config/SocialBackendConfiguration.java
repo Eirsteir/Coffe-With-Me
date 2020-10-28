@@ -15,6 +15,7 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
         UserConfiguration.class,
         CoffeeBreakConfiguration.class,
         ModelMapperConfig.class,
+        SetupDataLoader.class,
         TramJdbcKafkaConfiguration.class,
         TramEventsPublisherConfiguration.class,
         TramEventSubscriberConfiguration.class})
