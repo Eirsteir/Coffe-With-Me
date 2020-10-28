@@ -50,7 +50,8 @@ public class UserServiceImpl implements UserService {
         return modelMapper.map(userModel, UserDetailsDto.class);
     }
 
-    @Override
+    // TODO: protected?
+   @Override
     public User findUserById(Long id) {
         return userRepository.findById(id)
                         .orElseThrow(() -> CWMException.getException(EntityType.USER, ExceptionType.ENTITY_NOT_FOUND, id.toString()));

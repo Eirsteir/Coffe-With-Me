@@ -9,6 +9,12 @@ import org.mockito.junit.MockitoRule;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.context.annotation.Bean;
 
+
+/**
+ * Setup mock for PropertiesConfig and MessageTemplateUtil
+ * to avoid NullPointerException when running tests
+ * that throw a custom exception.
+ */
 @TestConfiguration
 public class BaseUnitTestClass {
 
