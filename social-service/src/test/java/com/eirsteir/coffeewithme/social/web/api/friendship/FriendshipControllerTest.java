@@ -41,7 +41,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @ActiveProfiles("test")
 @Import({SecurityConfig.class, ModelMapperConfig.class, EventuateTestConfig.class})
-@WebMvcTest(FriendshipController.class)
+@WebMvcTest(controllers = FriendshipController.class)
 class FriendshipControllerTest {
 
     private final Long REQUESTER_ID = 1L;
@@ -56,10 +56,10 @@ class FriendshipControllerTest {
     private MockMvc mockMvc;
 
     @MockBean
-    private FriendshipService friendshipService;
+    private UserDetailsService userDetailsService;
 
     @MockBean
-    private UserDetailsService userDetailsService;
+    private FriendshipService friendshipService;
 
     @MockBean
     private UserService userService;
