@@ -31,6 +31,7 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasSize;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -91,8 +92,9 @@ class FriendshipControllerIntegrationTest {
     @WithMockUser(value = REQUESTER_EMAIL)
     void testGetFriendsReturnsAcceptedFriendships() throws Exception {
 
-        mvc.perform(get("/{id}/friends", requester.getId())
+        mvc.perform(get("/friends")
                             .contentType(MediaType.APPLICATION_JSON))
+                .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", hasSize(1)))
                 .andExpect(jsonPath("$[0].email", equalTo(ADDRESSEE_EMAIL)));

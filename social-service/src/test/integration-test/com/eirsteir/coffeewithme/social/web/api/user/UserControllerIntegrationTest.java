@@ -1,17 +1,18 @@
 package com.eirsteir.coffeewithme.social.web.api.user;
 
-import com.eirsteir.coffeewithme.social.SocialServiceApplication;
-import com.eirsteir.coffeewithme.social.repository.UserRepository;
+import com.eirsteir.coffeewithme.config.EventuateTestConfig;
 import com.eirsteir.coffeewithme.config.SetupTestDataLoader;
+import com.eirsteir.coffeewithme.social.SocialServiceApplication;
+import com.eirsteir.coffeewithme.social.config.ModelMapperConfig;
+import com.eirsteir.coffeewithme.social.repository.UserRepository;
+import com.eirsteir.coffeewithme.social.security.SecurityConfig;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
-import org.springframework.security.test.context.support.WithUserDetails;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
@@ -23,9 +24,8 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@ExtendWith(SpringExtension.class)
-@Import({SetupTestDataLoader.class})
-@SpringBootTest(classes = SocialServiceApplication.class, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@Import({ModelMapperConfig.class, SetupTestDataLoader.class})
+@SpringBootTest(classes = {SocialServiceApplication.class, SecurityConfig.class, EventuateTestConfig.class}, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 class UserControllerIntegrationTest {
 
     public static final String JOHN_EMAIL = "john@doe.com";
@@ -52,7 +52,7 @@ class UserControllerIntegrationTest {
     }
 
     @Test
-    @WithUserDetails(userDetailsServiceBeanName = "userDetailsService")
+    @WithMockUser
     void testSearchByName_thenReturnMatchingUsers() throws Exception {
 
         mvc.perform(get("/users?search=name=='John Doe'")
@@ -63,7 +63,7 @@ class UserControllerIntegrationTest {
     }
 
     @Test
-    @WithUserDetails(userDetailsServiceBeanName = "userDetailsService")
+    @WithMockUser
     void testSearchByNameInverse_thenReturnMatchingUsers() throws Exception {
 
         mvc.perform(get("/users?search=name!='John Doe'")
@@ -74,7 +74,7 @@ class UserControllerIntegrationTest {
     }
 
     @Test
-    @WithUserDetails(userDetailsServiceBeanName = "userDetailsService")
+    @WithMockUser
     void testSearchByNamePrefix_thenReturnMatchingUsers() throws Exception{
 
         mvc.perform(get("/users?search=name==Jo*")
@@ -85,7 +85,7 @@ class UserControllerIntegrationTest {
     }
 
     @Test
-    @WithUserDetails(userDetailsServiceBeanName = "userDetailsService")
+    @WithMockUser
     void testSearchByNameSuffix_thenReturnMatchingUsers() throws Exception {
 
         mvc.perform(get("/users?search=name==*e")
@@ -97,7 +97,7 @@ class UserControllerIntegrationTest {
     }
 
     @Test
-    @WithUserDetails(userDetailsServiceBeanName = "userDetailsService")
+    @WithMockUser
     void testSearchByNameSubstring_thenReturnMatchingUsers() throws Exception {
 
         mvc.perform(get("/users?search=name==*oh*")
@@ -108,7 +108,7 @@ class UserControllerIntegrationTest {
     }
 
     @Test
-    @WithUserDetails(userDetailsServiceBeanName = "userDetailsService")
+    @WithMockUser
     void testSearchByNameOrNickname_thenReturnMatchingUsers() throws Exception {
 
         mvc.perform(get("/users?search=name==john,nickname==johndoe")
@@ -119,7 +119,7 @@ class UserControllerIntegrationTest {
     }
 
     @Test
-    @WithUserDetails(userDetailsServiceBeanName = "userDetailsService")
+    @WithMockUser
     void testSearchByNameAndNickname_thenReturnMatchingUsers() throws Exception {
 
         mvc.perform(get("/users?search=name=='John Doe';nickname==johndoe")
@@ -130,7 +130,7 @@ class UserControllerIntegrationTest {
     }
 
     @Test
-    @WithUserDetails(userDetailsServiceBeanName = "userDetailsService")
+    @WithMockUser
     void testSearchByNameWhenNoResults_thenReturnHttp204() throws Exception {
         String query = "name==john";
         mvc.perform(get("/users?search=" + query)
@@ -141,7 +141,7 @@ class UserControllerIntegrationTest {
     }
 
     @Test
-    @WithUserDetails(userDetailsServiceBeanName = "userDetailsService")
+    @WithMockUser
     void testUserWhenCurrentUserIsFriend_thenReturnHttp200WithIsFriendEqualToTrue() throws Exception {
 
         mvc.perform(get("/users/" + addresseeId)
@@ -152,7 +152,7 @@ class UserControllerIntegrationTest {
     }
 
     @Test
-    @WithUserDetails(value = JOHN_EMAIL, userDetailsServiceBeanName = "userDetailsService")
+    @WithMockUser(value = JOHN_EMAIL)
     void testUserWhenCurrentUserIsNotFriend_thenReturnHttp200WithIsFriendEqualToFalse() throws Exception {
 
         mvc.perform(get("/users/" + addresseeId)
