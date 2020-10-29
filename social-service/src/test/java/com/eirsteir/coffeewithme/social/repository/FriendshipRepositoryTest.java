@@ -3,7 +3,7 @@ package com.eirsteir.coffeewithme.social.repository;
 import com.eirsteir.coffeewithme.social.domain.friendship.Friendship;
 import com.eirsteir.coffeewithme.social.domain.friendship.FriendshipStatus;
 import com.eirsteir.coffeewithme.social.domain.user.User;
-import com.eirsteir.coffeewithme.testconfig.EventuateTestConfig;
+import com.eirsteir.coffeewithme.config.EventuateTestConfig;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

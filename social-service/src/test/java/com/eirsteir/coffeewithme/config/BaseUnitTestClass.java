@@ -1,4 +1,4 @@
-package com.eirsteir.coffeewithme.testconfig;
+package com.eirsteir.coffeewithme.config;
 
 import com.eirsteir.coffeewithme.commons.exception.MessageTemplateUtil;
 import com.eirsteir.coffeewithme.commons.exception.PropertiesConfig;

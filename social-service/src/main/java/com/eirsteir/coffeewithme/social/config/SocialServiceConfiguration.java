@@ -18,5 +18,5 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
         TramJdbcKafkaConfiguration.class,
         TramEventsPublisherConfiguration.class,
         TramEventSubscriberConfiguration.class})
-public class SocialBackendConfiguration {
+public class SocialServiceConfiguration {
 }

@@ -1,27 +1,28 @@
 package com.eirsteir.coffeewithme.social.web.api.friendship;
 
 import com.eirsteir.coffeewithme.commons.dto.UserDetailsDto;
+import com.eirsteir.coffeewithme.config.EventuateTestConfig;
 import com.eirsteir.coffeewithme.social.SocialServiceApplication;
+import com.eirsteir.coffeewithme.social.config.ModelMapperConfig;
 import com.eirsteir.coffeewithme.social.domain.friendship.Friendship;
 import com.eirsteir.coffeewithme.social.domain.friendship.FriendshipId;
 import com.eirsteir.coffeewithme.social.domain.friendship.FriendshipStatus;
 import com.eirsteir.coffeewithme.social.domain.user.User;
 import com.eirsteir.coffeewithme.social.dto.FriendshipDto;
+import com.eirsteir.coffeewithme.social.repository.CoffeeBreakRepository;
 import com.eirsteir.coffeewithme.social.repository.FriendshipRepository;
 import com.eirsteir.coffeewithme.social.repository.UserRepository;
-import com.eirsteir.coffeewithme.testconfig.SetupTestDataLoader;
+import com.eirsteir.coffeewithme.social.security.SecurityConfig;
 import com.eirsteir.coffeewithme.util.JSONUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.test.context.support.WithUserDetails;
-import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
@@ -30,13 +31,12 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasSize;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 
-@ActiveProfiles("test")
-@ExtendWith(SpringExtension.class)
-@Import({SetupTestDataLoader.class})
-@SpringBootTest(classes = SocialServiceApplication.class, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@Import({ModelMapperConfig.class, SecurityConfig.class})
+@SpringBootTest(classes = {SocialServiceApplication.class, EventuateTestConfig.class}, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 class FriendshipControllerIntegrationTest {
 
     private static final String REQUESTER_EMAIL = "requester@test.com";
@@ -60,7 +60,13 @@ class FriendshipControllerIntegrationTest {
     private FriendshipRepository friendshipRepository;
 
     @Autowired
+    private CoffeeBreakRepository coffeeBreakRepository;
+
+    @Autowired
     private ModelMapper modelMapper;
+
+    @Autowired
+    private UserDetailsService userDetailsService;
 
     @BeforeEach
     public void setup() {

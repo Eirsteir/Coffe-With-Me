@@ -1,7 +1,7 @@
 package com.eirsteir.coffeewithme;
 
 import com.eirsteir.coffeewithme.social.SocialServiceApplication;
-import com.eirsteir.coffeewithme.testconfig.EventuateTestConfig;
+import com.eirsteir.coffeewithme.config.EventuateTestConfig;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;

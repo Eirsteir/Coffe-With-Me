@@ -10,7 +10,7 @@ import com.eirsteir.coffeewithme.social.security.SecurityConfig;
 import com.eirsteir.coffeewithme.social.service.friendship.FriendshipService;
 import com.eirsteir.coffeewithme.social.service.user.UserService;
 import com.eirsteir.coffeewithme.social.web.request.FriendRequest;
-import com.eirsteir.coffeewithme.testconfig.EventuateTestConfig;
+import com.eirsteir.coffeewithme.config.EventuateTestConfig;
 import com.eirsteir.coffeewithme.util.JSONUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

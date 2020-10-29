@@ -1,4 +1,4 @@
-package com.eirsteir.coffeewithme.testconfig;
+package com.eirsteir.coffeewithme.config;
 
 import io.eventuate.tram.consumer.common.DuplicateMessageDetector;
 import io.eventuate.tram.events.common.DomainEventNameMapping;
