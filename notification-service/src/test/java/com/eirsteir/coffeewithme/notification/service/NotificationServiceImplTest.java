@@ -18,6 +18,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Import;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.util.Arrays;
@@ -28,8 +29,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.mockito.Mockito.when;
 
-@Import({ ModelMapperConfig.class})
+@Import({ModelMapperConfig.class})
 @ExtendWith(SpringExtension.class)
+@ContextConfiguration(classes = {NotificationServiceImpl.class})
 class NotificationServiceImplTest {
 
     private final long TO_USER_ID = 1L;
