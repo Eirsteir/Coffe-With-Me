@@ -21,6 +21,19 @@ services:
     environment:
       EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://discovery:8761/eureka
 
+  documentation-service:
+    build:
+      context: ./documentation-service
+      dockerfile: Dockerfile
+    restart: on-failure
+    ports:
+      - 9093:9093
+    depends_on:
+      - discovery
+      - gateway
+    environment:
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://discovery:8761/eureka
+
   auth-service:
     build:
       context: ./auth-service

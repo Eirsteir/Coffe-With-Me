@@ -2,6 +2,7 @@ package com.eirsteir.coffeewithme.social.web.api.friendship;
 
 import com.eirsteir.coffeewithme.commons.dto.UserDetailsDto;
 import com.eirsteir.coffeewithme.commons.exception.CWMException;
+import com.eirsteir.coffeewithme.social.config.ModelMapperConfig;
 import com.eirsteir.coffeewithme.social.domain.friendship.FriendshipStatus;
 import com.eirsteir.coffeewithme.social.domain.user.User;
 import com.eirsteir.coffeewithme.social.dto.FriendshipDto;
@@ -9,24 +10,21 @@ import com.eirsteir.coffeewithme.social.security.SecurityConfig;
 import com.eirsteir.coffeewithme.social.service.friendship.FriendshipService;
 import com.eirsteir.coffeewithme.social.service.user.UserService;
 import com.eirsteir.coffeewithme.social.web.request.FriendRequest;
-import com.eirsteir.coffeewithme.testconfig.EventuateTestConfig;
-import com.eirsteir.coffeewithme.testconfig.SocialBackendTestConfiguration;
+import com.eirsteir.coffeewithme.config.EventuateTestConfig;
 import com.eirsteir.coffeewithme.util.JSONUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.test.context.TestPropertySource;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.ArrayList;
@@ -41,10 +39,9 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@Import({SecurityConfig.class, SocialBackendTestConfiguration.class, EventuateTestConfig.class})
-@TestPropertySource("classpath:exception.properties")
-@WebMvcTest(FriendshipController.class)
-@ExtendWith(SpringExtension.class)
+@ActiveProfiles("test")
+@Import({SecurityConfig.class, ModelMapperConfig.class, EventuateTestConfig.class})
+@WebMvcTest(controllers = FriendshipController.class)
 class FriendshipControllerTest {
 
     private final Long REQUESTER_ID = 1L;
@@ -58,13 +55,13 @@ class FriendshipControllerTest {
     @Autowired
     private MockMvc mockMvc;
 
-    @Mock
-    private FriendshipService friendshipService;
-
-    @Mock
+    @MockBean
     private UserDetailsService userDetailsService;
 
-    @Mock
+    @MockBean
+    private FriendshipService friendshipService;
+
+    @MockBean
     private UserService userService;
 
     @BeforeEach

@@ -1,27 +1,28 @@
 package com.eirsteir.coffeewithme.social.web.api.friendship;
 
 import com.eirsteir.coffeewithme.commons.dto.UserDetailsDto;
+import com.eirsteir.coffeewithme.config.EventuateTestConfig;
+import com.eirsteir.coffeewithme.config.SetupTestDataLoader;
 import com.eirsteir.coffeewithme.social.SocialServiceApplication;
+import com.eirsteir.coffeewithme.social.config.ModelMapperConfig;
 import com.eirsteir.coffeewithme.social.domain.friendship.Friendship;
 import com.eirsteir.coffeewithme.social.domain.friendship.FriendshipId;
 import com.eirsteir.coffeewithme.social.domain.friendship.FriendshipStatus;
 import com.eirsteir.coffeewithme.social.domain.user.User;
 import com.eirsteir.coffeewithme.social.dto.FriendshipDto;
+import com.eirsteir.coffeewithme.social.repository.CoffeeBreakRepository;
 import com.eirsteir.coffeewithme.social.repository.FriendshipRepository;
 import com.eirsteir.coffeewithme.social.repository.UserRepository;
-import com.eirsteir.coffeewithme.testconfig.SetupTestDataLoader;
+import com.eirsteir.coffeewithme.social.security.SecurityConfig;
 import com.eirsteir.coffeewithme.util.JSONUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
-import org.springframework.security.test.context.support.WithUserDetails;
-import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
@@ -30,13 +31,16 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasSize;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 
-@ActiveProfiles("test")
-@ExtendWith(SpringExtension.class)
-@Import({SetupTestDataLoader.class})
-@SpringBootTest(classes = SocialServiceApplication.class, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+/**
+ * Requires a running database. Add role authentication with @WithMockUser(username="admin",roles={"USER","ADMIN"})
+ */
+@Import({ModelMapperConfig.class, SetupTestDataLoader.class})
+@SpringBootTest(classes = {SocialServiceApplication.class, SecurityConfig.class, EventuateTestConfig.class}, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 class FriendshipControllerIntegrationTest {
 
     private static final String REQUESTER_EMAIL = "requester@test.com";
@@ -58,6 +62,9 @@ class FriendshipControllerIntegrationTest {
 
     @Autowired
     private FriendshipRepository friendshipRepository;
+
+    @Autowired
+    private CoffeeBreakRepository coffeeBreakRepository;
 
     @Autowired
     private ModelMapper modelMapper;
@@ -82,18 +89,19 @@ class FriendshipControllerIntegrationTest {
     }
 
     @Test
-    @WithUserDetails(value = REQUESTER_EMAIL, userDetailsServiceBeanName = "userDetailsService")
+    @WithMockUser(value = REQUESTER_EMAIL)
     void testGetFriendsReturnsAcceptedFriendships() throws Exception {
 
-        mvc.perform(get("/{id}/friends", requester.getId())
+        mvc.perform(get("/friends")
                             .contentType(MediaType.APPLICATION_JSON))
+                .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", hasSize(1)))
                 .andExpect(jsonPath("$[0].email", equalTo(ADDRESSEE_EMAIL)));
     }
 
     @Test
-    @WithUserDetails(value = ADDRESSEE_EMAIL, userDetailsServiceBeanName = "userDetailsService")
+    @WithMockUser(value = ADDRESSEE_EMAIL)
     void testGetFriendsWhenAddresseeIsRequesterReturnsAcceptedFriendships() throws Exception {
 
         mvc.perform(get("/{id}/friends", addressee.getId())
@@ -104,7 +112,7 @@ class FriendshipControllerIntegrationTest {
     }
 
     @Test
-    @WithUserDetails(value = OTHER_USER_EMAIL, userDetailsServiceBeanName = "userDetailsService")
+    @WithMockUser(value = OTHER_USER_EMAIL)
     void testAddFriendWhenUserFoundReturnsFriendship() throws Exception {
 
         mvc.perform(post("/friends")
@@ -117,7 +125,7 @@ class FriendshipControllerIntegrationTest {
     }
 
     @Test
-    @WithUserDetails(value = REQUESTER_EMAIL, userDetailsServiceBeanName = "userDetailsService")
+    @WithMockUser(value = REQUESTER_EMAIL)
     void testAddFriendToSelfReturnsHttp400() throws Exception {
 
         mvc.perform(post("/friends")
@@ -127,7 +135,7 @@ class FriendshipControllerIntegrationTest {
     }
 
     @Test
-    @WithUserDetails(value = OTHER_USER_EMAIL, userDetailsServiceBeanName = "userDetailsService")
+    @WithMockUser(value = OTHER_USER_EMAIL)
     void testAcceptFriendshipReturnsUpdatedFriendship() throws Exception {
         requestedFriendship.setStatus(FriendshipStatus.ACCEPTED);
         FriendshipDto friendshipDto = modelMapper.map(requestedFriendship, FriendshipDto.class);
@@ -142,7 +150,7 @@ class FriendshipControllerIntegrationTest {
     }
 
     @Test
-    @WithUserDetails(value = ADDRESSEE_EMAIL, userDetailsServiceBeanName = "userDetailsService")
+    @WithMockUser(value = ADDRESSEE_EMAIL)
     void testAcceptFriendshipNotBelongingToUserReturnsHttp400() throws Exception {
         FriendshipDto friendshipDto = FriendshipDto.builder()
                 .requester(modelMapper.map(requestedFriendship.getRequester(), UserDetailsDto.class))

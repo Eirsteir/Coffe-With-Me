@@ -12,11 +12,10 @@ import com.eirsteir.coffeewithme.social.domain.user.User;
 import com.eirsteir.coffeewithme.social.dto.FriendshipDto;
 import com.eirsteir.coffeewithme.social.repository.CampusRepository;
 import com.eirsteir.coffeewithme.social.repository.CoffeeBreakRepository;
-import com.eirsteir.coffeewithme.social.service.friendship.FriendshipService;
-import com.eirsteir.coffeewithme.social.service.user.UserService;
+import com.eirsteir.coffeewithme.social.repository.UserRepository;
 import com.eirsteir.coffeewithme.social.web.request.CoffeeBreakRequest;
-import com.eirsteir.coffeewithme.testconfig.BaseUnitTestClass;
-import com.eirsteir.coffeewithme.testconfig.EventuateTestConfig;
+import com.eirsteir.coffeewithme.config.BaseUnitTestClass;
+import com.eirsteir.coffeewithme.config.EventuateTestConfig;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -24,6 +23,7 @@ import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
@@ -37,6 +37,7 @@ import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
 import static org.mockito.Mockito.when;
 
 
+@ActiveProfiles("test")
 @Import({ModelMapperConfig.class, BaseUnitTestClass.class, EventuateTestConfig.class})
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration(classes = {CoffeeBreakServiceImpl.class})
@@ -62,10 +63,7 @@ class CoffeeBreakServiceImplTest extends BaseUnitTestClass {
     private CoffeeBreakRepository coffeeBreakRepository;
 
     @MockBean
-    private FriendshipService friendshipService;
-
-    @MockBean
-    private UserService userService;
+    private UserRepository userRepository;
 
     @MockBean
     private CampusRepository campusRepository;
@@ -100,12 +98,10 @@ class CoffeeBreakServiceImplTest extends BaseUnitTestClass {
                 .scheduledTo(LocalTime.now())
                 .build();
 
-        when(userService.findUserById(REQUESTER_ID))
-                .thenReturn(currentUser);
-        when(userService.findByIdIn(ADDRESSEE_IDS))
+        when(userRepository.findById(REQUESTER_ID))
+                .thenReturn(Optional.ofNullable(currentUser));
+        when(userRepository.findAllById(ADDRESSEE_IDS))
                 .thenReturn(addressees);
-        when(friendshipService.findFriendshipsAtUniversity(currentUser))
-                .thenReturn(friendships);
         when(campusRepository.findById(CAMPUS_ID))
                 .thenReturn(Optional.ofNullable(campus));
         when(coffeeBreakRepository.save(Mockito.any(CoffeeBreak.class)))
@@ -126,7 +122,7 @@ class CoffeeBreakServiceImplTest extends BaseUnitTestClass {
 
     @Test
     void testRegisterCoffeeBreakWhenRequesterNotFound_thenThrowException() {
-        when(userService.findUserById(REQUESTER_ID))
+        when(userRepository.findById(REQUESTER_ID))
                 .thenThrow(CWMException.EntityNotFoundException.class);
 
         CoffeeBreakRequest request = CoffeeBreakRequest.builder()

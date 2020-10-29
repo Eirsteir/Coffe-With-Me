@@ -74,6 +74,7 @@ public class User extends CreatedUpdatedDateTimeBaseModel {
         return friends;
     }
 
+
     public List<User> getFriends() {
         return friends.stream()
                 .filter(getFriendshipPredicate(FriendshipStatus.ACCEPTED))
@@ -91,6 +92,12 @@ public class User extends CreatedUpdatedDateTimeBaseModel {
                 return friendship.getRequester();
             return friendship.getAddressee();
         };
+    }
+
+    public List<User> getFiendsAtUniversity() {
+        return getFriends().stream()
+                .filter(user -> user.university.equals(this.university))
+                .collect(Collectors.toList());
     }
 
     public void removeFriendship(Friendship friendship) {

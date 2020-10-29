@@ -1,0 +1,10 @@
+mysql-social-integration:
+  image: eventuateio/eventuate-mysql
+  restart: always
+  ports:
+    - 3306:3306
+  environment:
+    - MYSQL_DATABASE=coffeewithme
+    - MYSQL_ROOT_PASSWORD=password
+    - MYSQL_USER=mysqluser
+    - MYSQL_PASSWORD=mysqlpw

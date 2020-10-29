@@ -1,4 +1,4 @@
-package com.eirsteir.coffeewithme.testconfig;
+package com.eirsteir.coffeewithme.config;
 
 import com.eirsteir.coffeewithme.social.domain.friendship.FriendshipStatus;
 import com.eirsteir.coffeewithme.social.domain.user.User;

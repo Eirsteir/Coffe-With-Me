@@ -4,17 +4,17 @@ import com.eirsteir.coffeewithme.commons.dto.UserDetailsDto;
 import com.eirsteir.coffeewithme.commons.exception.CWMException;
 import com.eirsteir.coffeewithme.commons.security.UserDetailsImpl;
 import com.eirsteir.coffeewithme.social.config.ModelMapperConfig;
-import com.eirsteir.coffeewithme.social.domain.friendship.FriendshipId;
 import com.eirsteir.coffeewithme.social.domain.friendship.FriendshipStatus;
 import com.eirsteir.coffeewithme.social.domain.user.User;
 import com.eirsteir.coffeewithme.social.dto.UserProfile;
+import com.eirsteir.coffeewithme.social.repository.FriendshipRepository;
 import com.eirsteir.coffeewithme.social.repository.UniversityRepository;
 import com.eirsteir.coffeewithme.social.repository.UserRepository;
-import com.eirsteir.coffeewithme.social.service.friendship.FriendshipService;
 import com.eirsteir.coffeewithme.social.service.user.UserService;
 import com.eirsteir.coffeewithme.social.service.user.UserServiceImpl;
 import com.eirsteir.coffeewithme.social.web.request.UpdateProfileRequest;
-import com.eirsteir.coffeewithme.testconfig.BaseUnitTestClass;
+import com.eirsteir.coffeewithme.config.BaseUnitTestClass;
+import com.eirsteir.coffeewithme.config.EventuateTestConfig;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -26,10 +26,10 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -39,7 +39,8 @@ import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.mockito.Mockito.when;
 
 
-@Import({ModelMapperConfig.class, BaseUnitTestClass.class})
+@ActiveProfiles("test")
+@Import({ModelMapperConfig.class, BaseUnitTestClass.class, EventuateTestConfig.class})
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration(classes = {UserServiceImpl.class, BCryptPasswordEncoder.class})
 class UserServiceImplTest extends BaseUnitTestClass {
@@ -62,7 +63,7 @@ class UserServiceImplTest extends BaseUnitTestClass {
     private UserRepository userRepository;
 
     @MockBean
-    private FriendshipService friendshipService;
+    private FriendshipRepository friendshipRepository;
 
     @MockBean
     private UniversityRepository universityRepository;
@@ -70,6 +71,7 @@ class UserServiceImplTest extends BaseUnitTestClass {
     @BeforeEach
     public void setUp() {
         user = User.builder()
+                .id(1L)
                 .email(EMAIL_ALEX)
                 .name(NAME_ALEX)
                 .nickname(NICKNAME_ALEX)
@@ -81,7 +83,7 @@ class UserServiceImplTest extends BaseUnitTestClass {
                 .id(1L)
                 .build();
 
-         when(userRepository.findByEmail(EMAIL_ALEX))
+        when(userRepository.findByEmail(EMAIL_ALEX))
                 .thenReturn(Optional.of(user));
 
         when(userRepository.findById(Mockito.anyLong()))
@@ -133,11 +135,13 @@ class UserServiceImplTest extends BaseUnitTestClass {
     void testFindFriendsByIdWithCurrentUserWhenAreFriends_thenReturnIsFriendsTrue() {
         User friend = User.builder()
                 .id(100L)
+                .email("email")
                 .build();
+        when(userRepository.findById(Mockito.eq(friend.getId())))
+                .thenReturn(Optional.of(friend))
+                .thenReturn(Optional.of(user));
 
-        when(friendshipService.friendshipExists(Mockito.any(FriendshipId.class)))
-                .thenReturn(true);
-
+        user.addFriend(friend, FriendshipStatus.ACCEPTED);
         UserDetailsDto userDetailsWithFriend = userService.findUserById(friend.getId(), user.getId());
 
         assertThat(userDetailsWithFriend.getIsFriend()).isTrue();
@@ -148,8 +152,8 @@ class UserServiceImplTest extends BaseUnitTestClass {
         User friend = User.builder()
                 .id(100L)
                 .build();
-        when(friendshipService.findFriendshipsOf(user.getId(), FriendshipStatus.ACCEPTED))
-                .thenReturn(new ArrayList<>());
+//        when(friendshipRepository.findFriendshipsOf(user.getId(), FriendshipStatus.ACCEPTED))
+//                .thenReturn(new ArrayList<>());
         when(userRepository.findById(friend.getId()))
                 .thenReturn(Optional.of(friend));
 

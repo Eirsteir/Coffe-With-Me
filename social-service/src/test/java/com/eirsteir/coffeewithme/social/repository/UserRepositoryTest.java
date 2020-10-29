@@ -3,7 +3,7 @@ package com.eirsteir.coffeewithme.social.repository;
 import com.eirsteir.coffeewithme.social.domain.friendship.FriendshipStatus;
 import com.eirsteir.coffeewithme.social.domain.user.User;
 import com.eirsteir.coffeewithme.social.repository.rsql.RqslVisitorImpl;
-import com.eirsteir.coffeewithme.testconfig.EventuateTestConfig;
+import com.eirsteir.coffeewithme.config.EventuateTestConfig;
 import cz.jirutka.rsql.parser.RSQLParser;
 import cz.jirutka.rsql.parser.ast.Node;
 import org.junit.jupiter.api.BeforeEach;

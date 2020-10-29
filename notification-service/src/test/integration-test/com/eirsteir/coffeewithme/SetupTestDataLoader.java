@@ -72,7 +72,7 @@ public class SetupTestDataLoader implements ApplicationListener<ContextRefreshed
 
         notification = Notification.builder()
                 .subjectId(OTHER_USER_ID)
-                .type(NotificationType.FRIENDSHIP_REQUESTED)
+                .type(NotificationType.FRIEND_REQUEST)
                 .user(requester)
                 .build();
 

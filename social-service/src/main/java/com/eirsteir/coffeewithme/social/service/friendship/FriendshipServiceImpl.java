@@ -11,7 +11,7 @@ import com.eirsteir.coffeewithme.social.domain.friendship.FriendshipStatus;
 import com.eirsteir.coffeewithme.social.domain.user.User;
 import com.eirsteir.coffeewithme.social.dto.FriendshipDto;
 import com.eirsteir.coffeewithme.social.repository.FriendshipRepository;
-import com.eirsteir.coffeewithme.social.repository.UserRepository;
+import com.eirsteir.coffeewithme.social.service.user.UserService;
 import com.eirsteir.coffeewithme.social.util.UserServiceUtils;
 import com.eirsteir.coffeewithme.social.web.request.FriendRequest;
 import io.eventuate.tram.events.publisher.DomainEventPublisher;
@@ -32,20 +32,21 @@ public class FriendshipServiceImpl implements FriendshipService {
 
     private DomainEventPublisher domainEventPublisher;
 
-    private UserRepository userRepository;
+    private UserService userService;
 
     private FriendshipRepository friendshipRepository;
 
-    @Autowired
     private ModelMapper modelMapper;
 
     @Autowired
     public FriendshipServiceImpl(DomainEventPublisher domainEventPublisher,
                                  FriendshipRepository friendshipRepository,
-                                 UserRepository userRepository) {
+                                 UserService userService,
+                                 ModelMapper modelMapper) {
         this.domainEventPublisher = domainEventPublisher;
         this.friendshipRepository = friendshipRepository;
-        this.userRepository = userRepository;
+        this.userService = userService;
+        this.modelMapper = modelMapper;
     }
 
     @Override
@@ -88,8 +89,8 @@ public class FriendshipServiceImpl implements FriendshipService {
 
     @Override
     public FriendshipDto registerFriendship(FriendRequest friendRequest) {
-        User requester = modelMapper.map(userRepository.findById(friendRequest.getRequesterId()), User.class);
-        User addressee = modelMapper.map(userRepository.findById(friendRequest.getAddresseeId()), User.class);
+        User requester = userService.findUserById(friendRequest.getRequesterId());
+        User addressee = userService.findUserById(friendRequest.getAddresseeId());
         FriendshipId id = FriendshipId.builder()
                 .requester(requester)
                 .addressee(addressee)
