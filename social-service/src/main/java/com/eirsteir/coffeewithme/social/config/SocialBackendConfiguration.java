@@ -9,7 +9,7 @@ import org.springframework.context.annotation.Import;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
 @Configuration
-@EnableJpaRepositories(basePackages = "com.eirsteir.coffeewithme.social.repository")
+@EnableJpaRepositories
 @EnableAutoConfiguration
 @Import({FriendshipConfiguration.class,
         UserConfiguration.class,
