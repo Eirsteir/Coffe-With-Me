@@ -2,6 +2,7 @@ package com.eirsteir.coffeewithme.social.web.api.friendship;
 
 import com.eirsteir.coffeewithme.commons.dto.UserDetailsDto;
 import com.eirsteir.coffeewithme.config.EventuateTestConfig;
+import com.eirsteir.coffeewithme.config.SetupTestDataLoader;
 import com.eirsteir.coffeewithme.social.SocialServiceApplication;
 import com.eirsteir.coffeewithme.social.config.ModelMapperConfig;
 import com.eirsteir.coffeewithme.social.domain.friendship.Friendship;
@@ -21,8 +22,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
@@ -34,9 +33,11 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+//import org.springframework.security.test.context.support.WithUserDetails;
 
-@Import({ModelMapperConfig.class, SecurityConfig.class})
-@SpringBootTest(classes = {SocialServiceApplication.class, EventuateTestConfig.class}, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+
+@Import({ModelMapperConfig.class, SetupTestDataLoader.class})
+@SpringBootTest(classes = {SocialServiceApplication.class, SecurityConfig.class, EventuateTestConfig.class}, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 class FriendshipControllerIntegrationTest {
 
     private static final String REQUESTER_EMAIL = "requester@test.com";
@@ -65,9 +66,6 @@ class FriendshipControllerIntegrationTest {
     @Autowired
     private ModelMapper modelMapper;
 
-    @Autowired
-    private UserDetailsService userDetailsService;
-
     @BeforeEach
     public void setup() {
         requester = userRepository.findByEmail(REQUESTER_EMAIL).get();
@@ -88,7 +86,7 @@ class FriendshipControllerIntegrationTest {
     }
 
     @Test
-    @WithUserDetails(value = REQUESTER_EMAIL, userDetailsServiceBeanName = "userDetailsService")
+//    @WithUserDetails(value = REQUESTER_EMAIL, userDetailsServiceBeanName = "userDetailsService")
     void testGetFriendsReturnsAcceptedFriendships() throws Exception {
 
         mvc.perform(get("/{id}/friends", requester.getId())
@@ -99,7 +97,7 @@ class FriendshipControllerIntegrationTest {
     }
 
     @Test
-    @WithUserDetails(value = ADDRESSEE_EMAIL, userDetailsServiceBeanName = "userDetailsService")
+//    @WithUserDetails(value = ADDRESSEE_EMAIL, userDetailsServiceBeanName = "userDetailsService")
     void testGetFriendsWhenAddresseeIsRequesterReturnsAcceptedFriendships() throws Exception {
 
         mvc.perform(get("/{id}/friends", addressee.getId())
@@ -110,7 +108,7 @@ class FriendshipControllerIntegrationTest {
     }
 
     @Test
-    @WithUserDetails(value = OTHER_USER_EMAIL, userDetailsServiceBeanName = "userDetailsService")
+//    @WithUserDetails(value = OTHER_USER_EMAIL, userDetailsServiceBeanName = "userDetailsService")
     void testAddFriendWhenUserFoundReturnsFriendship() throws Exception {
 
         mvc.perform(post("/friends")
@@ -123,7 +121,7 @@ class FriendshipControllerIntegrationTest {
     }
 
     @Test
-    @WithUserDetails(value = REQUESTER_EMAIL, userDetailsServiceBeanName = "userDetailsService")
+//    @WithUserDetails(value = REQUESTER_EMAIL, userDetailsServiceBeanName = "userDetailsService")
     void testAddFriendToSelfReturnsHttp400() throws Exception {
 
         mvc.perform(post("/friends")
@@ -133,7 +131,7 @@ class FriendshipControllerIntegrationTest {
     }
 
     @Test
-    @WithUserDetails(value = OTHER_USER_EMAIL, userDetailsServiceBeanName = "userDetailsService")
+//    @WithUserDetails(value = OTHER_USER_EMAIL, userDetailsServiceBeanName = "userDetailsService")
     void testAcceptFriendshipReturnsUpdatedFriendship() throws Exception {
         requestedFriendship.setStatus(FriendshipStatus.ACCEPTED);
         FriendshipDto friendshipDto = modelMapper.map(requestedFriendship, FriendshipDto.class);
@@ -148,7 +146,7 @@ class FriendshipControllerIntegrationTest {
     }
 
     @Test
-    @WithUserDetails(value = ADDRESSEE_EMAIL, userDetailsServiceBeanName = "userDetailsService")
+//    @WithUserDetails(value = ADDRESSEE_EMAIL, userDetailsServiceBeanName = "userDetailsService")
     void testAcceptFriendshipNotBelongingToUserReturnsHttp400() throws Exception {
         FriendshipDto friendshipDto = FriendshipDto.builder()
                 .requester(modelMapper.map(requestedFriendship.getRequester(), UserDetailsDto.class))
