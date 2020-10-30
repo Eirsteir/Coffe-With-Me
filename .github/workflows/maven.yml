@@ -36,14 +36,3 @@ jobs:
         DATABASE_NAME: ${{secrets.DATABASE_NAME}}
         DATABASE_HOST: ${{secrets.DATABASE_HOST}}
         DATABASE_PORT: ${{ job.services.mysql.ports['3306'] }}
-
-  formatting:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2 
-      - uses: actions/setup-java@v1
-        with:
-          java-version: "11"
-      - uses: axel-op/googlejavaformat-action@v3
-        with:
-          args: "--replace"
