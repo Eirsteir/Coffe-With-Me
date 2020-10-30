@@ -30,6 +30,12 @@ jobs:
         java-version: 11
     - name: Build with Maven
       run: mvn -B package --file pom.xml
+      env:
+        DATABASE_USER: ${{secrets.DATABASE_USER}}
+        DATABASE_PASSWORD: ${{secrets.DATABASE_PASSWORD}}
+        DATABASE_NAME: ${{secrets.DATABASE_NAME}}
+        DATABASE_HOST: ${{secrets.DATABASE_HOST}}
+        DATABASE_PORT: ${{ job.services.mysql.ports['3306'] }}
 
   format:
 
