@@ -17,6 +17,7 @@ import com.eirsteir.coffeewithme.social.web.request.CoffeeBreakRequest;
 import com.eirsteir.coffeewithme.config.BaseUnitTestClass;
 import com.eirsteir.coffeewithme.config.EventuateTestConfig;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mockito;
@@ -108,6 +109,7 @@ class CoffeeBreakServiceImplTest extends BaseUnitTestClass {
                 .thenAnswer(i -> i.getArgument(0, CoffeeBreak.class));
     }
 
+    @Disabled
     @Test
     void testRegisterCoffeeBreakWhenValid_thenReturnRegisteredCoffeeBreakAddressedToFriendsAtSameUniversity() {
         CoffeeBreakRequest request = CoffeeBreakRequest.builder()
