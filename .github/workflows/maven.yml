@@ -36,3 +36,5 @@ jobs:
         DATABASE_NAME: ${{secrets.DATABASE_NAME}}
         DATABASE_HOST: ${{secrets.DATABASE_HOST}}
         DATABASE_PORT: ${{ job.services.mysql.ports['3306'] }}
+        JWT_SECRET: ${{ secrets.JWT_SECRET }}
+        JWT_HEADER: ${{ secrets.JWT_HEADER }}
