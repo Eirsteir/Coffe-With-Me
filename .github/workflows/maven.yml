@@ -5,10 +5,20 @@ name: Java CI with Maven
 
 on:
   pull_request:
-    branches: [ dev, master ]
+    branches:
+      - dev
+      - master
 
 jobs:
+
   build:
+    services:
+      mysql:
+        image: mysql:5.7
+        env:
+          MYSQL_ROOT_PASSWORD: ${{secrets.DATABASE_ROOT_PASSWORD}}
+        ports:
+          - 3306
 
     runs-on: ubuntu-latest
 
@@ -20,5 +30,12 @@ jobs:
         java-version: 11
     - name: Build with Maven
       run: mvn -B package --file pom.xml
+
+  format:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
     - name: Google Java Format
       uses: axel-op/googlejavaformat-action@v3.4.0
