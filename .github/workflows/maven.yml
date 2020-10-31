@@ -5,10 +5,20 @@ name: Java CI with Maven
 
 on:
   pull_request:
-    branches: [ dev, master ]
+    branches:
+      - dev
+      - master
 
 jobs:
+
   build:
+    services:
+      mysql:
+        image: mysql:5.7
+        env:
+          MYSQL_ROOT_PASSWORD: ${{secrets.DATABASE_ROOT_PASSWORD}}
+        ports:
+          - 3306
 
     runs-on: ubuntu-latest
 
@@ -20,5 +30,11 @@ jobs:
         java-version: 11
     - name: Build with Maven
       run: mvn -B package --file pom.xml
-    - name: Google Java Format
-      uses: axel-op/googlejavaformat-action@v3.4.0
+      env:
+        DATABASE_USER: ${{secrets.DATABASE_USER}}
+        DATABASE_PASSWORD: ${{secrets.DATABASE_PASSWORD}}
+        DATABASE_NAME: ${{secrets.DATABASE_NAME}}
+        DATABASE_HOST: ${{secrets.DATABASE_HOST}}
+        DATABASE_PORT: ${{ job.services.mysql.ports['3306'] }}
+        JWT_SECRET: ${{ secrets.JWT_SECRET }}
+        JWT_HEADER: ${{ secrets.JWT_HEADER }}
