@@ -1,0 +1,1 @@
+INSERT INTO user (id, email) VALUES (1, 'requester@email.com') #, (2, 'addressee@email.com')

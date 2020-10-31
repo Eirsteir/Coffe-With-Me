@@ -2,6 +2,9 @@ package com.eirsteir.coffeewithme.social.web.api.friendship;
 
 import com.eirsteir.coffeewithme.commons.dto.UserDetailsDto;
 import com.eirsteir.coffeewithme.commons.exception.CWMException;
+import com.eirsteir.coffeewithme.commons.security.JwtConfig;
+import com.eirsteir.coffeewithme.commons.security.JwtUtils;
+import com.eirsteir.coffeewithme.commons.security.UserDetailsImpl;
 import com.eirsteir.coffeewithme.config.EventuateTestConfig;
 import com.eirsteir.coffeewithme.social.config.ModelMapperConfig;
 import com.eirsteir.coffeewithme.social.domain.friendship.FriendshipStatus;
@@ -61,13 +64,23 @@ class FriendshipControllerTest {
 
   @MockBean private UserService userService;
 
+  @Autowired private JwtConfig jwtConfig;
+
+  private String token;
+
   @BeforeEach
   void setUp() {
+    UserDetailsImpl userDetails = UserDetailsImpl.builder().id(REQUESTER_ID).email(REQUESTER_EMAIL).build();
     Authentication authentication = Mockito.mock(Authentication.class);
+
+    when(authentication.getPrincipal()).thenReturn(userDetails);
+
     SecurityContext securityContext = Mockito.mock(SecurityContext.class);
-    Mockito.when(securityContext.getAuthentication()).thenReturn(authentication);
+    when(securityContext.getAuthentication()).thenReturn(authentication);
     SecurityContextHolder.setContext(securityContext);
 
+    UserDetailsImpl principal = (UserDetailsImpl) authentication.getPrincipal();
+    token = JwtUtils.createJwtToken(jwtConfig, authentication, principal);
     requester = User.builder().id(REQUESTER_ID).email(REQUESTER_EMAIL).build();
 
     friendshipDto =
@@ -133,7 +146,6 @@ class FriendshipControllerTest {
         .andExpect(status().isUnauthorized());
   }
 
-  @Disabled
   @Test
   void testGetFriendsWhenUserNotFound_thenReturnHttp404() throws Exception {
     Long userNotFoundId = 100L;
@@ -141,11 +153,12 @@ class FriendshipControllerTest {
         .thenThrow(CWMException.EntityNotFoundException.class);
 
     mockMvc
-        .perform(get("/{id}/friends", userNotFoundId).contentType(MediaType.APPLICATION_JSON))
+        .perform(get("/friends", userNotFoundId)
+                         .contentType(MediaType.APPLICATION_JSON)
+                         .header(jwtConfig.getHeader(), jwtConfig.getPrefix() + token))
         .andExpect(status().isNotFound());
   }
 
-  @Disabled
   @Test
   void testGetFriendsWhenUserHasNoFriendships_thenReturnHttp204() throws Exception {
     when(userService.findUserById(requester.getId())).thenReturn(requester);
@@ -153,7 +166,9 @@ class FriendshipControllerTest {
         .thenReturn(new ArrayList<>());
 
     mockMvc
-        .perform(get("/{id}/friends", requester.getId()).contentType(MediaType.APPLICATION_JSON))
+        .perform(get("/friends")
+                         .contentType(MediaType.APPLICATION_JSON)
+                         .header(jwtConfig.getHeader(), jwtConfig.getPrefix() + token))
         .andExpect(status().isNoContent())
         .andExpect(
             jsonPath(
