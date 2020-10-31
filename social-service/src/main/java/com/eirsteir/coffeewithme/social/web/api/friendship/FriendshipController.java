@@ -8,9 +8,6 @@ import com.eirsteir.coffeewithme.social.dto.FriendshipDto;
 import com.eirsteir.coffeewithme.social.service.friendship.FriendshipService;
 import com.eirsteir.coffeewithme.social.service.user.UserService;
 import com.eirsteir.coffeewithme.social.web.request.FriendRequest;
-import java.util.Collection;
-import java.util.List;
-import javax.validation.Valid;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
@@ -18,6 +15,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
+
+import javax.validation.Valid;
+import java.util.Collection;
+import java.util.List;
 
 @Slf4j
 @RestController
@@ -57,8 +58,12 @@ public class FriendshipController {
       throw new ResponseStatusException(
           HttpStatus.BAD_REQUEST, "Cannot send friend requests to yourself");
 
-    return friendshipService.registerFriendship(
-        FriendRequest.builder().requesterId(currentUser.getId()).addresseeId(toFriend).build());
+    FriendRequest friendRequest = FriendRequest.builder()
+            .requesterId(currentUser.getId())
+            .addresseeId(toFriend)
+            .build();
+
+    return friendshipService.registerFriendship(friendRequest);
   }
 
   @PutMapping("/friends")

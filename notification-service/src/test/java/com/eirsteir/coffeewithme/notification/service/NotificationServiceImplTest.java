@@ -1,20 +1,13 @@
 package com.eirsteir.coffeewithme.notification.service;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
-import static org.mockito.Mockito.when;
-
 import com.eirsteir.coffeewithme.commons.domain.notification.NotificationType;
 import com.eirsteir.coffeewithme.commons.exception.CWMException;
+import com.eirsteir.coffeewithme.commons.test.BaseUnitTest;
 import com.eirsteir.coffeewithme.notification.config.ModelMapperConfig;
 import com.eirsteir.coffeewithme.notification.domain.Notification;
 import com.eirsteir.coffeewithme.notification.dto.NotificationDto;
 import com.eirsteir.coffeewithme.notification.repository.NotificationRepository;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mockito;
@@ -24,13 +17,23 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-@Import({ModelMapperConfig.class})
+import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+import static org.mockito.Mockito.when;
+
+@ActiveProfiles("test")
+@Import({ModelMapperConfig.class, BaseUnitTest.class})
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration(classes = {NotificationServiceImpl.class})
-class NotificationServiceImplTest {
+class NotificationServiceImplTest extends BaseUnitTest {
 
   private final long TO_USER_ID = 1L;
   private final long CURRENT_USER_ID = 2L;
@@ -95,7 +98,6 @@ class NotificationServiceImplTest {
     assertThat(updatedNotificationDto.getSeen()).isTrue();
   }
 
-  @Disabled
   @Test
   void testUpdateNotificationToReadWhenNotFound_thenThrowEntityNotFoundException() {
     when(notificationRepository.findById(friendRequestNotification.getNotificationId()))
@@ -105,10 +107,6 @@ class NotificationServiceImplTest {
         modelMapper.map(friendRequestNotification, NotificationDto.class);
 
     assertThatExceptionOfType(CWMException.EntityNotFoundException.class)
-        .isThrownBy(() -> service.updateNotificationToRead(notificationDtoToUpdate))
-        .withMessage(
-            "Requested notification with id - "
-                + friendRequestNotification.getNotificationId()
-                + " does not exist");
+        .isThrownBy(() -> service.updateNotificationToRead(notificationDtoToUpdate));
   }
 }

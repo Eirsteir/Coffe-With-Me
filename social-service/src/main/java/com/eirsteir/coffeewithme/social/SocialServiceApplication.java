@@ -6,7 +6,11 @@ import org.springframework.cloud.netflix.eureka.EnableEurekaClient;
 import org.springframework.context.annotation.ComponentScan;
 
 @EnableEurekaClient
-@ComponentScan(basePackages = {"com.eirsteir.coffeewithme.commons.exception"})
+@ComponentScan(
+        basePackages = {
+                "com.eirsteir.coffeewithme.commons.exception",
+                "com.eirsteir.coffeewithme.social"
+        })
 @SpringBootApplication
 public class SocialServiceApplication {
 

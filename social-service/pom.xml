@@ -27,7 +27,7 @@
         <modelmapper.version>2.3.0</modelmapper.version>
         <springdoc.openapi.version>1.3.9</springdoc.openapi.version>
         <rsql.parser.version>2.1.0</rsql.parser.version>
-        <eventuate-messaging-kafka.version>0.12.0.RELEASE</eventuate-messaging-kafka.version>
+        <eventuate-messaging-kafka.version>0.9.0.RELEASE</eventuate-messaging-kafka.version>
         <eventuate-tram.version>0.24.0.RELEASE</eventuate-tram.version>
         <springfox.swagger.version>2.9.2</springfox.swagger.version>
     </properties>
@@ -131,6 +131,7 @@
             <artifactId>eventuate-tram-spring-events</artifactId>
             <version>${eventuate-tram.version}</version>
         </dependency>
+
         <dependency>
             <groupId>io.eventuate.tram.core</groupId>
             <artifactId>eventuate-tram-spring-optimistic-locking</artifactId>

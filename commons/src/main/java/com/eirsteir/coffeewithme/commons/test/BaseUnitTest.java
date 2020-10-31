@@ -1,4 +1,4 @@
-package com.eirsteir.coffeewithme.config;
+package com.eirsteir.coffeewithme.commons.test;
 
 import com.eirsteir.coffeewithme.commons.exception.MessageTemplateUtil;
 import com.eirsteir.coffeewithme.commons.exception.PropertiesConfig;
@@ -14,7 +14,7 @@ import org.springframework.context.annotation.Bean;
  * running tests that throw a custom exception.
  */
 @TestConfiguration
-public class BaseUnitTestClass {
+public class BaseUnitTest {
 
   @Mock private static PropertiesConfig propertiesConfig;
 

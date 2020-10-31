@@ -14,13 +14,14 @@ import com.eirsteir.coffeewithme.social.repository.UserRepository;
 import com.eirsteir.coffeewithme.social.web.request.CoffeeBreakRequest;
 import io.eventuate.tram.events.publisher.DomainEventPublisher;
 import io.eventuate.tram.events.publisher.ResultWithEvents;
-import java.time.LocalTime;
-import java.util.List;
-import javax.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import javax.transaction.Transactional;
+import java.time.LocalTime;
+import java.util.List;
 
 @Slf4j
 @Service
@@ -67,10 +68,6 @@ public class CoffeeBreakServiceImpl implements CoffeeBreakService {
     return modelMapper.map(coffeeBreak, CoffeeBreakDetails.class);
   }
 
-  private CoffeeBreakDetails getCoffeeBreakDetails(CoffeeBreak coffeeBreak) {
-    return modelMapper.map(coffeeBreak, CoffeeBreakDetails.class);
-  }
-
   private CoffeeBreak createCoffeeBreak(CoffeeBreakRequest coffeeBreakRequest, Long currentUserId) {
     User requester = getUserOrThrowException(currentUserId);
     List<User> addressees = requester.getFiendsAtUniversity();
@@ -83,6 +80,10 @@ public class CoffeeBreakServiceImpl implements CoffeeBreakService {
         .campus(campus)
         .scheduledTo(scheduledTo)
         .build();
+  }
+
+  private CoffeeBreakDetails getCoffeeBreakDetails(CoffeeBreak coffeeBreak) {
+    return modelMapper.map(coffeeBreak, CoffeeBreakDetails.class);
   }
 
   // TODO: more specified exception?

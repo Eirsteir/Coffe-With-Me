@@ -7,7 +7,7 @@ import static org.mockito.Mockito.when;
 import com.eirsteir.coffeewithme.commons.dto.UserDetailsDto;
 import com.eirsteir.coffeewithme.commons.exception.CWMException;
 import com.eirsteir.coffeewithme.commons.security.UserDetailsImpl;
-import com.eirsteir.coffeewithme.config.BaseUnitTestClass;
+import com.eirsteir.coffeewithme.commons.test.BaseUnitTest;
 import com.eirsteir.coffeewithme.config.EventuateTestConfig;
 import com.eirsteir.coffeewithme.social.config.ModelMapperConfig;
 import com.eirsteir.coffeewithme.social.domain.friendship.FriendshipStatus;
@@ -38,10 +38,10 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 @ActiveProfiles("test")
-@Import({ModelMapperConfig.class, BaseUnitTestClass.class, EventuateTestConfig.class})
+@Import({ModelMapperConfig.class, BaseUnitTest.class, EventuateTestConfig.class})
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration(classes = {UserServiceImpl.class, BCryptPasswordEncoder.class})
-class UserServiceImplTest extends BaseUnitTestClass {
+class UserServiceImplTest extends BaseUnitTest {
 
   public static final String EMAIL_ALEX = "alex@email.com";
   public static final String NICKNAME_ALEX = "alex";
