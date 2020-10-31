@@ -1,14 +1,5 @@
 package com.eirsteir.coffeewithme.social.web.api.friendship;
 
-import static com.eirsteir.coffeewithme.social.domain.friendship.FriendshipStatus.ACCEPTED;
-import static com.eirsteir.coffeewithme.social.domain.friendship.FriendshipStatus.REQUESTED;
-import static org.hamcrest.Matchers.equalTo;
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
 import com.eirsteir.coffeewithme.commons.dto.UserDetailsDto;
 import com.eirsteir.coffeewithme.commons.exception.CWMException;
 import com.eirsteir.coffeewithme.config.EventuateTestConfig;
@@ -21,8 +12,6 @@ import com.eirsteir.coffeewithme.social.service.friendship.FriendshipService;
 import com.eirsteir.coffeewithme.social.service.user.UserService;
 import com.eirsteir.coffeewithme.social.web.request.FriendRequest;
 import com.eirsteir.coffeewithme.util.JSONUtils;
-import java.util.ArrayList;
-import java.util.Collections;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
@@ -38,6 +27,18 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
+
+import java.util.ArrayList;
+import java.util.Collections;
+
+import static com.eirsteir.coffeewithme.social.domain.friendship.FriendshipStatus.ACCEPTED;
+import static com.eirsteir.coffeewithme.social.domain.friendship.FriendshipStatus.REQUESTED;
+import static org.hamcrest.Matchers.equalTo;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @ActiveProfiles("test")
 @Import({SecurityConfig.class, ModelMapperConfig.class, EventuateTestConfig.class})
@@ -77,7 +78,6 @@ class FriendshipControllerTest {
             .build();
   }
 
-  @Disabled
   @Test
   void testAddFriendWhenAddresseeExists_thenReturnHttp200() throws Exception {
     when(friendshipService.registerFriendship(Mockito.any(FriendRequest.class)))
