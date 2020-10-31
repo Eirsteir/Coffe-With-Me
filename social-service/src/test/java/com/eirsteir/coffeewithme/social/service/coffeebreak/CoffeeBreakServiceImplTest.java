@@ -1,5 +1,9 @@
 package com.eirsteir.coffeewithme.social.service.coffeebreak;
 
+import static org.assertj.core.api.AssertionsForClassTypes.assertThatExceptionOfType;
+import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
+import static org.mockito.Mockito.when;
+
 import com.eirsteir.coffeewithme.commons.domain.coffeebreak.CoffeeBreakDetails;
 import com.eirsteir.coffeewithme.commons.domain.user.UserDetails;
 import com.eirsteir.coffeewithme.commons.dto.UserDetailsDto;
@@ -18,6 +22,10 @@ import com.eirsteir.coffeewithme.social.repository.CampusRepository;
 import com.eirsteir.coffeewithme.social.repository.CoffeeBreakRepository;
 import com.eirsteir.coffeewithme.social.repository.UserRepository;
 import com.eirsteir.coffeewithme.social.web.request.CoffeeBreakRequest;
+import java.time.LocalTime;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -29,15 +37,6 @@ import org.springframework.context.annotation.Import;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
-
-import java.time.LocalTime;
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
-
-import static org.assertj.core.api.AssertionsForClassTypes.assertThatExceptionOfType;
-import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
-import static org.mockito.Mockito.when;
 
 @ActiveProfiles("test")
 @Import({ModelMapperConfig.class, BaseUnitTest.class, EventuateTestConfig.class})
@@ -135,8 +134,7 @@ class CoffeeBreakServiceImplTest extends BaseUnitTest {
     UserDetails expectedUserDetails = modelMapper.map(addresseeAtSameUniversity, UserDetails.class);
 
     assertThat(savedCoffeeBreakDetails.getRequester()).isIn(requesterUserDetails);
-    assertThat(savedCoffeeBreakDetails.getAddressees())
-        .contains(expectedUserDetails);
+    assertThat(savedCoffeeBreakDetails.getAddressees()).contains(expectedUserDetails);
   }
 
   @Test

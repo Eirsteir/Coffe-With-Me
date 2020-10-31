@@ -7,10 +7,10 @@ import org.springframework.context.annotation.ComponentScan;
 
 @EnableEurekaClient
 @ComponentScan(
-        basePackages = {
-                "com.eirsteir.coffeewithme.commons.exception",
-                "com.eirsteir.coffeewithme.social"
-        })
+    basePackages = {
+      "com.eirsteir.coffeewithme.commons.exception",
+      "com.eirsteir.coffeewithme.social"
+    })
 @SpringBootApplication
 public class SocialServiceApplication {
 

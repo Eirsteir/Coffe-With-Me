@@ -13,13 +13,13 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 @EnableJpaRepositories(basePackages = "com.eirsteir.coffeewithme.social.repository")
 @EnableAutoConfiguration
 @Import({
-        UserConfiguration.class,
-        FriendshipConfiguration.class,
-        CoffeeBreakConfiguration.class,
-        ModelMapperConfig.class,
-        TramJdbcKafkaConfiguration.class,
-        TramEventsPublisherConfiguration.class,
-        TramEventSubscriberConfiguration.class,
-        OptimisticLockingDecoratorConfiguration.class
+  UserConfiguration.class,
+  FriendshipConfiguration.class,
+  CoffeeBreakConfiguration.class,
+  ModelMapperConfig.class,
+  TramJdbcKafkaConfiguration.class,
+  TramEventsPublisherConfiguration.class,
+  TramEventSubscriberConfiguration.class,
+  OptimisticLockingDecoratorConfiguration.class
 })
 public class SocialServiceConfiguration {}

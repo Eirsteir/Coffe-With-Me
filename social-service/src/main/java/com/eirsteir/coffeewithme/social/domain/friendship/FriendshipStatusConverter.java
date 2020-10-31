@@ -5,9 +5,8 @@ import java.util.stream.Stream;
 import javax.persistence.Converter;
 
 @Converter(
-    autoApply =
-        true) // automatically apply the conversion logic to all mapped attributes of a
-              // FriendRequestStatus type.
+    autoApply = true) // automatically apply the conversion logic to all mapped attributes of a
+// FriendRequestStatus type.
 public class FriendshipStatusConverter
     implements RequestStatusConverter<FriendshipStatus, Integer> {
 

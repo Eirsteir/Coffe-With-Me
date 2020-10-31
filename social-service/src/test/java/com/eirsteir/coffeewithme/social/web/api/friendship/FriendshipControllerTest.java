@@ -1,5 +1,14 @@
 package com.eirsteir.coffeewithme.social.web.api.friendship;
 
+import static com.eirsteir.coffeewithme.social.domain.friendship.FriendshipStatus.ACCEPTED;
+import static com.eirsteir.coffeewithme.social.domain.friendship.FriendshipStatus.REQUESTED;
+import static org.hamcrest.Matchers.equalTo;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
 import com.eirsteir.coffeewithme.commons.dto.UserDetailsDto;
 import com.eirsteir.coffeewithme.commons.exception.CWMException;
 import com.eirsteir.coffeewithme.commons.security.JwtConfig;
@@ -16,6 +25,8 @@ import com.eirsteir.coffeewithme.social.service.friendship.FriendshipService;
 import com.eirsteir.coffeewithme.social.service.user.UserService;
 import com.eirsteir.coffeewithme.social.web.request.FriendRequest;
 import com.eirsteir.coffeewithme.util.JSONUtils;
+import java.util.ArrayList;
+import java.util.Collections;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -29,18 +40,6 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
-
-import java.util.ArrayList;
-import java.util.Collections;
-
-import static com.eirsteir.coffeewithme.social.domain.friendship.FriendshipStatus.ACCEPTED;
-import static com.eirsteir.coffeewithme.social.domain.friendship.FriendshipStatus.REQUESTED;
-import static org.hamcrest.Matchers.equalTo;
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @ActiveProfiles("test")
 @Import({SecurityConfig.class, ModelMapperConfig.class, EventuateTestConfig.class})
@@ -68,7 +67,8 @@ class FriendshipControllerTest {
 
   @BeforeEach
   void setUp() {
-    UserDetailsImpl userDetails = UserDetailsImpl.builder().id(REQUESTER_ID).email(REQUESTER_EMAIL).build();
+    UserDetailsImpl userDetails =
+        UserDetailsImpl.builder().id(REQUESTER_ID).email(REQUESTER_EMAIL).build();
     Authentication authentication = Mockito.mock(Authentication.class);
 
     when(authentication.getPrincipal()).thenReturn(userDetails);
@@ -91,8 +91,7 @@ class FriendshipControllerTest {
 
   @Test
   void testAddFriendWhenAddresseeExists_thenReturnHttp200() throws Exception {
-    when(userService.findUserById(requester.getId()))
-            .thenReturn(requester);
+    when(userService.findUserById(requester.getId())).thenReturn(requester);
     when(friendshipService.registerFriendship(Mockito.any(FriendRequest.class)))
         .thenReturn(friendshipDto);
 
@@ -149,15 +148,15 @@ class FriendshipControllerTest {
 
   @Test
   void testGetFriendsWhenUserHasNoFriendships_thenReturnHttp204() throws Exception {
-    when(userService.findUserById(requester.getId()))
-            .thenReturn(requester);
+    when(userService.findUserById(requester.getId())).thenReturn(requester);
     when(friendshipService.findFriendshipsOf(Mockito.any(UserDetailsDto.class)))
         .thenReturn(new ArrayList<>());
 
     mockMvc
-        .perform(get("/friends")
-                         .contentType(MediaType.APPLICATION_JSON)
-                         .header(jwtConfig.getHeader(), jwtConfig.getPrefix() + requesterToken))
+        .perform(
+            get("/friends")
+                .contentType(MediaType.APPLICATION_JSON)
+                .header(jwtConfig.getHeader(), jwtConfig.getPrefix() + requesterToken))
         .andExpect(status().isNoContent())
         .andExpect(
             jsonPath(
@@ -185,9 +184,10 @@ class FriendshipControllerTest {
                     .build()));
 
     mockMvc
-        .perform(get("/friends", requester.getId())
-                         .contentType(MediaType.APPLICATION_JSON)
-                         .header(jwtConfig.getHeader(), jwtConfig.getPrefix() + requesterToken))
+        .perform(
+            get("/friends", requester.getId())
+                .contentType(MediaType.APPLICATION_JSON)
+                .header(jwtConfig.getHeader(), jwtConfig.getPrefix() + requesterToken))
         .andExpect(status().isOk())
         .andExpect(jsonPath("$[0].requester.id", equalTo((REQUESTER_ID.intValue()))))
         .andExpect(jsonPath("$[0].addressee.id", equalTo(ADDRESSEE_ID.intValue())));
@@ -196,8 +196,7 @@ class FriendshipControllerTest {
   @Test
   void testGetFriendRequestsWhenUserHasFriendshipsWithStatusRequested_thenReturnListOfFriendships()
       throws Exception {
-    when(userService.findUserById(requester.getId()))
-            .thenReturn(requester);
+    when(userService.findUserById(requester.getId())).thenReturn(requester);
     when(friendshipService.findFriendshipsOf(Mockito.any(Long.class), eq(REQUESTED)))
         .thenReturn(
             Collections.singletonList(
@@ -209,8 +208,8 @@ class FriendshipControllerTest {
     mockMvc
         .perform(
             get("/friends/requests", requester.getId())
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .header(jwtConfig.getHeader(), jwtConfig.getPrefix() + requesterToken))
+                .contentType(MediaType.APPLICATION_JSON)
+                .header(jwtConfig.getHeader(), jwtConfig.getPrefix() + requesterToken))
         .andExpect(status().isOk())
         .andExpect(jsonPath("$[0].requester.id", equalTo((REQUESTER_ID.intValue()))))
         .andExpect(jsonPath("$[0].addressee.id", equalTo(ADDRESSEE_ID.intValue())));
@@ -226,8 +225,8 @@ class FriendshipControllerTest {
     mockMvc
         .perform(
             get("/friends/requests", requester.getId())
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .header(jwtConfig.getHeader(), jwtConfig.getPrefix() + requesterToken))
+                .contentType(MediaType.APPLICATION_JSON)
+                .header(jwtConfig.getHeader(), jwtConfig.getPrefix() + requesterToken))
         .andExpect(status().isNoContent())
         .andExpect(
             jsonPath(
@@ -238,7 +237,8 @@ class FriendshipControllerTest {
   @Test
   void testAcceptFriendshipWhenFriendshipExistsAndStatusIsRequested_thenReturnHttp200()
       throws Exception {
-    UserDetailsImpl userDetails = UserDetailsImpl.builder().id(ADDRESSEE_ID).email(ADDRESSEE_EMAIL).build();
+    UserDetailsImpl userDetails =
+        UserDetailsImpl.builder().id(ADDRESSEE_ID).email(ADDRESSEE_EMAIL).build();
     Authentication authentication = Mockito.mock(Authentication.class);
 
     when(authentication.getPrincipal()).thenReturn(userDetails);
@@ -294,7 +294,8 @@ class FriendshipControllerTest {
 
   @Test
   void testAcceptFriendshipWhenFriendshipNotFound_thenReturnHttp404() throws Exception {
-    UserDetailsImpl userDetails = UserDetailsImpl.builder().id(ADDRESSEE_ID).email(ADDRESSEE_EMAIL).build();
+    UserDetailsImpl userDetails =
+        UserDetailsImpl.builder().id(ADDRESSEE_ID).email(ADDRESSEE_EMAIL).build();
     Authentication authentication = Mockito.mock(Authentication.class);
 
     when(authentication.getPrincipal()).thenReturn(userDetails);
