@@ -6,13 +6,12 @@ import com.eirsteir.coffeewithme.commons.security.JwtConfig;
 import com.eirsteir.coffeewithme.commons.security.JwtUtils;
 import com.eirsteir.coffeewithme.commons.security.UserDetailsImpl;
 import com.eirsteir.coffeewithme.config.EventuateTestConfig;
+import com.eirsteir.coffeewithme.config.FriendshipControllerTestConfiguration;
 import com.eirsteir.coffeewithme.social.config.ModelMapperConfig;
 import com.eirsteir.coffeewithme.social.domain.friendship.FriendshipStatus;
 import com.eirsteir.coffeewithme.social.domain.user.User;
 import com.eirsteir.coffeewithme.social.dto.FriendshipDto;
-import com.eirsteir.coffeewithme.social.repository.*;
 import com.eirsteir.coffeewithme.social.security.SecurityConfig;
-import com.eirsteir.coffeewithme.social.service.coffeebreak.CoffeeBreakService;
 import com.eirsteir.coffeewithme.social.service.friendship.FriendshipService;
 import com.eirsteir.coffeewithme.social.service.user.UserService;
 import com.eirsteir.coffeewithme.social.web.request.FriendRequest;
@@ -22,16 +21,13 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.context.TestConfiguration;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.ArrayList;
@@ -48,6 +44,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @ActiveProfiles("test")
 @Import({SecurityConfig.class, ModelMapperConfig.class, EventuateTestConfig.class})
+@ContextConfiguration(classes = {FriendshipControllerTestConfiguration.class})
 @WebMvcTest(controllers = FriendshipController.class)
 class FriendshipControllerTest {
 
@@ -61,43 +58,9 @@ class FriendshipControllerTest {
 
   @Autowired private MockMvc mockMvc;
 
-  @MockBean private UserDetailsService userDetailsService;
-
   @Autowired private FriendshipService friendshipService;
 
   @Autowired private UserService userService;
-
-  @TestConfiguration
-  static class FriendshipControllerTestConfiguration {
-
-    @MockBean
-    private CoffeeBreakRepository coffeeBreakRepository;
-
-    @MockBean
-    private UserRepository userRepository;
-    @MockBean
-    private CampusRepository campusRepository;
-    @MockBean
-    private FriendshipRepository friendshipRepository;
-    @MockBean
-    private UniversityRepository universityRepository;
-    @Bean
-    public FriendshipService friendshipService()
-    {
-      return Mockito.mock(FriendshipService.class);
-    }
-    @Bean
-    public UserService userService()
-    {
-      return Mockito.mock(UserService.class);
-    }
-    @Bean
-    public CoffeeBreakService coffeeBreakService()
-    {
-      return Mockito.mock(CoffeeBreakService.class);
-    }
-
-  }
 
   @Autowired private JwtConfig jwtConfig;
 
