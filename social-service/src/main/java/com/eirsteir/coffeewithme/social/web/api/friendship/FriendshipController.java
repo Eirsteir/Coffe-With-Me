@@ -34,8 +34,6 @@ public class FriendshipController {
   @GetMapping("/friends")
   @ResponseBody
   Collection<FriendshipDto> getFriends(@AuthenticationPrincipal UserDetailsImpl principal) {
-    log.debug("Retrieving friends of {}", principal);
-
     UserDetailsDto UserDetailsDto =
         modelMapper.map(userService.findUserById(principal.getId()), UserDetailsDto.class);
     List<FriendshipDto> friendships = friendshipService.findFriendshipsOf(UserDetailsDto);
@@ -60,8 +58,12 @@ public class FriendshipController {
       throw new ResponseStatusException(
           HttpStatus.BAD_REQUEST, "Cannot send friend requests to yourself");
 
-    return friendshipService.registerFriendship(
-        FriendRequest.builder().requesterId(currentUser.getId()).addresseeId(toFriend).build());
+    FriendRequest friendRequest = FriendRequest.builder()
+            .requesterId(currentUser.getId())
+            .addresseeId(toFriend)
+            .build();
+
+    return friendshipService.registerFriendship(friendRequest);
   }
 
   @PutMapping("/friends")

@@ -18,7 +18,6 @@ import com.eirsteir.coffeewithme.social.service.user.UserService;
 import com.eirsteir.coffeewithme.social.web.request.FriendRequest;
 import com.eirsteir.coffeewithme.util.JSONUtils;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -102,7 +101,7 @@ class FriendshipControllerTest {
 
   @Autowired private JwtConfig jwtConfig;
 
-  private String token;
+  private String requesterToken;
 
   @BeforeEach
   void setUp() {
@@ -116,7 +115,7 @@ class FriendshipControllerTest {
     SecurityContextHolder.setContext(securityContext);
 
     UserDetailsImpl principal = (UserDetailsImpl) authentication.getPrincipal();
-    token = JwtUtils.createJwtToken(jwtConfig, authentication, principal);
+    requesterToken = JwtUtils.createJwtToken(jwtConfig, authentication, principal);
     requester = User.builder().id(REQUESTER_ID).email(REQUESTER_EMAIL).build();
 
     friendshipDto =
@@ -129,6 +128,8 @@ class FriendshipControllerTest {
 
   @Test
   void testAddFriendWhenAddresseeExists_thenReturnHttp200() throws Exception {
+    when(userService.findUserById(requester.getId()))
+            .thenReturn(requester);
     when(friendshipService.registerFriendship(Mockito.any(FriendRequest.class)))
         .thenReturn(friendshipDto);
 
@@ -136,14 +137,14 @@ class FriendshipControllerTest {
         .perform(
             post("/friends")
                 .contentType(MediaType.APPLICATION_JSON)
-                .param("to_friend", String.valueOf(ADDRESSEE_ID)))
+                .param("to_friend", String.valueOf(ADDRESSEE_ID))
+                .header(jwtConfig.getHeader(), jwtConfig.getPrefix() + requesterToken))
         .andExpect(status().isCreated())
-        .andExpect(jsonPath("$.requesterId", equalTo(requester.getId().intValue())))
-        .andExpect(jsonPath("$.addresseeId", equalTo(ADDRESSEE_ID.intValue())))
+        .andExpect(jsonPath("$.requester.id", equalTo((REQUESTER_ID.intValue()))))
+        .andExpect(jsonPath("$.addressee.id", equalTo(ADDRESSEE_ID.intValue())))
         .andExpect(jsonPath("$.status", equalTo(FriendshipStatus.REQUESTED.getStatus())));
   }
 
-  @Disabled
   @Test
   void testAddFriendWhenAddresseeDoesNotExists_thenReturnHttp404() throws Exception {
     when(friendshipService.registerFriendship(Mockito.any(FriendRequest.class)))
@@ -153,13 +154,13 @@ class FriendshipControllerTest {
         .perform(
             post("/friends")
                 .contentType(MediaType.APPLICATION_JSON)
-                .param("to_friend", String.valueOf(ADDRESSEE_ID)))
+                .param("to_friend", String.valueOf(ADDRESSEE_ID))
+                .header(jwtConfig.getHeader(), jwtConfig.getPrefix() + requesterToken))
         .andExpect(status().isNotFound());
   }
 
-  @Disabled
   @Test
-  void testAddFriendWhenFriendshipAlreadyExists_thenReturnHttp404() throws Exception {
+  void testAddFriendWhenFriendshipAlreadyExists_thenReturnHttp400() throws Exception {
     when(friendshipService.registerFriendship(Mockito.any(FriendRequest.class)))
         .thenThrow(CWMException.DuplicateEntityException.class);
 
@@ -167,7 +168,8 @@ class FriendshipControllerTest {
         .perform(
             post("/friends")
                 .contentType(MediaType.APPLICATION_JSON)
-                .param("to_friend", String.valueOf(ADDRESSEE_ID)))
+                .param("to_friend", String.valueOf(ADDRESSEE_ID))
+                .header(jwtConfig.getHeader(), jwtConfig.getPrefix() + requesterToken))
         .andExpect(status().isBadRequest());
   }
 
@@ -183,28 +185,16 @@ class FriendshipControllerTest {
   }
 
   @Test
-  void testGetFriendsWhenUserNotFound_thenReturnHttp404() throws Exception {
-    Long userNotFoundId = 100L;
-    when(userService.findUserById(userNotFoundId))
-        .thenThrow(CWMException.EntityNotFoundException.class);
-
-    mockMvc
-        .perform(get("/friends", userNotFoundId)
-                         .contentType(MediaType.APPLICATION_JSON)
-                         .header(jwtConfig.getHeader(), jwtConfig.getPrefix() + token))
-        .andExpect(status().isNotFound());
-  }
-
-  @Test
   void testGetFriendsWhenUserHasNoFriendships_thenReturnHttp204() throws Exception {
-    when(userService.findUserById(requester.getId())).thenReturn(requester);
+    when(userService.findUserById(requester.getId()))
+            .thenReturn(requester);
     when(friendshipService.findFriendshipsOf(Mockito.any(UserDetailsDto.class)))
         .thenReturn(new ArrayList<>());
 
     mockMvc
         .perform(get("/friends")
                          .contentType(MediaType.APPLICATION_JSON)
-                         .header(jwtConfig.getHeader(), jwtConfig.getPrefix() + token))
+                         .header(jwtConfig.getHeader(), jwtConfig.getPrefix() + requesterToken))
         .andExpect(status().isNoContent())
         .andExpect(
             jsonPath(
@@ -220,7 +210,6 @@ class FriendshipControllerTest {
         .andExpect(status().isUnauthorized());
   }
 
-  @Disabled
   @Test
   void testGetFriendsWhenUserHasFriendships_thenReturnHttp200WithFriends() throws Exception {
     when(userService.findUserById(requester.getId())).thenReturn(requester);
@@ -233,17 +222,19 @@ class FriendshipControllerTest {
                     .build()));
 
     mockMvc
-        .perform(get("/{id}/friends", requester.getId()).contentType(MediaType.APPLICATION_JSON))
+        .perform(get("/friends", requester.getId())
+                         .contentType(MediaType.APPLICATION_JSON)
+                         .header(jwtConfig.getHeader(), jwtConfig.getPrefix() + requesterToken))
         .andExpect(status().isOk())
-        .andExpect(jsonPath("$[0].email", equalTo(REQUESTER_EMAIL)))
-        .andExpect(jsonPath("$[1].email", equalTo(ADDRESSEE_EMAIL)));
+        .andExpect(jsonPath("$[0].requester.id", equalTo((REQUESTER_ID.intValue()))))
+        .andExpect(jsonPath("$[0].addressee.id", equalTo(ADDRESSEE_ID.intValue())));
   }
 
-  @Disabled
   @Test
-  void testGetFriendRequestsWhenUserHasFriendshipsWithStatusRequested_thenReturnHttp200WithFriends()
+  void testGetFriendRequestsWhenUserHasFriendshipsWithStatusRequested_thenReturnListOfFriendships()
       throws Exception {
-    when(userService.findUserById(requester.getId())).thenReturn(requester);
+    when(userService.findUserById(requester.getId()))
+            .thenReturn(requester);
     when(friendshipService.findFriendshipsOf(Mockito.any(Long.class), eq(REQUESTED)))
         .thenReturn(
             Collections.singletonList(
@@ -254,13 +245,14 @@ class FriendshipControllerTest {
 
     mockMvc
         .perform(
-            get("/friends/requests", requester.getId()).contentType(MediaType.APPLICATION_JSON))
+            get("/friends/requests", requester.getId())
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .header(jwtConfig.getHeader(), jwtConfig.getPrefix() + requesterToken))
         .andExpect(status().isOk())
-        .andExpect(jsonPath("$[0].email", equalTo(REQUESTER_EMAIL)))
-        .andExpect(jsonPath("$[1].email", equalTo(ADDRESSEE_EMAIL)));
+        .andExpect(jsonPath("$[0].requester.id", equalTo((REQUESTER_ID.intValue()))))
+        .andExpect(jsonPath("$[0].addressee.id", equalTo(ADDRESSEE_ID.intValue())));
   }
 
-  @Disabled
   @Test
   void testGetFriendRequestsWhenUserHasNoFriendshipsWithStatusRequested_thenReturnHttp204()
       throws Exception {
@@ -270,7 +262,9 @@ class FriendshipControllerTest {
 
     mockMvc
         .perform(
-            get("/friends/requests", requester.getId()).contentType(MediaType.APPLICATION_JSON))
+            get("/friends/requests", requester.getId())
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .header(jwtConfig.getHeader(), jwtConfig.getPrefix() + requesterToken))
         .andExpect(status().isNoContent())
         .andExpect(
             jsonPath(
@@ -278,10 +272,21 @@ class FriendshipControllerTest {
                 equalTo("User with email - " + REQUESTER_EMAIL + " has no friend requests")));
   }
 
-  @Disabled
   @Test
   void testAcceptFriendshipWhenFriendshipExistsAndStatusIsRequested_thenReturnHttp200()
       throws Exception {
+    UserDetailsImpl userDetails = UserDetailsImpl.builder().id(ADDRESSEE_ID).email(ADDRESSEE_EMAIL).build();
+    Authentication authentication = Mockito.mock(Authentication.class);
+
+    when(authentication.getPrincipal()).thenReturn(userDetails);
+
+    SecurityContext securityContext = Mockito.mock(SecurityContext.class);
+    when(securityContext.getAuthentication()).thenReturn(authentication);
+    SecurityContextHolder.setContext(securityContext);
+
+    UserDetailsImpl principal = (UserDetailsImpl) authentication.getPrincipal();
+    String addresseeToken = JwtUtils.createJwtToken(jwtConfig, authentication, principal);
+
     when(friendshipService.updateFriendship(Mockito.any(FriendshipDto.class)))
         .thenReturn(friendshipDto.setStatus(ACCEPTED));
 
@@ -289,12 +294,12 @@ class FriendshipControllerTest {
         .perform(
             put("/friends")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(JSONUtils.asJsonString(friendshipDto)))
+                .content(JSONUtils.asJsonString(friendshipDto))
+                .header(jwtConfig.getHeader(), jwtConfig.getPrefix() + addresseeToken))
         .andExpect(status().isOk())
         .andExpect(jsonPath("$.status", equalTo(ACCEPTED.getStatus())));
   }
 
-  @Disabled
   @Test
   void testAcceptFriendshipWhenFriendshipDoesNotBelongToUser_thenReturnHttp400() throws Exception {
     friendshipDto
@@ -305,12 +310,12 @@ class FriendshipControllerTest {
         .perform(
             put("/friends")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(JSONUtils.asJsonString(friendshipDto)))
+                .content(JSONUtils.asJsonString(friendshipDto))
+                .header(jwtConfig.getHeader(), jwtConfig.getPrefix() + requesterToken))
         .andExpect(status().isBadRequest())
         .andExpect(jsonPath("$.message", equalTo("Friendship does not belong to current user")));
   }
 
-  @Disabled
   @Test
   void testAcceptFriendshipSentBySelf_thenReturnHttp400() throws Exception {
 
@@ -318,14 +323,25 @@ class FriendshipControllerTest {
         .perform(
             put("/friends")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(JSONUtils.asJsonString(friendshipDto)))
+                .content(JSONUtils.asJsonString(friendshipDto))
+                .header(jwtConfig.getHeader(), jwtConfig.getPrefix() + requesterToken))
         .andExpect(status().isBadRequest())
         .andExpect(jsonPath("$.message", equalTo("Cannot accept friend request sent by yourself")));
   }
 
-  @Disabled
   @Test
   void testAcceptFriendshipWhenFriendshipNotFound_thenReturnHttp404() throws Exception {
+    UserDetailsImpl userDetails = UserDetailsImpl.builder().id(ADDRESSEE_ID).email(ADDRESSEE_EMAIL).build();
+    Authentication authentication = Mockito.mock(Authentication.class);
+
+    when(authentication.getPrincipal()).thenReturn(userDetails);
+
+    SecurityContext securityContext = Mockito.mock(SecurityContext.class);
+    when(securityContext.getAuthentication()).thenReturn(authentication);
+    SecurityContextHolder.setContext(securityContext);
+
+    UserDetailsImpl principal = (UserDetailsImpl) authentication.getPrincipal();
+    String addresseeToken = JwtUtils.createJwtToken(jwtConfig, authentication, principal);
 
     when(friendshipService.updateFriendship(Mockito.any(FriendshipDto.class)))
         .thenThrow(CWMException.EntityNotFoundException.class);
@@ -334,7 +350,8 @@ class FriendshipControllerTest {
         .perform(
             put("/friends")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(JSONUtils.asJsonString(friendshipDto)))
+                .content(JSONUtils.asJsonString(friendshipDto))
+                .header(jwtConfig.getHeader(), jwtConfig.getPrefix() + addresseeToken))
         .andExpect(status().isNotFound());
   }
 
