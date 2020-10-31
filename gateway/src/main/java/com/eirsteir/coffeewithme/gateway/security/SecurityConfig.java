@@ -1,6 +1,7 @@
 package com.eirsteir.coffeewithme.gateway.security;
 
 import com.eirsteir.coffeewithme.commons.security.JwtConfig;
+import javax.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -17,33 +18,37 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;
 
-import javax.servlet.http.HttpServletResponse;
-
 @Configuration
 @EnableWebSecurity
 @PropertySource("classpath:env.properties")
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
-  @Autowired
-  private JwtConfig jwtConfig;
+  @Autowired private JwtConfig jwtConfig;
 
   @Override
   protected void configure(HttpSecurity http) throws Exception {
-          http
-                .cors()
-              .and()
-                  .csrf().disable()
-                  .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-              .and()
-                  .exceptionHandling()
-                  .authenticationEntryPoint((req, res, e) -> res.sendError(HttpServletResponse.SC_UNAUTHORIZED))
-              .and()
-                  .addFilterAfter(new JwtTokenAuthenticationFilter(jwtConfig), UsernamePasswordAuthenticationFilter.class)
-                  .authorizeRequests()
-                  .antMatchers(HttpMethod.POST, jwtConfig.getUri() + "/**").permitAll()
-                  .antMatchers( "/actuator/**").hasRole("ADMIN")
-                  .antMatchers("/docs/**").permitAll()
-                  .anyRequest().authenticated();
+    http.cors()
+        .and()
+        .csrf()
+        .disable()
+        .sessionManagement()
+        .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+        .and()
+        .exceptionHandling()
+        .authenticationEntryPoint(
+            (req, res, e) -> res.sendError(HttpServletResponse.SC_UNAUTHORIZED))
+        .and()
+        .addFilterAfter(
+            new JwtTokenAuthenticationFilter(jwtConfig), UsernamePasswordAuthenticationFilter.class)
+        .authorizeRequests()
+        .antMatchers(HttpMethod.POST, jwtConfig.getUri() + "/**")
+        .permitAll()
+        .antMatchers("/actuator/**")
+        .hasRole("ADMIN")
+        .antMatchers("/docs/**")
+        .permitAll()
+        .anyRequest()
+        .authenticated();
   }
 
   @Bean
@@ -51,7 +56,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
     CorsConfiguration config = new CorsConfiguration();
     config.setAllowCredentials(true);
-    config.addAllowedOrigin("*");  // TODO: lock down before deploying
+    config.addAllowedOrigin("*"); // TODO: lock down before deploying
     config.addAllowedHeader("*");
     config.addExposedHeader(HttpHeaders.AUTHORIZATION);
     config.addAllowedMethod("*");
@@ -64,14 +69,15 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     return new JwtConfig();
   }
 
-
   @Override
   public void configure(WebSecurity web) throws Exception {
-    web.ignoring().antMatchers("/v2/api-docs",
-                               "/configuration/ui",
-                               "/swagger-resources/**",
-                               "/configuration/security",
-                               "/swagger-ui.html",
-                               "/webjars/**");
+    web.ignoring()
+        .antMatchers(
+            "/v2/api-docs",
+            "/configuration/ui",
+            "/swagger-resources/**",
+            "/configuration/security",
+            "/swagger-ui.html",
+            "/webjars/**");
   }
 }

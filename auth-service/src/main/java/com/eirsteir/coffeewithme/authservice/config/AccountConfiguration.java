@@ -1,6 +1,5 @@
 package com.eirsteir.coffeewithme.authservice.config;
 
-
 import com.eirsteir.coffeewithme.authservice.repository.AccountRepository;
 import com.eirsteir.coffeewithme.authservice.service.AccountService;
 import com.eirsteir.coffeewithme.authservice.service.AccountServiceImpl;
@@ -17,14 +16,16 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 @Configuration
 @EnableJpaRepositories
 @EnableAutoConfiguration
-@Import({TramJdbcKafkaConfiguration.class,
-        TramEventsPublisherConfiguration.class,
-        TramEventSubscriberConfiguration.class})
+@Import({
+  TramJdbcKafkaConfiguration.class,
+  TramEventsPublisherConfiguration.class,
+  TramEventSubscriberConfiguration.class
+})
 public class AccountConfiguration {
 
-    @Bean
-    public AccountService accountService(DomainEventPublisher domainEventPublisher,
-                                         AccountRepository accountRepository) {
-        return new AccountServiceImpl(domainEventPublisher, accountRepository);
-    }
+  @Bean
+  public AccountService accountService(
+      DomainEventPublisher domainEventPublisher, AccountRepository accountRepository) {
+    return new AccountServiceImpl(domainEventPublisher, accountRepository);
+  }
 }

@@ -11,11 +11,10 @@ import lombok.experimental.Accessors;
 @AllArgsConstructor
 public class UserDetailsDto {
 
-    private Long id;
-    private String email;
-    private String nickname;
-    private String name;
-    private Boolean isFriend;
-    private Integer friendsCount;
-
+  private Long id;
+  private String email;
+  private String nickname;
+  private String name;
+  private Boolean isFriend;
+  private Integer friendsCount;
 }

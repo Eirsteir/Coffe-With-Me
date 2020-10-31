@@ -5,10 +5,9 @@ import com.eirsteir.coffeewithme.commons.domain.user.UserDetails;
 import lombok.NoArgsConstructor;
 
 @NoArgsConstructor
-public class FriendRequestEvent extends AbstractEntityNotificationEvent implements FriendshipEvent{
+public class FriendRequestEvent extends AbstractEntityNotificationEvent implements FriendshipEvent {
 
-    public FriendRequestEvent(Long subjectId, UserDetails user) {
-        super(subjectId, user);
-    }
-
+  public FriendRequestEvent(Long subjectId, UserDetails user) {
+    super(subjectId, user);
+  }
 }

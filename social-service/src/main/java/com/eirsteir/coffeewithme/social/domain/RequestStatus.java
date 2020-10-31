@@ -2,8 +2,7 @@ package com.eirsteir.coffeewithme.social.domain;
 
 public interface RequestStatus {
 
-    String getStatus();
+  String getStatus();
 
-    Integer getValue();
-
+  Integer getValue();
 }

@@ -7,15 +7,11 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-
-
-@Import({ ModelMapperConfig.class})
+@Import({ModelMapperConfig.class})
 @WebMvcTest(NotificationController.class)
 @ExtendWith(SpringExtension.class)
 class NotificationControllerTest {
 
-    @BeforeEach
-    void setUp() {
-    }
-
+  @BeforeEach
+  void setUp() {}
 }

@@ -15,30 +15,21 @@ import org.springframework.web.servlet.handler.HandlerMappingIntrospector;
 
 @TestConfiguration
 public class EventuateTestConfig {
-    @MockBean
-    private ChannelMapping channelMapping;
-    @MockBean
-    private MessageProducer messageProducer;
-    @MockBean
-    private MessageConsumer messageConsumer;
-    @MockBean
-    private DuplicateMessageDetector duplicateMessageDetector;
-    @MockBean
-    private DomainEventNameMapping domainEventNameMapping;
-    @MockBean
-    private TramConsumerBaseCommonConfiguration tramConsumerBaseCommonConfiguration;
-    @MockBean
-    private DomainEventPublisher domainEventPublisher;
-    @MockBean
-    private JdbcTemplate jdbcTemplate;
-    @MockBean
-    private org.springframework.transaction.support.TransactionTemplate transactionTemplate;
+  @MockBean private ChannelMapping channelMapping;
+  @MockBean private MessageProducer messageProducer;
+  @MockBean private MessageConsumer messageConsumer;
+  @MockBean private DuplicateMessageDetector duplicateMessageDetector;
+  @MockBean private DomainEventNameMapping domainEventNameMapping;
+  @MockBean private TramConsumerBaseCommonConfiguration tramConsumerBaseCommonConfiguration;
+  @MockBean private DomainEventPublisher domainEventPublisher;
+  @MockBean private JdbcTemplate jdbcTemplate;
+  @MockBean private org.springframework.transaction.support.TransactionTemplate transactionTemplate;
 
-    @TestConfiguration
-    static class FriendshipRepositoryTestConfiguration {
-        @Bean(name = "mvcHandlerMappingIntrospector")
-        public HandlerMappingIntrospector mvcHandlerMappingIntrospector() {
-            return new HandlerMappingIntrospector();
-        }
+  @TestConfiguration
+  static class FriendshipRepositoryTestConfiguration {
+    @Bean(name = "mvcHandlerMappingIntrospector")
+    public HandlerMappingIntrospector mvcHandlerMappingIntrospector() {
+      return new HandlerMappingIntrospector();
     }
+  }
 }

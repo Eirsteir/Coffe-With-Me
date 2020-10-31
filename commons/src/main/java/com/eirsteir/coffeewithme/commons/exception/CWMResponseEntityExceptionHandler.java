@@ -1,5 +1,8 @@
 package com.eirsteir.coffeewithme.commons.exception;
 
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -14,79 +17,78 @@ import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-
 @Slf4j
 @ControllerAdvice
 @RestController
 public class CWMResponseEntityExceptionHandler extends ResponseEntityExceptionHandler {
 
-    @ExceptionHandler(Exception.class)
-    public final ResponseEntity<Object> handleAllException(Exception ex, WebRequest request) {
-        ExceptionResponse exceptionResponse = new ExceptionResponse(new Date(), ex.getMessage(),
-                                                                    request.getDescription(false),
-                                                                    HttpStatus.INTERNAL_SERVER_ERROR);
-        log.error("[x] An error occurred: ", ex);
-        return new ResponseEntity<>(exceptionResponse, HttpStatus.INTERNAL_SERVER_ERROR);
-    }
+  @ExceptionHandler(Exception.class)
+  public final ResponseEntity<Object> handleAllException(Exception ex, WebRequest request) {
+    ExceptionResponse exceptionResponse =
+        new ExceptionResponse(
+            new Date(),
+            ex.getMessage(),
+            request.getDescription(false),
+            HttpStatus.INTERNAL_SERVER_ERROR);
+    log.error("[x] An error occurred: ", ex);
+    return new ResponseEntity<>(exceptionResponse, HttpStatus.INTERNAL_SERVER_ERROR);
+  }
 
-    @ExceptionHandler(CWMException.EntityNotFoundException.class)
-    public final ResponseEntity<Object> handleEntityNotFoundException(Exception ex, WebRequest request) {
-        ExceptionResponse exceptionResponse = new ExceptionResponse(new Date(), ex.getMessage(),
-                                                                    request.getDescription(false),
-                                                                    HttpStatus.NOT_FOUND);
-        log.error("[x] Entity does not exist: ", ex);
-        return new ResponseEntity<>(exceptionResponse, HttpStatus.NOT_FOUND);
-    }
+  @ExceptionHandler(CWMException.EntityNotFoundException.class)
+  public final ResponseEntity<Object> handleEntityNotFoundException(
+      Exception ex, WebRequest request) {
+    ExceptionResponse exceptionResponse =
+        new ExceptionResponse(
+            new Date(), ex.getMessage(), request.getDescription(false), HttpStatus.NOT_FOUND);
+    log.error("[x] Entity does not exist: ", ex);
+    return new ResponseEntity<>(exceptionResponse, HttpStatus.NOT_FOUND);
+  }
 
+  @ExceptionHandler(CWMException.DuplicateEntityException.class)
+  public final ResponseEntity<Object> handleDuplicateEntityException(
+      Exception ex, WebRequest request) {
+    ExceptionResponse exceptionResponse =
+        new ExceptionResponse(
+            new Date(), ex.getMessage(), request.getDescription(false), HttpStatus.BAD_REQUEST);
+    log.error("[x] Entity already exist: ", ex);
+    return new ResponseEntity<>(exceptionResponse, HttpStatus.BAD_REQUEST);
+  }
 
-    @ExceptionHandler(CWMException.DuplicateEntityException.class)
-    public final ResponseEntity<Object> handleDuplicateEntityException(Exception ex, WebRequest request) {
-        ExceptionResponse exceptionResponse = new ExceptionResponse(new Date(), ex.getMessage(),
-                                                                    request.getDescription(false),
-                                                                    HttpStatus.BAD_REQUEST);
-        log.error("[x] Entity already exist: ", ex);
-        return new ResponseEntity<>(exceptionResponse, HttpStatus.BAD_REQUEST);
-    }
+  @ExceptionHandler(ResponseStatusException.class)
+  public final ResponseEntity<Object> handleResponseStatusException(
+      ResponseStatusException ex, WebRequest request) {
+    ExceptionResponse exceptionResponse =
+        new ExceptionResponse(
+            new Date(), ex.getReason(), request.getDescription(false), ex.getStatus());
 
-    @ExceptionHandler(ResponseStatusException.class)
-    public final ResponseEntity<Object> handleResponseStatusException(ResponseStatusException ex, WebRequest request) {
-        ExceptionResponse exceptionResponse = new ExceptionResponse(new Date(), ex.getReason(),
-                                                                    request.getDescription(false),
-                                                                    ex.getStatus());
+    log.error("[x] An error with status code {} occurred in the API: ", ex.getStatus(), ex);
+    return new ResponseEntity<>(exceptionResponse, ex.getStatus());
+  }
 
-        log.error("[x] An error with status code {} occurred in the API: ", ex.getStatus(), ex);
-        return new ResponseEntity<>(exceptionResponse, ex.getStatus());
-    }
+  @Override
+  protected ResponseEntity<Object> handleMethodArgumentNotValid(
+      MethodArgumentNotValidException ex,
+      HttpHeaders headers,
+      HttpStatus status,
+      WebRequest request) {
+    List<String> errors = new ArrayList<>();
 
-    @Override
-    protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex,
-                                                                  HttpHeaders headers,
-                                                                  HttpStatus status,
-                                                                  WebRequest request) {
-        List<String> errors = new ArrayList<>();
+    for (FieldError error : ex.getBindingResult().getFieldErrors())
+      errors.add(error.getField() + ": " + error.getDefaultMessage());
 
-        for (FieldError error : ex.getBindingResult().getFieldErrors())
-            errors.add(error.getField() + ": " + error.getDefaultMessage());
+    for (ObjectError error : ex.getBindingResult().getGlobalErrors())
+      errors.add(error.getObjectName() + ": " + error.getDefaultMessage());
 
-        for (ObjectError error : ex.getBindingResult().getGlobalErrors())
-            errors.add(error.getObjectName() + ": " + error.getDefaultMessage());
+    ExceptionResponse exceptionResponse =
+        new ExceptionResponse(
+            new Date(),
+            HttpStatus.BAD_REQUEST,
+            "Validation failed",
+            ex.getLocalizedMessage(),
+            errors);
+    log.error("[x] Validation failed: {}", errors, ex);
 
-
-        ExceptionResponse exceptionResponse = new ExceptionResponse(new Date(),
-                                                                    HttpStatus.BAD_REQUEST,
-                                                                    "Validation failed",
-                                                                    ex.getLocalizedMessage(),
-                                                                    errors);
-        log.error("[x] Validation failed: {}", errors, ex);
-
-        return handleExceptionInternal(ex,
-                                       exceptionResponse,
-                                       headers,
-                                       exceptionResponse.getStatus(),
-                                       request);
-    }
-
+    return handleExceptionInternal(
+        ex, exceptionResponse, headers, exceptionResponse.getStatus(), request);
+  }
 }

@@ -1,7 +1,7 @@
 package com.eirsteir.coffeewithme;
 
-import com.eirsteir.coffeewithme.social.SocialServiceApplication;
 import com.eirsteir.coffeewithme.config.EventuateTestConfig;
+import com.eirsteir.coffeewithme.social.SocialServiceApplication;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
@@ -10,10 +10,6 @@ import org.springframework.test.context.ActiveProfiles;
 @SpringBootTest(classes = {SocialServiceApplication.class, EventuateTestConfig.class})
 class SocialServiceApplicationTests {
 
-    @Test
-    void contextLoads() {
-    }
-
+  @Test
+  void contextLoads() {}
 }
-
-

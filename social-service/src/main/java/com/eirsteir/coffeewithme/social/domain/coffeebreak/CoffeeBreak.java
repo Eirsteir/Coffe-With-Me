@@ -1,18 +1,16 @@
 package com.eirsteir.coffeewithme.social.domain.coffeebreak;
 
-
 import com.eirsteir.coffeewithme.commons.domain.coffeebreak.CoffeeBreakCreatedEvent;
 import com.eirsteir.coffeewithme.commons.domain.coffeebreak.CoffeeBreakDetails;
 import com.eirsteir.coffeewithme.social.domain.CreatedUpdatedDateTimeBaseModel;
 import com.eirsteir.coffeewithme.social.domain.university.Campus;
 import com.eirsteir.coffeewithme.social.domain.user.User;
 import io.eventuate.tram.events.publisher.ResultWithEvents;
-import lombok.*;
-
-import javax.persistence.*;
 import java.time.LocalTime;
 import java.util.Collections;
 import java.util.List;
+import javax.persistence.*;
+import lombok.*;
 
 @Data
 @Builder
@@ -28,17 +26,17 @@ public class CoffeeBreak extends CreatedUpdatedDateTimeBaseModel {
 
   private LocalTime scheduledTo;
 
-  @ManyToOne
-  private User requester;
+  @ManyToOne private User requester;
 
-  @ManyToMany
-  private List<User> addressees;
+  @ManyToMany private List<User> addressees;
 
-  @ManyToOne
-  private Campus campus;
+  @ManyToOne private Campus campus;
 
-  public static ResultWithEvents<CoffeeBreakDetails> createCoffeeBreak(CoffeeBreakDetails coffeeBreakDetails) {
-    CoffeeBreakCreatedEvent coffeeBreakCreatedEvent = new CoffeeBreakCreatedEvent(coffeeBreakDetails);
-    return new ResultWithEvents<>(coffeeBreakDetails, Collections.singletonList(coffeeBreakCreatedEvent));
+  public static ResultWithEvents<CoffeeBreakDetails> createCoffeeBreak(
+      CoffeeBreakDetails coffeeBreakDetails) {
+    CoffeeBreakCreatedEvent coffeeBreakCreatedEvent =
+        new CoffeeBreakCreatedEvent(coffeeBreakDetails);
+    return new ResultWithEvents<>(
+        coffeeBreakDetails, Collections.singletonList(coffeeBreakCreatedEvent));
   }
 }

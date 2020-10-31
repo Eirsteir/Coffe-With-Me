@@ -9,18 +9,16 @@ import org.modelmapper.ModelMapper;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-
 @Configuration
 public class FriendshipConfiguration {
 
-    @Bean
-    public FriendshipService friendshipService(DomainEventPublisher domainEventPublisher,
-                                               FriendshipRepository friendshipRepository,
-                                               UserService userService,
-                                               ModelMapper modelMapper) {
-        return new FriendshipServiceImpl(domainEventPublisher,
-                                         friendshipRepository,
-                                         userService,
-                                         modelMapper);
-    }
+  @Bean
+  public FriendshipService friendshipService(
+      DomainEventPublisher domainEventPublisher,
+      FriendshipRepository friendshipRepository,
+      UserService userService,
+      ModelMapper modelMapper) {
+    return new FriendshipServiceImpl(
+        domainEventPublisher, friendshipRepository, userService, modelMapper);
+  }
 }

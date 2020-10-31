@@ -12,108 +12,121 @@ import com.eirsteir.coffeewithme.social.repository.FriendshipRepository;
 import com.eirsteir.coffeewithme.social.repository.UniversityRepository;
 import com.eirsteir.coffeewithme.social.repository.UserRepository;
 import com.eirsteir.coffeewithme.social.web.request.UpdateProfileRequest;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+import javax.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
-import javax.transaction.Transactional;
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
-
-
 @Slf4j
 @Service
 @Transactional
 public class UserServiceImpl implements UserService {
 
-    private UserRepository userRepository;
+  private UserRepository userRepository;
 
-    private UniversityRepository universityRepository;
+  private UniversityRepository universityRepository;
 
-    private FriendshipRepository friendshipRepository;
+  private FriendshipRepository friendshipRepository;
 
-    private ModelMapper modelMapper;
+  private ModelMapper modelMapper;
 
-    @Autowired
-    public UserServiceImpl(UserRepository userRepository,
-                           UniversityRepository universityRepository,
-                           FriendshipRepository friendshipRepository,
-                           ModelMapper modelMapper) {
-        this.userRepository = userRepository;
-        this.universityRepository = universityRepository;
-        this.friendshipRepository = friendshipRepository;
-        this.modelMapper = modelMapper;
-    }
+  @Autowired
+  public UserServiceImpl(
+      UserRepository userRepository,
+      UniversityRepository universityRepository,
+      FriendshipRepository friendshipRepository,
+      ModelMapper modelMapper) {
+    this.userRepository = userRepository;
+    this.universityRepository = universityRepository;
+    this.friendshipRepository = friendshipRepository;
+    this.modelMapper = modelMapper;
+  }
 
-    @Override
-    public UserDetailsDto findUserByEmail(String email) {
-        User userModel = userRepository.findByEmail(email)
-                .orElseThrow(() -> CWMException.getException(
+  @Override
+  public UserDetailsDto findUserByEmail(String email) {
+    User userModel =
+        userRepository
+            .findByEmail(email)
+            .orElseThrow(
+                () ->
+                    CWMException.getException(
                         EntityType.USER, ExceptionType.ENTITY_NOT_FOUND, email));
 
-        return modelMapper.map(userModel, UserDetailsDto.class);
-    }
+    return modelMapper.map(userModel, UserDetailsDto.class);
+  }
 
-    @Override
-    public User findUserById(Long id) {
-        return userRepository.findById(id)
-                        .orElseThrow(() -> CWMException.getException(EntityType.USER, ExceptionType.ENTITY_NOT_FOUND, id.toString()));
-    }
+  @Override
+  public User findUserById(Long id) {
+    return userRepository
+        .findById(id)
+        .orElseThrow(
+            () ->
+                CWMException.getException(
+                    EntityType.USER, ExceptionType.ENTITY_NOT_FOUND, id.toString()));
+  }
 
-    @Override
-    public UserDetailsDto findUserById(Long id, Long currentUserId) {
-        User user = findUserById(id);
-        User currentUser = findUserById(id);
-        UserDetailsDto userDetails = modelMapper.map(user, UserDetailsDto.class);
-        includeFriendshipProperties(userDetails, user, currentUser);
+  @Override
+  public UserDetailsDto findUserById(Long id, Long currentUserId) {
+    User user = findUserById(id);
+    User currentUser = findUserById(id);
+    UserDetailsDto userDetails = modelMapper.map(user, UserDetailsDto.class);
+    includeFriendshipProperties(userDetails, user, currentUser);
 
-        return userDetails;
-    }
+    return userDetails;
+  }
 
-    // TODO: clearly separate this from retrieving other users
-    private void includeFriendshipProperties(UserDetailsDto userDetails, User otherUser, User currentUser) {
-        boolean areFriends = getAreFriends(otherUser, currentUser);
-        int friendshipCount =  friendshipRepository.countByUserId(currentUser.getId());
+  // TODO: clearly separate this from retrieving other users
+  private void includeFriendshipProperties(
+      UserDetailsDto userDetails, User otherUser, User currentUser) {
+    boolean areFriends = getAreFriends(otherUser, currentUser);
+    int friendshipCount = friendshipRepository.countByUserId(currentUser.getId());
 
-        userDetails.setIsFriend(areFriends);
-        userDetails.setFriendsCount(friendshipCount);
-    }
+    userDetails.setIsFriend(areFriends);
+    userDetails.setFriendsCount(friendshipCount);
+  }
 
-    private boolean getAreFriends(User otherUser, User currentUser) {
-        return currentUser.getFriends().contains(otherUser);
-    }
+  private boolean getAreFriends(User otherUser, User currentUser) {
+    return currentUser.getFriends().contains(otherUser);
+  }
 
-    // TODO: add friends properties
-    @Override
-    public List<UserDetailsDto> searchUsers(Specification<User> spec) {
-        return userRepository.findAll(spec)
-                .stream()
-                .map(user -> modelMapper.map(user, UserDetailsDto.class))
-                .collect(Collectors.toList());
-    }
+  // TODO: add friends properties
+  @Override
+  public List<UserDetailsDto> searchUsers(Specification<User> spec) {
+    return userRepository.findAll(spec).stream()
+        .map(user -> modelMapper.map(user, UserDetailsDto.class))
+        .collect(Collectors.toList());
+  }
 
-    @Override
-    public UserProfile updateProfile(UpdateProfileRequest updateProfileRequest, UserDetailsImpl currentUser) {
-        User userToUpdate = userRepository.findById(currentUser.getId())
-                .orElseThrow(() -> CWMException.getException(EntityType.USER,
-                                                             ExceptionType.ENTITY_NOT_FOUND,
-                                                             currentUser.getId().toString()));
+  @Override
+  public UserProfile updateProfile(
+      UpdateProfileRequest updateProfileRequest, UserDetailsImpl currentUser) {
+    User userToUpdate =
+        userRepository
+            .findById(currentUser.getId())
+            .orElseThrow(
+                () ->
+                    CWMException.getException(
+                        EntityType.USER,
+                        ExceptionType.ENTITY_NOT_FOUND,
+                        currentUser.getId().toString()));
 
-        Optional<University> university = universityRepository.findById(updateProfileRequest.getUniversityId());
-        university.ifPresent(userToUpdate::setUniversity);
+    Optional<University> university =
+        universityRepository.findById(updateProfileRequest.getUniversityId());
+    university.ifPresent(userToUpdate::setUniversity);
 
-        userToUpdate.setNickname(updateProfileRequest.getNickname());
-        log.info("[x] Updated user profile: {}", userToUpdate);
+    userToUpdate.setNickname(updateProfileRequest.getNickname());
+    log.info("[x] Updated user profile: {}", userToUpdate);
 
-        return modelMapper.map(userRepository.save(userToUpdate), UserProfile.class);
-    }
+    return modelMapper.map(userRepository.save(userToUpdate), UserProfile.class);
+  }
 
-    @Override
-    public List<User> findByIdIn(List<Long> friendsIds) {
-        return userRepository.findAllById(friendsIds);
-    }
-
+  @Override
+  public List<User> findByIdIn(List<Long> friendsIds) {
+    return userRepository.findAllById(friendsIds);
+  }
 }

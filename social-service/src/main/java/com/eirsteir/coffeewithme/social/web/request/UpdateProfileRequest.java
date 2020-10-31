@@ -1,12 +1,11 @@
 package com.eirsteir.coffeewithme.social.web.request;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import lombok.*;
-import lombok.experimental.Accessors;
-
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
+import lombok.*;
+import lombok.experimental.Accessors;
 
 @Getter
 @Setter
@@ -17,12 +16,10 @@ import javax.validation.constraints.Positive;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class UpdateProfileRequest {
 
-    @NotBlank(message = "Field is required")
-    private String nickname;
+  @NotBlank(message = "Field is required")
+  private String nickname;
 
-    @NotNull(message = "Field is required")
-    @Positive(message = "Must be a positive integer")
-    private Long universityId;
-
-
+  @NotNull(message = "Field is required")
+  @Positive(message = "Must be a positive integer")
+  private Long universityId;
 }

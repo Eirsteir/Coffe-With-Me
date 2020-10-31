@@ -7,6 +7,5 @@ import org.springframework.stereotype.Service;
 @Service
 public interface AccountService {
 
-    Account registerAccount(RegistrationRequest registrationRequest);
-
+  Account registerAccount(RegistrationRequest registrationRequest);
 }

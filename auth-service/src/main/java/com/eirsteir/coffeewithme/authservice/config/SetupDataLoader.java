@@ -1,12 +1,13 @@
 package com.eirsteir.coffeewithme.authservice.config;
 
-
 import com.eirsteir.coffeewithme.authservice.domain.Account;
 import com.eirsteir.coffeewithme.authservice.domain.Role;
 import com.eirsteir.coffeewithme.authservice.domain.RoleType;
 import com.eirsteir.coffeewithme.authservice.repository.AccountRepository;
 import com.eirsteir.coffeewithme.authservice.repository.RoleRepository;
 import com.eirsteir.coffeewithme.authservice.service.RoleService;
+import java.util.Arrays;
+import java.util.Collections;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationListener;
@@ -15,26 +16,19 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Arrays;
-import java.util.Collections;
-
 @Slf4j
 @Component
 public class SetupDataLoader implements ApplicationListener<ContextRefreshedEvent> {
 
   private boolean alreadySetup = false;
 
-  @Autowired
-  private AccountRepository accountRepository;
+  @Autowired private AccountRepository accountRepository;
 
-  @Autowired
-  private RoleRepository roleRepository;
+  @Autowired private RoleRepository roleRepository;
 
-  @Autowired
-  private RoleService roleService;
+  @Autowired private RoleService roleService;
 
-  @Autowired
-  private BCryptPasswordEncoder encoder;
+  @Autowired private BCryptPasswordEncoder encoder;
 
   @Override
   @Transactional
@@ -76,5 +70,4 @@ public class SetupDataLoader implements ApplicationListener<ContextRefreshedEven
 
     alreadySetup = true;
   }
-
 }

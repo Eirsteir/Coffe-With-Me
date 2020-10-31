@@ -6,16 +6,15 @@ import javax.persistence.Converter;
 @Converter(autoApply = true)
 public class RoleTypeConverter implements AttributeConverter<RoleType, String> {
 
-    @Override
-    public String convertToDatabaseColumn(RoleType type) {
-        return type == null ? null : type.name();
-    }
+  @Override
+  public String convertToDatabaseColumn(RoleType type) {
+    return type == null ? null : type.name();
+  }
 
-    @Override
-    public RoleType convertToEntityAttribute(String value) {
-        if  (value == null)
-            return null;
+  @Override
+  public RoleType convertToEntityAttribute(String value) {
+    if (value == null) return null;
 
-        return RoleType.from(value);
-    }
+    return RoleType.from(value);
+  }
 }

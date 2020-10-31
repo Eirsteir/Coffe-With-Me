@@ -10,8 +10,7 @@ import lombok.*;
 @EqualsAndHashCode
 public class UserDetails {
 
-    private Long id;
-    private String name;
-    private String nickname;
-
+  private Long id;
+  private String name;
+  private String nickname;
 }

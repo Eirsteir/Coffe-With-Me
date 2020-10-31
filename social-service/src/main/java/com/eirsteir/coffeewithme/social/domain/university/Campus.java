@@ -1,11 +1,9 @@
 package com.eirsteir.coffeewithme.social.domain.university;
 
-
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import javax.persistence.*;
 import lombok.Data;
 import lombok.ToString;
-
-import javax.persistence.*;
 
 @Data
 @Entity
@@ -22,5 +20,4 @@ public class Campus {
   @ToString.Exclude
   @JsonIgnore
   private University university;
-
 }

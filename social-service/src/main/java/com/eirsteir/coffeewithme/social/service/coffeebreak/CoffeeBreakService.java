@@ -6,6 +6,6 @@ import com.eirsteir.coffeewithme.social.web.request.CoffeeBreakRequest;
 
 public interface CoffeeBreakService {
 
-  CoffeeBreakDetails registerCoffeeBreak(CoffeeBreakRequest coffeeBreakDto, UserDetailsImpl principal);
-
+  CoffeeBreakDetails registerCoffeeBreak(
+      CoffeeBreakRequest coffeeBreakDto, UserDetailsImpl principal);
 }

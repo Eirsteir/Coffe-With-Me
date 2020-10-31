@@ -1,6 +1,5 @@
 package com.eirsteir.coffeewithme.social.config;
 
-
 import com.eirsteir.coffeewithme.social.repository.FriendshipRepository;
 import com.eirsteir.coffeewithme.social.repository.UniversityRepository;
 import com.eirsteir.coffeewithme.social.repository.UserRepository;
@@ -16,29 +15,26 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class UserConfiguration {
 
-    @Bean
-    public AccountEventConsumer accountEventConsumer() {
-        return new AccountEventConsumer();
-    }
+  @Bean
+  public AccountEventConsumer accountEventConsumer() {
+    return new AccountEventConsumer();
+  }
 
-    @Bean
-    public UserService userService(UserRepository userRepository,
-                                   UniversityRepository universityRepository,
-                                   FriendshipRepository friendshipRepository,
-                                   ModelMapper modelMapper) {
-        return new UserServiceImpl(userRepository,
-                                   universityRepository,
-                                   friendshipRepository,
-                                   modelMapper);
-    }
+  @Bean
+  public UserService userService(
+      UserRepository userRepository,
+      UniversityRepository universityRepository,
+      FriendshipRepository friendshipRepository,
+      ModelMapper modelMapper) {
+    return new UserServiceImpl(
+        userRepository, universityRepository, friendshipRepository, modelMapper);
+  }
 
-    @Bean
-    public DomainEventDispatcher domainEventDispatcher(AccountEventConsumer accountEventConsumer,
-                                                       DomainEventDispatcherFactory domainEventDispatcherFactory) {
-        return domainEventDispatcherFactory.make(
-                "accountServiceEvents", accountEventConsumer.domainEventHandlers()
-        );
-    }
-
+  @Bean
+  public DomainEventDispatcher domainEventDispatcher(
+      AccountEventConsumer accountEventConsumer,
+      DomainEventDispatcherFactory domainEventDispatcherFactory) {
+    return domainEventDispatcherFactory.make(
+        "accountServiceEvents", accountEventConsumer.domainEventHandlers());
+  }
 }
-

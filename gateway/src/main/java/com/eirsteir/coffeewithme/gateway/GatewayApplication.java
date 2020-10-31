@@ -8,12 +8,15 @@ import org.springframework.context.annotation.ComponentScan;
 
 @EnableZuulProxy
 @EnableEurekaClient
-@ComponentScan(basePackages = {"com.eirsteir.coffeewithme.commons.exception", "com.eirsteir.coffeewithme.gateway"})
+@ComponentScan(
+    basePackages = {
+      "com.eirsteir.coffeewithme.commons.exception",
+      "com.eirsteir.coffeewithme.gateway"
+    })
 @SpringBootApplication
 public class GatewayApplication {
 
-    public static void main(String[] args) {
-        SpringApplication.run(GatewayApplication.class, args);
-    }
-
+  public static void main(String[] args) {
+    SpringApplication.run(GatewayApplication.class, args);
+  }
 }

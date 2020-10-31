@@ -9,10 +9,9 @@ import org.springframework.stereotype.Component;
 @PropertySource("classpath:exception.properties")
 public class PropertiesConfig {
 
-    @Autowired
-    private Environment env;
+  @Autowired private Environment env;
 
-    public String getConfigValue(String configKey) {
-        return env.getProperty(configKey);
-    }
+  public String getConfigValue(String configKey) {
+    return env.getProperty(configKey);
+  }
 }

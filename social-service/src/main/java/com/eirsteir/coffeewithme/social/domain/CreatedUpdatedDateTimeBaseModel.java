@@ -1,13 +1,12 @@
 package com.eirsteir.coffeewithme.social.domain;
 
+import java.util.Date;
+import javax.persistence.MappedSuperclass;
 import lombok.Getter;
 import lombok.ToString;
 import lombok.experimental.SuperBuilder;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
-
-import javax.persistence.MappedSuperclass;
-import java.util.Date;
 
 @Getter
 @ToString
@@ -15,12 +14,9 @@ import java.util.Date;
 @MappedSuperclass
 public abstract class CreatedUpdatedDateTimeBaseModel {
 
-    @CreationTimestamp
-    private Date createdDateTime;
+  @CreationTimestamp private Date createdDateTime;
 
-    @UpdateTimestamp
-    private Date updatedDateTime;
+  @UpdateTimestamp private Date updatedDateTime;
 
-    public CreatedUpdatedDateTimeBaseModel() {
-    }
+  public CreatedUpdatedDateTimeBaseModel() {}
 }

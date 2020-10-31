@@ -12,6 +12,5 @@ import lombok.Setter;
 @AllArgsConstructor
 public class AbstractUserAccountEvent implements UserEvent {
 
-    protected Long accountId;
-
+  protected Long accountId;
 }

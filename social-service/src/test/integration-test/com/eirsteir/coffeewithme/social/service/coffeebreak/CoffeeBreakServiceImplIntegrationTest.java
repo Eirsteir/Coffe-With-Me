@@ -9,7 +9,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
 
 @Import({ModelMapperConfig.class, SetupTestDataLoader.class})
-@SpringBootTest(classes = {SocialServiceApplication.class, SecurityConfig.class, EventuateTestConfig.class}, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-class CoffeeBreakServiceImplIntegrationTest {
-
-}
+@SpringBootTest(
+    classes = {SocialServiceApplication.class, SecurityConfig.class, EventuateTestConfig.class},
+    webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+class CoffeeBreakServiceImplIntegrationTest {}

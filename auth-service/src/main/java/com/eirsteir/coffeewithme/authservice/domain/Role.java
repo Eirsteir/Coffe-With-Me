@@ -1,11 +1,10 @@
 package com.eirsteir.coffeewithme.authservice.domain;
 
+import java.io.Serializable;
+import javax.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
-
-import javax.persistence.*;
-import java.io.Serializable;
 
 @Data
 @Accessors(chain = true)
@@ -25,5 +24,4 @@ public class Role implements Serializable {
   public Role(RoleType type) {
     this.type = type;
   }
-
 }

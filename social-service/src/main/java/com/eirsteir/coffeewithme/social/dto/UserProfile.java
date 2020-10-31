@@ -13,11 +13,10 @@ import lombok.experimental.Accessors;
 @AllArgsConstructor
 public class UserProfile {
 
-    private Long id;
-    private String email;
-    private String nickname;
-    private String name;
-    private Integer friendsCount;
-    private University university;
-
+  private Long id;
+  private String email;
+  private String nickname;
+  private String name;
+  private Integer friendsCount;
+  private University university;
 }

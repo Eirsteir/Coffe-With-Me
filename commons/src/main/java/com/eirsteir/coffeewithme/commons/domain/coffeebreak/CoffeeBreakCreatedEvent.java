@@ -8,8 +8,8 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class CoffeeBreakCreatedEvent  extends AbstractEntityNotificationEvent implements CoffeeBreakEvent {
+public class CoffeeBreakCreatedEvent extends AbstractEntityNotificationEvent
+    implements CoffeeBreakEvent {
 
-    private CoffeeBreakDetails coffeeBreakDetails;
-
+  private CoffeeBreakDetails coffeeBreakDetails;
 }

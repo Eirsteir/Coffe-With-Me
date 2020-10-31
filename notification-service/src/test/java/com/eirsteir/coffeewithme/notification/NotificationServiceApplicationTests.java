@@ -9,8 +9,6 @@ import org.springframework.test.context.ActiveProfiles;
 @SpringBootTest(classes = {NotificationServiceApplication.class, EventuateTestConfig.class})
 class NotificationServiceApplicationTests {
 
-    @Test
-    void contextLoads() {
-    }
-
+  @Test
+  void contextLoads() {}
 }

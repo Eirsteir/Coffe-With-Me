@@ -6,8 +6,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class UserAlreadyExistsEvent extends AbstractUserAccountEvent {
 
-    public UserAlreadyExistsEvent(Long accountId) {
-        super(accountId);
-    }
-
+  public UserAlreadyExistsEvent(Long accountId) {
+    super(accountId);
+  }
 }

@@ -14,8 +14,7 @@ import lombok.experimental.Accessors;
 @AllArgsConstructor
 public class FriendshipDto {
 
-    private UserDetailsDto requester;
-    private UserDetailsDto addressee;
-    private FriendshipStatus status;
-
+  private UserDetailsDto requester;
+  private UserDetailsDto addressee;
+  private FriendshipStatus status;
 }

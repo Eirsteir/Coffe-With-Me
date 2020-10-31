@@ -1,11 +1,10 @@
 package com.eirsteir.coffeewithme.social.domain.friendship;
 
 import com.eirsteir.coffeewithme.social.domain.user.User;
-import lombok.*;
-
+import java.io.Serializable;
 import javax.persistence.Embeddable;
 import javax.persistence.ManyToOne;
-import java.io.Serializable;
+import lombok.*;
 
 @Data
 @Builder
@@ -15,12 +14,9 @@ import java.io.Serializable;
 @Embeddable
 public class FriendshipId implements Serializable {
 
-    private static final long serialVersionUID = 3966996285633364115L;
+  private static final long serialVersionUID = 3966996285633364115L;
 
-    @ManyToOne
-    private User requester;
+  @ManyToOne private User requester;
 
-    @ManyToOne
-    private User addressee;
-
+  @ManyToOne private User addressee;
 }

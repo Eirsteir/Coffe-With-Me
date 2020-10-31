@@ -1,5 +1,7 @@
 package com.eirsteir.coffeewithme.central.config.swagger;
 
+import java.util.ArrayList;
+import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -11,34 +13,31 @@ import springfox.documentation.swagger.web.SwaggerResource;
 import springfox.documentation.swagger.web.SwaggerResourcesProvider;
 import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
-import java.util.ArrayList;
-import java.util.List;
-
 /**
- *  Swagger Ui configurations. Configure bean of the {@link SwaggerResourcesProvider} to
- *   read data from in-memory context
+ * Swagger Ui configurations. Configure bean of the {@link SwaggerResourcesProvider} to read data
+ * from in-memory context
  */
 @Configuration
 @EnableSwagger2
 public class SwaggerUIConfiguration {
-	
-	@Autowired
-	private ServiceDefinitionsContext definitionContext;
-	
-	@Bean
-	public RestTemplate configureTempalte(){
-		return new RestTemplate();
-	}
-	
-    @Primary
-    @Bean
-    @Lazy
-    public SwaggerResourcesProvider swaggerResourcesProvider(InMemorySwaggerResourcesProvider defaultResourcesProvider, RestTemplate temp) {
-        return () -> {          
-            List<SwaggerResource> resources = new ArrayList<>(defaultResourcesProvider.get());
-            resources.clear();
-            resources.addAll(definitionContext.getSwaggerDefinitions());
-            return resources;
-        };
-    }
+
+  @Autowired private ServiceDefinitionsContext definitionContext;
+
+  @Bean
+  public RestTemplate configureTempalte() {
+    return new RestTemplate();
+  }
+
+  @Primary
+  @Bean
+  @Lazy
+  public SwaggerResourcesProvider swaggerResourcesProvider(
+      InMemorySwaggerResourcesProvider defaultResourcesProvider, RestTemplate temp) {
+    return () -> {
+      List<SwaggerResource> resources = new ArrayList<>(defaultResourcesProvider.get());
+      resources.clear();
+      resources.addAll(definitionContext.getSwaggerDefinitions());
+      return resources;
+    };
+  }
 }

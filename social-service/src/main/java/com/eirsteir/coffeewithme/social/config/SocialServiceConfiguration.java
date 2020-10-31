@@ -11,12 +11,13 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 @Configuration
 @EnableJpaRepositories
 @EnableAutoConfiguration
-@Import({FriendshipConfiguration.class,
-        UserConfiguration.class,
-        CoffeeBreakConfiguration.class,
-        ModelMapperConfig.class,
-        TramJdbcKafkaConfiguration.class,
-        TramEventsPublisherConfiguration.class,
-        TramEventSubscriberConfiguration.class})
-public class SocialServiceConfiguration {
-}
+@Import({
+  FriendshipConfiguration.class,
+  UserConfiguration.class,
+  CoffeeBreakConfiguration.class,
+  ModelMapperConfig.class,
+  TramJdbcKafkaConfiguration.class,
+  TramEventsPublisherConfiguration.class,
+  TramEventSubscriberConfiguration.class
+})
+public class SocialServiceConfiguration {}
