@@ -26,7 +26,7 @@ class JwtUtils {
                         .collect(Collectors.toList()))
                 .setIssuedAt(Date(now))
                 .setExpiration(Date(now + jwtConfig.expiration * 1000))
-                .signWith(SignatureAlgorithm.HS256, jwtConfig.secret?.toByteArray())
+                .signWith(SignatureAlgorithm.HS256, jwtConfig.secret.toByteArray())
                 .compact()
         }
     }
