@@ -5,6 +5,4 @@ import com.eirsteir.coffeewithme.commons.domain.user.UserDetails
 
 open class CoffeeBreakCreatedEvent(
     val coffeeBreakDetails: CoffeeBreakDetails,
-    subjectId: Long,
-    user: UserDetails
-) : AbstractEntityNotificationEvent(subjectId, user), CoffeeBreakEvent
+) : AbstractEntityNotificationEvent(), CoffeeBreakEvent

@@ -4,6 +4,6 @@ import com.eirsteir.coffeewithme.commons.domain.user.UserDetails
 import io.eventuate.tram.events.common.DomainEvent
 
 abstract class AbstractEntityNotificationEvent(
-    val subjectId: Long,
-    val user: UserDetails,
+    val subjectId: Long? = null,
+    val user: UserDetails? = null,
 ) : DomainEvent
