@@ -22,7 +22,7 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 		<java.version>11</java.version>
-		<kotlin.version>1.5.0</kotlin.version>
+		<kotlin.version>1.6.0</kotlin.version>
 		<spring-cloud.version>Hoxton.SR4</spring-cloud.version>
 		<springfox.swagger.version>2.9.2</springfox.swagger.version>
 	</properties>
